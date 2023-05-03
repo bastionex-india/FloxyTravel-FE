@@ -71,7 +71,7 @@ const VendorList = () => {
   };
   useEffect(() => {
     getAllListData();
-  }, [data]);
+  }, []);
 
   const getAnotherComponent = (item) => {
     navigate("/gethotelsbyvendorid", { state: item });

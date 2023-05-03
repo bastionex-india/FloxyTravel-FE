@@ -81,7 +81,7 @@ const GetHotelByVendor = () => {
   const [services, setServices] = useState("");
   const [internet, setInternet] = useState("");
   const [parking, setParking] = useState("");
-  const [theme, setTheme] = useState("");
+  const [theme, setTheme] = useState([]);
   const [overview, setOverview] = useState("");
   const [multipleFiles, setMultipleFiles] = useState("");
   const [responseData, setResponseData] = useState("");
@@ -105,7 +105,7 @@ const GetHotelByVendor = () => {
   };
   useEffect(() => {
     getData();
-  }, [data]);
+  }, []);
   const getHotels = (item) => {
     navigate("/gethotel", { state: item });
   };
@@ -143,6 +143,7 @@ const GetHotelByVendor = () => {
   };
   const handleClose = async (e) => {
     // alert("ddd")
+    console.log(theme, "srrrr");
     e.preventDefault();
     // console.log("aaaaaaa",name,area,stateValue,cityValue,hotelCategory,totalRooms,general,services,internet,parking,overview,theme,multipleFiles,multipleFiles.length)
     const formdata = new FormData();
@@ -161,15 +162,17 @@ const GetHotelByVendor = () => {
     formdata.append("internet", internet);
     formdata.append("parking", parking);
     formdata.append("overview", overview);
-    formdata.append("theme", theme);
+    for (let i = 0; i < theme.length; i++) {
+      formdata.append(`theme[${i}]`, theme[i]);
+    }
     formdata.append("lat", lat);
     formdata.append("long", long);
     formdata.append("hotelVendorId", state.vendorId);
     // formdata.append('email',authData.data.token)
-    // console.log("sssssss",formdata)
+    console.log("sssssss", formdata);
     axios({
       method: "post",
-      url: `http://188.166.176.89:4000/auth/addhotel`,
+      url: `http://188.166.176.89:4000/auth/addhotely`,
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
@@ -192,7 +195,7 @@ const GetHotelByVendor = () => {
         setInternet("");
         setParking("");
         setOverview("");
-        setTheme("");
+        setTheme([]);
         setLat("");
         setLong("");
         setMultipleFiles("");
@@ -628,11 +631,19 @@ const GetHotelByVendor = () => {
                 <Box style={{ width: "30%" }}>
                   <FormControl fullWidth>
                     <Select
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
+                      labelId="demo-multiple-select-label"
+                      id="demo-multiple-select"
+                      multiple
                       value={theme}
                       label="Theme"
-                      onChange={(e) => setTheme(e.target.value)}
+                      onChange={(event) => {
+                        const {
+                          target: { value },
+                        } = event;
+                        setTheme(
+                          typeof value === "string" ? value.split(",") : value
+                        );
+                      }}
                     >
                       <MenuItem value="beach">Beach</MenuItem>
                       <MenuItem value="wildlife">Wildlife</MenuItem>

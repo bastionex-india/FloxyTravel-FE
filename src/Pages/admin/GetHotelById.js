@@ -201,6 +201,7 @@ const GetHotelById = () => {
   const [hotelname, setHotelname] = useState("");
   const [overview, setOverview] = useState("");
   const [hotelCategory, setHotelCategory] = useState("");
+  const [hotelTheme, setHotelTheme] = useState([]);
   const [totalNoOfRooms, setTotalNoOfRooms] = useState("");
   const [general, setGeneral] = useState("");
   const [services, setServices] = useState("");
@@ -252,6 +253,7 @@ const GetHotelById = () => {
         hotelName: hotelname,
         overview: overview,
         hotelCategory: hotelCategory,
+        theme: hotelTheme,
         noOfRooms: totalNoOfRooms,
         general: general,
         services: services,
@@ -472,6 +474,7 @@ const GetHotelById = () => {
     })
       .then((response) => {
         console.log(response.data, "00000000000001111111111");
+
         // setUpdatedHotelData(response.data.message)
         toast(response.data.message);
         setTimeout(() => {
@@ -899,6 +902,40 @@ const GetHotelById = () => {
                   updatedHotelData.noOfRooms !== undefined
                     ? updatedHotelData.noOfRooms
                     : state.noOfRooms
+                }`
+              )}
+            </div>
+          </HotelCategoryWrapper>
+        </LocationiconWrapper>
+        <Headingwrapper>
+          <Text heading>Hotel Themes</Text>
+        </Headingwrapper>
+
+        <LocationiconWrapper>
+          {/* <IconWrapper><i class="fa-solid fa-location-dot"></i></IconWrapper> */}
+          <HotelCategoryWrapper>
+            <div>
+              {showHotelName ? (
+                <Select
+                  labelId="demo-multiple-select-label"
+                  id="demo-multiple-select"
+                  multiple
+                  value={hotelTheme}
+                  onChange={(e) =>
+                    setHotelTheme([...hotelTheme, e.target.value])
+                  }
+                >
+                  <MenuItem value="beach">Beach</MenuItem>
+                  <MenuItem value="wildlife">Wildlife</MenuItem>
+                  <MenuItem value="romantic">Romantic</MenuItem>
+                  <MenuItem value="hill">Hill</MenuItem>
+                  <MenuItem value="heritage">Heritage</MenuItem>
+                </Select>
+              ) : (
+                `${
+                  updatedHotelData.hotelTheme !== undefined
+                    ? updatedHotelData.hotelTheme
+                    : state.hotelTheme
                 }`
               )}
             </div>
