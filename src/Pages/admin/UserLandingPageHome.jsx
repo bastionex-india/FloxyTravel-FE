@@ -6,13 +6,12 @@ import Swal from "sweetalert2";
 const UserLandingPageHome = () => {
   const [isPriorityChanged, setIsPriority] = useState(false);
   const [addThemePopUp, setAddThemePopUp] = useState(false);
-  const [themeId, setThemeId] = useState();
+  const [themeId, setThemeId] = useState(null);
   const [theme, setTheme] = useState();
   const [title, setTitle] = useState();
   const [allData, setAllData] = useState();
   const { authData } = useContext(AuthContext);
   const [priority, setPriority] = useState();
-  const [themeData, setThemeData] = useState([]);
   const [dragId, setDragId] = useState();
   const [deletePopUp, setDeletePopUp] = useState(false);
   const [cityData, setCityData] = useState();
@@ -24,6 +23,9 @@ const UserLandingPageHome = () => {
         setCityData(res.data.data);
       })
       .catch((err) => console.log(err));
+  };
+  const handlePriority = () => {
+    
   };
   const getAllData = () => {
     axios
@@ -42,6 +44,16 @@ const UserLandingPageHome = () => {
     setDeletePopUp(true);
     setThemeId(e.target.id);
   };
+  const handleEditPopUp = (e) => {
+    const editCity = allData.filter((val) => val._id === e.target.id);
+    setThemeId(e.target.id);
+    console.log(editCity[0]);
+    setTitle(editCity[0]?.title);
+    setCity(editCity[0]?.city);
+    setTheme(editCity[0]?.theme);
+    setAddThemePopUp(true);
+  };
+
   const handleDeleteData = () => {
     axios({
       method: "delete",
@@ -67,14 +79,19 @@ const UserLandingPageHome = () => {
       });
   };
   const handleAddData = () => {
+    const url =
+      themeId === null
+        ? `http://188.166.176.89:4000/admin/postpriority`
+        : `http://188.166.176.89:4000/admin/updateprioritybyid/${themeId}`;
+    const method = themeId === null ? "post" : "put";
     const cityData = {
       city,
       title,
       theme,
     };
     axios({
-      method: "post",
-      url: `http://188.166.176.89:4000/admin/postpriority`,
+      method: method,
+      url: url,
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
@@ -103,6 +120,10 @@ const UserLandingPageHome = () => {
         Swal.fire("Error", "Something went wrong", "error");
       });
     setAddThemePopUp(false);
+    setThemeId(null);
+    setTheme("");
+    setCity("");
+    setTitle("");
   };
   useEffect(() => {
     getPopularCities();
@@ -121,13 +142,13 @@ const UserLandingPageHome = () => {
   const handleDrop = (e) => {
     setIsPriority(true);
 
-    const dragBox = themeData.find((box) => box._id === dragId);
-    const dropBox = themeData.find((box) => box._id === e.currentTarget.id);
+    const dragBox = allData.find((box) => box._id === dragId);
+    const dropBox = allData.find((box) => box._id === e.currentTarget.id);
 
     const dragBoxOrder = dragBox.priority;
     const dropBoxOrder = dropBox.priority;
 
-    const newBoxState = themeData.map((box) => {
+    const newBoxState = allData.map((box) => {
       if (box._id === dragId) {
         box.priority = dropBoxOrder;
       }
@@ -136,6 +157,7 @@ const UserLandingPageHome = () => {
       }
       return box;
     });
+    setAllData(newBoxState);
   };
   return (
     <Root>
@@ -158,32 +180,54 @@ const UserLandingPageHome = () => {
       </RecentlyDocumentHeader>
       <ThemeCardWrapper>
         {allData &&
-          allData.map((val) => (
-            <RecentlyDocumentUploaded>
-              <ThemeBoxElement>{val?.city}</ThemeBoxElement>
-              <ThemeBoxElement>{val?.title}</ThemeBoxElement>
-              <ThemeBoxElement>{val?.theme}</ThemeBoxElement>
-              <ThemeBoxElement>
-                <DeleteIcon
-                  id={val?._id}
-                  onClick={(e) => handleDeletePopUp(e)}
-                  className="fa-solid fa-trash"
-                />
-                <EditIcon id={val?._id} className="fa-solid fa-pen-to-square" />
-              </ThemeBoxElement>
-            </RecentlyDocumentUploaded>
-          ))}
+          allData
+            .sort((a, b) => a.priority - b.priority)
+            .map((val) => (
+              <RecentlyDocumentUploaded
+                draggable={true}
+                id={val?._id}
+                onDragOver={(e) => e.preventDefault()}
+                onDragStart={handleDrag}
+                onDrop={handleDrop}
+              >
+                <ThemeBoxElement>{val?.city}</ThemeBoxElement>
+                <ThemeBoxElement>{val?.title}</ThemeBoxElement>
+                <ThemeBoxElement>{val?.theme}</ThemeBoxElement>
+                <ThemeBoxElement>
+                  <DeleteIcon
+                    id={val?._id}
+                    onClick={(e) => handleDeletePopUp(e)}
+                    className="fa-solid fa-trash"
+                  />
+                  <EditIcon
+                    onClick={(e) => handleEditPopUp(e)}
+                    id={val?._id}
+                    className="fa-solid fa-pen-to-square"
+                  />
+                </ThemeBoxElement>
+              </RecentlyDocumentUploaded>
+            ))}
       </ThemeCardWrapper>
+      <PriorityButton isPriority={isPriorityChanged} onClick={handlePriority}>
+        Save
+      </PriorityButton>
       {addThemePopUp && (
         <AddThemePopUpContainer>
           <AddThemePopUp>
             <div
               style={{ color: "#fff", textAlign: "center", fontSize: "20px" }}
             >
-              Add Sections
+              {console.log(themeId)}
+              {`${themeId === null ? "Add" : "Edit"} Section`}
             </div>
             <AddStatePopUpCloseIcon
-              onClick={() => setAddThemePopUp(false)}
+              onClick={() => {
+                setAddThemePopUp(false);
+                setThemeId(null);
+                setTheme("");
+                setCity("");
+                setTitle("");
+              }}
               className="fa-solid fa-circle-xmark"
               style={{ color: "#fff", fontSize: "20px" }}
             />
