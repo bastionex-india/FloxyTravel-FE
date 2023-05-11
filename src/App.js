@@ -17,6 +17,8 @@ import GetHotelById from "./Pages/admin/GetHotelById";
 import BookingHotelById from "./Pages/BookingHotelById";
 import UserLandingPage from "./Pages/admin/UserLandingPage";
 import UserLandingPageHome from "./Pages/admin/UserLandingPageHome";
+import BookingHistoryofAdmin from "./Pages/admin/BookingHistoryofAdmin";
+import BookingHistorybyOrderid from "./Pages/admin/BookingHistorybyOrderid";
 
 const Root = styled.div``;
 const LeftWrapper = styled.div`

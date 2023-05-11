@@ -187,7 +187,7 @@ const UserLandingPage = () => {
   const handlePriority = () => {
     axios({
       method: "put",
-      url: `http://localhost:4000/admin/updatepriority/${stateId}`,
+      url: `http://188.166.176.89:4000/admin/updatepriority/${stateId}`,
       data: themeData,
       headers: { _token: authData.data.token },
     })
