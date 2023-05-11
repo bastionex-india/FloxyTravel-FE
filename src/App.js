@@ -16,6 +16,8 @@ import GetHotelByVendor from "./Pages/admin/GetHotelByVendor";
 import GetHotelById from "./Pages/admin/GetHotelById";
 import BookingHotelById from "./Pages/BookingHotelById";
 import UserLandingPage from "./Pages/admin/UserLandingPage";
+import BookingHistoryofAdmin from "./Pages/admin/BookingHistoryofAdmin";
+import BookingHistorybyOrderid from "./Pages/admin/BookingHistorybyOrderid";
 
 const Root = styled.div``;
 const LeftWrapper = styled.div`
@@ -58,8 +60,9 @@ function App() {
                     />
                     <Route path="/gethotel" element={<GetHotelById />} />
                     <Route path="userlandingpage" element={<UserLandingPage/>} />
-                    {/* <Route path="/bookinghistory" element={<BookingHistory />} />
-                    <Route path="/hoteldetails" element={<HotelDetails />} />
+                    <Route path="/bookinghistoryofadmin" element={<BookingHistoryofAdmin />} />
+                    <Route path="/bookinghistorybyorderid" element={<BookingHistorybyOrderid />} />
+                    {/* <Route path="/hoteldetails" element={<HotelDetails />} />
                     <Route path="/profile" element={<Profile />} /> */}
                   </>
                 ) : (

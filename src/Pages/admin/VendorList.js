@@ -26,6 +26,8 @@ import FormLabel from "@mui/material/FormLabel";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useFormik } from "formik";
+import { VendorRegisterSchema } from "./schemas/VendorRegisterSchems";
 
 const Root = styled.div`
   width: 90%;
@@ -35,6 +37,11 @@ const CardWrapper = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   grid-gap: 10%;
+`;
+const ErrorMessage = styled.div`
+  color: red;
+  font-size: 12px;
+  margin-bottom: 20px;
 `;
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -55,6 +62,7 @@ const VendorList = () => {
   const [cpassword, setCPassword] = useState("");
   const [vendorValue, setVendorValue] = useState("");
   const [adminValue, setAdminValue] = useState("");
+  const [error, setError] = useState("");
 
   const getAllListData = async () => {
     await axios
@@ -194,7 +202,9 @@ const VendorList = () => {
       })
       .then((response) => {
         console.log(response.data.data);
+        getAllListData();
         navigate("/");
+
         // toast(response.data.data)
         // getAllUSers();
       })
@@ -202,7 +212,91 @@ const VendorList = () => {
         console.log("err", error);
       });
   };
-
+  const initialValues = {
+    name: "",
+    email: "",
+    contact:"",
+    password: "",
+    confirmPassword: ""
+  };
+  const { values, errors, touched, handleBlur, handleChange, handleSubmit } =
+  useFormik({
+    initialValues,
+    validationSchema: VendorRegisterSchema,
+    onSubmit: async (values, action) => {
+      console.log("aaaa",values,adminValue)
+      if(adminValue===""){
+        setError("Options must be selected")
+      }else{
+         if (adminValue === "vendor") {
+        axios({
+          method: "post",
+          url: `http://188.166.176.89:4000/auth/addvendor`,
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          data: {
+            name: values.name,
+            email: values.email,
+            mobile: values.contact,
+            password: values.password,
+            cpassword: values.confirmPassword,
+            adminType: adminValue,
+          },
+          headers: { _token: authData.data.token },
+        })
+          .then((response) => {
+            // console.log(response.data.data,"00000000000001111111111")
+            // setUpdatedHotelData(response.data.message)
+            setResponseData(response.data.data);
+  
+            action.resetForm();
+            getAllListData();
+            toast(response.data.message);
+            setOpen(false);
+          })
+          .catch((error) => {
+            console.log("///////////////", error);
+            // setError('Details are not valid');
+          });
+      } else {
+        axios({
+          method: "post",
+          url: `http://188.166.176.89:4000/auth/admin/register`,
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          data: {
+            username: values.name,
+            email: values.email,
+            mobile: values.contact,
+            password: values.password,
+            cpassword: values.confirmPassword,
+            adminType: adminValue,
+          },
+          headers: { _token: authData.data.token },
+        })
+          .then((response) => {
+            // console.log(response.data.data,"00000000000001111111111")
+            // setUpdatedHotelData(response.data.message)
+            setAdminResponseData(response.data.data);
+  
+            action.resetForm();
+            toast(response.data.message);
+            setOpen(false);
+          })
+          .catch((error) => {
+            console.log("///////////////", error);
+            // setError('Details are not valid');
+          });
+      }
+      }
+    }
+  });
+  // console.log("first",errors);
+  
   return (
     <Root>
       <button onClick={handleClickOpen}>Add Vendor or admin</button>
@@ -270,50 +364,80 @@ const VendorList = () => {
             <DialogContent>
               <DialogContentText id="alert-dialog-slide-description">
                 <TextField
+                  type="text"
+                  placeholder="User Name*"
+                  name="name"
+                  value={values.name}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
                   id="outlined-basic"
                   label="Name"
                   variant="outlined"
                   required
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
                 />
+                 {errors.name && touched.name ? (
+                    <ErrorMessage>{errors.name}</ErrorMessage>
+                  ) : null}
                 <TextField
+                  type="email"
+                  placeholder="Email*"
+                  name="email"
+                  value={values.email}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
                   id="outlined-basic"
                   label="Email"
                   variant="outlined"
-                  required
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  required                 
                 />
+                {errors.email && touched.email ? (
+                    <ErrorMessage>{errors.email}</ErrorMessage>
+                  ) : null}
                 <TextField
+                  type="number"
+                  placeholder="Contact*"
+                  name="contact"
+                  value={values.contact}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
                   id="outlined-basic"
                   label="Contact"
                   variant="outlined"
-                  required
-                  type="number"
-                  value={number}
-                  onChange={(e) => setNumber(e.target.value)}
+                  required     
                 />
+                {errors.contact && touched.contact ? (
+                    <ErrorMessage>{errors.contact}</ErrorMessage>
+                  ) : null}
                 <TextField
+                  type="password"
+                  placeholder="Password*"
+                  name="password"
+                  value={values.password}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
                   id="outlined-basic"
                   label="Password"
                   variant="outlined"
-                  required
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  required     
                 />
+                {errors.password && touched.password ? (
+                    <ErrorMessage>{errors.password}</ErrorMessage>
+                  ) : null}
                 <TextField
+                  type="password"
+                  placeholder="Confirm Password*"
+                  name="confirmPassword"
+                  value={values.confirmPassword}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
                   id="outlined-basic"
                   label="Confirm Password"
                   variant="outlined"
-                  required
-                  type="password"
-                  value={cpassword}
-                  onChange={(e) => setCPassword(e.target.value)}
+                  required   
                 />
+                {errors.confirmPassword && touched.confirmPassword ? (
+                    <ErrorMessage>{errors.confirmPassword}</ErrorMessage>
+                  ) : null}
                 <FormControl>
                   {/* <FormLabel id="demo-row-radio-buttons-group-label">Gender</FormLabel> */}
                   <RadioGroup
@@ -321,26 +445,32 @@ const VendorList = () => {
                     aria-labelledby="demo-row-radio-buttons-group-label"
                     name="row-radio-buttons-group"
                     onChange={(e) => setAdminValue(e.target.value)}
+                    onClick={()=>setError("")}
                   >
                     <FormControlLabel
                       value="admin"
                       control={<Radio />}
                       label="Admin"
                       checked={adminValue === "admin"}
+                      name="option"
                     />
                     <FormControlLabel
                       value="vendor"
                       control={<Radio />}
                       label="Vendor"
                       checked={adminValue === "vendor"}
+                      name="option"
                     />
                   </RadioGroup>
                 </FormControl>
               </DialogContentText>
+              {error!=="" && (
+                <ErrorMessage>{error}</ErrorMessage>
+              )}
             </DialogContent>
             <DialogActions>
               <Button onClick={handleClose1}>Cancel</Button>
-              <Button onClick={handleClose}>Submit</Button>
+              <Button onClick={handleSubmit}>Submit</Button>
             </DialogActions>
           </Dialog>
         </div>
