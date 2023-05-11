@@ -59,23 +59,24 @@ function SideBar(props) {
             <Link>Dashboard</Link>
           </LinkWrapper>
           <LinkWrapper
+            select={selected === "Booking history"}
+            onClick={() => {
+              setselected("Booking history");
+              navigate("/userlandingpagehome");
+            }}
+          >
+            <Link>User Landing Page</Link>
+          </LinkWrapper>
+          <LinkWrapper
             select={selected === "Landing page"}
             onClick={() => {
               setselected("Landing page");
               navigate("/userlandingpage");
             }}
           >
-            <Link>User Landing Page</Link>
+            <Link>User Landing Page City</Link>
           </LinkWrapper>
-          {/* <LinkWrapper
-            select={selected === "Booking history"}
-            onClick={() => {
-              setselected("Booking history");
-              navigate("/bookinghistory");
-            }}
-          >
-            <Link>Booking histrory</Link>
-          </LinkWrapper> */}
+
           {/* <LinkWrapper
             select={selected === "Upcoming Bookings"}
             onClick={() => {

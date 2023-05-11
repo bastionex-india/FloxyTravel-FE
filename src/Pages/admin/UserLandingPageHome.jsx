@@ -1,0 +1,604 @@
+import axios from "axios";
+import React, { useState, useContext, useEffect } from "react";
+import styled from "styled-components";
+import { AuthContext } from "../../ContextApi/ContextApi";
+import Swal from "sweetalert2";
+const UserLandingPageHome = () => {
+  const [isPriorityChanged, setIsPriority] = useState(false);
+  const [addThemePopUp, setAddThemePopUp] = useState(false);
+  const [themeId, setThemeId] = useState();
+  const [theme, setTheme] = useState();
+  const [title, setTitle] = useState();
+  const [allData, setAllData] = useState();
+  const { authData } = useContext(AuthContext);
+  const [priority, setPriority] = useState();
+  const [themeData, setThemeData] = useState([]);
+  const [dragId, setDragId] = useState();
+  const [deletePopUp, setDeletePopUp] = useState(false);
+  const [cityData, setCityData] = useState();
+  const [city, setCity] = useState();
+  const getPopularCities = () => {
+    axios
+      .get(`http://188.166.176.89:4000/auth/getnameofcity`)
+      .then((res) => {
+        setCityData(res.data.data);
+      })
+      .catch((err) => console.log(err));
+  };
+  const getAllData = () => {
+    axios
+      .get(`http://188.166.176.89:4000/admin/prioritydata`, {
+        headers: { _token: authData.data.token },
+      })
+      .then((response) => {
+        console.log("response.data", response.data.data);
+        setAllData(response.data.data);
+      })
+      .catch((error) => {
+        console.log("error", error);
+      });
+  };
+  const handleDeletePopUp = (e) => {
+    setDeletePopUp(true);
+    setThemeId(e.target.id);
+  };
+  const handleDeleteData = () => {
+    axios({
+      method: "delete",
+      url: `http://188.166.176.89:4000/admin/deleteprioritybyid/${themeId}`,
+      headers: {
+        _token: authData?.data?.token,
+      },
+    })
+      .then((response) => {
+        if (response.status) {
+          Swal.fire("Deleted", "Successfully Deleted the City Data", "success");
+          getAllData();
+        } else {
+          Swal.fire("Error", "Something went wrong!", "error");
+        }
+        setThemeId(null);
+        setDeletePopUp(false);
+      })
+      .catch((err) => {
+        Swal.fire("Error", "Something went wrong!", "error");
+        setThemeId(null);
+        setDeletePopUp(false);
+      });
+  };
+  const handleAddData = () => {
+    const cityData = {
+      city,
+      title,
+      theme,
+    };
+    axios({
+      method: "post",
+      url: `http://188.166.176.89:4000/admin/postpriority`,
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      data: cityData,
+      headers: { _token: authData.data.token },
+    })
+      .then((response) => {
+        if (response?.data?.status) {
+          getAllData();
+          Swal.fire(
+            "City Inserted",
+            "Successfully Inserted city on homepage",
+            "success"
+          );
+        } else {
+          Swal.fire(
+            "Error",
+            "Please check again the values you are inserting!",
+            "error"
+          );
+        }
+      })
+      .catch((err) => {
+        console.log(err.message);
+        Swal.fire("Error", "Something went wrong", "error");
+      });
+    setAddThemePopUp(false);
+  };
+  useEffect(() => {
+    getPopularCities();
+    getAllData();
+  }, []);
+  const Themes = useState([
+    "romantic",
+    "heritage",
+    "beach",
+    "hill",
+    "wildlife",
+  ]);
+  const handleDrag = (e) => {
+    setDragId(e.currentTarget.id);
+  };
+  const handleDrop = (e) => {
+    setIsPriority(true);
+
+    const dragBox = themeData.find((box) => box._id === dragId);
+    const dropBox = themeData.find((box) => box._id === e.currentTarget.id);
+
+    const dragBoxOrder = dragBox.priority;
+    const dropBoxOrder = dropBox.priority;
+
+    const newBoxState = themeData.map((box) => {
+      if (box._id === dragId) {
+        box.priority = dropBoxOrder;
+      }
+      if (box._id === e.currentTarget.id) {
+        box.priority = dragBoxOrder;
+      }
+      return box;
+    });
+  };
+  return (
+    <Root>
+      <MainHeading>User Landing Page Home</MainHeading>
+      <ThemeContainer>
+        <StateHeading>Hotel Card Sections :</StateHeading>
+
+        <StateAddIcon
+          onClick={() => setAddThemePopUp(true)}
+          className="fa-solid fa-circle-plus"
+          style={{ color: "#07515c" }}
+        />
+      </ThemeContainer>
+
+      <RecentlyDocumentHeader>
+        <RecentlyDocumentHeaderElem>City Name</RecentlyDocumentHeaderElem>
+        <RecentlyDocumentHeaderElem>Title</RecentlyDocumentHeaderElem>
+        <RecentlyDocumentHeaderElem>Theme</RecentlyDocumentHeaderElem>
+        <RecentlyDocumentHeaderElem>Actions</RecentlyDocumentHeaderElem>
+      </RecentlyDocumentHeader>
+      <ThemeCardWrapper>
+        {allData &&
+          allData.map((val) => (
+            <RecentlyDocumentUploaded>
+              <ThemeBoxElement>{val?.city}</ThemeBoxElement>
+              <ThemeBoxElement>{val?.title}</ThemeBoxElement>
+              <ThemeBoxElement>{val?.theme}</ThemeBoxElement>
+              <ThemeBoxElement>
+                <DeleteIcon
+                  id={val?._id}
+                  onClick={(e) => handleDeletePopUp(e)}
+                  className="fa-solid fa-trash"
+                />
+                <EditIcon id={val?._id} className="fa-solid fa-pen-to-square" />
+              </ThemeBoxElement>
+            </RecentlyDocumentUploaded>
+          ))}
+      </ThemeCardWrapper>
+      {addThemePopUp && (
+        <AddThemePopUpContainer>
+          <AddThemePopUp>
+            <div
+              style={{ color: "#fff", textAlign: "center", fontSize: "20px" }}
+            >
+              Add Sections
+            </div>
+            <AddStatePopUpCloseIcon
+              onClick={() => setAddThemePopUp(false)}
+              className="fa-solid fa-circle-xmark"
+              style={{ color: "#fff", fontSize: "20px" }}
+            />
+            <AddThemeWrapper>
+              <AddThemeInputWrapper>
+                <AddThemeLabel>City Name* : </AddThemeLabel>
+                <AddThemePopUpSelect
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
+                >
+                  <option>Select City Name</option>
+                  {cityData &&
+                    cityData.map((val) => (
+                      <option value={val.city}>{val.city}</option>
+                    ))}
+                </AddThemePopUpSelect>
+              </AddThemeInputWrapper>{" "}
+              <AddThemeInputWrapper>
+                <AddThemeLabel>Theme Name* : </AddThemeLabel>
+                <AddThemePopUpSelect
+                  value={theme}
+                  onChange={(e) => setTheme(e.target.value)}
+                >
+                  <option>Select Theme Name</option>
+                  <option value={`beach`}>Beach</option>
+                  <option value={`wildlife`}>Wildlife</option>
+                  <option value={`romantic`}>Romantic</option>
+                  <option value={`hill`}>Hill</option>
+                  <option value={`heritage`}>Heritage</option>
+                </AddThemePopUpSelect>
+              </AddThemeInputWrapper>
+              <AddThemeInputWrapper>
+                <AddThemeLabel>Title* : </AddThemeLabel>
+                <AddThemePopUpInput
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                />
+              </AddThemeInputWrapper>
+            </AddThemeWrapper>
+            <ButtonWrapper>
+              <AddStatePopUpSubmitButton onClick={handleAddData}>
+                Submit
+              </AddStatePopUpSubmitButton>
+            </ButtonWrapper>
+          </AddThemePopUp>
+        </AddThemePopUpContainer>
+      )}
+      {deletePopUp && (
+        <DeletePopUpContainer>
+          <DeletePopUp>
+            <AddStatePopUpCloseIcon
+              onClick={() => setDeletePopUp(false)}
+              className="fa-solid fa-circle-xmark"
+              style={{ color: "#fff", fontSize: "20px" }}
+            />
+            <DeletePopUpHeading>Delete Theme</DeletePopUpHeading>
+            <DeletePopUpText>Are you sure you want to delete?</DeletePopUpText>
+            <DeletePopUpButtonWrapper>
+              <AddStatePopUpSubmitButton onClick={() => handleDeleteData()}>
+                Yes
+              </AddStatePopUpSubmitButton>
+              <AddStatePopUpSubmitButton onClick={() => setDeletePopUp(false)}>
+                No
+              </AddStatePopUpSubmitButton>
+            </DeletePopUpButtonWrapper>
+          </DeletePopUp>
+        </DeletePopUpContainer>
+      )}
+    </Root>
+  );
+};
+
+const ThemeNameIconWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+const DeleteIcon = styled.i`
+  color: #07515c;
+  margin-right: 20px;
+  cursor: pointer;
+`;
+
+const EditIcon = styled.i`
+  color: #07515c;
+  cursor: pointer;
+`;
+
+const BackgroundImageContainer = styled.div`
+  padding: 20px 0;
+`;
+
+const AddThemePopUpInput = styled.input`
+  padding: 4px;
+  border-radius: 5px;
+  width: 75%;
+`;
+const AddThemePopUpSelect = styled.select`
+  padding: 4px;
+  border-radius: 5px;
+  width: 75%;
+`;
+const AddThemePopUpTextArea = styled.textarea`
+  padding: 4px;
+  border-radius: 5px;
+  width: 75%;
+`;
+
+const AddThemePriority = styled.input`
+  width: 75%;
+  border-radius: 5px;
+  padding: 4px;
+`;
+
+const AddThemeLabel = styled.div`
+  color: #fff;
+`;
+
+const AddThemeInputWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin: 10px 0;
+`;
+
+const AddThemeWrapper = styled.div`
+  padding: 10px;
+  margin-top: 30px;
+`;
+
+const BackgroundImage = styled.img`
+  width: 100%;
+  margin-top: 40px;
+`;
+const ThemeContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 20px 0;
+`;
+
+const ThemeCardWrapper = styled.div`
+  /* width: 80%; */
+  display: flex;
+  /* grid-template-columns: auto auto; */
+  flex-direction: column;
+`;
+
+const ThemeCard = styled.div`
+  width: 25vw;
+  height: 30vh;
+  margin: 10px 0;
+  padding: 10px;
+  border: 1px solid #01575c;
+  border-radius: 5px;
+`;
+
+const ThemeName = styled.div`
+  color: #01575c;
+  font-size: 18px;
+  margin-bottom: 20px;
+`;
+
+const ThemeTitle = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+`;
+
+const ThemeDescription = styled.div`
+  overflow: scroll;
+  height: 60%;
+`;
+
+const Root = styled.div`
+  padding: 20px;
+`;
+
+const MainHeading = styled.div`
+  font-size: 30px;
+  font-weight: 500;
+  text-align: center;
+  color: #01575c;
+`;
+
+const StatesContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 20px 0;
+`;
+
+const StateHeading = styled.div`
+  font-size: 20px;
+  color: #01575c;
+  font-weight: 500;
+`;
+const StatesWrapper = styled.div`
+  display: flex;
+  width: 80%;
+  flex-wrap: wrap;
+  justify-content: space-around;
+`;
+const StateOptions = styled.div`
+  font-size: 20px;
+  text-transform: capitalize;
+  cursor: pointer;
+  border: 1px solid #01575c;
+  padding: 4px 10px;
+  margin-bottom: 10px;
+  margin-right: 4px;
+  text-align: center;
+  border-radius: 5px;
+  background-color: ${(props) => (props.selected ? "#01575c" : "transparent")};
+  color: ${(props) => (props.selected ? "#fff" : "#000")};
+`;
+
+const StateAddIcon = styled.i`
+  cursor: pointer;
+  font-size: 20px;
+`;
+const DeletePopUpContainer = styled.div`
+  position: fixed;
+  top: 0;
+  z-index: 99999;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const DeletePopUp = styled.div`
+  position: relative;
+  background-color: #01575c;
+  margin: auto;
+  box-shadow: #000 2px 1px 1px 1px;
+  width: 30vw;
+  height: 30vh;
+  border-radius: 5px;
+`;
+
+const DeletePopUpHeading = styled.div`
+  color: #fff;
+  text-align: center;
+  font-size: 20px;
+  padding: 20px 0;
+`;
+const DeletePopUpText = styled.div`
+  color: #fff;
+  text-align: center;
+  font-size: 16px;
+`;
+const DeletePopUpButtonWrapper = styled.div`
+  display: flex;
+  justify-content: space-around;
+  padding: 40px;
+`;
+
+const AddStatePopUpContainer = styled.div`
+  position: fixed;
+  top: 0;
+  z-index: 99999;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const AddThemePopUpContainer = styled.div`
+  position: fixed;
+  top: 0;
+  z-index: 99999;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const AddThemePopUp = styled.div`
+  position: relative;
+  background-color: #01575c;
+  margin: auto;
+  box-shadow: #000 2px 1px 1px 1px;
+  width: 42vw;
+  height: 50vh;
+  border-radius: 5px;
+`;
+const AddStatePopUp = styled.div`
+  position: relative;
+  background-color: #01575c;
+  box-shadow: #000 2px 1px 1px 1px;
+  margin: auto;
+  width: 42vw;
+  height: 34vh;
+  border-radius: 5px;
+`;
+
+const AddStatePopUpHeading = styled.div`
+  font-size: 20px;
+`;
+
+const AddStatePopUpCloseIcon = styled.i`
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 20px;
+  cursor: pointer;
+`;
+
+const AddStatePopUpInputContainer = styled.div`
+  display: flex;
+  padding: 30px 50px 0px;
+`;
+
+const AddStatePopUpLabel = styled.div`
+  color: #fff;
+`;
+
+const ButtonWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+`;
+
+const AddStateInputSelect = styled.select`
+  border-radius: 5px;
+  width: 110px;
+  padding: 3px;
+  margin-left: 20px;
+`;
+
+const AddStateFileInput = styled.input`
+  padding: 3px;
+  margin-left: 20px;
+  color: #fff;
+`;
+
+const AddStatePopUpSubmitButton = styled.div`
+  cursor: pointer;
+  width: 110px;
+  padding: 5px 0;
+  text-align: center;
+  color: #fff;
+  background-color: #333;
+  border-radius: 50px;
+`;
+
+export const RecentlyDocumentHeader = styled.div`
+  display: grid;
+  grid-template-columns: 25% 25% 25% 25%;
+  margin: 5px 5%;
+  padding: 14px 15px;
+  @media (max-width: 768px) {
+    display: none;
+  }
+`;
+export const RecentlyDocumentHeaderElem = styled.div`
+  /* color: #6c7074;
+  padding-left: 4px;
+  font-weight: 600;
+  display: flex;
+  justify-content: center; */
+  display: flex;
+  justify-content: center;
+  color: rgb(22 22 22);
+  padding-left: 4px;
+  font-weight: 600;
+  font-size: 18px;
+`;
+
+export const RecentlyDocumentUploaded = styled.div`
+  cursor: move;
+  background: #fff;
+  display: grid;
+  grid-template-columns: 25% 25% 25% 25%;
+  -webkit-box-align: center;
+  align-items: center;
+  margin: 10px 5%;
+  padding: 14px 15px;
+  box-shadow: 0px 0px 5px 5px #0000;
+  border-radius: 5px;
+  @media (max-width: 768px) {
+    display: flex;
+    justify-content: space-between;
+  }
+`;
+
+export const MainThemeContainer = styled.div``;
+export const ThemeBoxElement = styled.div`
+  display: flex;
+  justify-content: center;
+`;
+export const ThemeBoxElementDesc = styled.div`
+  display: flex;
+  justify-content: center;
+  height: 70px;
+  overflow: scroll;
+  ::-webkit-scrollbar {
+    display: none;
+  }
+`;
+export const PriorityButton = styled.div`
+  cursor: ${(props) => (props.isPriority ? "pointer" : "default")};
+  float: right;
+  margin: 10px 50px 0 0;
+  padding: 5px 10px;
+  color: #fff;
+  background-color: ${(props) => (props.isPriority ? `#01565b` : `grey`)};
+  border: 1px solid transparent;
+  border-radius: 5px;
+`;
+export default UserLandingPageHome;

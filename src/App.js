@@ -16,6 +16,7 @@ import GetHotelByVendor from "./Pages/admin/GetHotelByVendor";
 import GetHotelById from "./Pages/admin/GetHotelById";
 import BookingHotelById from "./Pages/BookingHotelById";
 import UserLandingPage from "./Pages/admin/UserLandingPage";
+import UserLandingPageHome from "./Pages/admin/UserLandingPageHome";
 
 const Root = styled.div``;
 const LeftWrapper = styled.div`
@@ -34,7 +35,7 @@ function App() {
   return (
     <Root>
       {!authData ? (
-        <Login /> 
+        <Login />
       ) : (
         <>
           <Navigation />
@@ -57,7 +58,14 @@ function App() {
                       element={<GetHotelByVendor />}
                     />
                     <Route path="/gethotel" element={<GetHotelById />} />
-                    <Route path="userlandingpage" element={<UserLandingPage/>} />
+                    <Route
+                      path="userlandingpage"
+                      element={<UserLandingPage />}
+                    />
+                    <Route
+                      path="userlandingpagehome"
+                      element={<UserLandingPageHome />}
+                    />
                     {/* <Route path="/bookinghistory" element={<BookingHistory />} />
                     <Route path="/hoteldetails" element={<HotelDetails />} />
                     <Route path="/profile" element={<Profile />} /> */}
