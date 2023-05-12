@@ -248,9 +248,9 @@ const UserLandingPageHome = () => {
               onClick={() => {
                 setAddThemePopUp(false);
                 setThemeId(null);
-                setTheme("");
-                setCity("");
-                setTitle("");
+                setTheme(null);
+                setCity(null);
+                setTitle(null);
               }}
               className="fa-solid fa-circle-xmark"
               style={{ color: "#fff", fontSize: "20px" }}
@@ -276,12 +276,12 @@ const UserLandingPageHome = () => {
                   onChange={(e) => setTheme(e.target.value)}
                 >
                   <option>Select City Name</option>
-                  <option value={`all`}>All</option>
-                  <option value={`beach`}>Beach</option>
-                  <option value={`wildlife`}>Wildlife</option>
-                  <option value={`romantic`}>Romantic</option>
-                  <option value={`hill`}>Hill</option>
-                  <option value={`heritage`}>Heritage</option>
+                  <option value={`All`}>All</option>
+                  <option value={`Beach`}>Beach</option>
+                  <option value={`Wildlife`}>Wildlife</option>
+                  <option value={`Romantic`}>Romantic</option>
+                  <option value={`Hill`}>Hill</option>
+                  <option value={`Heritage`}>Heritage</option>
                 </AddThemePopUpSelect>
               </AddThemeInputWrapper>
               <AddThemeInputWrapper>
