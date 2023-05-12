@@ -7,15 +7,15 @@ const UserLandingPageHome = () => {
   const [isPriorityChanged, setIsPriority] = useState(false);
   const [addThemePopUp, setAddThemePopUp] = useState(false);
   const [themeId, setThemeId] = useState(null);
-  const [theme, setTheme] = useState();
-  const [title, setTitle] = useState();
+  const [theme, setTheme] = useState(null);
+  const [title, setTitle] = useState(null);
   const [allData, setAllData] = useState();
   const { authData } = useContext(AuthContext);
   const [priority, setPriority] = useState();
   const [dragId, setDragId] = useState();
   const [deletePopUp, setDeletePopUp] = useState(false);
   const [cityData, setCityData] = useState();
-  const [city, setCity] = useState();
+  const [city, setCity] = useState(null);
   const getPopularCities = () => {
     axios
       .get(`http://188.166.176.89:4000/auth/getnameofcity`)
@@ -97,51 +97,57 @@ const UserLandingPageHome = () => {
       });
   };
   const handleAddData = () => {
-    const url =
-      themeId === null
-        ? `http://188.166.176.89:4000/admin/postpriority`
-        : `http://188.166.176.89:4000/admin/updateprioritybyid/${themeId}`;
-    const method = themeId === null ? "post" : "put";
-    const cityData = {
-      city,
-      title,
-      theme,
-    };
-    axios({
-      method: method,
-      url: url,
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      data: cityData,
-      headers: { _token: authData.data.token },
-    })
-      .then((response) => {
-        if (response?.data?.status) {
-          getAllData();
-          Swal.fire(
-            "City Inserted",
-            "Successfully Inserted city on homepage",
-            "success"
-          );
-        } else {
-          Swal.fire(
-            "Error",
-            "Please check again the values you are inserting!",
-            "error"
-          );
-        }
+    if (theme !== null && city !== null && title !== null) {
+      const url =
+        themeId === null
+          ? `http://188.166.176.89:4000/admin/postpriority`
+          : `http://188.166.176.89:4000/admin/updateprioritybyid/${themeId}`;
+      const method = themeId === null ? "post" : "put";
+      const cityData = {
+        city,
+        title,
+        theme,
+      };
+      axios({
+        method: method,
+        url: url,
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        data: cityData,
+        headers: { _token: authData.data.token },
       })
-      .catch((err) => {
-        console.log(err.message);
-        Swal.fire("Error", "Something went wrong", "error");
-      });
+        .then((response) => {
+          if (response?.data?.status) {
+            getAllData();
+            Swal.fire(
+              `City ${themeId === null ? "Inserted" : "Updated"}`,
+              `Successfully ${
+                themeId === null ? "Inserted" : "Updated"
+              } city on homepage`,
+              "success"
+            );
+          } else {
+            Swal.fire(
+              "Error",
+              "Please check again the values you are inserting!",
+              "error"
+            );
+          }
+        })
+        .catch((err) => {
+          console.log(err.message);
+          Swal.fire("Error", "Something went wrong", "error");
+        });
+    } else {
+      Swal.fire("Warning", "Please enter all the data!", "warning");
+    }
     setAddThemePopUp(false);
     setThemeId(null);
-    setTheme("");
-    setCity("");
-    setTitle("");
+    setTheme(null);
+    setCity(null);
+    setTitle(null);
   };
   useEffect(() => {
     getPopularCities();
@@ -269,6 +275,7 @@ const UserLandingPageHome = () => {
                   value={theme}
                   onChange={(e) => setTheme(e.target.value)}
                 >
+                  <option>Select City Name</option>
                   <option value={`all`}>All</option>
                   <option value={`beach`}>Beach</option>
                   <option value={`wildlife`}>Wildlife</option>

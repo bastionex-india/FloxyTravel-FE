@@ -61,11 +61,11 @@ function App() {
                     />
                     <Route path="/gethotel" element={<GetHotelById />} />
                     <Route
-                      path="userlandingpage"
+                      path="userselectedcity"
                       element={<UserLandingPage />}
                     />
                     <Route
-                      path="userlandingpagehome"
+                      path="userhomepage"
                       element={<UserLandingPageHome />}
                     />
                     {/* <Route path="/bookinghistory" element={<BookingHistory />} />

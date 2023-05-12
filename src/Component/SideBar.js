@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { AuthContext } from "../ContextApi/ContextApi";
@@ -44,6 +44,17 @@ function SideBar(props) {
   const [selected, setselected] = useState("Dashboard");
   const navigate = useNavigate();
   const { authData, setAuthData } = useContext(AuthContext);
+  useEffect(() => {
+    if (window !== "undefined") {
+      if (window.location.href.split("/").pop() === "userhomepage") {
+        setselected("user homepage slider");
+      } else if (window.location.href.split("/").pop() === "userselectedcity") {
+        setselected("Landing page");
+      } else {
+        setselected("Dashboard");
+      }
+    }
+  }, [selected]);
   // console.log("authdata of sidebar",authData.data)
   return (
     <Root>
@@ -59,22 +70,22 @@ function SideBar(props) {
             <Link>Dashboard</Link>
           </LinkWrapper>
           <LinkWrapper
-            select={selected === "Booking history"}
+            select={selected === "user homepage slider"}
             onClick={() => {
-              setselected("Booking history");
-              navigate("/userlandingpagehome");
+              setselected("user homepage slider");
+              navigate("/userhomepage");
             }}
           >
-            <Link>User Landing Page</Link>
+            <Link>User Homepage Slider</Link>
           </LinkWrapper>
           <LinkWrapper
             select={selected === "Landing page"}
             onClick={() => {
               setselected("Landing page");
-              navigate("/userlandingpage");
+              navigate("/userselectedcity");
             }}
           >
-            <Link>User Landing Page City</Link>
+            <Link>User Selected City</Link>
           </LinkWrapper>
           {/* <LinkWrapper
             select={selected === "Booking history"}
