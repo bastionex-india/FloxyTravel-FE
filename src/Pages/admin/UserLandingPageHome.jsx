@@ -25,7 +25,25 @@ const UserLandingPageHome = () => {
       .catch((err) => console.log(err));
   };
   const handlePriority = () => {
-    
+    axios({
+      method: "put",
+      url: `http://localhost:4000/admin/updateprioritycitybyid`,
+      data: allData,
+      headers: { _token: authData.data.token },
+    })
+      .then((response) => {
+        console.log(response);
+        Swal.fire(
+          "Priorities changed",
+          "Successfully changed priorities of theme data",
+          "success"
+        );
+      })
+      .catch((err) => {
+        console.log(err.message);
+        Swal.fire("Error", "Something went wrong", "error");
+      });
+    setIsPriority(false);
   };
   const getAllData = () => {
     axios
