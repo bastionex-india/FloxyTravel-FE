@@ -269,7 +269,7 @@ const UserLandingPageHome = () => {
                   value={theme}
                   onChange={(e) => setTheme(e.target.value)}
                 >
-                  <option>Select Theme Name</option>
+                  <option value={`all`}>All</option>
                   <option value={`beach`}>Beach</option>
                   <option value={`wildlife`}>Wildlife</option>
                   <option value={`romantic`}>Romantic</option>
