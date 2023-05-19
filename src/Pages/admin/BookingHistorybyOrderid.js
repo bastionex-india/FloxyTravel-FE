@@ -1,13 +1,12 @@
 import React from "react";
 
 import styled from "styled-components";
-import { useLocation } from 'react-router-dom';
+import { useLocation } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../../ContextApi/ContextApi";
 import { useState } from "react";
-import axios from 'axios';
+import axios from "axios";
 import { useEffect } from "react";
-
 
 const Root = styled.div`
   background-color: #e9e9e9;
@@ -209,162 +208,162 @@ const LastHeadingwrapper = styled.div`
 `;
 const Caption = styled.text``;
 const BookingHistorybyOrderid = () => {
-    const { state } = useLocation();
-    const { authData } = useContext(AuthContext);
-    const [data, setData] = useState("");
+  const { state } = useLocation();
+  const { authData } = useContext(AuthContext);
+  const [data, setData] = useState("");
 
-    // console.log("//",state);
-    
-    const getAllUsers = async () => {
-        await axios
-          .get(
-            `http://188.166.176.89:4000/admin/getallbookingbyorderid/${state.orderid}`,
-            { headers: { _token: authData.data.token } }
-          )
-          .then((response) => {
-            console.log("response.data", response.data.data[0]);
-            setData(response.data.data[0]);
-          })
-          .catch((error) => {
-            console.log("error", error);
-          });
-      };
-      // console.log("jgjkgjkgj", data);
-      useEffect(() => {
-        getAllUsers();
-      }, []);
+  // console.log("//",state);
+
+  const getAllUsers = async () => {
+    await axios
+      .get(
+        `http://localhost:4000/admin/getallbookingbyorderid/${state.orderid}`,
+        { headers: { _token: authData.data.token } }
+      )
+      .then((response) => {
+        console.log("response.data", response.data.data[0]);
+        setData(response.data.data[0]);
+      })
+      .catch((error) => {
+        console.log("error", error);
+      });
+  };
+  // console.log("jgjkgjkgj", data);
+  useEffect(() => {
+    getAllUsers();
+  }, []);
   return (
     <Root>
-    <Container>
-      <SidewrapperContainer>
-        <LeftsideSection>
-          <LocationiconWrapper>
-            <IconWrapper>
-              <i class="fa-solid fa-calendar-week"></i>
-            </IconWrapper>
-            <Locationwrapper details>Hotel Details</Locationwrapper>
-          </LocationiconWrapper>
-
-          <Horizontalwrapper>
-            <hr />
-          </Horizontalwrapper>
-
-          <PriceWrapper>
-            <TextWrapper>
-              <Text>{data.hotelname}</Text>
-              <LocationiconWrapper>
-                <IconWrapper>
-                  <i class="fa-solid fa-location-dot"></i>
-                </IconWrapper>
-                <Locationwrapper>
-                  {data.area} , {data.state}
-                </Locationwrapper>
-              </LocationiconWrapper>
-            </TextWrapper>
-            <PriceText>
-              <span style={{ fontSize: "30px" }}>&#8377;</span>
-              <span
-                style={{
-                  fontSize: "larger",
-                  fontWeight: "600",
-                  fontSize: "30px",
-                }}
-              >
-                {data.price}
-              </span>
-            </PriceText>
-          </PriceWrapper>
-          <ImageWrapper id="GalleryDetails">
-            {/* <Image src={`http://188.166.176.89:4000/uploads/${data.image[0]}`} />             */}
-          </ImageWrapper>
-
-          <LocationiconWrapper>
-            <IconWrapper>
-              <i class="fa-solid fa-calendar-week"></i>
-            </IconWrapper>
-            <Locationwrapper details>Customer Details</Locationwrapper>
-          </LocationiconWrapper>
-          <Horizontalwrapper>
-            <hr />
-          </Horizontalwrapper>
-          <LastHeadingwrapper>
-            <CustomerWrapper>
-              <FacilitiesNameWrapper>
-                <CustomerName> Name </CustomerName>
-                <DetailWrapper>
-                  <CustomerName Name>
-                    {" "}
-                    {data.customer && data.customer.name}{" "}
-                  </CustomerName>
-                </DetailWrapper>
-              </FacilitiesNameWrapper>
-              <FacilitiesNameWrapper>
-                <CustomerName> Email </CustomerName>
-                <DetailWrapper>
-                  {" "}
-                  <CustomerName Name>
-                    {" "}
-                    {data.customer && data.customer.email}
-                  </CustomerName>
-                </DetailWrapper>
-              </FacilitiesNameWrapper>
-              <FacilitiesNameWrapper>
-                <CustomerName> Contact </CustomerName>
-                <DetailWrapper>
-                  {" "}
-                  <CustomerName Name>
-                    {" "}
-                    {data.customer && data.customer.mobile}{" "}
-                  </CustomerName>
-                </DetailWrapper>
-              </FacilitiesNameWrapper>
-            </CustomerWrapper>
-
-            <hr />
+      <Container>
+        <SidewrapperContainer>
+          <LeftsideSection>
             <LocationiconWrapper>
               <IconWrapper>
                 <i class="fa-solid fa-calendar-week"></i>
               </IconWrapper>
-              <Locationwrapper details>Booking Details</Locationwrapper>
+              <Locationwrapper details>Hotel Details</Locationwrapper>
             </LocationiconWrapper>
 
-            <FacilitiesNameWrapper>
-              <CustomerName> Adult </CustomerName>
-              <DetailWrapper>
-                <CustomerName Name> {data.adult} </CustomerName>
-              </DetailWrapper>
-            </FacilitiesNameWrapper>
-            <FacilitiesNameWrapper>
-              <CustomerName> Children </CustomerName>
-              <DetailWrapper>
-                <CustomerName Name> {data.children}</CustomerName>
-              </DetailWrapper>
-            </FacilitiesNameWrapper>
-            <FacilitiesNameWrapper>
-              <CustomerName> Rooms </CustomerName>
-              <DetailWrapper>
-                {" "}
-                <CustomerName Name> {data.noOfRooms} </CustomerName>
-              </DetailWrapper>
-            </FacilitiesNameWrapper>
-            <FacilitiesNameWrapper>
-              <CustomerName> CheckIn Time </CustomerName>
-              <DetailWrapper>
-                {" "}
-                <CustomerName Name> {data.checkIn} </CustomerName>
-              </DetailWrapper>
-            </FacilitiesNameWrapper>
-            <FacilitiesNameWrapper>
-              <CustomerName> CheckOut Time </CustomerName>
-              <DetailWrapper>
-                {" "}
-                <CustomerName Name> {data.checkOut} </CustomerName>
-              </DetailWrapper>
-            </FacilitiesNameWrapper>
+            <Horizontalwrapper>
+              <hr />
+            </Horizontalwrapper>
 
-            <hr />
+            <PriceWrapper>
+              <TextWrapper>
+                <Text>{data.hotelname}</Text>
+                <LocationiconWrapper>
+                  <IconWrapper>
+                    <i class="fa-solid fa-location-dot"></i>
+                  </IconWrapper>
+                  <Locationwrapper>
+                    {data.area} , {data.state}
+                  </Locationwrapper>
+                </LocationiconWrapper>
+              </TextWrapper>
+              <PriceText>
+                <span style={{ fontSize: "30px" }}>&#8377;</span>
+                <span
+                  style={{
+                    fontSize: "larger",
+                    fontWeight: "600",
+                    fontSize: "30px",
+                  }}
+                >
+                  {data.price}
+                </span>
+              </PriceText>
+            </PriceWrapper>
+            <ImageWrapper id="GalleryDetails">
+              {/* <Image src={`http://localhost:4000/uploads/${data.image[0]}`} />             */}
+            </ImageWrapper>
 
-            {/* <ButtonWrapper>
+            <LocationiconWrapper>
+              <IconWrapper>
+                <i class="fa-solid fa-calendar-week"></i>
+              </IconWrapper>
+              <Locationwrapper details>Customer Details</Locationwrapper>
+            </LocationiconWrapper>
+            <Horizontalwrapper>
+              <hr />
+            </Horizontalwrapper>
+            <LastHeadingwrapper>
+              <CustomerWrapper>
+                <FacilitiesNameWrapper>
+                  <CustomerName> Name </CustomerName>
+                  <DetailWrapper>
+                    <CustomerName Name>
+                      {" "}
+                      {data.customer && data.customer.name}{" "}
+                    </CustomerName>
+                  </DetailWrapper>
+                </FacilitiesNameWrapper>
+                <FacilitiesNameWrapper>
+                  <CustomerName> Email </CustomerName>
+                  <DetailWrapper>
+                    {" "}
+                    <CustomerName Name>
+                      {" "}
+                      {data.customer && data.customer.email}
+                    </CustomerName>
+                  </DetailWrapper>
+                </FacilitiesNameWrapper>
+                <FacilitiesNameWrapper>
+                  <CustomerName> Contact </CustomerName>
+                  <DetailWrapper>
+                    {" "}
+                    <CustomerName Name>
+                      {" "}
+                      {data.customer && data.customer.mobile}{" "}
+                    </CustomerName>
+                  </DetailWrapper>
+                </FacilitiesNameWrapper>
+              </CustomerWrapper>
+
+              <hr />
+              <LocationiconWrapper>
+                <IconWrapper>
+                  <i class="fa-solid fa-calendar-week"></i>
+                </IconWrapper>
+                <Locationwrapper details>Booking Details</Locationwrapper>
+              </LocationiconWrapper>
+
+              <FacilitiesNameWrapper>
+                <CustomerName> Adult </CustomerName>
+                <DetailWrapper>
+                  <CustomerName Name> {data.adult} </CustomerName>
+                </DetailWrapper>
+              </FacilitiesNameWrapper>
+              <FacilitiesNameWrapper>
+                <CustomerName> Children </CustomerName>
+                <DetailWrapper>
+                  <CustomerName Name> {data.children}</CustomerName>
+                </DetailWrapper>
+              </FacilitiesNameWrapper>
+              <FacilitiesNameWrapper>
+                <CustomerName> Rooms </CustomerName>
+                <DetailWrapper>
+                  {" "}
+                  <CustomerName Name> {data.noOfRooms} </CustomerName>
+                </DetailWrapper>
+              </FacilitiesNameWrapper>
+              <FacilitiesNameWrapper>
+                <CustomerName> CheckIn Time </CustomerName>
+                <DetailWrapper>
+                  {" "}
+                  <CustomerName Name> {data.checkIn} </CustomerName>
+                </DetailWrapper>
+              </FacilitiesNameWrapper>
+              <FacilitiesNameWrapper>
+                <CustomerName> CheckOut Time </CustomerName>
+                <DetailWrapper>
+                  {" "}
+                  <CustomerName Name> {data.checkOut} </CustomerName>
+                </DetailWrapper>
+              </FacilitiesNameWrapper>
+
+              <hr />
+
+              {/* <ButtonWrapper>
               {data.checkInStatus === true ? (
                 <Button disabled checkOut>
                   CheckIn
@@ -393,12 +392,12 @@ const BookingHistorybyOrderid = () => {
                 </Button>
               )}
             </ButtonWrapper> */}
-          </LastHeadingwrapper>
-        </LeftsideSection>
-      </SidewrapperContainer>
-    </Container>
-  </Root>
-  )
+            </LastHeadingwrapper>
+          </LeftsideSection>
+        </SidewrapperContainer>
+      </Container>
+    </Root>
+  );
 };
 
 export default BookingHistorybyOrderid;

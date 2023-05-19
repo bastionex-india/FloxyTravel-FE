@@ -67,7 +67,7 @@ const ViewTask = () => {
     if (authData && authData.data.group === "IT") {
       // setIT(authData)
       axios
-        .get("http://188.166.176.89:1999/auth/getsoftwaredevelopmettasks", {
+        .get("http://localhost:1999/auth/getsoftwaredevelopmettasks", {
           headers: { _token: authData.data.token.token },
         })
         .then((res) => {
@@ -80,7 +80,7 @@ const ViewTask = () => {
         });
     } else if (authData && authData.data.group === "community") {
       axios
-        .get("http://188.166.176.89:1999/auth/getcommunitytasks", {
+        .get("http://localhost:1999/auth/getcommunitytasks", {
           headers: { _token: authData.data.token.token },
         })
         .then((res) => {
@@ -93,7 +93,7 @@ const ViewTask = () => {
         });
     } else if (authData && authData.data.group === "sm") {
       axios
-        .get("http://188.166.176.89:1999/auth/getgmtasks", {
+        .get("http://localhost:1999/auth/getgmtasks", {
           headers: { _token: authData.data.token.token },
         })
         .then((res) => {
@@ -106,7 +106,7 @@ const ViewTask = () => {
         });
     } else if (authData && authData.data.group === "graphics") {
       axios
-        .get("http://188.166.176.89:1999/auth/gettasks", {
+        .get("http://localhost:1999/auth/gettasks", {
           headers: { _token: authData.data.token.token },
         })
         .then((res) => {

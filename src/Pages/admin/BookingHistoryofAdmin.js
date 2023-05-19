@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import styled from "styled-components";
-import axios from 'axios';
+import axios from "axios";
 import { useEffect } from "react";
 import { useContext } from "react";
 import { AuthContext } from "../../ContextApi/ContextApi";
-import  moment  from 'moment';
+import moment from "moment";
 const TextRoot = styled.div`
   background-color: #9f94942b;
   padding: 20px 0px;
@@ -136,89 +136,97 @@ const TextMainWrapper = styled.div`
   }
 `;
 const BookingHistoryofAdmin = () => {
-    const [select, setSelect] = useState("");
-    const [select1, setSelect1] = useState("");
-    const { authData, setAuthData } = useContext(AuthContext);
-    const [data, setData] = useState("");
-    const navigation = useNavigate();
+  const [select, setSelect] = useState("");
+  const [select1, setSelect1] = useState("");
+  const { authData, setAuthData } = useContext(AuthContext);
+  const [data, setData] = useState("");
+  const navigation = useNavigate();
 
-    const handleClick = (item) => {
-        // console.log("hcjhcjhf",item)
-        navigation("/bookinghistorybyorderid", { state: item });
-    };
-    
-    const getAllUsers = async () => {
-      console.log("aaa",select1);
-      let data;
-      if(select1!==""){
-        data = {
-          "status": select,
-          "startDate":new Date(),
-          "endDate":select1
-        };
-      }else{
-        data = {
-          "status": select
-        };
-      }           
+  const handleClick = (item) => {
+    // console.log("hcjhcjhf",item)
+    navigation("/bookinghistorybyorderid", { state: item });
+  };
 
-        let config = {
-          method: "post",
-          url: `http://188.166.176.89:4000/admin/getallbooking`,
-          headers: { 
-            '_token': authData.data.token, 
-            'Content-Type': 'application/json'
-          },
-          data:data
-        };
-    
-        axios
-          .request(config)
-          .then((response) => {
-           setData(response?.data?.data)
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      
+  const getAllUsers = async () => {
+    console.log("aaa", select1);
+    let data;
+    if (select1 !== "") {
+      data = {
+        status: select,
+        startDate: new Date(),
+        endDate: select1,
       };
-      useEffect(() => {
-        getAllUsers();
-      }, [select,select1]);
+    } else {
+      data = {
+        status: select,
+      };
+    }
 
-    const ConfirmedData = () => {};
-    const ConfirmedData1 = () => {};
-    const CompletedData = () => {};
-    const CancelledData = () => {};
+    let config = {
+      method: "post",
+      url: `http://localhost:4000/admin/getallbooking`,
+      headers: {
+        _token: authData.data.token,
+        "Content-Type": "application/json",
+      },
+      data: data,
+    };
 
-    
+    axios
+      .request(config)
+      .then((response) => {
+        setData(response?.data?.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+  useEffect(() => {
+    getAllUsers();
+  }, [select, select1]);
+
+  const ConfirmedData = () => {};
+  const ConfirmedData1 = () => {};
+  const CompletedData = () => {};
+  const CancelledData = () => {};
+
   return (
     <>
-    <TextMainWrapper>
-      {/* <SideBar><LeftSlideBar/></SideBar>  */}
-      <TextRoot>
-        <Root>
-          <TextWrapper>
-            <Heading> Booking History</Heading>
-            <TextSelectField>
+      <TextMainWrapper>
+        {/* <SideBar><LeftSlideBar/></SideBar>  */}
+        <TextRoot>
+          <Root>
+            <TextWrapper>
+              <Heading> Booking History</Heading>
+              <TextSelectField>
                 <Select
                   onChange={(e) => {
-                    setSelect1(e.target.value)
+                    setSelect1(e.target.value);
                   }}
-                //   value={select1}
+                  //   value={select1}
                   required
                 >
-                  <option value="">
-                    Select Range
+                  <option value="">Select Range</option>
+                  <option
+                    value={
+                      new Date(new Date().getTime() - 2 * 24 * 60 * 60 * 1000)
+                    }
+                  >
+                    Past Two days
                   </option>
-                  <option value={new Date(new Date().getTime() - (2 * 24 * 60 * 60 * 1000))} >
-                  Past Two days
+                  <option
+                    value={
+                      new Date(new Date().getTime() - 7 * 24 * 60 * 60 * 1000)
+                    }
+                  >
+                    Past one week
                   </option>
-                  <option value={new Date(new Date().getTime() - (7 * 24 * 60 * 60 * 1000))} >
-                  Past one week
-                  </option>
-                  <option value={new Date(new Date().getTime() - (30 * 24 * 60 * 60 * 1000))} >
-                  Past one month
+                  <option
+                    value={
+                      new Date(new Date().getTime() - 30 * 24 * 60 * 60 * 1000)
+                    }
+                  >
+                    Past one month
                   </option>
                   {/* <option value="2" onClick={CompletedData}>
                     Completed Booking
@@ -228,7 +236,7 @@ const BookingHistoryofAdmin = () => {
                   </option> */}
                 </Select>
               </TextSelectField>
-            <TextSelectField>
+              <TextSelectField>
                 <Select
                   onChange={(e) => {
                     setSelect(e.target.value);
@@ -250,52 +258,52 @@ const BookingHistoryofAdmin = () => {
                   </option>
                 </Select>
               </TextSelectField>
-          </TextWrapper>
-        </Root>
-        <RecentlyUploadedHeader>
-          <RecentlyUploadedHeaderElem>Hotel Name</RecentlyUploadedHeaderElem>
-          <RecentlyUploadedHeaderElem>Booking Id</RecentlyUploadedHeaderElem>
-          <RecentlyUploadedHeaderElem>
-            Creation date
-          </RecentlyUploadedHeaderElem>
-          <RecentlyUploadedHeaderElem>
-            Booking Date
-          </RecentlyUploadedHeaderElem>
-          <RecentlyUploadedHeaderElem>Status</RecentlyUploadedHeaderElem>
-          <RecentlyUploadedHeaderElem>Action</RecentlyUploadedHeaderElem>
-        </RecentlyUploadedHeader>
+            </TextWrapper>
+          </Root>
+          <RecentlyUploadedHeader>
+            <RecentlyUploadedHeaderElem>Hotel Name</RecentlyUploadedHeaderElem>
+            <RecentlyUploadedHeaderElem>Booking Id</RecentlyUploadedHeaderElem>
+            <RecentlyUploadedHeaderElem>
+              Creation date
+            </RecentlyUploadedHeaderElem>
+            <RecentlyUploadedHeaderElem>
+              Booking Date
+            </RecentlyUploadedHeaderElem>
+            <RecentlyUploadedHeaderElem>Status</RecentlyUploadedHeaderElem>
+            <RecentlyUploadedHeaderElem>Action</RecentlyUploadedHeaderElem>
+          </RecentlyUploadedHeader>
 
-        {data &&
-          data.map((item, key) => {
-            const bookingDate = new Date(item.createdAt);
-            //  console.log("------www-",item)
+          {data &&
+            data.map((item, key) => {
+              const bookingDate = new Date(item.createdAt);
+              //  console.log("------www-",item)
 
-            return (
-              <RecentlyUploaded key={key}>
-                <DocInfo>
-                  <DocImage />
-                  <DocName>{item.hotelname}</DocName>
-                </DocInfo>
-                <RecentlyUploadedDate>{item.orderid}</RecentlyUploadedDate>
-                <RecentlyUploadedDate>
-                  {bookingDate.toLocaleDateString()}
-                </RecentlyUploadedDate>
-                <RecentlyUploadedDate>
-                  {moment(item.checkIn).format("DD/MM/YYYY") }
-                </RecentlyUploadedDate>
-                <RecentlyUploadedStatus>{item.status}</RecentlyUploadedStatus>
-                <RecentlyUploadedButtonWrapper>
-                  <RecentlyUploadedButton onClick={() => handleClick(item)}>
-                    View
-                  </RecentlyUploadedButton>
-                </RecentlyUploadedButtonWrapper>
-              </RecentlyUploaded>
-            );
-          })}
-      </TextRoot>
-    </TextMainWrapper>
-  </>
-  )
+              return (
+                <RecentlyUploaded key={key}>
+                  <DocInfo>
+                    <DocImage />
+                    <DocName>{item.hotelname}</DocName>
+                  </DocInfo>
+                  <RecentlyUploadedDate>{item.orderid}</RecentlyUploadedDate>
+                  <RecentlyUploadedDate>
+                    {bookingDate.toLocaleDateString()}
+                  </RecentlyUploadedDate>
+                  <RecentlyUploadedDate>
+                    {moment(item.checkIn).format("DD/MM/YYYY")}
+                  </RecentlyUploadedDate>
+                  <RecentlyUploadedStatus>{item.status}</RecentlyUploadedStatus>
+                  <RecentlyUploadedButtonWrapper>
+                    <RecentlyUploadedButton onClick={() => handleClick(item)}>
+                      View
+                    </RecentlyUploadedButton>
+                  </RecentlyUploadedButtonWrapper>
+                </RecentlyUploaded>
+              );
+            })}
+        </TextRoot>
+      </TextMainWrapper>
+    </>
+  );
 };
 
 export default BookingHistoryofAdmin;

@@ -66,7 +66,7 @@ const VendorList = () => {
 
   const getAllListData = async () => {
     await axios
-      .get("http://188.166.176.89:4000/auth/getvendorlist", {
+      .get("http://localhost:4000/auth/getvendorlist", {
         headers: { _token: authData.data.token },
       })
       .then((response) => {
@@ -111,7 +111,7 @@ const VendorList = () => {
     if (adminValue === "vendor") {
       axios({
         method: "post",
-        url: `http://188.166.176.89:4000/auth/addvendor`,
+        url: `http://localhost:4000/auth/addvendor`,
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
@@ -148,7 +148,7 @@ const VendorList = () => {
     } else {
       axios({
         method: "post",
-        url: `http://188.166.176.89:4000/auth/admin/register`,
+        url: `http://localhost:4000/auth/admin/register`,
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
@@ -197,7 +197,7 @@ const VendorList = () => {
   const deleteVendor = (item) => {
     // alert(item._id)
     axios
-      .delete(`http://188.166.176.89:4000/auth/deletevendor/${item._id}`, {
+      .delete(`http://localhost:4000/auth/deletevendor/${item._id}`, {
         headers: { _token: authData.data.token },
       })
       .then((response) => {
@@ -215,88 +215,88 @@ const VendorList = () => {
   const initialValues = {
     name: "",
     email: "",
-    contact:"",
+    contact: "",
     password: "",
-    confirmPassword: ""
+    confirmPassword: "",
   };
   const { values, errors, touched, handleBlur, handleChange, handleSubmit } =
-  useFormik({
-    initialValues,
-    validationSchema: VendorRegisterSchema,
-    onSubmit: async (values, action) => {
-      console.log("aaaa",values,adminValue)
-      if(adminValue===""){
-        setError("Options must be selected")
-      }else{
-         if (adminValue === "vendor") {
-        axios({
-          method: "post",
-          url: `http://188.166.176.89:4000/auth/addvendor`,
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          data: {
-            name: values.name,
-            email: values.email,
-            mobile: values.contact,
-            password: values.password,
-            cpassword: values.confirmPassword,
-            adminType: adminValue,
-          },
-          headers: { _token: authData.data.token },
-        })
-          .then((response) => {
-            // console.log(response.data.data,"00000000000001111111111")
-            // setUpdatedHotelData(response.data.message)
-            setResponseData(response.data.data);
-  
-            action.resetForm();
-            getAllListData();
-            toast(response.data.message);
-            setOpen(false);
-          })
-          .catch((error) => {
-            console.log("///////////////", error);
-            // setError('Details are not valid');
-          });
-      } else {
-        axios({
-          method: "post",
-          url: `http://188.166.176.89:4000/auth/admin/register`,
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          data: {
-            username: values.name,
-            email: values.email,
-            mobile: values.contact,
-            password: values.password,
-            cpassword: values.confirmPassword,
-            adminType: adminValue,
-          },
-          headers: { _token: authData.data.token },
-        })
-          .then((response) => {
-            // console.log(response.data.data,"00000000000001111111111")
-            // setUpdatedHotelData(response.data.message)
-            setAdminResponseData(response.data.data);
-  
-            action.resetForm();
-            toast(response.data.message);
-            setOpen(false);
-          })
-          .catch((error) => {
-            console.log("///////////////", error);
-            // setError('Details are not valid');
-          });
-      }
-      }
-    }
-  });
+    useFormik({
+      initialValues,
+      validationSchema: VendorRegisterSchema,
+      onSubmit: async (values, action) => {
+        console.log("aaaa", values, adminValue);
+        if (adminValue === "") {
+          setError("Options must be selected");
+        } else {
+          if (adminValue === "vendor") {
+            axios({
+              method: "post",
+              url: `http://localhost:4000/auth/addvendor`,
+              headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+              },
+              data: {
+                name: values.name,
+                email: values.email,
+                mobile: values.contact,
+                password: values.password,
+                cpassword: values.confirmPassword,
+                adminType: adminValue,
+              },
+              headers: { _token: authData.data.token },
+            })
+              .then((response) => {
+                // console.log(response.data.data,"00000000000001111111111")
+                // setUpdatedHotelData(response.data.message)
+                setResponseData(response.data.data);
+
+                action.resetForm();
+                getAllListData();
+                toast(response.data.message);
+                setOpen(false);
+              })
+              .catch((error) => {
+                console.log("///////////////", error);
+                // setError('Details are not valid');
+              });
+          } else {
+            axios({
+              method: "post",
+              url: `http://localhost:4000/auth/admin/register`,
+              headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+              },
+              data: {
+                username: values.name,
+                email: values.email,
+                mobile: values.contact,
+                password: values.password,
+                cpassword: values.confirmPassword,
+                adminType: adminValue,
+              },
+              headers: { _token: authData.data.token },
+            })
+              .then((response) => {
+                // console.log(response.data.data,"00000000000001111111111")
+                // setUpdatedHotelData(response.data.message)
+                setAdminResponseData(response.data.data);
+
+                action.resetForm();
+                toast(response.data.message);
+                setOpen(false);
+              })
+              .catch((error) => {
+                console.log("///////////////", error);
+                // setError('Details are not valid');
+              });
+          }
+        }
+      },
+    });
   // console.log("first",errors);
-  
+
   return (
     <Root>
       <button onClick={handleClickOpen}>Add Vendor or admin</button>
@@ -375,9 +375,9 @@ const VendorList = () => {
                   variant="outlined"
                   required
                 />
-                 {errors.name && touched.name ? (
-                    <ErrorMessage>{errors.name}</ErrorMessage>
-                  ) : null}
+                {errors.name && touched.name ? (
+                  <ErrorMessage>{errors.name}</ErrorMessage>
+                ) : null}
                 <TextField
                   type="email"
                   placeholder="Email*"
@@ -388,11 +388,11 @@ const VendorList = () => {
                   id="outlined-basic"
                   label="Email"
                   variant="outlined"
-                  required                 
+                  required
                 />
                 {errors.email && touched.email ? (
-                    <ErrorMessage>{errors.email}</ErrorMessage>
-                  ) : null}
+                  <ErrorMessage>{errors.email}</ErrorMessage>
+                ) : null}
                 <TextField
                   type="number"
                   placeholder="Contact*"
@@ -403,11 +403,11 @@ const VendorList = () => {
                   id="outlined-basic"
                   label="Contact"
                   variant="outlined"
-                  required     
+                  required
                 />
                 {errors.contact && touched.contact ? (
-                    <ErrorMessage>{errors.contact}</ErrorMessage>
-                  ) : null}
+                  <ErrorMessage>{errors.contact}</ErrorMessage>
+                ) : null}
                 <TextField
                   type="password"
                   placeholder="Password*"
@@ -418,11 +418,11 @@ const VendorList = () => {
                   id="outlined-basic"
                   label="Password"
                   variant="outlined"
-                  required     
+                  required
                 />
                 {errors.password && touched.password ? (
-                    <ErrorMessage>{errors.password}</ErrorMessage>
-                  ) : null}
+                  <ErrorMessage>{errors.password}</ErrorMessage>
+                ) : null}
                 <TextField
                   type="password"
                   placeholder="Confirm Password*"
@@ -433,11 +433,11 @@ const VendorList = () => {
                   id="outlined-basic"
                   label="Confirm Password"
                   variant="outlined"
-                  required   
+                  required
                 />
                 {errors.confirmPassword && touched.confirmPassword ? (
-                    <ErrorMessage>{errors.confirmPassword}</ErrorMessage>
-                  ) : null}
+                  <ErrorMessage>{errors.confirmPassword}</ErrorMessage>
+                ) : null}
                 <FormControl>
                   {/* <FormLabel id="demo-row-radio-buttons-group-label">Gender</FormLabel> */}
                   <RadioGroup
@@ -445,7 +445,7 @@ const VendorList = () => {
                     aria-labelledby="demo-row-radio-buttons-group-label"
                     name="row-radio-buttons-group"
                     onChange={(e) => setAdminValue(e.target.value)}
-                    onClick={()=>setError("")}
+                    onClick={() => setError("")}
                   >
                     <FormControlLabel
                       value="admin"
@@ -464,9 +464,7 @@ const VendorList = () => {
                   </RadioGroup>
                 </FormControl>
               </DialogContentText>
-              {error!=="" && (
-                <ErrorMessage>{error}</ErrorMessage>
-              )}
+              {error !== "" && <ErrorMessage>{error}</ErrorMessage>}
             </DialogContent>
             <DialogActions>
               <Button onClick={handleClose1}>Cancel</Button>

@@ -132,10 +132,10 @@ function ChildModal({ open, setOpen, email, setParentClose }) {
     setOpen(false);
   };
 
-  const handleSubmit1=async()=>{
+  const handleSubmit1 = async () => {
     await axios({
       method: "post",
-      url: `http://188.166.176.89:4000/admin/emailsend`,
+      url: `http://localhost:4000/admin/emailsend`,
       data: {
         email: email,
       },
@@ -148,7 +148,7 @@ function ChildModal({ open, setOpen, email, setParentClose }) {
         console.log("error", error.response.data.message);
         axios({
           method: "post",
-          url: `http://188.166.176.89:4000/vendor/emailsend`,
+          url: `http://localhost:4000/vendor/emailsend`,
           data: {
             email: email,
           },
@@ -161,7 +161,7 @@ function ChildModal({ open, setOpen, email, setParentClose }) {
             console.log("error", error.response.data.message);
           });
       });
-  }
+  };
   const initialValues = {
     otp: "",
     newPassword: "",
@@ -175,7 +175,7 @@ function ChildModal({ open, setOpen, email, setParentClose }) {
       onSubmit: async (values, action) => {
         await axios({
           method: "post",
-          url: `http://188.166.176.89:4000/admin/verifyotp`,
+          url: `http://localhost:4000/admin/verifyotp`,
           data: {
             email: email,
             otp: values.otp.toString(),
@@ -187,7 +187,7 @@ function ChildModal({ open, setOpen, email, setParentClose }) {
             console.log("response", response.data);
             // setData(JSON.stringify(response.data))
             setOpen(false);
-            setParentClose(false)
+            setParentClose(false);
             Swal.fire({
               icon: "success",
               title: "Password Updated Successfully",
@@ -201,7 +201,7 @@ function ChildModal({ open, setOpen, email, setParentClose }) {
             // setError(error.response.data.message);
             axios({
               method: "post",
-              url: `http://188.166.176.89:4000/vendor/verifyotp`,
+              url: `http://localhost:4000/vendor/verifyotp`,
               data: {
                 email: email,
                 otp: values.otp.toString(),
@@ -213,17 +213,20 @@ function ChildModal({ open, setOpen, email, setParentClose }) {
                 console.log("response", response.data);
                 // setData(JSON.stringify(response.data))
                 setOpen(false);
-                setParentClose(false)
+                setParentClose(false);
                 Swal.fire({
                   icon: "success",
                   title: "Password Updated Successfully",
                   timer: "800",
                 });
-    
+
                 // navigate("/");
               })
               .catch((error) => {
-                console.log("verify error of vendor", error.response.data.message);
+                console.log(
+                  "verify error of vendor",
+                  error.response.data.message
+                );
                 setError(error.response.data.message);
               });
           });
@@ -368,7 +371,7 @@ const Login = () => {
 
     axios({
       method: "post",
-      url: "http://188.166.176.89:4000/auth/admin/login",
+      url: "http://localhost:4000/auth/admin/login",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
@@ -394,7 +397,7 @@ const Login = () => {
         // setError('Details are not valid');
         axios({
           method: "post",
-          url: "http://188.166.176.89:4000/auth/vendor/login",
+          url: "http://localhost:4000/auth/vendor/login",
           headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
@@ -427,7 +430,7 @@ const Login = () => {
         // alert("hjhj")
         await axios({
           method: "post",
-          url: `http://188.166.176.89:4000/admin/emailsend`,
+          url: `http://localhost:4000/admin/emailsend`,
           data: {
             email: values.email,
           },
@@ -446,7 +449,7 @@ const Login = () => {
             console.log("errorofadmin", error.response.data.message);
             axios({
               method: "post",
-              url: `http://188.166.176.89:4000/vendor/emailsend`,
+              url: `http://localhost:4000/vendor/emailsend`,
               data: {
                 email: values.email,
               },
@@ -479,7 +482,7 @@ const Login = () => {
               setUserName(e.target.value);
             }}
             type="text"
-            onClick={()=>setError("")}
+            onClick={() => setError("")}
           />
         </InputWrapper>
         <InputWrapper>
@@ -490,7 +493,7 @@ const Login = () => {
               setPassword(e.target.value);
             }}
             type="password"
-            onClick={()=>setError("")}
+            onClick={() => setError("")}
           />
         </InputWrapper>
         {/* <InputWrapper>
@@ -503,7 +506,9 @@ const Login = () => {
             type="text"
           />
         </InputWrapper> */}
-        <p onClick={handleOpen} style={{cursor:'pointer'}}>Forget Password</p>
+        <p onClick={handleOpen} style={{ cursor: "pointer" }}>
+          Forget Password
+        </p>
 
         {error && <ErrorMessage>{error}</ErrorMessage>}
         <Button1 onClick={onSubmit}>Submit</Button1>
@@ -539,7 +544,12 @@ const Login = () => {
                 <Button onClick={handleSubmit}>Send Email</Button>
               </Form1>
               {enableChild && (
-                <ChildModal open={open1} setOpen={setOpen1} email={email} setParentClose={setOpen} />
+                <ChildModal
+                  open={open1}
+                  setOpen={setOpen1}
+                  email={email}
+                  setParentClose={setOpen}
+                />
               )}
             </Box>
           </Modal>
