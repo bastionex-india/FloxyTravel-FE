@@ -8,9 +8,8 @@ import Avtar from "../Images/avatar.png";
 import BrandLogo from "../Images/brandLogo.png";
 import bell from "../Images/bell.png";
 import io, { socketIOClient } from "socket.io-client";
-const socket = io(`http://localhost:4000`);
 
-// const socket = io.connect("http://localhost:4000");
+const socket = io.connect("http://localhost:4000");
 const Root = styled.div`
   box-shadow: 0 0 49px 0 rgba(0, 0, 0, 0.11);
   background-color: #fff;
@@ -116,8 +115,24 @@ function Navigation(props) {
   const { authData, setAuthData } = useContext(AuthContext);
   const [notificationData, setNotificationData] = useState(null);
   const [notificationLength, setNotificationLength] = useState(0);
-  const [showNotifications, setShowNotifications] = useState(true);
+  const [showNotifications, setShowNotifications] = useState(false);
   const navigation = useNavigate();
+  const handleNotificationBell = () => {
+    setShowNotifications(!showNotifications);
+    console.log(authData?.data?.id);
+    axios
+      .post(
+        `http://localhost:4000/admin/addidstonotification/${authData?.data?.id}`,
+        {},
+        { _token: authData?.data?.token }
+      )
+      .then((response) => {
+        getNotificationData();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
   //   const Logout = async() => {
   //     localStorage.removeItem("authdata");
   //     setAuthData("");
@@ -144,22 +159,17 @@ function Navigation(props) {
     setShowDropDown(!showDropDown);
     // props.data()
   };
-  useEffect(() => {
-    socket.on("connection", () => {
-      console.log("connected to the server");
-    });
-    socket.on("disconnect");
-  }, []);
-  useEffect(() => {
+  const getNotificationData = () => {
     axios
       .get(`http://localhost:4000/admin/getregisterednotification`, {
         headers: { _token: authData?.data?.token },
       })
       .then((response) => {
-        console.log(response.data.data);
         setNotificationData(response.data.data);
         setNotificationLength(response.data.data.length);
       });
+  };
+  useEffect(() => {
     // socket.emit("fetchData", authData?.data?.token);
     // socket.on("dataFetched", (data) => {
     //   console.log(data, "fetched data");
@@ -169,11 +179,16 @@ function Navigation(props) {
     // return () => {
     //   socket.disconnect();
     // };
+    getNotificationData();
   }, []);
   useEffect(() => {
-    socket.on("receive_msg", (data) => {
-      console.log(data, "aksbjkasdn m");
+    socket.on("admin_notification", (data) => {
+      console.log(data, "sr");
+      getNotificationData();
     });
+    return () => {
+      socket.disconnect();
+    };
   }, [socket]);
   const Logout = async () => {
     localStorage.removeItem("authdata");
@@ -206,10 +221,7 @@ function Navigation(props) {
       <RightWrapper>
         <NotificationsWrapper>
           <NotificationBell
-            onClick={() => {
-              setShowNotifications(!showNotifications);
-              console.log(showNotifications);
-            }}
+            onClick={handleNotificationBell}
             src={bell}
           ></NotificationBell>
           <NotificationNumber>{notificationLength || 0}</NotificationNumber>
