@@ -164,7 +164,7 @@ const BookingHistoryofAdmin = () => {
 
     let config = {
       method: "post",
-      url: `http://188.166.176.89:4000/admin/getallbooking`,
+      url: `http://localhost:4000/admin/getallbooking`,
       headers: {
         _token: authData.data.token,
         "Content-Type": "application/json",

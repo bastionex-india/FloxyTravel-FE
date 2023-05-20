@@ -92,7 +92,7 @@ export default function LeaveRecord() {
   };
   const getVendorData = async () => {
     await axios
-      .get("http://188.166.176.89:4000/auth/vendorget", {
+      .get("http://localhost:4000/auth/vendorget", {
         headers: { _token: authData.data.token },
       })
       .then((response) => {
@@ -115,7 +115,7 @@ export default function LeaveRecord() {
           return (
             <LeftCardWrapper>
               <Card
-                bgImage={`http://188.166.176.89:4000/uploads/${item.image[0]}`}
+                bgImage={`http://localhost:4000/uploads/${item.image[0]}`}
                 onClick={() => componentClicked(item)}
               >
                 <TextWrapper>
