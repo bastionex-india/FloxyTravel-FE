@@ -9,7 +9,6 @@ import BrandLogo from "../Images/brandLogo.png";
 import bell from "../Images/bell.png";
 import io, { socketIOClient } from "socket.io-client";
 
-const socket = io.connect("http://localhost:4000");
 const Root = styled.div`
   box-shadow: 0 0 49px 0 rgba(0, 0, 0, 0.11);
   background-color: #fff;
@@ -194,7 +193,6 @@ function Navigation(props) {
         const openedData = response?.data?.data.filter((val) =>
           val?.openedId.includes(authData?.data?.id)
         );
-
         setNotificationLength(response.data.data.length - openedData.length);
       });
   };
@@ -211,32 +209,28 @@ function Navigation(props) {
     getNotificationData();
   }, []);
   useEffect(() => {
+    const socket = io.connect("http://localhost:4000");
+
     socket.on("admin_notification", (data) => {
       console.log(data, "sr");
       getNotificationData();
     });
-    return () => {
-      socket.disconnect();
-    };
-  }, [socket]);
-  useEffect(() => {
-    socket.on("admin_booking_notification", (data) => {
-      console.log(data, "sr");
-      getNotificationData();
-    });
-    return () => {
-      socket.disconnect();
-    };
-  }, [socket]);
-  useEffect(() => {
+
     socket.on("admin_cancellation_notification", (data) => {
       console.log(data, "sr");
       getNotificationData();
     });
+
+    socket.on("admin_booking_notification", (data) => {
+      console.log(data, "sr");
+      getNotificationData();
+    });
+
     return () => {
       socket.disconnect();
     };
-  }, [socket]);
+  }, []);
+ 
   const Logout = async () => {
     localStorage.removeItem("authdata");
     setAuthData("");
