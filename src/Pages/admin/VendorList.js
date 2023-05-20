@@ -66,7 +66,7 @@ const VendorList = () => {
 
   const getAllListData = async () => {
     await axios
-      .get("http://localhost:4000/auth/getvendorlist", {
+      .get("http://188.166.176.89:4000/auth/getvendorlist", {
         headers: { _token: authData.data.token },
       })
       .then((response) => {
@@ -111,7 +111,7 @@ const VendorList = () => {
     if (adminValue === "vendor") {
       axios({
         method: "post",
-        url: `http://localhost:4000/auth/addvendor`,
+        url: `http://188.166.176.89:4000/auth/addvendor`,
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
@@ -148,7 +148,7 @@ const VendorList = () => {
     } else {
       axios({
         method: "post",
-        url: `http://localhost:4000/auth/admin/register`,
+        url: `http://188.166.176.89:4000/auth/admin/register`,
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
@@ -197,7 +197,7 @@ const VendorList = () => {
   const deleteVendor = (item) => {
     // alert(item._id)
     axios
-      .delete(`http://localhost:4000/auth/deletevendor/${item._id}`, {
+      .delete(`http://188.166.176.89:4000/auth/deletevendor/${item._id}`, {
         headers: { _token: authData.data.token },
       })
       .then((response) => {
@@ -231,7 +231,7 @@ const VendorList = () => {
           if (adminValue === "vendor") {
             axios({
               method: "post",
-              url: `http://localhost:4000/auth/addvendor`,
+              url: `http://188.166.176.89:4000/auth/addvendor`,
               headers: {
                 Accept: "application/json",
                 "Content-Type": "application/json",
@@ -263,7 +263,7 @@ const VendorList = () => {
           } else {
             axios({
               method: "post",
-              url: `http://localhost:4000/auth/admin/register`,
+              url: `http://188.166.176.89:4000/auth/admin/register`,
               headers: {
                 Accept: "application/json",
                 "Content-Type": "application/json",

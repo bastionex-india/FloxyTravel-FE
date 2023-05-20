@@ -244,7 +244,7 @@ const GetHotelById = () => {
   const saveHotelName = () => {
     axios({
       method: "put",
-      url: `http://localhost:4000/auth/updatehotel/admin/${state._id}`,
+      url: `http://188.166.176.89:4000/auth/updatehotel/admin/${state._id}`,
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
@@ -287,7 +287,7 @@ const GetHotelById = () => {
   const callApi = (x) => {
     axios({
       method: "post",
-      url: `http://localhost:4000/auth/selectstateconutryadmin`,
+      url: `http://188.166.176.89:4000/auth/selectstateconutryadmin`,
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
@@ -307,7 +307,7 @@ const GetHotelById = () => {
   const addDiv = async () => {
     axios({
       method: "post",
-      url: `http://localhost:4000/auth/addroomdetails1`,
+      url: `http://188.166.176.89:4000/auth/addroomdetails1`,
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
@@ -345,7 +345,7 @@ const GetHotelById = () => {
     // alert(noOfRoomsEdit)
     axios({
       method: "put",
-      url: `http://localhost:4000/auth/updaterooms/admin/${state._id}`,
+      url: `http://188.166.176.89:4000/auth/updaterooms/admin/${state._id}`,
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
@@ -375,7 +375,7 @@ const GetHotelById = () => {
 
   const getAllHotelData = async () => {
     await axios
-      .get(`http://localhost:4000/auth/gethoteldetailbyid1/${state._id}`, {
+      .get(`http://188.166.176.89:4000/auth/gethoteldetailbyid1/${state._id}`, {
         headers: { _token: authData.data.token },
       })
       .then((response) => {
@@ -393,7 +393,7 @@ const GetHotelById = () => {
     for (let i of state.image) {
       setArr((oldItems) => [
         ...oldItems,
-        { image: `http://localhost:4000/uploads/${i}` },
+        { image: `http://188.166.176.89:4000/uploads/${i}` },
       ]);
     }
   }, []);
@@ -432,7 +432,7 @@ const GetHotelById = () => {
   const imageDelete = () => {
     axios({
       method: "post",
-      url: `http://localhost:4000/auth/deletehotelimages/${state._id}`,
+      url: `http://188.166.176.89:4000/auth/deletehotelimages/${state._id}`,
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
@@ -464,7 +464,7 @@ const GetHotelById = () => {
     }
     axios({
       method: "post",
-      url: `http://localhost:4000/auth/addhotelimages/${state._id}`,
+      url: `http://188.166.176.89:4000/auth/addhotelimages/${state._id}`,
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",

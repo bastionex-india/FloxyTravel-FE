@@ -122,7 +122,7 @@ const ExpandableTableRow = ({ children, expandComponent, ...otherProps }) => {
     console.log("comment", commentText, Ids._id);
     axios({
       method: "post",
-      url: "http://localhost:1999/auth/addcommunitycomments",
+      url: "http://188.166.176.89:1999/auth/addcommunitycomments",
       data: { id: Ids._id, commentText: commentText },
     })
       .then((response) => {
@@ -440,7 +440,7 @@ const CommunityTask = (props) => {
     setAllData([]);
     setSubData([]);
     axios
-      .get(`http://localhost:1999/auth/getcommunitytasks`, {
+      .get(`http://188.166.176.89:1999/auth/getcommunitytasks`, {
         headers: { _token: authData.data.token.token },
       })
       .then((res) => {
@@ -463,7 +463,7 @@ const CommunityTask = (props) => {
     getData();
 
     axios
-      .get(`http://localhost:1999/auth/getAllUsers`, {
+      .get(`http://188.166.176.89:1999/auth/getAllUsers`, {
         headers: { _token: authData.data.token.token },
       })
       .then((res) => {
