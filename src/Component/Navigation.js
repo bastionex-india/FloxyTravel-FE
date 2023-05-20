@@ -97,6 +97,7 @@ const NotificationDiv = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  background-color: ${(props) => (props.opened === true ? "grey" : "#01515b")};
 `;
 const NotificationNumber = styled.div`
   position: absolute;
@@ -117,6 +118,25 @@ function Navigation(props) {
   const [notificationLength, setNotificationLength] = useState(0);
   const [showNotifications, setShowNotifications] = useState(false);
   const navigation = useNavigate();
+  const getTimeNotification = (time) => {
+    console.log((Date.now() - time) / 3600000);
+    if (
+      (Date.now() - time) / 3600000 >= 1 &&
+      (Date.now() - time) / 3600000 < 24
+    ) {
+      return `${Math.ceil((Date.now() - time) / 3600000)} h ago`;
+    } else if ((Date.now() - time) / 3600000 < 1) {
+      if ((Date.now() - time) / 60000 >= 1) {
+        return `${Math.ceil((Date.now() - time) / 60000)} min ago`;
+      } else {
+        return `${Math.ceil((Date.now() - time) / 1000)} sec ago`;
+      }
+    } else {
+      return `${Date(time).toString().split(" ")[1]} ${
+        Date(time).toString().split(" ")[2]
+      }`;
+    }
+  };
   const handleNotificationBell = () => {
     setShowNotifications(!showNotifications);
     console.log(authData?.data?.id);
@@ -171,7 +191,11 @@ function Navigation(props) {
       .then((response) => {
         console.log(response.data.data);
         setNotificationData(response.data.data);
-        setNotificationLength(response.data.data.length);
+        const openedData = response?.data?.data.filter((val) =>
+          val?.openedId.includes(authData?.data?.id)
+        );
+
+        setNotificationLength(response.data.data.length - openedData.length);
       });
   };
   useEffect(() => {
@@ -188,6 +212,24 @@ function Navigation(props) {
   }, []);
   useEffect(() => {
     socket.on("admin_notification", (data) => {
+      console.log(data, "sr");
+      getNotificationData();
+    });
+    return () => {
+      socket.disconnect();
+    };
+  }, [socket]);
+  useEffect(() => {
+    socket.on("admin_booking_notification", (data) => {
+      console.log(data, "sr");
+      getNotificationData();
+    });
+    return () => {
+      socket.disconnect();
+    };
+  }, [socket]);
+  useEffect(() => {
+    socket.on("admin_cancellation_notification", (data) => {
       console.log(data, "sr");
       getNotificationData();
     });
@@ -235,11 +277,13 @@ function Navigation(props) {
               <Notifications>
                 {notificationData &&
                   notificationData?.map((val) => (
-                    <NotificationDiv>
-                      <Notification>{`${val?.username} registered `}</Notification>
-                      <NotificationTime>{`${Math.ceil(
-                        (Date.now() - val?.notification[0]?.createdAt) / 3600000
-                      )} h`}</NotificationTime>
+                    <NotificationDiv
+                      opened={val?.openedId.includes(authData?.data?.id)}
+                    >
+                      <Notification>{`${val?.username} ${val?.status}`}</Notification>
+                      <NotificationTime>
+                        {getTimeNotification(val?.createdAt)}
+                      </NotificationTime>
                     </NotificationDiv>
                   ))}
               </Notifications>
