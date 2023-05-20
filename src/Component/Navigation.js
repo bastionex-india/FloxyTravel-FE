@@ -120,12 +120,16 @@ function Navigation(props) {
   const handleNotificationBell = () => {
     setShowNotifications(!showNotifications);
     console.log(authData?.data?.id);
+    let config = {
+      method: "post",
+      url: `http://localhost:4000/admin/addidstonotification/${authData?.data?.id}`,
+      headers: {
+        _token: authData?.data?.token,
+      },
+      data: "",
+    };
     axios
-      .post(
-        `http://localhost:4000/admin/addidstonotification/${authData?.data?.id}`,
-        {},
-        { _token: authData?.data?.token }
-      )
+      .request(config)
       .then((response) => {
         getNotificationData();
       })
@@ -165,6 +169,7 @@ function Navigation(props) {
         headers: { _token: authData?.data?.token },
       })
       .then((response) => {
+        console.log(response.data.data);
         setNotificationData(response.data.data);
         setNotificationLength(response.data.data.length);
       });
