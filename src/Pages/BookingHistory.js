@@ -324,7 +324,7 @@ const BookingHistory = () => {
           {data.data &&
             data.data.map((item, key) => {
               const bookingDate = new Date(item.createdAt);
-              //  console.log("------www-",bookingDate.toLocaleDateString(),item.createdAt,typeof(bookingDate))
+               console.log("------www-",item)
 
               return (
                 <RecentlyUploaded key={key}>
@@ -332,7 +332,7 @@ const BookingHistory = () => {
                     <DocImage />
                     <DocName>{item.hotelname}</DocName>
                   </DocInfo>
-                  <RecentlyUploadedDate>{item.id}</RecentlyUploadedDate>
+                  <RecentlyUploadedDate>{item.orderid}</RecentlyUploadedDate>
                   <RecentlyUploadedDate>
                     {item.customer.name}
                   </RecentlyUploadedDate>
