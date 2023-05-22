@@ -186,8 +186,11 @@ function Navigation(props) {
     // props.data()
   };
   const getNotificationData = () => {
+    const url = authData?.data?.isadmin
+      ? `${environmentVariables?.apiUrl}/admin/getregisterednotification`
+      : `${environmentVariables?.apiUrl}/vendor/getregisterednotification`;
     axios
-      .get(`${environmentVariables?.apiUrl}/admin/getregisterednotification`, {
+      .get(url, {
         headers: { _token: authData?.data?.token },
       })
       .then((response) => {

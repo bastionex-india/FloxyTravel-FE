@@ -161,11 +161,13 @@ const BookingHistory = () => {
   };
 
   const getAllUsers = async () => {
+    const config = {
+      method: "post",
+      url: `${environmentVariables.apiUrl}/vendor/getallbooking/${authData.data.vendorId}`,
+      headers: { _token: authData.data.token },
+    };
     await axios
-      .get(
-        `${environmentVariables.apiUrl}/auth/getalluserinvendor/${authData.data.vendorId}`,
-        { headers: { _token: authData.data.token } }
-      )
+      .request(config)
       .then((response) => {
         // console.log("response.data",response.data)
         setData(response.data);

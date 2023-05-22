@@ -7,6 +7,8 @@ import { environmentVariables } from "../../config/config";
 import { useEffect } from "react";
 import { useContext } from "react";
 import { AuthContext } from "../../ContextApi/ContextApi";
+import io, { socketIOClient } from "socket.io-client";
+
 import moment from "moment";
 const TextRoot = styled.div`
   background-color: #9f94942b;
@@ -147,7 +149,28 @@ const BookingHistoryofAdmin = () => {
     // console.log("hcjhcjhf",item)
     navigation("/bookinghistorybyorderid", { state: item });
   };
+  useEffect(() => {
+    const socket = io.connect("http://188.166.176.89:4000");
 
+    socket.on("admin_notification", (data) => {
+      console.log(data, "sr");
+      getAllUsers();
+    });
+
+    socket.on("admin_cancellation_notification", (data) => {
+      console.log(data, "sr");
+      getAllUsers();
+    });
+
+    socket.on("admin_booking_notification", (data) => {
+      console.log(data, "sr");
+      getAllUsers();
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
   const getAllUsers = async () => {
     console.log("aaa", select1);
     let data;
