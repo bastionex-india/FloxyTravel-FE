@@ -3,6 +3,7 @@ import axios from "axios";
 import { AuthContext } from "../ContextApi/ContextApi";
 import { environmentVariables } from "../config/config";
 import { useNavigate } from "react-router-dom";
+import io, { socketIOClient } from "socket.io-client";
 
 import styled from "styled-components";
 // import AdharCard from "../../Component/Images/sample_aadhar.jpg";
@@ -155,6 +156,28 @@ const BookingHistory = () => {
     if (window !== "undefined") {
       window.scrollTo(0, 0);
     }
+  }, []);
+  useEffect(() => {
+    const socket = io.connect(environmentVariables?.apiUrl);
+
+    socket.on("admin_notification", (data) => {
+      console.log(data, "sr");
+      getAllUsers();
+    });
+
+    socket.on("admin_cancellation_notification", (data) => {
+      console.log(data, "sr");
+      getAllUsers();
+    });
+
+    socket.on("admin_booking_notification", (data) => {
+      console.log(data, "sr");
+      getAllUsers();
+    });
+
+    return () => {
+      socket.disconnect();
+    };
   }, []);
   const handleClick = (item) => {
     // console.log("hcjhcjhf",item)
