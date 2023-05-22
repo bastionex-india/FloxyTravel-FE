@@ -145,7 +145,7 @@ function Navigation(props) {
     console.log(authData?.data?.id);
     const url = authData?.data?.isadmin
       ? `${environmentVariables?.apiUrl}/admin/addidstonotification/${authData?.data?.id}`
-      : `${environmentVariables?.apiUrl}/vendor/addidstonotification/${authData?.data?._id}`;
+      : `${environmentVariables?.apiUrl}/vendor/addidstonotification/${authData?.data?.id}`;
     let config = {
       method: "post",
       url: url,
