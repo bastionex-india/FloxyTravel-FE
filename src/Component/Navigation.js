@@ -85,6 +85,8 @@ const Notifications = styled.div`
   height: 240px;
   overflow: scroll;
   width: 275px;
+  height: 275px;
+  overflow: scroll;
 `;
 
 const Notification = styled.div`

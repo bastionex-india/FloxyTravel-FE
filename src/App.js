@@ -59,8 +59,14 @@ function App() {
                       path="/gethotelsbyvendorid"
                       element={<GetHotelByVendor />}
                     />
-                    <Route path="/bookinghistoryofadmin" element={<BookingHistoryofAdmin/>}/>
-                    <Route path="/bookinghistorybyorderid" element={<BookingHistorybyOrderid/>}/>
+                    <Route
+                      path="/bookinghistoryofadmin"
+                      element={<BookingHistoryofAdmin />}
+                    />
+                    <Route
+                      path="/bookinghistorybyorderid"
+                      element={<BookingHistorybyOrderid />}
+                    />
                     <Route path="/gethotel" element={<GetHotelById />} />
                     <Route
                       path="userselectedcity"

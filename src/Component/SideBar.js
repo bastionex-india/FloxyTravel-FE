@@ -44,6 +44,21 @@ function SideBar(props) {
   const [selected, setselected] = useState("Dashboard");
   const navigate = useNavigate();
   const { authData, setAuthData } = useContext(AuthContext);
+  useEffect(() => {
+    if (window !== "undefined") {
+      if (window.location.href.split("/").pop() === "userhomepage") {
+        setselected("user homepage slider");
+      } else if (window.location.href.split("/").pop() === "userselectedcity") {
+        setselected("Landing page");
+      } else if (
+        window.location.href.split("/").pop() === "bookinghistoryofadmin"
+      ) {
+        setselected("Booking history");
+      } else {
+        setselected("Dashboard");
+      }
+    }
+  }, [selected]);
   // console.log("authdata of sidebar",authData.data)
   return (
     <Root>
