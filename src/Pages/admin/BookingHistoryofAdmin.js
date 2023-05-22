@@ -300,7 +300,7 @@ const BookingHistoryofAdmin = () => {
           {data &&
             data.map((item, key) => {
               const bookingDate = new Date(item.createdAt);
-               console.log("------www-",moment(item.checkIn).format("YYYY/MM/DD"),item.checkIn)
+              //  console.log("------www-",moment(item.checkIn).format("YYYY/MM/DD"),item.checkIn)
 
               return (
                 <RecentlyUploaded key={key}>
@@ -313,7 +313,7 @@ const BookingHistoryofAdmin = () => {
                     {bookingDate.toLocaleDateString()}
                   </RecentlyUploadedDate>
                   <RecentlyUploadedDate>
-                    {moment(item.checkIn).format("DD/MM/YYYY")}
+                    {item.checkIn}
                   </RecentlyUploadedDate>
                   <RecentlyUploadedStatus>{item.status}</RecentlyUploadedStatus>
                   <RecentlyUploadedButtonWrapper>
