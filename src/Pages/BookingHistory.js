@@ -149,6 +149,7 @@ const BookingHistory = () => {
   const [confirm, setConfirm] = useState();
   const [completed, setCompleted] = useState();
   const [cancelled, setCancelled] = useState();
+  const [select1, setSelect1] = useState("");
 
   useEffect(() => {
     if (window !== "undefined") {
@@ -161,10 +162,24 @@ const BookingHistory = () => {
   };
 
   const getAllUsers = async () => {
+    // console.log("aaa", select1,select);
+    let data;
+    if (select1 !== "") {
+      data = {
+        status: select,
+        startDate: new Date(),
+        endDate: select1,
+      };
+    } else {
+      data = {
+        status: select,
+      };
+    }
     const config = {
       method: "post",
       url: `${environmentVariables.apiUrl}/vendor/getallbooking/${authData.data.vendorId}`,
       headers: { _token: authData.data.token },
+      data:data
     };
     await axios
       .request(config)
@@ -178,8 +193,11 @@ const BookingHistory = () => {
   };
   useEffect(() => {
     getAllUsers();
-  }, []);
+  }, [select, select1]);
   // console.log("dssasd",data)
+  const ConfirmedData = () => {};
+  const CompletedData = () => {};
+  const CancelledData = () => {};
 
   return (
     // <div style={{display: 'flex',width: "100%",justifyContent: "space-around", marginTop: "7%",backgroundColor: 'white'}}>
@@ -205,7 +223,45 @@ const BookingHistory = () => {
           <Root>
             <TextWrapper>
               <Heading> Booking History</Heading>
-              {/* <TextSelectField>
+              <TextSelectField>
+                <Select
+                  onChange={(e) => {
+                    setSelect1(e.target.value);
+                  }}
+                  //   value={select1}
+                  required
+                >
+                  <option value="">Select Range</option>
+                  <option
+                    value={
+                      new Date(new Date().getTime() - 2 * 24 * 60 * 60 * 1000)
+                    }
+                  >
+                    Past Two days
+                  </option>
+                  <option
+                    value={
+                      new Date(new Date().getTime() - 7 * 24 * 60 * 60 * 1000)
+                    }
+                  >
+                    Past one week
+                  </option>
+                  <option
+                    value={
+                      new Date(new Date().getTime() - 30 * 24 * 60 * 60 * 1000)
+                    }
+                  >
+                    Past one month
+                  </option>
+                  {/* <option value="2" onClick={CompletedData}>
+                    Completed Booking
+                  </option>
+                  <option value="3" onClick={CancelledData}>
+                    Cancelled Booking
+                  </option> */}
+                </Select>
+              </TextSelectField>
+              <TextSelectField>
                 <Select
                   onChange={(e) => {
                     setSelect(e.target.value);
@@ -213,14 +269,20 @@ const BookingHistory = () => {
                   value={select}
                   required
                 >
-                  <option value="" hidden>
+                  <option value="all" onClick={ConfirmedData}>
                     All
                   </option>
-                  <option value="1"> Confirmed Booking</option>
-                  <option value="2">Completed Booking</option>
-                  <option value="3">Cancelled Booking</option>
+                  <option value="confirmed" onClick={ConfirmedData}>
+                    Confirmed Booking
+                  </option>
+                  <option value="completed" onClick={CompletedData}>
+                    Completed Booking
+                  </option>
+                  <option value="cancelled" onClick={CancelledData}>
+                    Cancelled Booking
+                  </option>
                 </Select>
-              </TextSelectField> */}
+              </TextSelectField>
             </TextWrapper>
           </Root>
           <RecentlyUploadedHeader>
