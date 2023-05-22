@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { AuthContext } from "../ContextApi/ContextApi";
@@ -74,22 +74,13 @@ function SideBar(props) {
             <Link>Dashboard</Link>
           </LinkWrapper>
           <LinkWrapper
-            select={selected === "user homepage slider"}
-            onClick={() => {
-              setselected("user homepage slider");
-              navigate("/userhomepage");
-            }}
-          >
-            <Link>User Homepage Slider</Link>
-          </LinkWrapper>
-          <LinkWrapper
             select={selected === "Landing page"}
             onClick={() => {
               setselected("Landing page");
-              navigate("/userselectedcity");
+              navigate("/userlandingpage");
             }}
           >
-            <Link>User Selected City</Link>
+            <Link>User Landing Page</Link>
           </LinkWrapper>
           <LinkWrapper
             select={selected === "Booking history"}
