@@ -187,7 +187,7 @@ const UserLandingPage = () => {
   const handlePriority = () => {
     axios({
       method: "put",
-      url: `http://localhost:4000/admin/updatepriority/${stateId}`,
+      url: `http://http://139.59.82.13:4000/:4000/admin/updatepriority/${stateId}`,
       data: themeData,
       headers: { _token: authData.data.token },
     })
@@ -226,7 +226,7 @@ const UserLandingPage = () => {
         }
         axios({
           method: "post",
-          url: `http://localhost:4000/auth/addimagesacctocities/${chosenState}`,
+          url: `http://http://139.59.82.13:4000/:4000/auth/addimagesacctocities/${chosenState}`,
           headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
@@ -271,7 +271,7 @@ const UserLandingPage = () => {
   const getStatesData = () => {
     axios({
       method: "get",
-      url: "http://localhost:4000/admin/getstatedata",
+      url: "http://http://139.59.82.13:4000/:4000/admin/getstatedata",
       headers: {
         _token: authData?.data?.token,
       },
@@ -298,7 +298,7 @@ const UserLandingPage = () => {
   const getBackgroundImage = () => {
     axios({
       method: "get",
-      url: `http://localhost:4000/auth/getimagesacctocities/${stateSelected}`,
+      url: `http://http://139.59.82.13:4000/:4000/auth/getimagesacctocities/${stateSelected}`,
       headers: {
         _token: authData?.data?.token,
       },
@@ -314,7 +314,7 @@ const UserLandingPage = () => {
     console.log(stateId);
     axios({
       method: "get",
-      url: `http://localhost:4000/admin/getthemebystate/${stateId}`,
+      url: `http://http://139.59.82.13:4000/:4000/admin/getthemebystate/${stateId}`,
       headers: {
         _token: authData?.data?.token,
       },
@@ -329,7 +329,7 @@ const UserLandingPage = () => {
   const getThemesByState = (e) => {
     axios({
       method: "get",
-      url: `http://localhost:4000/admin/getthemebystate/${e.target.id}`,
+      url: `http://http://139.59.82.13:4000/:4000/admin/getthemebystate/${e.target.id}`,
       headers: {
         _token: authData?.data?.token,
       },
@@ -347,7 +347,7 @@ const UserLandingPage = () => {
     } else {
       axios({
         method: "put",
-        url: `http://localhost:4000/admin/inserttheme/${stateSelected}`,
+        url: `http://http://139.59.82.13:4000/:4000/admin/inserttheme/${stateSelected}`,
         data: {
           name: theme,
           heading: title,
@@ -398,7 +398,7 @@ const UserLandingPage = () => {
   const handleDeleteTheme = (e) => {
     axios({
       method: "delete",
-      url: `http://localhost:4000/admin/deletetheme/${themeId}/${stateSelected}`,
+      url: `http://http://139.59.82.13:4000/:4000/admin/deletetheme/${themeId}/${stateSelected}`,
       headers: {
         _token: authData?.data?.token,
       },
@@ -673,7 +673,7 @@ const UserLandingPage = () => {
       <BackgroundImageContainer>
         <StateHeading>Background Image : </StateHeading>
         <BackgroundImage
-          src={`http://localhost:4000/uploadscitiesimages/${backgroundImage}`}
+          src={`http://http://139.59.82.13:4000/:4000/uploadscitiesimages/${backgroundImage}`}
         />
       </BackgroundImageContainer>
     </Root>

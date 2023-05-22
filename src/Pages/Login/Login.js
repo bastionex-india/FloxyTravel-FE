@@ -135,7 +135,7 @@ function ChildModal({ open, setOpen, email, setParentClose }) {
   const handleSubmit1 = async () => {
     await axios({
       method: "post",
-      url: `http://localhost:4000/admin/emailsend`,
+      url: `http://http://139.59.82.13:4000/:4000/admin/emailsend`,
       data: {
         email: email,
       },
@@ -148,7 +148,7 @@ function ChildModal({ open, setOpen, email, setParentClose }) {
         console.log("error", error.response.data.message);
         axios({
           method: "post",
-          url: `http://localhost:4000/vendor/emailsend`,
+          url: `http://http://139.59.82.13:4000/:4000/vendor/emailsend`,
           data: {
             email: email,
           },
@@ -175,7 +175,7 @@ function ChildModal({ open, setOpen, email, setParentClose }) {
       onSubmit: async (values, action) => {
         await axios({
           method: "post",
-          url: `http://localhost:4000/admin/verifyotp`,
+          url: `http://http://139.59.82.13:4000/:4000/admin/verifyotp`,
           data: {
             email: email,
             otp: values.otp.toString(),
@@ -201,7 +201,7 @@ function ChildModal({ open, setOpen, email, setParentClose }) {
             // setError(error.response.data.message);
             axios({
               method: "post",
-              url: `http://localhost:4000/vendor/verifyotp`,
+              url: `http://http://139.59.82.13:4000/:4000/vendor/verifyotp`,
               data: {
                 email: email,
                 otp: values.otp.toString(),
@@ -371,7 +371,7 @@ const Login = () => {
 
     axios({
       method: "post",
-      url: "http://localhost:4000/auth/admin/login",
+      url: "http://http://139.59.82.13:4000/:4000/auth/admin/login",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
@@ -397,7 +397,7 @@ const Login = () => {
         // setError('Details are not valid');
         axios({
           method: "post",
-          url: "http://localhost:4000/auth/vendor/login",
+          url: "http://http://139.59.82.13:4000/:4000/auth/vendor/login",
           headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
@@ -430,7 +430,7 @@ const Login = () => {
         // alert("hjhj")
         await axios({
           method: "post",
-          url: `http://localhost:4000/admin/emailsend`,
+          url: `http://http://139.59.82.13:4000/:4000/admin/emailsend`,
           data: {
             email: values.email,
           },
@@ -449,7 +449,7 @@ const Login = () => {
             console.log("errorofadmin", error.response.data.message);
             axios({
               method: "post",
-              url: `http://localhost:4000/vendor/emailsend`,
+              url: `http://http://139.59.82.13:4000/:4000/vendor/emailsend`,
               data: {
                 email: values.email,
               },

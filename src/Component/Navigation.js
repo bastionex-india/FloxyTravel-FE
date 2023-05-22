@@ -143,7 +143,7 @@ function Navigation(props) {
     console.log(authData?.data?.id);
     let config = {
       method: "post",
-      url: `http://localhost:4000/admin/addidstonotification/${authData?.data?.id}`,
+      url: `http://http://139.59.82.13:4000/:4000/admin/addidstonotification/${authData?.data?.id}`,
       headers: {
         _token: authData?.data?.token,
       },
@@ -186,9 +186,12 @@ function Navigation(props) {
   };
   const getNotificationData = () => {
     axios
-      .get(`http://localhost:4000/admin/getregisterednotification`, {
-        headers: { _token: authData?.data?.token },
-      })
+      .get(
+        `http://http://139.59.82.13:4000/:4000/admin/getregisterednotification`,
+        {
+          headers: { _token: authData?.data?.token },
+        }
+      )
       .then((response) => {
         console.log(response.data.data);
         setNotificationData(response.data.data);
@@ -211,7 +214,7 @@ function Navigation(props) {
     getNotificationData();
   }, []);
   useEffect(() => {
-    const socket = io.connect("http://localhost:4000");
+    const socket = io.connect("http://http://139.59.82.13:4000/:4000");
 
     socket.on("admin_notification", (data) => {
       console.log(data, "sr");
@@ -287,7 +290,7 @@ function Navigation(props) {
           )}
         </NotificationsWrapper>
         <UserInfo>
-          {/* {authData?.data?.profile?<Image src={`http://localhost:1999/uploads/${authData?.data?.profile}`} style={{height:"50px",width:"50px"}} roundedCircle alt='image'/>:<UserImg src={Avtar} alt="hello" />} */}
+          {/* {authData?.data?.profile?<Image src={`http://http://139.59.82.13:4000/:1999/uploads/${authData?.data?.profile}`} style={{height:"50px",width:"50px"}} roundedCircle alt='image'/>:<UserImg src={Avtar} alt="hello" />} */}
           <DropDown onClick={() => setShow(showDropDown)}>
             {authData?.data?.name}{" "}
             <i className="fa-sharp fa-solid fa-caret-down"></i>

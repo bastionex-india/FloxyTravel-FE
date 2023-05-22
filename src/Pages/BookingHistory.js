@@ -163,7 +163,7 @@ const BookingHistory = () => {
   const getAllUsers = async () => {
     await axios
       .get(
-        `http://localhost:4000/auth/getalluserinvendor/${authData.data.vendorId}`,
+        `http://http://139.59.82.13:4000/:4000/auth/getalluserinvendor/${authData.data.vendorId}`,
         { headers: { _token: authData.data.token } }
       )
       .then((response) => {
