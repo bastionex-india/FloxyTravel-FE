@@ -18,6 +18,7 @@ import ITTask from "./employeeTasks/ITTask";
 import CommunityTask from "./employeeTasks/CommunityTask";
 import SocialMedia from "./employeeTasks/SocialMedia";
 import Graphics from "./employeeTasks/Graphics";
+import { environmentVariables } from "../../config/config";
 
 const Root = styled.div`
   width: 90%;
@@ -67,7 +68,7 @@ const ViewTask = () => {
     if (authData && authData.data.group === "IT") {
       // setIT(authData)
       axios
-        .get("http://188.166.176.89:1999/auth/getsoftwaredevelopmettasks", {
+        .get(`${environmentVariables?.apiUrl}/auth/getsoftwaredevelopmettasks`, {
           headers: { _token: authData.data.token.token },
         })
         .then((res) => {
@@ -80,7 +81,7 @@ const ViewTask = () => {
         });
     } else if (authData && authData.data.group === "community") {
       axios
-        .get("http://188.166.176.89:1999/auth/getcommunitytasks", {
+        .get(`${environmentVariables?.apiUrl}/auth/getcommunitytasks`, {
           headers: { _token: authData.data.token.token },
         })
         .then((res) => {
@@ -93,7 +94,7 @@ const ViewTask = () => {
         });
     } else if (authData && authData.data.group === "sm") {
       axios
-        .get("http://188.166.176.89:1999/auth/getgmtasks", {
+        .get(`${environmentVariables?.apiUrl}/auth/getgmtasks`, {
           headers: { _token: authData.data.token.token },
         })
         .then((res) => {
@@ -106,7 +107,7 @@ const ViewTask = () => {
         });
     } else if (authData && authData.data.group === "graphics") {
       axios
-        .get("http://188.166.176.89:1999/auth/gettasks", {
+        .get(`${environmentVariables?.apiUrl}/auth/gettasks`, {
           headers: { _token: authData.data.token.token },
         })
         .then((res) => {

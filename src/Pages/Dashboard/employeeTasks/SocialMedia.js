@@ -47,6 +47,7 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import Avtar from "../../../Images/avatar.png";
 import { useContext } from "react";
 import { AuthContext } from "../../../ContextApi/ContextApi";
+import { environmentVariables } from "../../../config/config";
 
 const Root = styled.div`
   width: 90%;
@@ -122,7 +123,7 @@ const ExpandableTableRow = ({ children, expandComponent, ...otherProps }) => {
     console.log("comment", commentText, Ids._id);
     axios({
       method: "post",
-      url: "http://188.166.176.89:1999/auth/addsmcomments",
+      url: `${environmentVariables?.apiUrl}/auth/addsmcomments`,
       data: { id: Ids._id, commentText: commentText },
     })
       .then((response) => {
@@ -440,7 +441,7 @@ const Graphics = (props) => {
     setAllData([]);
     setSubData([]);
     axios
-      .get(`http://188.166.176.89:1999/auth/getgmtasks`, {
+      .get(`${environmentVariables?.apiUrl}/auth/getgmtasks`, {
         headers: { _token: authData.data.token.token },
       })
       .then((res) => {
@@ -463,7 +464,7 @@ const Graphics = (props) => {
     getData();
 
     axios
-      .get(`http://188.166.176.89:1999/auth/getAllUsers`, {
+      .get(`${environmentVariables?.apiUrl}/auth/getAllUsers`, {
         headers: { _token: authData.data.token.token },
       })
       .then((res) => {

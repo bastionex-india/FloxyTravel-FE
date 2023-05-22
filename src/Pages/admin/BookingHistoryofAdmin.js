@@ -150,7 +150,7 @@ const BookingHistoryofAdmin = () => {
     navigation("/bookinghistorybyorderid", { state: item });
   };
   useEffect(() => {
-    const socket = io.connect("http://188.166.176.89:4000");
+    const socket = io.connect(environmentVariables?.apiUrl);
 
     socket.on("admin_notification", (data) => {
       console.log(data, "sr");
