@@ -141,10 +141,14 @@ function Navigation(props) {
   };
   const handleNotificationBell = () => {
     setShowNotifications(!showNotifications);
+    setShowDropDown(false);
     console.log(authData?.data?.id);
+    const url = authData?.data?.isadmin
+      ? `${environmentVariables?.apiUrl}/admin/addidstonotification/${authData?.data?.id}`
+      : `${environmentVariables?.apiUrl}/vendor/addidstonotification/${authData?.data?._id}`;
     let config = {
       method: "post",
-      url: `${environmentVariables?.apiUrl}/admin/addidstonotification/${authData?.data?.id}`,
+      url: url,
       headers: {
         _token: authData?.data?.token,
       },
@@ -183,6 +187,7 @@ function Navigation(props) {
   //   };
   const setShow = () => {
     setShowDropDown(!showDropDown);
+    setShowNotifications(false);
     // props.data()
   };
   const getNotificationData = () => {
