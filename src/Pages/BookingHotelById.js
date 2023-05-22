@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom";
 import axios from "axios";
 import { useContext } from "react";
 import { AuthContext } from "../ContextApi/ContextApi";
-
+import { environmentVariables } from "../config/config";
 // import { Carousel } from 'react-carousel-minimal';
 import styled from "styled-components";
 // import Hotel1 from '../../../images/hotelimg1.jpg';
@@ -226,7 +226,7 @@ const BookingHotelById = () => {
   const getAllUsers = async () => {
     await axios
       .get(
-        `http://188.166.176.89:4000/auth/getbookingdetailbybookingid/${state._id}`,
+        `${environmentVariables.apiUrl}/auth/getbookingdetailbybookingid/${state._id}`,
         { headers: { _token: authData.data.token } }
       )
       .then((response) => {
@@ -246,7 +246,7 @@ const BookingHotelById = () => {
     // setCheckInToggle(true)
     axios({
       method: "post",
-      url: `http://188.166.176.89:4000/auth/checkinpermissionbyvendor/${state._id}`,
+      url: `${environmentVariables.apiUrl}/auth/checkinpermissionbyvendor/${state._id}`,
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
@@ -264,7 +264,7 @@ const BookingHotelById = () => {
   const checkOut = () => {
     axios({
       method: "post",
-      url: `http://188.166.176.89:4000/auth/checkoutpermissionbyvendor/${state._id}`,
+      url: `${environmentVariables.apiUrl}/auth/checkoutpermissionbyvendor/${state._id}`,
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
@@ -339,7 +339,7 @@ const BookingHotelById = () => {
               </PriceText>
             </PriceWrapper>
             <ImageWrapper id="GalleryDetails">
-              {/* <Image src={`http://188.166.176.89:4000/uploads/${data.image[0]}`} />             */}
+              {/* <Image src={`${environmentVariables.apiUrl}/uploads/${data.image[0]}`} />             */}
             </ImageWrapper>
 
             <LocationiconWrapper>

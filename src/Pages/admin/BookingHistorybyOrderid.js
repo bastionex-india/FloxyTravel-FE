@@ -7,7 +7,7 @@ import { AuthContext } from "../../ContextApi/ContextApi";
 import { useState } from "react";
 import axios from "axios";
 import { useEffect } from "react";
-
+import { environmentVariables } from "../../config/config";
 const Root = styled.div`
   background-color: #e9e9e9;
   padding-bottom: 30px;
@@ -217,7 +217,7 @@ const BookingHistorybyOrderid = () => {
   const getAllUsers = async () => {
     await axios
       .get(
-        `http://188.166.176.89:4000/admin/getallbookingbyorderid/${state.orderid}`,
+        `${environmentVariables.apiUrl}/admin/getallbookingbyorderid/${state.orderid}`,
         { headers: { _token: authData.data.token } }
       )
       .then((response) => {
@@ -274,7 +274,7 @@ const BookingHistorybyOrderid = () => {
               </PriceText>
             </PriceWrapper>
             <ImageWrapper id="GalleryDetails">
-              {/* <Image src={`http://188.166.176.89:4000/uploads/${data.image[0]}`} />             */}
+              {/* <Image src={`${environmentVariables.apiUrl}/uploads/${data.image[0]}`} />             */}
             </ImageWrapper>
 
             <LocationiconWrapper>

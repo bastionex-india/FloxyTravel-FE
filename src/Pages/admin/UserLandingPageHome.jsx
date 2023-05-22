@@ -3,6 +3,7 @@ import React, { useState, useContext, useEffect } from "react";
 import styled from "styled-components";
 import { AuthContext } from "../../ContextApi/ContextApi";
 import Swal from "sweetalert2";
+import { environmentVariables } from "../../config/config";
 const UserLandingPageHome = () => {
   const [isPriorityChanged, setIsPriority] = useState(false);
   const [addThemePopUp, setAddThemePopUp] = useState(false);
@@ -18,7 +19,7 @@ const UserLandingPageHome = () => {
   const [city, setCity] = useState(null);
   const getPopularCities = () => {
     axios
-      .get(`http://188.166.176.89:4000/auth/getnameofcity`)
+      .get(`${environmentVariables.apiUrl}/auth/getnameofcity`)
       .then((res) => {
         setCityData(res.data.data);
       })
@@ -27,7 +28,7 @@ const UserLandingPageHome = () => {
   const handlePriority = () => {
     axios({
       method: "put",
-      url: `http://188.166.176.89:4000/admin/updateprioritycitybyid`,
+      url: `${environmentVariables.apiUrl}/admin/updateprioritycitybyid`,
       data: allData,
       headers: { _token: authData.data.token },
     })
@@ -47,7 +48,7 @@ const UserLandingPageHome = () => {
   };
   const getAllData = () => {
     axios
-      .get(`http://188.166.176.89:4000/admin/prioritydata`, {
+      .get(`${environmentVariables.apiUrl}/admin/prioritydata`, {
         headers: { _token: authData.data.token },
       })
       .then((response) => {
@@ -75,7 +76,7 @@ const UserLandingPageHome = () => {
   const handleDeleteData = () => {
     axios({
       method: "delete",
-      url: `http://188.166.176.89:4000/admin/deleteprioritybyid/${themeId}`,
+      url: `${environmentVariables.apiUrl}/admin/deleteprioritybyid/${themeId}`,
       headers: {
         _token: authData?.data?.token,
       },
@@ -100,8 +101,8 @@ const UserLandingPageHome = () => {
     if (theme !== null && city !== null && title !== null) {
       const url =
         themeId === null
-          ? `http://188.166.176.89:4000/admin/postpriority`
-          : `http://188.166.176.89:4000/admin/updateprioritybyid/${themeId}`;
+          ? `${environmentVariables.apiUrl}/admin/postpriority`
+          : `${environmentVariables.apiUrl}/admin/updateprioritybyid/${themeId}`;
       const method = themeId === null ? "post" : "put";
       const cityData = {
         city,

@@ -5,6 +5,7 @@ import axios from "axios";
 import { useContext } from "react";
 import { AuthContext } from "../../ContextApi/ContextApi";
 import { useNavigate } from "react-router-dom";
+import { environmentVariables } from "../../config/config";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import Button from "@mui/material/Button";
@@ -135,7 +136,7 @@ function ChildModal({ open, setOpen, email, setParentClose }) {
   const handleSubmit1 = async () => {
     await axios({
       method: "post",
-      url: `http://188.166.176.89:4000/admin/emailsend`,
+      url: `${environmentVariables.apiUrl}/admin/emailsend`,
       data: {
         email: email,
       },
@@ -148,7 +149,7 @@ function ChildModal({ open, setOpen, email, setParentClose }) {
         console.log("error", error.response.data.message);
         axios({
           method: "post",
-          url: `http://188.166.176.89:4000/vendor/emailsend`,
+          url: `${environmentVariables.apiUrl}/vendor/emailsend`,
           data: {
             email: email,
           },
@@ -175,7 +176,7 @@ function ChildModal({ open, setOpen, email, setParentClose }) {
       onSubmit: async (values, action) => {
         await axios({
           method: "post",
-          url: `http://188.166.176.89:4000/admin/verifyotp`,
+          url: `${environmentVariables.apiUrl}/admin/verifyotp`,
           data: {
             email: email,
             otp: values.otp.toString(),
@@ -201,7 +202,7 @@ function ChildModal({ open, setOpen, email, setParentClose }) {
             // setError(error.response.data.message);
             axios({
               method: "post",
-              url: `http://188.166.176.89:4000/vendor/verifyotp`,
+              url: `${environmentVariables.apiUrl}/vendor/verifyotp`,
               data: {
                 email: email,
                 otp: values.otp.toString(),
@@ -371,7 +372,7 @@ const Login = () => {
 
     axios({
       method: "post",
-      url: "http://188.166.176.89:4000/auth/admin/login",
+      url: `${environmentVariables.apiUrl}/auth/admin/login`,
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
@@ -397,7 +398,7 @@ const Login = () => {
         // setError('Details are not valid');
         axios({
           method: "post",
-          url: "http://188.166.176.89:4000/auth/vendor/login",
+          url: `${environmentVariables.apiUrl}/auth/vendor/login`,
           headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
@@ -430,7 +431,7 @@ const Login = () => {
         // alert("hjhj")
         await axios({
           method: "post",
-          url: `http://188.166.176.89:4000/admin/emailsend`,
+          url: `${environmentVariables.apiUrl}/admin/emailsend`,
           data: {
             email: values.email,
           },
@@ -449,7 +450,7 @@ const Login = () => {
             console.log("errorofadmin", error.response.data.message);
             axios({
               method: "post",
-              url: `http://188.166.176.89:4000/vendor/emailsend`,
+              url: `${environmentVariables.apiUrl}/vendor/emailsend`,
               data: {
                 email: values.email,
               },

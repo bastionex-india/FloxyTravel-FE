@@ -2,6 +2,7 @@ import React from "react";
 import { useLocation } from "react-router-dom";
 import { useEffect, useContext } from "react";
 import { useState } from "react";
+import { environmentVariables } from "../../config/config";
 import axios from "axios";
 import { AuthContext } from "../../ContextApi/ContextApi";
 import styled from "styled-components";
@@ -92,7 +93,7 @@ const GetHotelByVendor = () => {
   const getData = async () => {
     await axios
       .get(
-        `http://188.166.176.89:4000/auth/gethoteldetailbyvendorid/${state.vendorId}`,
+        `${environmentVariables.apiUrl}/auth/gethoteldetailbyvendorid/${state.vendorId}`,
         { headers: { _token: authData.data.token } }
       )
       .then((response) => {
@@ -119,7 +120,7 @@ const GetHotelByVendor = () => {
   const deleteHotel = (item) => {
     // alert(item._id)
     axios
-      .delete(`http://188.166.176.89:4000/auth/deletehotel/${item._id}`, {
+      .delete(`${environmentVariables.apiUrl}/auth/deletehotel/${item._id}`, {
         headers: { _token: authData.data.token },
       })
       .then((response) => {
@@ -172,7 +173,7 @@ const GetHotelByVendor = () => {
     console.log("sssssss", formdata);
     axios({
       method: "post",
-      url: `http://188.166.176.89:4000/auth/addhotely`,
+      url: `${environmentVariables.apiUrl}/auth/addhotely`,
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
@@ -211,7 +212,7 @@ const GetHotelByVendor = () => {
   const callApi = (x) => {
     axios({
       method: "post",
-      url: `http://188.166.176.89:4000/auth/selectstateconutryadmin`,
+      url: `${environmentVariables.apiUrl}/auth/selectstateconutryadmin`,
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
@@ -470,7 +471,7 @@ const GetHotelByVendor = () => {
                   <CardMedia
                     component="img"
                     height="250"
-                    image={`http://188.166.176.89:4000/uploads/${item.image[0]}`}
+                    image={`${environmentVariables.apiUrl}/uploads/${item.image[0]}`}
                     alt="Paella dish"
                     onClick={() => getHotels(item)}
                     style={{ cursor: "pointer" }}

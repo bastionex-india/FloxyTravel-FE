@@ -5,6 +5,7 @@ import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Button from "@mui/material/Button";
+import { environmentVariables } from "../../config/config";
 import Typography from "@mui/material/Typography";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -66,7 +67,7 @@ const VendorList = () => {
 
   const getAllListData = async () => {
     await axios
-      .get("http://188.166.176.89:4000/auth/getvendorlist", {
+      .get(`${environmentVariables.apiUrl}/auth/getvendorlist`, {
         headers: { _token: authData.data.token },
       })
       .then((response) => {
@@ -111,7 +112,7 @@ const VendorList = () => {
     if (adminValue === "vendor") {
       axios({
         method: "post",
-        url: `http://188.166.176.89:4000/auth/addvendor`,
+        url: `${environmentVariables.apiUrl}/auth/addvendor`,
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
@@ -148,7 +149,7 @@ const VendorList = () => {
     } else {
       axios({
         method: "post",
-        url: `http://188.166.176.89:4000/auth/admin/register`,
+        url: `${environmentVariables.apiUrl}/auth/admin/register`,
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
@@ -197,7 +198,7 @@ const VendorList = () => {
   const deleteVendor = (item) => {
     // alert(item._id)
     axios
-      .delete(`http://188.166.176.89:4000/auth/deletevendor/${item._id}`, {
+      .delete(`${environmentVariables.apiUrl}/auth/deletevendor/${item._id}`, {
         headers: { _token: authData.data.token },
       })
       .then((response) => {
@@ -231,7 +232,7 @@ const VendorList = () => {
           if (adminValue === "vendor") {
             axios({
               method: "post",
-              url: `http://188.166.176.89:4000/auth/addvendor`,
+              url: `${environmentVariables.apiUrl}/auth/addvendor`,
               headers: {
                 Accept: "application/json",
                 "Content-Type": "application/json",
@@ -263,7 +264,7 @@ const VendorList = () => {
           } else {
             axios({
               method: "post",
-              url: `http://188.166.176.89:4000/auth/admin/register`,
+              url: `${environmentVariables.apiUrl}/auth/admin/register`,
               headers: {
                 Accept: "application/json",
                 "Content-Type": "application/json",

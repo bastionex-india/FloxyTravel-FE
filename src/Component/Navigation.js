@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { environmentVariables } from "../config/config";
 import { AuthContext } from "../ContextApi/ContextApi";
 import Avtar from "../Images/avatar.png";
 import BrandLogo from "../Images/brandLogo.png";
@@ -143,7 +144,7 @@ function Navigation(props) {
     console.log(authData?.data?.id);
     let config = {
       method: "post",
-      url: `http://188.166.176.89:4000/admin/addidstonotification/${authData?.data?.id}`,
+      url: `${environmentVariables?.apiUrl}/admin/addidstonotification/${authData?.data?.id}`,
       headers: {
         _token: authData?.data?.token,
       },
@@ -186,7 +187,7 @@ function Navigation(props) {
   };
   const getNotificationData = () => {
     axios
-      .get(`http://188.166.176.89:4000/admin/getregisterednotification`, {
+      .get(`${environmentVariables?.apiUrl}/admin/getregisterednotification`, {
         headers: { _token: authData?.data?.token },
       })
       .then((response) => {

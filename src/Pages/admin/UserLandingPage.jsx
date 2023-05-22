@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useState, useContext, useEffect } from "react";
 import styled from "styled-components";
 import { AuthContext } from "../../ContextApi/ContextApi";
+import { environmentVariables } from "../../config/config";
 import Swal from "sweetalert2";
 const UserLandingPage = () => {
   const [allStates, setAllStates] = useState([]);
@@ -187,7 +188,7 @@ const UserLandingPage = () => {
   const handlePriority = () => {
     axios({
       method: "put",
-      url: `http://188.166.176.89:4000/admin/updatepriority/${stateId}`,
+      url: `${environmentVariables.apiUrl}/admin/updatepriority/${stateId}`,
       data: themeData,
       headers: { _token: authData.data.token },
     })
@@ -226,7 +227,7 @@ const UserLandingPage = () => {
         }
         axios({
           method: "post",
-          url: `http://188.166.176.89:4000/auth/addimagesacctocities/${chosenState}`,
+          url: `${environmentVariables.apiUrl}/auth/addimagesacctocities/${chosenState}`,
           headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
@@ -271,7 +272,7 @@ const UserLandingPage = () => {
   const getStatesData = () => {
     axios({
       method: "get",
-      url: "http://188.166.176.89:4000/admin/getstatedata",
+      url: `${environmentVariables.apiUrl}/admin/getstatedata`,
       headers: {
         _token: authData?.data?.token,
       },
@@ -298,7 +299,7 @@ const UserLandingPage = () => {
   const getBackgroundImage = () => {
     axios({
       method: "get",
-      url: `http://188.166.176.89:4000/auth/getimagesacctocities/${stateSelected}`,
+      url: `${environmentVariables.apiUrl}/auth/getimagesacctocities/${stateSelected}`,
       headers: {
         _token: authData?.data?.token,
       },
@@ -314,7 +315,7 @@ const UserLandingPage = () => {
     console.log(stateId);
     axios({
       method: "get",
-      url: `http://188.166.176.89:4000/admin/getthemebystate/${stateId}`,
+      url: `${environmentVariables.apiUrl}/admin/getthemebystate/${stateId}`,
       headers: {
         _token: authData?.data?.token,
       },
@@ -329,7 +330,7 @@ const UserLandingPage = () => {
   const getThemesByState = (e) => {
     axios({
       method: "get",
-      url: `http://188.166.176.89:4000/admin/getthemebystate/${e.target.id}`,
+      url: `${environmentVariables.apiUrl}/admin/getthemebystate/${e.target.id}`,
       headers: {
         _token: authData?.data?.token,
       },
@@ -347,7 +348,7 @@ const UserLandingPage = () => {
     } else {
       axios({
         method: "put",
-        url: `http://188.166.176.89:4000/admin/inserttheme/${stateSelected}`,
+        url: `${environmentVariables.apiUrl}/admin/inserttheme/${stateSelected}`,
         data: {
           name: theme,
           heading: title,
@@ -398,7 +399,7 @@ const UserLandingPage = () => {
   const handleDeleteTheme = (e) => {
     axios({
       method: "delete",
-      url: `http://188.166.176.89:4000/admin/deletetheme/${themeId}/${stateSelected}`,
+      url: `${environmentVariables.apiUrl}/admin/deletetheme/${themeId}/${stateSelected}`,
       headers: {
         _token: authData?.data?.token,
       },
@@ -673,7 +674,7 @@ const UserLandingPage = () => {
       <BackgroundImageContainer>
         <StateHeading>Background Image : </StateHeading>
         <BackgroundImage
-          src={`http://188.166.176.89:4000/uploadscitiesimages/${backgroundImage}`}
+          src={`${environmentVariables.apiUrl}/uploadscitiesimages/${backgroundImage}`}
         />
       </BackgroundImageContainer>
     </Root>

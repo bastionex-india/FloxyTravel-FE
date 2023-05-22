@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { AuthContext } from "../ContextApi/ContextApi";
-
+import { environmentVariables } from "../config/config";
 import { useNavigate } from "react-router-dom";
 
 import styled from "styled-components";
@@ -163,7 +163,7 @@ const BookingHistory = () => {
   const getAllUsers = async () => {
     await axios
       .get(
-        `http://188.166.176.89:4000/auth/getalluserinvendor/${authData.data.vendorId}`,
+        `${environmentVariables.apiUrl}/auth/getalluserinvendor/${authData.data.vendorId}`,
         { headers: { _token: authData.data.token } }
       )
       .then((response) => {

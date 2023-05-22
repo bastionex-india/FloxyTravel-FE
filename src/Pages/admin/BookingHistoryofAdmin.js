@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import styled from "styled-components";
 import axios from "axios";
+import { environmentVariables } from "../../config/config";
 import { useEffect } from "react";
 import { useContext } from "react";
 import { AuthContext } from "../../ContextApi/ContextApi";
@@ -164,7 +165,7 @@ const BookingHistoryofAdmin = () => {
 
     let config = {
       method: "post",
-      url: `http://188.166.176.89:4000/admin/getallbooking`,
+      url: `${environmentVariables.apiUrl}/admin/getallbooking`,
       headers: {
         _token: authData.data.token,
         "Content-Type": "application/json",

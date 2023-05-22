@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
+import {environmentVariables, envrionmentVariables} from '../config/config.js'
 import { useState, useContext } from "react";
 import {
   Box,
@@ -232,7 +233,7 @@ const HotelDetails = () => {
     // console.log(".nnnnnnnnnnnvvvv",hotelname,overview,hotelCategory,totalNoOfRooms,general,services,internet,parking,cityValue,area,stateValue)
     axios({
       method: "put",
-      url: `http://188.166.176.89:4000/auth/updatehotel/vendor/${state._id}`,
+      url: `${environmentVariables.apiUrl}/auth/updatehotel/vendor/${state._id}`,
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
@@ -274,7 +275,7 @@ const HotelDetails = () => {
   const addDiv = async () => {
     axios({
       method: "post",
-      url: `http://188.166.176.89:4000/auth/addroomdetails`,
+      url: `${environmentVariables.apiUrl}/auth/addroomdetails`,
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
@@ -311,7 +312,7 @@ const HotelDetails = () => {
     // alert(x)
     axios({
       method: "post",
-      url: `http://188.166.176.89:4000/auth/selectstateconutry`,
+      url: `${environmentVariables.apiUrl}/auth/selectstateconutry`,
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
@@ -335,7 +336,7 @@ const HotelDetails = () => {
 
   const getAllHotelData = async () => {
     await axios
-      .get(`http://188.166.176.89:4000/auth/gethoteldetailbyid/${state._id}`, {
+      .get(`${environmentVariables.apiUrl}/auth/gethoteldetailbyid/${state._id}`, {
         headers: { _token: authData.data.token },
       })
       .then((response) => {
@@ -353,7 +354,7 @@ const HotelDetails = () => {
     // alert(noOfRoomsEdit)
     axios({
       method: "put",
-      url: `http://188.166.176.89:4000/auth/updaterooms/vendor/${state._id}`,
+      url: `${environmentVariables.apiUrl}/auth/updaterooms/vendor/${state._id}`,
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
@@ -388,7 +389,7 @@ const HotelDetails = () => {
     }
     axios({
       method: "post",
-      url: `http://188.166.176.89:4000/auth/addhotelimagesvendor/${state._id}`,
+      url: `${environmentVariables.apiUrl}/auth/addhotelimagesvendor/${state._id}`,
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
@@ -412,7 +413,7 @@ const HotelDetails = () => {
   const imageDelete = () => {
     axios({
       method: "post",
-      url: `http://188.166.176.89:4000/auth/deletehotelimagesvendor/${state._id}`,
+      url: `${environmentVariables.apiUrl}/auth/deletehotelimagesvendor/${state._id}`,
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
@@ -437,7 +438,7 @@ const HotelDetails = () => {
     for (let i of state.image) {
       setArr((oldItems) => [
         ...oldItems,
-        { image: `http://188.166.176.89:4000/uploads/${i}` },
+        { image: `${environmentVariables.apiUrl}/uploads/${i}` },
       ]);
     }
   }, []);

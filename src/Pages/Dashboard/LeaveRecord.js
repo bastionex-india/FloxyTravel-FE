@@ -4,7 +4,7 @@ import { AuthContext } from "../../ContextApi/ContextApi";
 // import moment from 'moment'
 import Cardbg1 from "../../Images/bg.jpg";
 import { useNavigate } from "react-router-dom";
-
+import { environmentVariables } from "../../config/config";
 // import { styled } from '@mui/material/styles';
 // import Card from '@mui/material/Card';
 // import CardHeader from '@mui/material/CardHeader';
@@ -92,7 +92,7 @@ export default function LeaveRecord() {
   };
   const getVendorData = async () => {
     await axios
-      .get("http://188.166.176.89:4000/auth/vendorget", {
+      .get(`${environmentVariables.apiUrl}/auth/vendorget`, {
         headers: { _token: authData.data.token },
       })
       .then((response) => {
@@ -115,7 +115,7 @@ export default function LeaveRecord() {
           return (
             <LeftCardWrapper>
               <Card
-                bgImage={`http://188.166.176.89:4000/uploads/${item.image[0]}`}
+                bgImage={`${environmentVariables.apiUrl}/uploads/${item.image[0]}`}
                 onClick={() => componentClicked(item)}
               >
                 <TextWrapper>
