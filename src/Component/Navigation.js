@@ -83,6 +83,8 @@ const Notifications = styled.div`
   background-color: #01515b;
   color: #fff;
   width: 275px;
+  height: 275px;
+  overflow: scroll;
 `;
 
 const Notification = styled.div`

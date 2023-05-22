@@ -50,6 +50,10 @@ function SideBar(props) {
         setselected("user homepage slider");
       } else if (window.location.href.split("/").pop() === "userselectedcity") {
         setselected("Landing page");
+      } else if (
+        window.location.href.split("/").pop() === "bookinghistoryofadmin"
+      ) {
+        setselected("Booking history");
       } else {
         setselected("Dashboard");
       }
@@ -87,7 +91,7 @@ function SideBar(props) {
           >
             <Link>User Selected City</Link>
           </LinkWrapper>
-          {/* <LinkWrapper
+          <LinkWrapper
             select={selected === "Booking history"}
             onClick={() => {
               setselected("Booking history");
@@ -95,7 +99,7 @@ function SideBar(props) {
             }}
           >
             <Link>Booking history</Link>
-          </LinkWrapper> */}
+          </LinkWrapper>
           {/* <LinkWrapper
             select={selected === "Upcoming Bookings"}
             onClick={() => {
