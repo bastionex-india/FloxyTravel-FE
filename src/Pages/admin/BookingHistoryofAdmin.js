@@ -300,7 +300,7 @@ const BookingHistoryofAdmin = () => {
           {data &&
             data.map((item, key) => {
               const bookingDate = new Date(item.createdAt);
-              //  console.log("------www-",item)
+               console.log("------www-",moment(item.checkIn).format("YYYY/MM/DD"),item.checkIn)
 
               return (
                 <RecentlyUploaded key={key}>
