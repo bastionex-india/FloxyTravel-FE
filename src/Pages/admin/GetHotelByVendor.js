@@ -92,7 +92,7 @@ const GetHotelByVendor = () => {
   const getData = async () => {
     await axios
       .get(
-        `http://188.166.176.89:4000/auth/gethoteldetailbyvendorid/${state.vendorId}`,
+        `http://http://139.59.82.13:4000/:4000/auth/gethoteldetailbyvendorid/${state.vendorId}`,
         { headers: { _token: authData.data.token } }
       )
       .then((response) => {
@@ -119,9 +119,12 @@ const GetHotelByVendor = () => {
   const deleteHotel = (item) => {
     // alert(item._id)
     axios
-      .delete(`http://188.166.176.89:4000/auth/deletehotel/${item._id}`, {
-        headers: { _token: authData.data.token },
-      })
+      .delete(
+        `http://http://139.59.82.13:4000/:4000/auth/deletehotel/${item._id}`,
+        {
+          headers: { _token: authData.data.token },
+        }
+      )
       .then((response) => {
         // console.log(response.data.data);
         toast(response.data.data);
@@ -172,7 +175,7 @@ const GetHotelByVendor = () => {
     console.log("sssssss", formdata);
     axios({
       method: "post",
-      url: `http://188.166.176.89:4000/auth/addhotely`,
+      url: `http://http://139.59.82.13:4000/:4000/auth/addhotely`,
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
@@ -211,7 +214,7 @@ const GetHotelByVendor = () => {
   const callApi = (x) => {
     axios({
       method: "post",
-      url: `http://188.166.176.89:4000/auth/selectstateconutryadmin`,
+      url: `http://http://139.59.82.13:4000/:4000/auth/selectstateconutryadmin`,
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
@@ -470,7 +473,7 @@ const GetHotelByVendor = () => {
                   <CardMedia
                     component="img"
                     height="250"
-                    image={`http://188.166.176.89:4000/uploads/${item.image[0]}`}
+                    image={`http://http://139.59.82.13:4000/:4000/uploads/${item.image[0]}`}
                     alt="Paella dish"
                     onClick={() => getHotels(item)}
                     style={{ cursor: "pointer" }}

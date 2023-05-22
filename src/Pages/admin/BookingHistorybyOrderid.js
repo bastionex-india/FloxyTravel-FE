@@ -217,7 +217,7 @@ const BookingHistorybyOrderid = () => {
   const getAllUsers = async () => {
     await axios
       .get(
-        `http://188.166.176.89:4000/admin/getallbookingbyorderid/${state.orderid}`,
+        `http://http://139.59.82.13:4000/:4000/admin/getallbookingbyorderid/${state.orderid}`,
         { headers: { _token: authData.data.token } }
       )
       .then((response) => {
@@ -274,7 +274,7 @@ const BookingHistorybyOrderid = () => {
               </PriceText>
             </PriceWrapper>
             <ImageWrapper id="GalleryDetails">
-              {/* <Image src={`http://188.166.176.89:4000/uploads/${data.image[0]}`} />             */}
+              {/* <Image src={`http://http://139.59.82.13:4000/:4000/uploads/${data.image[0]}`} />             */}
             </ImageWrapper>
 
             <LocationiconWrapper>

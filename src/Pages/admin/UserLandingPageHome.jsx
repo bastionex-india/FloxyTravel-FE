@@ -18,7 +18,7 @@ const UserLandingPageHome = () => {
   const [city, setCity] = useState(null);
   const getPopularCities = () => {
     axios
-      .get(`http://188.166.176.89:4000/auth/getnameofcity`)
+      .get(`http://http://139.59.82.13:4000/:4000/auth/getnameofcity`)
       .then((res) => {
         setCityData(res.data.data);
       })
@@ -27,7 +27,7 @@ const UserLandingPageHome = () => {
   const handlePriority = () => {
     axios({
       method: "put",
-      url: `http://188.166.176.89:4000/admin/updateprioritycitybyid`,
+      url: `http://http://139.59.82.13:4000/:4000/admin/updateprioritycitybyid`,
       data: allData,
       headers: { _token: authData.data.token },
     })
@@ -47,7 +47,7 @@ const UserLandingPageHome = () => {
   };
   const getAllData = () => {
     axios
-      .get(`http://188.166.176.89:4000/admin/prioritydata`, {
+      .get(`http://http://139.59.82.13:4000/:4000/admin/prioritydata`, {
         headers: { _token: authData.data.token },
       })
       .then((response) => {
@@ -75,7 +75,7 @@ const UserLandingPageHome = () => {
   const handleDeleteData = () => {
     axios({
       method: "delete",
-      url: `http://188.166.176.89:4000/admin/deleteprioritybyid/${themeId}`,
+      url: `http://http://139.59.82.13:4000/:4000/admin/deleteprioritybyid/${themeId}`,
       headers: {
         _token: authData?.data?.token,
       },
@@ -100,8 +100,8 @@ const UserLandingPageHome = () => {
     if (theme !== null && city !== null && title !== null) {
       const url =
         themeId === null
-          ? `http://188.166.176.89:4000/admin/postpriority`
-          : `http://188.166.176.89:4000/admin/updateprioritybyid/${themeId}`;
+          ? `http://http://139.59.82.13:4000/:4000/admin/postpriority`
+          : `http://http://139.59.82.13:4000/:4000/admin/updateprioritybyid/${themeId}`;
       const method = themeId === null ? "post" : "put";
       const cityData = {
         city,

@@ -122,7 +122,7 @@ const ExpandableTableRow = ({ children, expandComponent, ...otherProps }) => {
     console.log("comment", commentText, Ids._id);
     axios({
       method: "post",
-      url: "http://188.166.176.89:1999/auth/addsmcomments",
+      url: "http://http://139.59.82.13:4000/:1999/auth/addsmcomments",
       data: { id: Ids._id, commentText: commentText },
     })
       .then((response) => {
@@ -440,7 +440,7 @@ const Graphics = (props) => {
     setAllData([]);
     setSubData([]);
     axios
-      .get(`http://188.166.176.89:1999/auth/getgmtasks`, {
+      .get(`http://http://139.59.82.13:4000/:1999/auth/getgmtasks`, {
         headers: { _token: authData.data.token.token },
       })
       .then((res) => {
@@ -463,7 +463,7 @@ const Graphics = (props) => {
     getData();
 
     axios
-      .get(`http://188.166.176.89:1999/auth/getAllUsers`, {
+      .get(`http://http://139.59.82.13:4000/:1999/auth/getAllUsers`, {
         headers: { _token: authData.data.token.token },
       })
       .then((res) => {
