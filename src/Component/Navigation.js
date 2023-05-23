@@ -6,7 +6,7 @@ import styled from "styled-components";
 import { environmentVariables } from "../config/config";
 import { AuthContext } from "../ContextApi/ContextApi";
 import Avtar from "../Images/avatar.png";
-import BrandLogo from "../Images/Floxypay-travel-Logo-2.png";
+import BrandLogo from "../Images/LogoDark.png";
 import bell from "../Images/bell.png";
 import io, { socketIOClient } from "socket.io-client";
 
@@ -267,7 +267,7 @@ function Navigation(props) {
   return (
     <Root>
       <Logo>
-        <img src={BrandLogo} />
+        <img width={`180px`} src={BrandLogo} />
       </Logo>
 
       <RightWrapper>
