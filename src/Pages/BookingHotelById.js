@@ -226,7 +226,7 @@ const BookingHotelById = () => {
   const getAllUsers = async () => {
     await axios
       .get(
-        `http://localhost:4000/vendor/getallbookingbyorderid/${authData.data.vendorId}/${state.orderid}`,
+        `${environmentVariables.apiUrl}/vendor/getallbookingbyorderid/${authData.data.vendorId}/${state.orderid}`,
         { headers: { _token: authData.data.token } }
       )
       .then((response) => {
