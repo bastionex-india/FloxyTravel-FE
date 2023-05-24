@@ -269,7 +269,6 @@ function Navigation(props) {
       <Logo>
         <img width={`180px`} src={BrandLogo} />
       </Logo>
-
       <RightWrapper>
         <NotificationsWrapper>
           <NotificationBell
