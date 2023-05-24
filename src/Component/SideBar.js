@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { AuthContext } from "../ContextApi/ContextApi";
@@ -51,8 +51,7 @@ function SideBar(props) {
       } else if (window.location.href.split("/").pop() === "userselectedcity") {
         setselected("Landing page");
       } else if (
-        window.location.href.split("/").pop() === "bookinghistoryofadmin" ||
-        window.location.href.split("/").pop() === "bookinghistory"
+        window.location.href.split("/").pop() === "bookinghistoryofadmin"
       ) {
         setselected("Booking history");
       } else {
@@ -75,13 +74,22 @@ function SideBar(props) {
             <Link>Dashboard</Link>
           </LinkWrapper>
           <LinkWrapper
+            select={selected === "user homepage slider"}
+            onClick={() => {
+              setselected("user homepage slider");
+              navigate("/userhomepage");
+            }}
+          >
+            <Link>User Homepage Slider</Link>
+          </LinkWrapper>
+          <LinkWrapper
             select={selected === "Landing page"}
             onClick={() => {
               setselected("Landing page");
-              navigate("/userlandingpage");
+              navigate("/userselectedcity");
             }}
           >
-            <Link>User Landing Page</Link>
+            <Link>User Selected City</Link>
           </LinkWrapper>
           <LinkWrapper
             select={selected === "Booking history"}
