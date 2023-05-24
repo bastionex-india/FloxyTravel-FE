@@ -83,6 +83,8 @@ const Notifications = styled.div`
   position: absolute;
   background-color: #01515b;
   color: #fff;
+  height: 240px;
+  overflow: scroll;
   width: 275px;
   height: 275px;
   overflow: scroll;
@@ -269,7 +271,6 @@ function Navigation(props) {
       <Logo>
         <img width={`180px`} src={BrandLogo} />
       </Logo>
-
       <RightWrapper>
         <NotificationsWrapper>
           <NotificationBell
@@ -296,7 +297,7 @@ function Navigation(props) {
           )}
         </NotificationsWrapper>
         <UserInfo>
-          {/* {authData?.data?.profile?<Image src={`http://188.166.176.89:1999/uploads/${authData?.data?.profile}`} style={{height:"50px",width:"50px"}} roundedCircle alt='image'/>:<UserImg src={Avtar} alt="hello" />} */}
+          {/* {authData?.data?.profile?<Image src={`http://http://139.59.82.13:4000/:1999/uploads/${authData?.data?.profile}`} style={{height:"50px",width:"50px"}} roundedCircle alt='image'/>:<UserImg src={Avtar} alt="hello" />} */}
           <DropDown onClick={() => setShow(showDropDown)}>
             {authData?.data?.name}{" "}
             <i className="fa-sharp fa-solid fa-caret-down"></i>
