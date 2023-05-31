@@ -173,7 +173,7 @@ const GetHotelByVendor = () => {
     console.log("sssssss", formdata);
     axios({
       method: "post",
-      url: `${environmentVariables.apiUrl}/auth/addhotely`,
+      url: `${environmentVariables.apiUrl}/auth/addhotel`,
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
