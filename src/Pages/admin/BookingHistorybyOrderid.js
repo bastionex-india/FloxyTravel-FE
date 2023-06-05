@@ -260,7 +260,7 @@ const BookingHistorybyOrderid = () => {
                   </Locationwrapper>
                 </LocationiconWrapper>
               </TextWrapper>
-              <PriceText>
+              {/* <PriceText>
                 <span style={{ fontSize: "30px" }}>&#8377;</span>
                 <span
                   style={{
@@ -271,7 +271,7 @@ const BookingHistorybyOrderid = () => {
                 >
                   {data.price}
                 </span>
-              </PriceText>
+              </PriceText> */}
             </PriceWrapper>
             <ImageWrapper id="GalleryDetails">
               {/* <Image src={`${environmentVariables.apiUrl}/uploads/${data.image[0]}`} />             */}
