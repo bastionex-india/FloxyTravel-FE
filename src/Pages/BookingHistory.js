@@ -217,28 +217,10 @@ const BookingHistory = () => {
   useEffect(() => {
     getAllUsers();
   }, [select, select1]);
-  // console.log("dssasd",data)
-  const ConfirmedData = () => {};
-  const CompletedData = () => {};
-  const CancelledData = () => {};
+  const ApprovedData = () => {};
+  const PendingData = () => {};
 
   return (
-    // <div style={{display: 'flex',width: "100%",justifyContent: "space-around", marginTop: "7%",backgroundColor: 'white'}}>
-    //   {
-    //     data.data && data.data.map((item,index)=>{
-    //       return (
-    //       <div style={{cursor:'pointer'}} onClick={()=>navigation('/bookinghotelbyid',{state:item})}>
-    //          <div>
-    //           {item.hotelname}
-    //          </div>
-    //           <div>
-    //             {item.area}
-    //           </div>
-    //       </div>
-    //       )
-    //     })
-    //   }
-    // </div>
     <>
       <TextMainWrapper>
         {/* <SideBar><LeftSlideBar/></SideBar>  */}
@@ -292,17 +274,14 @@ const BookingHistory = () => {
                   value={select}
                   required
                 >
-                  <option value="all" onClick={ConfirmedData}>
+                  <option value="all" onClick={ApprovedData}>
                     All
                   </option>
-                  <option value="confirmed" onClick={ConfirmedData}>
-                    Confirmed Booking
+                  <option value="approved" onClick={ApprovedData}>
+                    Approved Booking
                   </option>
-                  <option value="completed" onClick={CompletedData}>
-                    Completed Booking
-                  </option>
-                  <option value="cancelled" onClick={CancelledData}>
-                    Cancelled Booking
+                  <option value="pending" onClick={PendingData}>
+                    Pending Booking
                   </option>
                 </Select>
               </TextSelectField>
@@ -310,12 +289,12 @@ const BookingHistory = () => {
           </Root>
           <RecentlyUploadedHeader>
             <RecentlyUploadedHeaderElem>Hotel Name</RecentlyUploadedHeaderElem>
-            <RecentlyUploadedHeaderElem>Booking Id</RecentlyUploadedHeaderElem>
+            <RecentlyUploadedHeaderElem>Creation Date</RecentlyUploadedHeaderElem>
             <RecentlyUploadedHeaderElem>
-              Booking Name
+              CheckIn Date
             </RecentlyUploadedHeaderElem>
             <RecentlyUploadedHeaderElem>
-              Booking Date
+              CheckOut Date
             </RecentlyUploadedHeaderElem>
             <RecentlyUploadedHeaderElem>Status</RecentlyUploadedHeaderElem>
             <RecentlyUploadedHeaderElem>Action</RecentlyUploadedHeaderElem>
@@ -324,7 +303,7 @@ const BookingHistory = () => {
           {data.data &&
             data.data.map((item, key) => {
               const bookingDate = new Date(item.createdAt);
-               console.log("------www-",item)
+              //  console.log("------www-",item)
 
               return (
                 <RecentlyUploaded key={key}>
@@ -332,12 +311,12 @@ const BookingHistory = () => {
                     <DocImage />
                     <DocName>{item.hotelname}</DocName>
                   </DocInfo>
-                  <RecentlyUploadedDate>{item.orderid}</RecentlyUploadedDate>
+                  <RecentlyUploadedDate>{bookingDate.toLocaleDateString()}</RecentlyUploadedDate>
                   <RecentlyUploadedDate>
-                    {item.customer.name}
+                    {item.checkIn}
                   </RecentlyUploadedDate>
                   <RecentlyUploadedDate>
-                    {bookingDate.toLocaleDateString()}
+                   {item.checkOut}
                   </RecentlyUploadedDate>
                   <RecentlyUploadedStatus>{item.status}</RecentlyUploadedStatus>
                   <RecentlyUploadedButtonWrapper>

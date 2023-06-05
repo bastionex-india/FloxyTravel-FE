@@ -222,15 +222,15 @@ const BookingHotelById = () => {
   const [btnState, setBtnState] = useState(false);
   const location = useLocation();
 
-  console.log("------------------",state)
+  // console.log("------------------",state)
   const getAllUsers = async () => {
     await axios
       .get(
-        `${environmentVariables.apiUrl}/vendor/getallbookingbyorderid/${authData.data.vendorId}/${state.orderid}`,
+        `${environmentVariables.apiUrl}/vendor/getallbookingbyorderid/${authData.data.vendorId}/${state._id}`,
         { headers: { _token: authData.data.token } }
       )
       .then((response) => {
-        console.log("response.data", response.data.data[0]);
+        // console.log("response.data", response.data.data[0]);
         setData(response.data.data[0]);
       })
       .catch((error) => {

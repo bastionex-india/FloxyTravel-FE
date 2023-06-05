@@ -146,7 +146,7 @@ const BookingHistoryofAdmin = () => {
   const navigation = useNavigate();
 
   const handleClick = (item) => {
-    // console.log("hcjhcjhf",item)
+    console.log("hcjhcjhf",item)
     navigation("/bookinghistorybyorderid", { state: item });
   };
   useEffect(() => {
@@ -199,6 +199,7 @@ const BookingHistoryofAdmin = () => {
     axios
       .request(config)
       .then((response) => {
+        console.log("allusers",response?.data?.data)
         setData(response?.data?.data);
       })
       .catch((err) => {
@@ -209,10 +210,8 @@ const BookingHistoryofAdmin = () => {
     getAllUsers();
   }, [select, select1]);
 
-  const ConfirmedData = () => {};
-  const ConfirmedData1 = () => {};
-  const CompletedData = () => {};
-  const CancelledData = () => {};
+  const ApprovedData = () => {};
+  const PendingData = () => {};
 
   return (
     <>
@@ -268,30 +267,32 @@ const BookingHistoryofAdmin = () => {
                   value={select}
                   required
                 >
-                  <option value="all" onClick={ConfirmedData}>
+                  <option value="all" onClick={ApprovedData}>
                     All
                   </option>
-                  <option value="confirmed" onClick={ConfirmedData}>
-                    Confirmed Booking
+                  <option value="approved" onClick={ApprovedData}>
+                    Approved Booking
                   </option>
-                  <option value="completed" onClick={CompletedData}>
-                    Completed Booking
+                  <option value="pending" onClick={PendingData}>
+                    Pending Booking
                   </option>
-                  <option value="cancelled" onClick={CancelledData}>
+                  {/* <option value="cancelled" onClick={CancelledData}>
                     Cancelled Booking
-                  </option>
+                  </option> */}
                 </Select>
               </TextSelectField>
             </TextWrapper>
           </Root>
           <RecentlyUploadedHeader>
             <RecentlyUploadedHeaderElem>Hotel Name</RecentlyUploadedHeaderElem>
-            <RecentlyUploadedHeaderElem>Booking Id</RecentlyUploadedHeaderElem>
             <RecentlyUploadedHeaderElem>
               Creation date
             </RecentlyUploadedHeaderElem>
             <RecentlyUploadedHeaderElem>
-              Booking Date
+              CheckIn Date
+            </RecentlyUploadedHeaderElem>
+            <RecentlyUploadedHeaderElem>
+              Checkout Date
             </RecentlyUploadedHeaderElem>
             <RecentlyUploadedHeaderElem>Status</RecentlyUploadedHeaderElem>
             <RecentlyUploadedHeaderElem>Action</RecentlyUploadedHeaderElem>
@@ -308,12 +309,12 @@ const BookingHistoryofAdmin = () => {
                     <DocImage />
                     <DocName>{item.hotelname}</DocName>
                   </DocInfo>
-                  <RecentlyUploadedDate>{item.orderid}</RecentlyUploadedDate>
+                  <RecentlyUploadedDate>{bookingDate.toLocaleDateString()}</RecentlyUploadedDate>
                   <RecentlyUploadedDate>
-                    {bookingDate.toLocaleDateString()}
+                  {item.checkIn}
                   </RecentlyUploadedDate>
                   <RecentlyUploadedDate>
-                    {item.checkIn}
+                  {item.checkOut}
                   </RecentlyUploadedDate>
                   <RecentlyUploadedStatus>{item.status}</RecentlyUploadedStatus>
                   <RecentlyUploadedButtonWrapper>
