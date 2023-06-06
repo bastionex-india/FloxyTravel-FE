@@ -202,7 +202,9 @@ function Navigation(props) {
       })
       .then((response) => {
         console.log(response.data.data);
-        setNotificationData(response.data.data);
+        setNotificationData(
+          response.data.data.sort((a, b) => b.createdAt - a.createdAt)
+        );
         const openedData = response?.data?.data.filter((val) =>
           val?.openedId.includes(authData?.data?.id)
         );

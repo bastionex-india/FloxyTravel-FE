@@ -199,7 +199,7 @@ const BookingHistoryofAdmin = () => {
     axios
       .request(config)
       .then((response) => {
-        setData(response?.data?.data);
+        setData(response?.data?.data.sort((a, b) => b.createdAt - a.createdAt));
       })
       .catch((err) => {
         console.log(err);
@@ -312,9 +312,7 @@ const BookingHistoryofAdmin = () => {
                   <RecentlyUploadedDate>
                     {bookingDate.toLocaleDateString()}
                   </RecentlyUploadedDate>
-                  <RecentlyUploadedDate>
-                    {item.checkIn}
-                  </RecentlyUploadedDate>
+                  <RecentlyUploadedDate>{item.checkIn}</RecentlyUploadedDate>
                   <RecentlyUploadedStatus>{item.status}</RecentlyUploadedStatus>
                   <RecentlyUploadedButtonWrapper>
                     <RecentlyUploadedButton onClick={() => handleClick(item)}>

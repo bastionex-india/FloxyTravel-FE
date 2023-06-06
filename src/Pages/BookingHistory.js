@@ -202,13 +202,13 @@ const BookingHistory = () => {
       method: "post",
       url: `${environmentVariables.apiUrl}/vendor/getallbooking/${authData.data.vendorId}`,
       headers: { _token: authData.data.token },
-      data:data
+      data: data,
     };
     await axios
       .request(config)
       .then((response) => {
-        // console.log("response.data",response.data)
-        setData(response.data);
+        console.log("response.data", response.data);
+        setData(response.data.sort((a, b) => b.createdAt - a.createdAt));
       })
       .catch((error) => {
         console.log("error", error);
@@ -324,7 +324,7 @@ const BookingHistory = () => {
           {data.data &&
             data.data.map((item, key) => {
               const bookingDate = new Date(item.createdAt);
-               console.log("------www-",item)
+              console.log("------www-", item);
 
               return (
                 <RecentlyUploaded key={key}>
