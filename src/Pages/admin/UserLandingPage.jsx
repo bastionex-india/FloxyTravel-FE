@@ -227,7 +227,7 @@ const UserLandingPage = () => {
         }
         axios({
           method: "post",
-          url: `${environmentVariables.apiUrl}/auth/addimagesacctocities/${chosenState}`,
+          url: `${environmentVariables.apiUrl}/admin/addimagesacctocities/${chosenState}`,
           headers: {
             Accept: "application/json",
             "Content-Type": "application/json",

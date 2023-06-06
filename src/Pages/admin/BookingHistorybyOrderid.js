@@ -217,12 +217,12 @@ const BookingHistorybyOrderid = () => {
   const getAllUsers = async () => {
     await axios
       .get(
-        `${environmentVariables.apiUrl}/admin/getallbookingbyorderid/${state.orderid}`,
+        `${environmentVariables.apiUrl}/admin/getallbookingbyorderid/${state._id}`,
         { headers: { _token: authData.data.token } }
       )
       .then((response) => {
-        console.log("response.data", response.data.data[0]);
-        setData(response.data.data[0]);
+        console.log("response.data", response.data.data);
+        setData(response.data.data);
       })
       .catch((error) => {
         console.log("error", error);
@@ -260,7 +260,7 @@ const BookingHistorybyOrderid = () => {
                   </Locationwrapper>
                 </LocationiconWrapper>
               </TextWrapper>
-              <PriceText>
+              {/* <PriceText>
                 <span style={{ fontSize: "30px" }}>&#8377;</span>
                 <span
                   style={{
@@ -271,7 +271,7 @@ const BookingHistorybyOrderid = () => {
                 >
                   {data.price}
                 </span>
-              </PriceText>
+              </PriceText> */}
             </PriceWrapper>
             <ImageWrapper id="GalleryDetails">
               {/* <Image src={`${environmentVariables.apiUrl}/uploads/${data.image[0]}`} />             */}
