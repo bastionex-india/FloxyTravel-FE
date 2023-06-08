@@ -49,7 +49,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const Check = () => {
+const Check = ({ open, setOpen }) => {
   const [data, setData] = useState([]);
   const [responseData, setResponseData] = useState([]);
   const [adminResponseData, setAdminResponseData] = useState([]);
@@ -64,6 +64,7 @@ const Check = () => {
   const [vendorValue, setVendorValue] = useState("");
   const [adminValue, setAdminValue] = useState("");
   const [error, setError] = useState("");
+  // const [open, setOpen] = useState(false);
 
   const getAllListData = async () => {
     await axios
@@ -88,7 +89,6 @@ const Check = () => {
   // const addVendor=()=>{
 
   // }
-  const [open, setOpen] = useState(false);
   // const [open1, setOpen1] = useState(false);
 
   const handleClickOpen = () => {
@@ -300,59 +300,11 @@ const Check = () => {
 
   return (
     <Root>
-      <button type="button" class="btn btn-success" onClick={handleClickOpen}>Add Vendor or admin</button>
+      {/* <button type="button" class="btn btn-success" onClick={handleClickOpen}>
+        Add Vendor or admin
+      </button> */}
       {/* <button onClick={handleClickOpen1}>Add Admin</button> */}
       <CardWrapper>
-        {data.map((item, index) => {
-          // console.log("dddddddddd",item)
-          return (
-            item.active !== true && (
-              <Card
-                sx={{ maxWidth: 345 }}
-                key={index}
-                style={{ cursor: "pointer" }}
-              >
-                {/* <CardMedia
-                            component="img"
-                            alt="green iguana"
-                            height="140"
-                            image="../../Images/brandLogo.png"
-                            onClick={()=>getAnotherComponent(item)}
-                        /> */}
-                <CardContent>
-                  <DeleteIcon onClick={() => deleteVendor(item)} />
-                  <Typography
-                    gutterBottom
-                    variant="h5"
-                    component="div"
-                    onClick={() => getAnotherComponent(item)}
-                  >
-                    Name : {item.name}
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    onClick={() => getAnotherComponent(item)}
-                  >
-                    Email : {item.email}
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    onClick={() => getAnotherComponent(item)}
-                  >
-                    Contact : {item.mobile}
-                  </Typography>
-                </CardContent>
-                {/* <CardActions>
-                            <Button size="small">Share</Button>
-                            <Button size="small">Learn More</Button>
-                        </CardActions> */}
-              </Card>
-            )
-          );
-        })}
-
         <div>
           <Dialog
             open={open}

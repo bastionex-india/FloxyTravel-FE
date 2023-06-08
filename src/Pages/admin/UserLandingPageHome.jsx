@@ -210,7 +210,7 @@ const UserLandingPageHome = () => {
           <RecentlyDocumentHeaderElem>City Name</RecentlyDocumentHeaderElem>
           <RecentlyDocumentHeaderElem>Title</RecentlyDocumentHeaderElem>
           <RecentlyDocumentHeaderElem>Theme</RecentlyDocumentHeaderElem>
-          <RecentlyDocumentHeaderElem>Actions</RecentlyDocumentHeaderElem>
+          <RecentlyDocumentHeaderElem style={{justifyContent:"flex-end"}}>Actions</RecentlyDocumentHeaderElem>
         </RecentlyDocumentHeader>
         {isLoading === true ? (
           <div style={{ display: "flex", justifyContent: "center" }}>
@@ -232,7 +232,7 @@ const UserLandingPageHome = () => {
                     <ThemeBoxElement>{val?.city}</ThemeBoxElement>
                     <ThemeBoxElement>{val?.title}</ThemeBoxElement>
                     <ThemeBoxElement>{val?.theme}</ThemeBoxElement>
-                    <ThemeBoxElement>
+                    <ThemeBoxElement style={{justifyContent:"flex-end"}}>
                       <DeleteIcon
                         id={val?._id}
                         onClick={(e) => handleDeletePopUp(e)}
@@ -267,7 +267,7 @@ const UserLandingPageHome = () => {
         <AddThemePopUpContainer>
           <AddThemePopUp>
             <div
-              style={{ color: "#fff", textAlign: "center", fontSize: "20px" }}
+              style={{ color: "#fff", textAlign: "center", fontSize: "20px",marginTop:"20px" }}
             >
               {console.log(themeId)}
               {`${themeId === null ? "Add" : "Edit"} Section`}
@@ -321,9 +321,9 @@ const UserLandingPageHome = () => {
               </AddThemeInputWrapper>
             </AddThemeWrapper>
             <ButtonWrapper>
-              <AddStatePopUpSubmitButton onClick={handleAddData}>
+              <AddButton style={{backgroundColor:"#fff",color:"#000"}} onClick={handleAddData}>
                 Submit
-              </AddStatePopUpSubmitButton>
+              </AddButton>
             </ButtonWrapper>
           </AddThemePopUp>
         </AddThemePopUpContainer>
@@ -558,6 +558,7 @@ const DeletePopUpText = styled.div`
   color: #fff;
   text-align: center;
   font-size: 16px;
+  margin: 0 40px;
 `;
 const DeletePopUpButtonWrapper = styled.div`
   display: flex;
@@ -597,7 +598,7 @@ const AddThemePopUp = styled.div`
   margin: auto;
   box-shadow: #000 2px 1px 1px 1px;
   width: 42vw;
-  height: 50vh;
+  // height: 50vh;
   border-radius: 5px;
 `;
 const AddStatePopUp = styled.div`
@@ -634,6 +635,7 @@ const AddStatePopUpLabel = styled.div`
 const ButtonWrapper = styled.div`
   display: flex;
   justify-content: center;
+  margin-bottom:20px;
 `;
 
 const AddStateInputSelect = styled.select`
@@ -651,22 +653,31 @@ const AddStateFileInput = styled.input`
 
 const AddStatePopUpSubmitButton = styled.div`
   cursor: pointer;
-  width: 110px;
+  /* width: 110px;
   padding: 5px 0;
   text-align: center;
   color: #fff;
   background-color: #333;
-  border-radius: 50px;
+  border-radius: 50px; */
+  background-color: #fff;
+  height: 40px;
+  font-size: 14px;
+  color: #01565c;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0px 20px;
+  border-radius: 5px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  /* margin-left:20px; */
 `;
 
 export const RecentlyDocumentHeader = styled.div`
-  display: grid;
-  grid-template-columns: 25% 25% 25% 25%;
+ display: flex;
   margin: 5px 5%;
+  justify-content:space-between;
   padding: 14px 15px;
-  /* display: flex;
-  margin: 5px 5%;
-  padding: 14px 15px; */
   @media (max-width: 768px) {
     display: none;
   }
@@ -689,8 +700,8 @@ export const RecentlyDocumentHeaderElem = styled.div`
 export const RecentlyDocumentUploaded = styled.div`
   cursor: move;
   background: #fff;
-  display: grid;
-  grid-template-columns: 25% 25% 25% 25%;
+  display:flex;
+  justify-content:space-between;
   -webkit-box-align: center;
   align-items: center;
   margin: 10px 5%;

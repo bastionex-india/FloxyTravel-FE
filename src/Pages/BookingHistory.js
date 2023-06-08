@@ -4,7 +4,7 @@ import { AuthContext } from "../ContextApi/ContextApi";
 import { environmentVariables } from "../config/config";
 import { useNavigate } from "react-router-dom";
 import io, { socketIOClient } from "socket.io-client";
-
+import CircularLoader from "../Component/CircularLoader/CircularLoader";
 import styled from "styled-components";
 // import AdharCard from "../../Component/Images/sample_aadhar.jpg";
 // import LeftSlideBar from '../../Component/LeftSlideBar/LeftSlideBar';
@@ -143,6 +143,7 @@ const TextMainWrapper = styled.div`
 
 const BookingHistory = () => {
   const { authData, setAuthData } = useContext(AuthContext);
+  const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState("");
   const navigation = useNavigate();
   const [select, setSelect] = useState("");
@@ -209,12 +210,15 @@ const BookingHistory = () => {
       .then((response) => {
         console.log("response.data", response.data);
         setData(response.data.sort((a, b) => b.createdAt - a.createdAt));
+        setIsLoading(false);
       })
       .catch((error) => {
         console.log("error", error);
+        setIsLoading(false);
       });
   };
   useEffect(() => {
+    setIsLoading(true);
     getAllUsers();
   }, [select, select1]);
   const ApprovedData = () => {};
@@ -289,7 +293,9 @@ const BookingHistory = () => {
           </Root>
           <RecentlyUploadedHeader>
             <RecentlyUploadedHeaderElem>Hotel Name</RecentlyUploadedHeaderElem>
-            <RecentlyUploadedHeaderElem>Creation Date</RecentlyUploadedHeaderElem>
+            <RecentlyUploadedHeaderElem>
+              Creation Date
+            </RecentlyUploadedHeaderElem>
             <RecentlyUploadedHeaderElem>
               CheckIn Date
             </RecentlyUploadedHeaderElem>
@@ -311,13 +317,11 @@ const BookingHistory = () => {
                     <DocImage />
                     <DocName>{item.hotelname}</DocName>
                   </DocInfo>
-                  <RecentlyUploadedDate>{bookingDate.toLocaleDateString()}</RecentlyUploadedDate>
                   <RecentlyUploadedDate>
-                    {item.checkIn}
+                    {bookingDate.toLocaleDateString()}
                   </RecentlyUploadedDate>
-                  <RecentlyUploadedDate>
-                   {item.checkOut}
-                  </RecentlyUploadedDate>
+                  <RecentlyUploadedDate>{item.checkIn}</RecentlyUploadedDate>
+                  <RecentlyUploadedDate>{item.checkOut}</RecentlyUploadedDate>
                   <RecentlyUploadedStatus>{item.status}</RecentlyUploadedStatus>
                   <RecentlyUploadedButtonWrapper>
                     <RecentlyUploadedButton onClick={() => handleClick(item)}>

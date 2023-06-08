@@ -4,6 +4,7 @@ import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
+import CircularLoader from "../../Component/CircularLoader/CircularLoader";
 import Button from "@mui/material/Button";
 import { environmentVariables } from "../../config/config";
 import Typography from "@mui/material/Typography";
@@ -29,15 +30,15 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useFormik } from "formik";
 import { VendorRegisterSchema } from "./schemas/VendorRegisterSchems";
-import Check from './Check.js';
+import Check from "./Check.js";
 
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
 
 const Root = styled.div`
   width: 90%;
@@ -59,11 +60,12 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 const boldTextCss = {
-  fontWeight: 700
-}
+  fontWeight: 700,
+};
 
 const VendorList = () => {
   const [data, setData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const [responseData, setResponseData] = useState([]);
   const [adminResponseData, setAdminResponseData] = useState([]);
   const { authData, setAuthData } = useContext(AuthContext);
@@ -86,12 +88,15 @@ const VendorList = () => {
       .then((response) => {
         // console.log("vendorlist",response.data)
         setData(response.data.message);
+        setIsLoading(false);
       })
       .catch((err) => {
         console.log("error", err);
+        setIsLoading(false);
       });
   };
   useEffect(() => {
+    setIsLoading(true);
     getAllListData();
   }, []);
 
@@ -313,89 +318,143 @@ const VendorList = () => {
 
   return (
     <>
-      <div class="row row-cols-4 g-4" style={{width: '70rem'}}>
-  <div class="col">
-    <div class="card shadow p-3 mb-5 bg-body-tertiary rounded" >
-      <div  class="card-body">
-        <h6 style={{textAlign: 'center'}} class="card-title">PENDING</h6>
-        <h1 style={{textAlign: 'center', color: '#008080'}} class="card-text">
-        $80
-        </h1>
-        <p style={{textAlign: 'center'}} class="card-title">Total pendings</p>
+      <div class="row row-cols-4 g-4" style={{ width: "70rem" }}>
+        <div class="col">
+          <div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
+            <div class="card-body">
+              <h6 style={{ textAlign: "center" }} class="card-title">
+                PENDING
+              </h6>
+              <h1
+                style={{ textAlign: "center", color: "#008080" }}
+                class="card-text"
+              >
+                $80
+              </h1>
+              <p style={{ textAlign: "center" }} class="card-title">
+                Total pendings
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
+            <div class="card-body">
+              <h6 style={{ textAlign: "center" }} class="card-title">
+                EARNINGS
+              </h6>
+              <h1
+                style={{ textAlign: "center", color: "#008080" }}
+                class="card-text"
+              >
+                $50
+              </h1>
+              <p style={{ textAlign: "center" }} class="card-title">
+                Total earnings
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
+            <div class="card-body">
+              <h6 style={{ textAlign: "center" }} class="card-title">
+                BOOKINS
+              </h6>
+              <h1
+                style={{ textAlign: "center", color: "#008080" }}
+                class="card-text"
+              >
+                68
+              </h1>
+              <p style={{ textAlign: "center" }} class="card-title">
+                Total bookings
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
+            <div class="card-body">
+              <h6 style={{ textAlign: "center" }} class="card-title">
+                SERVICES
+              </h6>
+              <h1
+                style={{ textAlign: "center", color: "#008080" }}
+                class="card-text"
+              >
+                25
+              </h1>
+              <p style={{ textAlign: "center" }} class="card-title">
+                Total services
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-  <div class="col">
-    <div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
-      <div class="card-body">
-        <h6 style={{textAlign: 'center'}} class="card-title">EARNINGS</h6>
-        <h1 style={{textAlign: 'center', color: '#008080'}} class="card-text">
-        $50
-        </h1>
-        <p style={{textAlign: 'center'}} class="card-title">Total earnings</p>
-      </div>
-    </div>
-  </div>
-  <div class="col">
-    <div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
-      <div class="card-body">
-        <h6 style={{textAlign: 'center'}} class="card-title">BOOKINS</h6>
-        <h1 style={{textAlign: 'center', color: '#008080'}} class="card-text">
-        68
-        </h1>
-        <p style={{textAlign: 'center'}} class="card-title">Total bookings</p>
-      </div>
-    </div>
-  </div>
-  <div class="col">
-    <div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
-      <div class="card-body">
-        <h6 style={{textAlign: 'center'}} class="card-title">SERVICES</h6>
-        <h1 style={{textAlign: 'center', color: '#008080'}} class="card-text">
-        25
-        </h1>
-        <p style={{textAlign: 'center'}} class="card-title">Total services</p>
-      </div>
-    </div>
-  </div>
-</div>
 
-<TableContainer component={Paper} style={{width: '70rem'}}>
-            <Table sx={{ minWidth: 650 }} aria-label="simple table">
-              <TableHead >
-                <TableRow>
-                  <TableCell style={boldTextCss}>Vendor Name</TableCell>
-                  <TableCell style={boldTextCss} align="left">Email</TableCell>
-                  <TableCell style={boldTextCss} align="left">Contact Number</TableCell>
-                  <TableCell style={boldTextCss} align="left">Action</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {
-                  data && data.map((item, index) => {
-                    const bookingDate = new Date(item.createdAt);
-                    return (
-                      item.active !== true &&(
-                        <TableRow
+      {isLoading === true ? (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            marginTop: "30px",
+          }}
+        >
+          <CircularLoader></CircularLoader>
+        </div>
+      ) : (
+        <TableContainer component={Paper} style={{ width: "70rem" }}>
+          <Table sx={{ minWidth: 650 }} aria-label="simple table">
+            <TableHead>
+              <TableRow>
+                <TableCell style={boldTextCss}>Vendor Name</TableCell>
+                <TableCell style={boldTextCss} align="left">
+                  Email
+                </TableCell>
+                <TableCell style={boldTextCss} align="left">
+                  Contact Number
+                </TableCell>
+                <TableCell style={boldTextCss} align="left">
+                  Action
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {data &&
+                data.map((item, index) => {
+                  const bookingDate = new Date(item.createdAt);
+                  return (
+                    item.active !== true && (
+                      <TableRow
                         key={index}
-                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                        sx={{
+                          "&:last-child td, &:last-child th": { border: 0 },
+                        }}
                       >
                         <TableCell component="th" scope="row">
-                        {item.name}              
+                          {item.name}
                         </TableCell>
                         <TableCell align="left">{item.email}</TableCell>
                         <TableCell align="left">{item.mobile}</TableCell>
-                        <TableCell align="left"><Button size="small" variant="contained" type="button"><DeleteIcon onClick={() => deleteVendor(item)} /></Button></TableCell>
+                        <TableCell align="left">
+                          <Button
+                            size="small"
+                            variant="contained"
+                            type="button"
+                          >
+                            <DeleteIcon onClick={() => deleteVendor(item)} />
+                          </Button>
+                        </TableCell>
                       </TableRow>
-                      )
-                      
                     )
-                  })}
-              </TableBody>
-            </Table>
-          </TableContainer>
-</>    
-
+                  );
+                })}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      )}
+    </>
   );
 };
 

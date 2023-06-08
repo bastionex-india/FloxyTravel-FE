@@ -177,7 +177,7 @@ const ManageAdmin = () => {
 
   const handleClick = (item) => {
     console.log("hcjhcjhf", item);
-    navigation(`/managehotels/${item}`);
+    navigation("/bookinghistorybyorderid", { state: item });
   };
   
 
@@ -214,8 +214,8 @@ const ManageAdmin = () => {
         <TextRoot>
           <Root>
             <TextWrapper>
-              <Heading> Manage Admin/Vendor</Heading>
-              <AddButton onClick={()=>setAddVendorPopUp(true)}>Add Vendor/Admin</AddButton>
+              <Heading> Manage Hotels</Heading>
+              <AddButton onClick={()=>setAddVendorPopUp(true)}>Add Hotel</AddButton>
             </TextWrapper>
           </Root>
           {isLoading===true?<div style={{display:"flex",justifyContent:"center",marginTop:"30px"}}><CircularLoader></CircularLoader></div>:<TableContainer component={Paper}>
@@ -266,7 +266,7 @@ const ManageAdmin = () => {
                             size="small"
                             variant="contained"
                             type="button"
-                            onClick={(e) => handleClick(item?._id)}
+                            onClick={() => handleClick(item)}
                           >
                             View
                           </Button>

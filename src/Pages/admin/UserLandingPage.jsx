@@ -665,7 +665,7 @@ const UserLandingPage = () => {
             <RecentlyDocumentHeaderElem>Name</RecentlyDocumentHeaderElem>
             <RecentlyDocumentHeaderElem>Title</RecentlyDocumentHeaderElem>
             <RecentlyDocumentHeaderElem>Description</RecentlyDocumentHeaderElem>
-            <RecentlyDocumentHeaderElem style={{ justifyContent: "center" }}>
+            <RecentlyDocumentHeaderElem style={{ justifyContent: "flex-end" }}>
               Actions
             </RecentlyDocumentHeaderElem>
           </RecentlyDocumentHeader>
@@ -690,7 +690,7 @@ const UserLandingPage = () => {
                         <ThemeBoxElement>{val?.name}</ThemeBoxElement>
                         <ThemeBoxElement>{val?.heading}</ThemeBoxElement>
                         <ThemeBoxElementDesc>{`${val?.description}`}</ThemeBoxElementDesc>
-                        <ThemeBoxElement style={{ justifyContent: "center" }}>
+                        <ThemeBoxElement style={{ justifyContent: "flex-end" }}>
                           <DeleteIcon
                             id={val?._id}
                             onClick={(e) => handleDeleteThemePopUp(e)}
@@ -1088,6 +1088,7 @@ const AddStatePopUpSubmitButton = styled.div`
 export const RecentlyDocumentHeader = styled.div`
   display: flex;
   margin: 5px 5%;
+  justify-content:space-between;
   padding: 14px 15px;
   @media (max-width: 768px) {
     display: none;
@@ -1114,10 +1115,10 @@ export const RecentlyDocumentUploaded = styled.div`
   display: flex;
   -webkit-box-align: center;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-between;
   margin: 10px 5%;
   padding: 14px 15px;
-  padding-right: 0;
+  // padding-right: 0;
   box-shadow: 2px 2px 4px 1px #000;
   border-radius: 5px;
   @media (max-width: 768px) {
