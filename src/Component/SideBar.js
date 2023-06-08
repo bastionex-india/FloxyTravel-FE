@@ -13,11 +13,12 @@ const Root = styled.div`
   top: 80px;
 `;
 const LinkWrapper = styled.div`
-  padding: 15px 0px 15px 60px;
+  // padding: 15px 0px 15px 60px;
+  padding: 15px 0px 15px 15px;
   display: flex;
   color: #01575c;
   font-size: 17px;
-  font-weight: bold;
+  // font-weight: bold;
   border-left: 5px solid #fff;
   ${(p) =>
     p.select &&
@@ -109,7 +110,7 @@ function SideBar(props) {
               navigate("/bookinghistoryofadmin");
             }}
           >
-            <Link>Booking history</Link>
+            <Link>Booking History</Link>
           </LinkWrapper>
           {/* <LinkWrapper
             select={selected === "Upcoming Bookings"}
