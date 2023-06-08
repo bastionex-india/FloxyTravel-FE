@@ -2,12 +2,14 @@ import axios from "axios";
 import React, { useState, useContext, useEffect } from "react";
 import styled from "styled-components";
 import { AuthContext } from "../../ContextApi/ContextApi";
+import CircularLoader from "../../Component/CircularLoader/CircularLoader";
 import Swal from "sweetalert2";
 import { environmentVariables } from "../../config/config";
 const UserLandingPageHome = () => {
   const [isPriorityChanged, setIsPriority] = useState(false);
   const [addThemePopUp, setAddThemePopUp] = useState(false);
   const [themeId, setThemeId] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const [theme, setTheme] = useState(null);
   const [title, setTitle] = useState(null);
   const [allData, setAllData] = useState();
@@ -54,9 +56,11 @@ const UserLandingPageHome = () => {
       .then((response) => {
         console.log("response.data", response.data.data);
         setAllData(response.data.data);
+        setIsLoading(false);
       })
       .catch((error) => {
         console.log("error", error);
+        setIsLoading(false);
       });
   };
   const handleDeletePopUp = (e) => {
@@ -151,6 +155,7 @@ const UserLandingPageHome = () => {
     setTitle(null);
   };
   useEffect(() => {
+    setIsLoading(true);
     getPopularCities();
     getAllData();
   }, []);
@@ -186,56 +191,78 @@ const UserLandingPageHome = () => {
   };
   return (
     <Root>
-      <MainHeading>User Landing Page Home</MainHeading>
-      <ThemeContainer>
-        <StateHeading>Hotel Card Sections :</StateHeading>
+      <MainHeading>Manage Home Landing Page</MainHeading>
+      <div style={{ backgroundColor: "#fff", marginBottom: "10px" }}>
+        {" "}
+        <ThemeContainer>
+          <StateHeading>Hotel Card Sections :</StateHeading>
 
-        <StateAddIcon
+          <AddButton onClick={() => setAddThemePopUp(true)}>
+            Add Hotel Card Sections
+          </AddButton>
+          {/* <StateAddIcon
           onClick={() => setAddThemePopUp(true)}
           className="fa-solid fa-circle-plus"
           style={{ color: "#07515c" }}
-        />
-      </ThemeContainer>
-
-      <RecentlyDocumentHeader>
-        <RecentlyDocumentHeaderElem>City Name</RecentlyDocumentHeaderElem>
-        <RecentlyDocumentHeaderElem>Title</RecentlyDocumentHeaderElem>
-        <RecentlyDocumentHeaderElem>Theme</RecentlyDocumentHeaderElem>
-        <RecentlyDocumentHeaderElem>Actions</RecentlyDocumentHeaderElem>
-      </RecentlyDocumentHeader>
-      <ThemeCardWrapper>
-        {allData &&
-          allData
-            .sort((a, b) => a.priority - b.priority)
-            .map((val) => (
-              <RecentlyDocumentUploaded
-                draggable={true}
-                id={val?._id}
-                onDragOver={(e) => e.preventDefault()}
-                onDragStart={handleDrag}
-                onDrop={handleDrop}
+        /> */}
+        </ThemeContainer>
+        <RecentlyDocumentHeader>
+          <RecentlyDocumentHeaderElem>City Name</RecentlyDocumentHeaderElem>
+          <RecentlyDocumentHeaderElem>Title</RecentlyDocumentHeaderElem>
+          <RecentlyDocumentHeaderElem>Theme</RecentlyDocumentHeaderElem>
+          <RecentlyDocumentHeaderElem>Actions</RecentlyDocumentHeaderElem>
+        </RecentlyDocumentHeader>
+        {isLoading === true ? (
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <CircularLoader></CircularLoader>
+          </div>
+        ) : (
+          <ThemeCardWrapper>
+            {allData &&
+              allData
+                .sort((a, b) => a.priority - b.priority)
+                .map((val) => (
+                  <RecentlyDocumentUploaded
+                    draggable={true}
+                    id={val?._id}
+                    onDragOver={(e) => e.preventDefault()}
+                    onDragStart={handleDrag}
+                    onDrop={handleDrop}
+                  >
+                    <ThemeBoxElement>{val?.city}</ThemeBoxElement>
+                    <ThemeBoxElement>{val?.title}</ThemeBoxElement>
+                    <ThemeBoxElement>{val?.theme}</ThemeBoxElement>
+                    <ThemeBoxElement>
+                      <DeleteIcon
+                        id={val?._id}
+                        onClick={(e) => handleDeletePopUp(e)}
+                        className="fa-solid fa-trash"
+                      />
+                      <EditIcon
+                        onClick={(e) => handleEditPopUp(e)}
+                        id={val?._id}
+                        className="fa-solid fa-pen-to-square"
+                      />
+                    </ThemeBoxElement>
+                  </RecentlyDocumentUploaded>
+                ))}
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "flex-end",
+                margin: "10px 5%",
+              }}
+            >
+              <PriorityButton
+                isPriority={isPriorityChanged}
+                onClick={handlePriority}
               >
-                <ThemeBoxElement>{val?.city}</ThemeBoxElement>
-                <ThemeBoxElement>{val?.title}</ThemeBoxElement>
-                <ThemeBoxElement>{val?.theme}</ThemeBoxElement>
-                <ThemeBoxElement>
-                  <DeleteIcon
-                    id={val?._id}
-                    onClick={(e) => handleDeletePopUp(e)}
-                    className="fa-solid fa-trash"
-                  />
-                  <EditIcon
-                    onClick={(e) => handleEditPopUp(e)}
-                    id={val?._id}
-                    className="fa-solid fa-pen-to-square"
-                  />
-                </ThemeBoxElement>
-              </RecentlyDocumentUploaded>
-            ))}
-      </ThemeCardWrapper>
-      <PriorityButton isPriority={isPriorityChanged} onClick={handlePriority}>
-        Save
-      </PriorityButton>
+                Save
+              </PriorityButton>
+            </div>
+          </ThemeCardWrapper>
+        )}
+      </div>
       {addThemePopUp && (
         <AddThemePopUpContainer>
           <AddThemePopUp>
@@ -326,6 +353,20 @@ const UserLandingPageHome = () => {
   );
 };
 
+const AddButton = styled.div`
+  background-color: #01575c;
+  height: 40px;
+  font-size: 14px;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0px 20px;
+  border-radius: 5px;
+  font-weight: 700;
+  margin-left: 20px;
+  cursor: pointer;
+`;
 const ThemeNameIconWrapper = styled.div`
   display: flex;
   justify-content: space-between;
@@ -387,10 +428,16 @@ const BackgroundImage = styled.img`
   margin-top: 40px;
 `;
 const ThemeContainer = styled.div`
+  /* display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 20px 0; */
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   padding: 20px 0;
+  margin: 0 5%;
+  padding-bottom: 0;
 `;
 
 const ThemeCardWrapper = styled.div`
@@ -431,10 +478,15 @@ const Root = styled.div`
 `;
 
 const MainHeading = styled.div`
-  font-size: 30px;
+  /* font-size: 30px;
   font-weight: 500;
   text-align: center;
-  color: #01575c;
+  color: #01575c; */
+  font-size: 1.75rem;
+  font-weight: 500;
+  /* text-align: center; */
+  color: #000;
+  margin: 0 5% 10px 5%;
 `;
 
 const StatesContainer = styled.div`
@@ -491,8 +543,8 @@ const DeletePopUp = styled.div`
   background-color: #01575c;
   margin: auto;
   box-shadow: #000 2px 1px 1px 1px;
-  width: 30vw;
-  height: 30vh;
+  /* width: 30vw; */
+  /* height: 30vh; */
   border-radius: 5px;
 `;
 
@@ -612,6 +664,9 @@ export const RecentlyDocumentHeader = styled.div`
   grid-template-columns: 25% 25% 25% 25%;
   margin: 5px 5%;
   padding: 14px 15px;
+  /* display: flex;
+  margin: 5px 5%;
+  padding: 14px 15px; */
   @media (max-width: 768px) {
     display: none;
   }
@@ -623,9 +678,10 @@ export const RecentlyDocumentHeaderElem = styled.div`
   display: flex;
   justify-content: center; */
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   color: rgb(22 22 22);
-  padding-left: 4px;
+  width: 200px;
+  /* padding-left: 4px; */
   font-weight: 600;
   font-size: 18px;
 `;
@@ -639,7 +695,7 @@ export const RecentlyDocumentUploaded = styled.div`
   align-items: center;
   margin: 10px 5%;
   padding: 14px 15px;
-  box-shadow: 0px 0px 5px 5px #0000;
+  box-shadow: 2px 2px 4px 1px #000;
   border-radius: 5px;
   @media (max-width: 768px) {
     display: flex;
@@ -650,7 +706,8 @@ export const RecentlyDocumentUploaded = styled.div`
 export const MainThemeContainer = styled.div``;
 export const ThemeBoxElement = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
+  width: 200px;
 `;
 export const ThemeBoxElementDesc = styled.div`
   display: flex;
@@ -663,12 +720,17 @@ export const ThemeBoxElementDesc = styled.div`
 `;
 export const PriorityButton = styled.div`
   cursor: ${(props) => (props.isPriority ? "pointer" : "default")};
-  float: right;
-  margin: 10px 50px 0 0;
-  padding: 5px 10px;
-  color: #fff;
   background-color: ${(props) => (props.isPriority ? `#01565b` : `grey`)};
-  border: 1px solid transparent;
+  /* background-color: #01575c; */
+  height: 40px;
+  font-size: 14px;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0px 20px;
   border-radius: 5px;
+  font-weight: 700;
+  margin-left: 20px;
 `;
 export default UserLandingPageHome;

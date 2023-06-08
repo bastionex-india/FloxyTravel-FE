@@ -54,6 +54,8 @@ function SideBar(props) {
         window.location.href.split("/").pop() === "bookinghistoryofadmin"
       ) {
         setselected("Booking history");
+      } else if (window.location.href.split("/").pop() === "manageadmin") {
+        setselected("manageadmin");
       } else {
         setselected("Dashboard");
       }
@@ -72,6 +74,15 @@ function SideBar(props) {
             }}
           >
             <Link>Dashboard</Link>
+          </LinkWrapper>{" "}
+          <LinkWrapper
+            select={selected === "manageadmin"}
+            onClick={() => {
+              setselected("manageadmin");
+              navigate("/manageadmin");
+            }}
+          >
+            <Link>Manage Admin/Vendor</Link>
           </LinkWrapper>
           <LinkWrapper
             select={selected === "user homepage slider"}
