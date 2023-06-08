@@ -19,6 +19,7 @@ import UserLandingPage from "./Pages/admin/UserLandingPage";
 import UserLandingPageHome from "./Pages/admin/UserLandingPageHome";
 import BookingHistoryofAdmin from "./Pages/admin/BookingHistoryofAdmin";
 import BookingHistorybyOrderid from "./Pages/admin/BookingHistorybyOrderid";
+import ManageAdmin from "./Pages/admin/ManageAdmin/ManageAdmin";
 
 const Root = styled.div``;
 const LeftWrapper = styled.div`
@@ -51,6 +52,7 @@ function App() {
                   <>
                     <Route path="/" element={<Dashboard1 />} />
                     <Route path="/profile" element={<Profile />} />
+                    <Route path="manageadmin" element={<ManageAdmin />} />
                     <Route
                       path="/upcomingbookings"
                       element={<UpcomingBookings />}

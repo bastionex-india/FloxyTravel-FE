@@ -3,27 +3,20 @@ import { useNavigate } from "react-router-dom";
 
 import styled from "styled-components";
 import axios from "axios";
-import { environmentVariables } from "../../config/config";
+import { environmentVariables } from "../../../config/config";
 import { useEffect } from "react";
 import { useContext } from "react";
-import { AuthContext } from "../../ContextApi/ContextApi";
+import { AuthContext } from "../../../ContextApi/ContextApi";
 import io, { socketIOClient } from "socket.io-client";
 
-
-import Table from '@mui/material/Table';
-import { Button } from '@mui/material'
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
-
-
-
-
-
-
+import Table from "@mui/material/Table";
+import { Button } from "@mui/material";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
 
 import moment from "moment";
 const TextRoot = styled.div`
@@ -159,7 +152,7 @@ const TextMainWrapper = styled.div`
     display: flex;
   }
 `;
-const BookingHistoryofAdmin = () => {
+const ManageAdmin = () => {
   const [select, setSelect] = useState("");
   const [select1, setSelect1] = useState("");
   const { authData, setAuthData } = useContext(AuthContext);
@@ -192,7 +185,6 @@ const BookingHistoryofAdmin = () => {
       socket.disconnect();
     };
   }, []);
-
 
   const getAllUsers = async () => {
     console.log("aaa", select1);
@@ -232,122 +224,82 @@ const BookingHistoryofAdmin = () => {
     getAllUsers();
   }, [select, select1]);
 
-  const ApprovedData = () => { };
-  const PendingData = () => { };
+  const ApprovedData = () => {};
+  const PendingData = () => {};
   const boldTextCss = {
-    fontWeight: 700
-  }
+    fontWeight: 700,
+  };
   return (
     <>
       <TextMainWrapper>
         <TextRoot>
           <Root>
             <TextWrapper>
-              <Heading> Booking History</Heading>
-              <TextSelectField>
-                <Select
-                  onChange={(e) => {
-                    setSelect1(e.target.value);
-                  }}
-                  //   value={select1}
-                  required
-                >
-                  <option value="">Select Range</option>
-                  <option
-                    value={
-                      new Date(new Date().getTime() - 2 * 24 * 60 * 60 * 1000)
-                    }
-                  >
-                    Past Two days
-                  </option>
-                  <option
-                    value={
-                      new Date(new Date().getTime() - 7 * 24 * 60 * 60 * 1000)
-                    }
-                  >
-                    Past one week
-                  </option>
-                  <option
-                    value={
-                      new Date(new Date().getTime() - 30 * 24 * 60 * 60 * 1000)
-                    }
-                  >
-                    Past one month
-                  </option>
-                  {/* <option value="2" onClick={CompletedData}>
-                    Completed Booking
-                  </option>
-                  <option value="3" onClick={CancelledData}>
-                    Cancelled Booking
-                  </option> */}
-                </Select>
-              </TextSelectField>
-              <TextSelectField>
-                <Select
-                  onChange={(e) => {
-                    setSelect(e.target.value);
-                  }}
-                  value={select}
-                  required
-                >
-                  <option value="all" onClick={ApprovedData}>
-                    All
-                  </option>
-                  <option value="approved" onClick={ApprovedData}>
-                    Approved Booking
-                  </option>
-                  <option value="pending" onClick={PendingData}>
-                    Pending Booking
-                  </option>
-                  {/* <option value="cancelled" onClick={CancelledData}>
-                    Cancelled Booking
-                  </option> */}
-                </Select>
-              </TextSelectField>
+              <Heading> Manage Admin/Vendor</Heading>
             </TextWrapper>
           </Root>
           <TableContainer component={Paper}>
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
-              <TableHead >
+              <TableHead>
                 <TableRow>
-                  <TableCell style={boldTextCss}>Hotel Name</TableCell>
-                  <TableCell style={boldTextCss} align="right">CheckIn Date</TableCell>
-                  <TableCell style={boldTextCss} align="right">Checkout Date</TableCell>
-                  <TableCell style={boldTextCss} align="right">Creation date</TableCell>
-                  <TableCell style={boldTextCss} align="right">Status</TableCell>
-                  <TableCell style={boldTextCss} align="right">Action</TableCell>
+                  <TableCell style={boldTextCss}>Name</TableCell>
+                  <TableCell style={boldTextCss} align="right">
+                    Email
+                  </TableCell>
+                  <TableCell style={boldTextCss} align="right">
+                    Contact
+                  </TableCell>
+                  <TableCell style={boldTextCss} align="right">
+                    Creation date
+                  </TableCell>
+                  <TableCell style={boldTextCss} align="right">
+                    Status
+                  </TableCell>
+                  <TableCell style={boldTextCss} align="right">
+                    Action
+                  </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {
-                  data && data.map((item, index) => {
+                {data &&
+                  data.map((item, index) => {
                     const bookingDate = new Date(item.createdAt);
                     return (
                       <TableRow
-                      
                         key={index}
-                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                        sx={{
+                          "&:last-child td, &:last-child th": { border: 0 },
+                        }}
                       >
                         <TableCell component="th" scope="row">
                           {item.hotelname}
                         </TableCell>
                         <TableCell align="right">{item.checkIn}</TableCell>
                         <TableCell align="right">{item.checkIn}</TableCell>
-                        <TableCell align="right">{bookingDate.toLocaleDateString()}</TableCell>
+                        <TableCell align="right">
+                          {bookingDate.toLocaleDateString()}
+                        </TableCell>
                         <TableCell align="right">{item.status}</TableCell>
-                        <TableCell align="right"><Button size="small" variant="contained" type="button" onClick={() => handleClick(item)}>View</Button></TableCell>
+                        <TableCell align="right">
+                          <Button
+                            size="small"
+                            variant="contained"
+                            type="button"
+                            onClick={() => handleClick(item)}
+                          >
+                            View
+                          </Button>
+                        </TableCell>
                       </TableRow>
-                    )
+                    );
                   })}
               </TableBody>
             </Table>
           </TableContainer>
-
-
         </TextRoot>
       </TextMainWrapper>
     </>
   );
 };
 
-export default BookingHistoryofAdmin;
+export default ManageAdmin;
