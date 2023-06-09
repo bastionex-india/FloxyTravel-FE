@@ -10,7 +10,17 @@ import { useEffect } from "react";
 import { environmentVariables } from "../../config/config";
 import './BookingHistorybyOrderid.css'
 import { styled as newStyled } from '@mui/material/styles';
-import {Box,Paper,Grid,Container} from '@mui/material';
+import { Box, Paper, Grid, Container } from '@mui/material';
+
+
+
+import Table from '@mui/material/Table';
+import { Button } from '@mui/material'
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
 
 
 
@@ -41,9 +51,12 @@ const TextMainWrapper = styled.div`
 `;
 const TextRoot = styled.div`
   // background-color: #9f94942b;
-  padding: 20px 0px;
-  width: 967px;
-  margin: 10px auto;
+  // padding: 20px 0px;
+  // width: 967px;
+  // margin: 10px auto;
+  padding: 0px 0px;
+    width: 967px;
+    margin: 12px 0px 0px 25px;
   @media (max-width: 768px) {
     width: 100vw;
   }
@@ -60,7 +73,7 @@ const BookingHistorybyOrderid = () => {
   const { authData } = useContext(AuthContext);
   const [data, setData] = useState("");
 
-  
+
 
   const getAllUsers = async () => {
     await axios
@@ -85,47 +98,93 @@ const BookingHistorybyOrderid = () => {
         <TextRoot>
           <Root>
             <TextWrapper>
-              <Heading> Booking Detail</Heading>
+              <Heading> Booking Details</Heading>
             </TextWrapper>
           </Root>
         </TextRoot>
       </TextMainWrapper>
       <Container maxWidth="lg">
-      <Grid container spacing={2}>
-        <Grid xs={12}>
-          <Item>
-          <h4>Hotel Location</h4>
-          <p>BastionEx, Block B, Sector 4, Noida, Uttar Pradesh</p>
-          </Item>
+        <Grid container  >
+          <Grid xs={12}>
+            <Item>
+              <h4>Hotel Location</h4>
+              <h4><i>{data.hotelname}</i></h4>
+              <p>
+                
+                {data.area} , {data.state}</p>
+              <Grid container  >
+                <Grid xs={6}>
+                  <h4>Customer Details</h4>
+                  <Table aria-label="simple table">
+                    <TableBody>
+                      <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                        <TableCell component="th" scope="row">
+                          Name
+                        </TableCell>
+                        <TableCell align="right">{" "}
+                          {data.customer && data.customer.name}{" "}</TableCell>
+                      </TableRow>
+                      <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                        <TableCell component="th" scope="row">
+                          Email
+                        </TableCell>
+                        <TableCell align="right">{" "}
+                          {data.customer && data.customer.email}</TableCell>
+                      </TableRow>
+                      <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                        <TableCell component="th" scope="row">
+                          Contact
+                        </TableCell>
+                        <TableCell align="right">{" "}
+                          {data.customer && data.customer.mobile}{" "}</TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
+                </Grid>
+                <Grid xs={6}>
+                  <h4>Booking Details</h4>
+                  <Table aria-label="simple table">
+                    <TableBody>
+                      <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                        <TableCell component="th" scope="row">
+                          Adult
+                        </TableCell>
+                        <TableCell align="right">{data.adult}</TableCell>
+                      </TableRow>
+                      <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                        <TableCell component="th" scope="row">
+                          Children
+                        </TableCell>
+                        <TableCell align="right">{data.children}</TableCell>
+                      </TableRow>
+                      <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                        <TableCell component="th" scope="row">
+                          Rooms
+                        </TableCell>
+                        <TableCell align="right">{data.noOfRooms}</TableCell>
+                      </TableRow>
+                      <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                        <TableCell component="th" scope="row">
+                          CheckIn Time
+                        </TableCell>
+                        <TableCell align="right">{data.checkIn}</TableCell>
+                      </TableRow>
+                      <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                        <TableCell component="th" scope="row">
+                          CheckOut Time
+                        </TableCell>
+                        <TableCell align="right">{data.checkOut}</TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
+                </Grid>
+              </Grid>
+            </Item>
+          </Grid>
+
         </Grid>
-        <Grid xs={6}>
-          <Item>
-          <h4>Customer Details</h4>
-          <ul class="list-group list-group-unbordered">
-          <li class="list-group-item">
-          <b>Followers</b> <Box 
-          // display="flex"
-  // justifyContent="flex-end"
-  // alignItems="flex-end"
-  >1,322</Box>
-          </li>
-          <li class="list-group-item">
-          <b>Following</b> <Box class="pull-right">1,322</Box>
-          </li>
-          <li class="list-group-item">
-          <b>Friends</b> <Box class="pull-right">1,322</Box>
-          </li>
-          </ul>
-          </Item>
-        </Grid>
-        <Grid xs={6}>
-          <Item>
-          <h4>Booking Details</h4>
-          </Item>
-        </Grid>
-      </Grid>
       </Container>
-      
+
     </>
   );
 };

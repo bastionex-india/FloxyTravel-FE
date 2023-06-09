@@ -3,6 +3,7 @@ import React, { useState, useContext, useEffect } from "react";
 import styled from "styled-components";
 import { AuthContext } from "../../ContextApi/ContextApi";
 import { environmentVariables } from "../../config/config";
+import CircularLoader from "../../Component/CircularLoader/CircularLoader";
 import Swal from "sweetalert2";
 const UserLandingPage = () => {
   const [allStates, setAllStates] = useState([]);
@@ -10,9 +11,11 @@ const UserLandingPage = () => {
   const [stateId, setStateId] = useState();
   const { authData } = useContext(AuthContext);
   const [isPriorityChanged, setIsPriority] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [chosenState, setChosenState] = useState("");
   const [addStatePopUp, setAddStatePopUp] = useState(false);
   const [addThemePopUp, setAddThemePopUp] = useState(false);
+  const [addImagePopUp, setAddImagePopUp] = useState(false);
   const [deletePopUp, setDeletePopUp] = useState(false);
   const [backgroundImage, setBackgroundImage] = useState(null);
   const [themeId, setThemeId] = useState(null);
@@ -186,24 +189,26 @@ const UserLandingPage = () => {
   };
   console.log(isPriorityChanged);
   const handlePriority = () => {
-    axios({
-      method: "put",
-      url: `${environmentVariables.apiUrl}/admin/updatepriority/${stateId}`,
-      data: themeData,
-      headers: { _token: authData.data.token },
-    })
-      .then((response) => {
-        console.log(response);
-        Swal.fire(
-          "Priorities changed",
-          "Successfully changed priorities of theme data",
-          "success"
-        );
+    if (isPriorityChanged === true) {
+      axios({
+        method: "put",
+        url: `${environmentVariables.apiUrl}/admin/updatepriority/${stateId}`,
+        data: themeData,
+        headers: { _token: authData.data.token },
       })
-      .catch((err) => {
-        console.log(err.message);
-        Swal.fire("Error", "Something went wrong", "error");
-      });
+        .then((response) => {
+          console.log(response);
+          Swal.fire(
+            "Priorities changed",
+            "Successfully changed priorities of theme data",
+            "success"
+          );
+        })
+        .catch((err) => {
+          console.log(err.message);
+          Swal.fire("Error", "Something went wrong", "error");
+        });
+    }
     setIsPriority(false);
   };
   const handleAddStateSubmit = () => {
@@ -282,6 +287,7 @@ const UserLandingPage = () => {
         setAllStates(response.data.data);
         setStateSelected(response?.data?.data[0].cityName);
         setStateId(response.data.data[0]._id);
+        setIsLoading(false);
         // allStates.forEach((val) => {
         // console.log(val.theme, "theme");
         //   setThemeData([...themeData, val.theme]);
@@ -293,7 +299,10 @@ const UserLandingPage = () => {
 
         setThemeData(newthemedata[0]?.theme);
       })
-      .catch((err) => console.log(err.message));
+      .catch((err) => {
+        console.log(err.message);
+        setIsLoading(false);
+      });
   };
 
   const getBackgroundImage = () => {
@@ -322,15 +331,19 @@ const UserLandingPage = () => {
     })
       .then((response) => {
         setThemeData(response.data.data);
+        setIsLoading(false);
         console.log(response.data.data, "sr");
       })
-      .catch((err) => console.log(err.message));
+      .catch((err) => {
+        console.log(err.message);
+        setIsLoading(false);
+      });
   };
 
   const getThemesByState = (e) => {
     axios({
       method: "get",
-      url: `${environmentVariables.apiUrl}/admin/getthemebystate/${e.target.id}`,
+      url: `${environmentVariables.apiUrl}/admin/getthemebystate/${stateId}`,
       headers: {
         _token: authData?.data?.token,
       },
@@ -429,9 +442,11 @@ const UserLandingPage = () => {
     setAddThemePopUp(true);
   };
   useEffect(() => {
+    setIsLoading(true);
     getStatesData();
   }, []);
   useEffect(() => {
+    setIsLoading(true);
     getThemes();
   }, [stateId]);
   useEffect(() => {
@@ -439,14 +454,19 @@ const UserLandingPage = () => {
   }, [chosenState, stateSelected]);
   return (
     <Root>
-      <MainHeading>User Landing Page</MainHeading>
+      <MainHeading>Manage City Landing Page</MainHeading>
       <StatesContainer>
-        <StateHeading>States : </StateHeading>
+        {/* <StateHeading>States : </StateHeading> */}
         {addStatePopUp && (
           <AddStatePopUpContainer>
             <AddStatePopUp>
               <div
-                style={{ textAlign: "center", color: "#fff", fontSize: "20px" }}
+                style={{
+                  textAlign: "center",
+                  color: "#fff",
+                  fontSize: "20px",
+                  padding: "16px 0",
+                }}
               >
                 Add State
               </div>
@@ -541,6 +561,23 @@ const UserLandingPage = () => {
             </AddThemePopUp>
           </AddThemePopUpContainer>
         )}
+        {addImagePopUp && (
+          <AddThemePopUpContainer>
+            <AddThemePopUp>
+              <AddStatePopUpCloseIcon
+                onClick={() => setAddImagePopUp(false)}
+                className="fa-solid fa-circle-xmark"
+                style={{ color: "#fff", fontSize: "20px" }}
+              />
+              <BackgroundImageContainer>
+                {/* <StateHeading>Background Image : </StateHeading> */}
+                <BackgroundImage
+                  src={`${environmentVariables.apiUrl}/uploadscitiesimages/${backgroundImage}`}
+                />
+              </BackgroundImageContainer>
+            </AddThemePopUp>
+          </AddThemePopUpContainer>
+        )}
         {deletePopUp && (
           <DeletePopUpContainer>
             <DeletePopUp>
@@ -569,77 +606,109 @@ const UserLandingPage = () => {
           </DeletePopUpContainer>
         )}
         <StatesWrapper>
-          {allStates &&
-            allStates.map((val) => (
-              <StateOptions
-                id={val._id}
-                onClick={(e) => {
-                  setStateSelected(val?.cityName);
-                  setStateId(val?._id);
-                  getThemesByState(e);
-                }}
-                selected={stateSelected == val.cityName}
-              >
-                {val.cityName}
-              </StateOptions>
-            ))}
+          <SelectState
+            onChange={(e) => {
+              setStateSelected(e.target.value.split("-")[0]);
+              setStateId(e.target.value.split("-")[1]);
+            }}
+          >
+            <SelectOption>Select State</SelectOption>
+            {allStates &&
+              allStates.map((val) => (
+                // <StateOptions
+                //   id={val._id}
+                //   onClick={(e) => {
+                //     setStateSelected(val?.cityName);
+                //     setStateId(val?._id);
+                //     getThemesByState(e);
+                //   }}
+                //   selected={stateSelected == val.cityName}
+                // >
+                //   {val.cityName}
+                // </StateOptions>
+                <SelectOption value={`${val.cityName}-${val._id}`}>
+                  {val.cityName}
+                </SelectOption>
+              ))}
+          </SelectState>
         </StatesWrapper>
-        <StateAddIcon
+        {/* <StateAddIcon
           onClick={() => setAddStatePopUp(true)}
           className="fa-solid fa-circle-plus"
           style={{ color: "#07515c" }}
-        />
+        /> */}
+        <div style={{ display: "flex" }}>
+          {" "}
+          <AddButton onClick={() => setAddStatePopUp(true)}>
+            Add State
+          </AddButton>
+          <AddButton onClick={() => setAddThemePopUp(true)}>
+            Add Theme
+          </AddButton>
+          <AddButton onClick={() => setAddImagePopUp(true)}>
+            View Background Image
+          </AddButton>
+        </div>
       </StatesContainer>
-      <ThemeContainer>
-        <StateHeading>Themes :</StateHeading>
+      <div style={{ backgroundColor: "#fff", marginBottom: "10px" }}>
+        <ThemeContainer>
+          <StateHeading>Themes :</StateHeading>
 
-        <StateAddIcon
-          onClick={() => setAddThemePopUp(true)}
+          {/* <StateAddIcon
+          
           className="fa-solid fa-circle-plus"
           style={{ color: "#07515c" }}
-        />
-      </ThemeContainer>
-      <MainThemeContainer>
-        <RecentlyDocumentHeader>
-          <RecentlyDocumentHeaderElem>Name</RecentlyDocumentHeaderElem>
-          <RecentlyDocumentHeaderElem>Title</RecentlyDocumentHeaderElem>
-          <RecentlyDocumentHeaderElem>Description</RecentlyDocumentHeaderElem>
-          <RecentlyDocumentHeaderElem>Actions</RecentlyDocumentHeaderElem>
-        </RecentlyDocumentHeader>
-        <ThemeCardWrapper>
-          {themeData &&
-            themeData
-              .sort((a, b) => a.priority - b.priority)
-              .map((val) => {
-                return (
-                  <RecentlyDocumentUploaded
-                    draggable={true}
-                    id={val?._id}
-                    onDragOver={(e) => e.preventDefault()}
-                    onDragStart={handleDrag}
-                    onDrop={handleDrop}
-                  >
-                    <ThemeBoxElement>{val?.name}</ThemeBoxElement>
-                    <ThemeBoxElement>{val?.heading}</ThemeBoxElement>
-                    <ThemeBoxElementDesc>{`${val?.description}`}</ThemeBoxElementDesc>
-                    <ThemeBoxElement>
-                      <DeleteIcon
+        /> */}
+        </ThemeContainer>
+        <MainThemeContainer>
+          <RecentlyDocumentHeader>
+            <RecentlyDocumentHeaderElem>Name</RecentlyDocumentHeaderElem>
+            <RecentlyDocumentHeaderElem>Title</RecentlyDocumentHeaderElem>
+            <RecentlyDocumentHeaderElem>Description</RecentlyDocumentHeaderElem>
+            <RecentlyDocumentHeaderElem style={{ justifyContent: "flex-end" }}>
+              Actions
+            </RecentlyDocumentHeaderElem>
+          </RecentlyDocumentHeader>
+          {isLoading === true ? (
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              <CircularLoader></CircularLoader>
+            </div>
+          ) : (
+            <ThemeCardWrapper>
+              {themeData &&
+                themeData
+                  .sort((a, b) => a.priority - b.priority)
+                  .map((val) => {
+                    return (
+                      <RecentlyDocumentUploaded
+                        draggable={true}
                         id={val?._id}
-                        onClick={(e) => handleDeleteThemePopUp(e)}
-                        className="fa-solid fa-trash"
-                      />
-                      <EditIcon
-                        onClick={(e) => handleEditTheme(e)}
-                        id={val?._id}
-                        className="fa-solid fa-pen-to-square"
-                      />
-                    </ThemeBoxElement>
-                  </RecentlyDocumentUploaded>
-                );
-              })}
-        </ThemeCardWrapper>
+                        onDragOver={(e) => e.preventDefault()}
+                        onDragStart={handleDrag}
+                        onDrop={handleDrop}
+                      >
+                        <ThemeBoxElement>{val?.name}</ThemeBoxElement>
+                        <ThemeBoxElement>{val?.heading}</ThemeBoxElement>
+                        <ThemeBoxElementDesc>{`${val?.description}`}</ThemeBoxElementDesc>
+                        <ThemeBoxElement style={{ justifyContent: "flex-end" }}>
+                          <DeleteIcon
+                            id={val?._id}
+                            onClick={(e) => handleDeleteThemePopUp(e)}
+                            className="fa-solid fa-trash"
+                          />
+                          <EditIcon
+                            onClick={(e) => handleEditTheme(e)}
+                            id={val?._id}
+                            className="fa-solid fa-pen-to-square"
+                          />
+                        </ThemeBoxElement>
+                      </RecentlyDocumentUploaded>
+                    );
+                  })}
+            </ThemeCardWrapper>
+          )}
 
-        {/* <ThemeCardWrapper>
+          {/* <ThemeCardWrapper>
           {themeData &&
             themeData.map((val) => {
               return (
@@ -667,16 +736,22 @@ const UserLandingPage = () => {
               );
             })}
         </ThemeCardWrapper> */}
-        <PriorityButton isPriority={isPriorityChanged} onClick={handlePriority}>
-          Save
-        </PriorityButton>
-      </MainThemeContainer>
-      <BackgroundImageContainer>
-        <StateHeading>Background Image : </StateHeading>
-        <BackgroundImage
-          src={`${environmentVariables.apiUrl}/uploadscitiesimages/${backgroundImage}`}
-        />
-      </BackgroundImageContainer>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              margin: "10px 5%",
+            }}
+          >
+            <PriorityButton
+              isPriority={isPriorityChanged}
+              onClick={handlePriority}
+            >
+              Save
+            </PriorityButton>
+          </div>
+        </MainThemeContainer>
+      </div>
     </Root>
   );
 };
@@ -703,17 +778,17 @@ const BackgroundImageContainer = styled.div`
 const AddThemePopUpInput = styled.input`
   padding: 4px;
   border-radius: 5px;
-  width: 75%;
+  width: 500px;
 `;
 const AddThemePopUpSelect = styled.select`
   padding: 4px;
   border-radius: 5px;
-  width: 75%;
+  width: 500px;
 `;
 const AddThemePopUpTextArea = styled.textarea`
   padding: 4px;
   border-radius: 5px;
-  width: 75%;
+  width: 450px;
 `;
 
 const AddThemePriority = styled.input`
@@ -738,14 +813,16 @@ const AddThemeWrapper = styled.div`
 `;
 
 const BackgroundImage = styled.img`
-  width: 100%;
-  margin-top: 40px;
+  width: 40vw;
+  margin: 40px 20px;
 `;
 const ThemeContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   padding: 20px 0;
+  margin: 0 5%;
+  padding-bottom: 0;
 `;
 
 const ThemeCardWrapper = styled.div`
@@ -786,10 +863,11 @@ const Root = styled.div`
 `;
 
 const MainHeading = styled.div`
-  font-size: 30px;
+  font-size: 1.75rem;
   font-weight: 500;
-  text-align: center;
-  color: #01575c;
+  /* text-align: center; */
+  color: #000;
+  margin: 0 5% 10px 5%;
 `;
 
 const StatesContainer = styled.div`
@@ -797,6 +875,8 @@ const StatesContainer = styled.div`
   justify-content: space-between;
   align-items: flex-start;
   padding: 20px 0;
+  margin: 0 5%;
+  margin-bottom: 40px;
 `;
 
 const StateHeading = styled.div`
@@ -806,7 +886,8 @@ const StateHeading = styled.div`
 `;
 const StatesWrapper = styled.div`
   display: flex;
-  width: 80%;
+  width: 31vw;
+  height: 40px;
   flex-wrap: wrap;
   justify-content: space-around;
 `;
@@ -823,7 +904,15 @@ const StateOptions = styled.div`
   background-color: ${(props) => (props.selected ? "#01575c" : "transparent")};
   color: ${(props) => (props.selected ? "#fff" : "#000")};
 `;
-
+const SelectState = styled.select`
+  width: 100%;
+  font-size: 14px;
+  border-radius: 5px;
+  padding: 0 10px;
+`;
+const SelectOption = styled.option`
+  font-size: 14px;
+`;
 const StateAddIcon = styled.i`
   cursor: pointer;
   font-size: 20px;
@@ -846,8 +935,8 @@ const DeletePopUp = styled.div`
   background-color: #01575c;
   margin: auto;
   box-shadow: #000 2px 1px 1px 1px;
-  width: 30vw;
-  height: 30vh;
+  /* width: 30vw; */
+  /* height: 30vh; */
   border-radius: 5px;
 `;
 
@@ -861,6 +950,7 @@ const DeletePopUpText = styled.div`
   color: #fff;
   text-align: center;
   font-size: 16px;
+  margin: 0 40px;
 `;
 const DeletePopUpButtonWrapper = styled.div`
   display: flex;
@@ -899,22 +989,37 @@ const AddThemePopUp = styled.div`
   background-color: #01575c;
   margin: auto;
   box-shadow: #000 2px 1px 1px 1px;
-  width: 42vw;
-  height: 50vh;
+  /* width: 42vw; */
+  /* height: 50vh; */
   border-radius: 5px;
 `;
 const AddStatePopUp = styled.div`
   position: relative;
   background-color: #01575c;
-  box-shadow: #000 2px 1px 1px 1px;
+  box-shadow: #000 2px 2px 4px 3px;
   margin: auto;
-  width: 42vw;
-  height: 34vh;
+  /* width: 42vw; */
+  /* height: 34vh; */
   border-radius: 5px;
 `;
 
 const AddStatePopUpHeading = styled.div`
   font-size: 20px;
+`;
+
+const AddButton = styled.div`
+  background-color: #01575c;
+  height: 40px;
+  font-size: 14px;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0px 20px;
+  border-radius: 5px;
+  font-weight: 700;
+  margin-left: 20px;
+  cursor: pointer;
 `;
 
 const AddStatePopUpCloseIcon = styled.i`
@@ -928,10 +1033,12 @@ const AddStatePopUpCloseIcon = styled.i`
 const AddStatePopUpInputContainer = styled.div`
   display: flex;
   padding: 30px 50px 0px;
+  justify-content: space-between;
 `;
 
 const AddStatePopUpLabel = styled.div`
   color: #fff;
+  font-size: 14px;
 `;
 
 const ButtonWrapper = styled.div`
@@ -944,28 +1051,44 @@ const AddStateInputSelect = styled.select`
   width: 110px;
   padding: 3px;
   margin-left: 20px;
+  width: 450px;
 `;
 
 const AddStateFileInput = styled.input`
   padding: 3px;
   margin-left: 20px;
   color: #fff;
+  background-color: #659297;
+  width: 450px;
+  border-radius: 5px;
 `;
 
 const AddStatePopUpSubmitButton = styled.div`
   cursor: pointer;
-  width: 110px;
+  /* width: 110px;
   padding: 5px 0;
   text-align: center;
   color: #fff;
   background-color: #333;
-  border-radius: 50px;
+  border-radius: 50px; */
+  background-color: #fff;
+  height: 40px;
+  font-size: 14px;
+  color: #01565c;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0px 20px;
+  border-radius: 5px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  /* margin-left:20px; */
 `;
 
 export const RecentlyDocumentHeader = styled.div`
-  display: grid;
-  grid-template-columns: 25% 25% 25% 25%;
+  display: flex;
   margin: 5px 5%;
+  justify-content:space-between;
   padding: 14px 15px;
   @media (max-width: 768px) {
     display: none;
@@ -978,9 +1101,10 @@ export const RecentlyDocumentHeaderElem = styled.div`
   display: flex;
   justify-content: center; */
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   color: rgb(22 22 22);
-  padding-left: 4px;
+  width: 300px;
+  /* padding-right: 150px; */
   font-weight: 600;
   font-size: 18px;
 `;
@@ -988,13 +1112,14 @@ export const RecentlyDocumentHeaderElem = styled.div`
 export const RecentlyDocumentUploaded = styled.div`
   cursor: move;
   background: #fff;
-  display: grid;
-  grid-template-columns: 25% 25% 25% 25%;
+  display: flex;
   -webkit-box-align: center;
   align-items: center;
+  justify-content: space-between;
   margin: 10px 5%;
   padding: 14px 15px;
-  box-shadow: 0px 0px 5px 5px #0000;
+  // padding-right: 0;
+  box-shadow: 2px 2px 4px 1px #000;
   border-radius: 5px;
   @media (max-width: 768px) {
     display: flex;
@@ -1005,12 +1130,15 @@ export const RecentlyDocumentUploaded = styled.div`
 export const MainThemeContainer = styled.div``;
 export const ThemeBoxElement = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
+  /* padding-right: 150px; */
+  width: 300px;
 `;
 export const ThemeBoxElementDesc = styled.div`
   display: flex;
   justify-content: center;
   height: 70px;
+  width: 300px;
   overflow: scroll;
   ::-webkit-scrollbar {
     display: none;
@@ -1018,12 +1146,18 @@ export const ThemeBoxElementDesc = styled.div`
 `;
 export const PriorityButton = styled.div`
   cursor: ${(props) => (props.isPriority ? "pointer" : "default")};
-  float: right;
-  margin: 10px 50px 0 0;
-  padding: 5px 10px;
-  color: #fff;
   background-color: ${(props) => (props.isPriority ? `#01565b` : `grey`)};
-  border: 1px solid transparent;
+  /* background-color: #01575c; */
+  height: 40px;
+  font-size: 14px;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0px 20px;
   border-radius: 5px;
+  font-weight: 700;
+  margin-left: 20px;
+  /* cursor: pointer; */
 `;
 export default UserLandingPage;

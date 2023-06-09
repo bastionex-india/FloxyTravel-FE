@@ -13,11 +13,12 @@ const Root = styled.div`
   top: 80px;
 `;
 const LinkWrapper = styled.div`
-  padding: 15px 0px 15px 60px;
+  // padding: 15px 0px 15px 60px;
+  padding: 15px 0px 15px 15px;
   display: flex;
   color: #01575c;
   font-size: 17px;
-  font-weight: bold;
+  // font-weight: bold;
   border-left: 5px solid #fff;
   ${(p) =>
     p.select &&
@@ -51,9 +52,11 @@ function SideBar(props) {
       } else if (window.location.href.split("/").pop() === "userselectedcity") {
         setselected("Landing page");
       } else if (
-        window.location.href.split("/").pop() === "bookinghistoryofadmin"
+        window.location.href.split("/").pop() === "bookinghistoryofadmin" || window.location.href.split("/").pop() === "bookinghistory"
       ) {
         setselected("Booking history");
+      } else if (window.location.href.split("/").pop() === "manageadmin") {
+        setselected("manageadmin");
       } else {
         setselected("Dashboard");
       }
@@ -72,6 +75,15 @@ function SideBar(props) {
             }}
           >
             <Link>Dashboard</Link>
+          </LinkWrapper>{" "}
+          <LinkWrapper
+            select={selected === "manageadmin"}
+            onClick={() => {
+              setselected("manageadmin");
+              navigate("/manageadmin");
+            }}
+          >
+            <Link>Manage Admin/Vendor</Link>
           </LinkWrapper>
           <LinkWrapper
             select={selected === "user homepage slider"}
@@ -98,7 +110,7 @@ function SideBar(props) {
               navigate("/bookinghistoryofadmin");
             }}
           >
-            <Link>Booking history</Link>
+            <Link>Booking History</Link>
           </LinkWrapper>
           {/* <LinkWrapper
             select={selected === "Upcoming Bookings"}

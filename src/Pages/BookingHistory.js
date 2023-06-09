@@ -4,7 +4,7 @@ import { AuthContext } from "../ContextApi/ContextApi";
 import { environmentVariables } from "../config/config";
 import { useNavigate } from "react-router-dom";
 import io, { socketIOClient } from "socket.io-client";
-
+import CircularLoader from "../Component/CircularLoader/CircularLoader";
 import styled from "styled-components";
 // import AdharCard from "../../Component/Images/sample_aadhar.jpg";
 // import LeftSlideBar from '../../Component/LeftSlideBar/LeftSlideBar';
@@ -12,8 +12,18 @@ import styled from "styled-components";
 // import { DocName } from '../Dashboard/Dashboard.styles';
 // import { DocInfo } from '../Dashboard/Dashboard.styles';
 
+
+import { Button,Table,TableBody,TableCell,TableContainer,TableHead,TableRow,Paper } from "@mui/material";
+
+
+
+const boldTextCss = {
+  fontWeight: 700,
+};
+
+
 const TextRoot = styled.div`
-  background-color: #9f94942b;
+  // background-color: #9f94942b;
   padding: 20px 0px;
   width: 967px;
   margin: 10px auto;
@@ -21,16 +31,9 @@ const TextRoot = styled.div`
     width: 100vw;
   }
 `;
-const DocInfo = styled.div`
-  display: flex;
-`;
-const DocName = styled.div`
-  margin-left: 4px;
-  font-weight: 600;
-`;
-
 const Root = styled.div`
-  margin: 0px 60px;
+  // margin: 0px 60px;
+  margin-bottom: 10px;
   @media (max-width: 768px) {
     margin: 0px 20px;
   }
@@ -38,6 +41,7 @@ const Root = styled.div`
 
 const Heading = styled.div`
   font-size: 1.75rem;
+  margin-right: 360px;
   @media (max-width: 768px) {
     display: none;
   }
@@ -45,7 +49,6 @@ const Heading = styled.div`
 
 const TextSelectField = styled.div`
   margin: 10px 0px 0px 10px;
-
   @media (max-width: 768px) {
     margin: 0;
   }
@@ -66,73 +69,7 @@ const TextWrapper = styled.div`
     justify-content: flex-end;
   }
 `;
-const RecentlyUploaded = styled.div`
-  background: #fff;
-  display: grid;
-  grid-template-columns: 18% 27% 12% 18% 15% 9%;
-  -webkit-box-align: center;
-  align-items: center;
-  margin: 15px 2%;
-  padding: 14px 15px;
-  box-shadow: 0px 0px 5px 5px #0000;
-  border-radius: 5px;
-  @media (max-width: 768px) {
-    display: flex;
-    justify-content: space-between;
-  }
-`;
 
-const RecentlyUploadedDate = styled.div`
-  @media (max-width: 768px) {
-    display: none;
-  }
-`;
-const RecentlyUploadedType = styled.div`
-  @media (max-width: 768px) {
-    display: none;
-  }
-`;
-const RecentlyUploadedStatus = styled.div`
-  @media (max-width: 768px) {
-    display: none;
-  }
-`;
-const RecentlyUploadedButton = styled.div`
-  cursor: pointer;
-  border-radius: 5px;
-  padding: 5px 0px;
-  font-size: 14px;
-  background-color: #6836ed;
-  color: #fff;
-  text-align: center;
-  @media (max-width: 768px) {
-    padding: 5px 13px;
-  }
-`;
-
-const RecentlyUploadedHeader = styled.div`
-  display: grid;
-  grid-template-columns: 18% 27% 12% 18% 15% 9%;
-  margin: 15px 2%;
-  padding: 14px 15px;
-  @media (max-width: 768px) {
-    display: none;
-  }
-`;
-const RecentlyUploadedHeaderElem = styled.div`
-  color: #6c7074;
-  padding-left: 4px;
-`;
-
-const RecentlyUploadedButtonWrapper = styled.div``;
-
-const DocImage = styled.img`
-  /* width:50px;  */
-`;
-
-const SideBar = styled.div`
-  background-color: black;
-`;
 const TextMainWrapper = styled.div`
   /* display: grid; 
   grid-template-columns: 20% 80%;  */
@@ -141,8 +78,12 @@ const TextMainWrapper = styled.div`
   }
 `;
 
+
+
+
 const BookingHistory = () => {
   const { authData, setAuthData } = useContext(AuthContext);
+  const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState("");
   const navigation = useNavigate();
   const [select, setSelect] = useState("");
@@ -207,14 +148,17 @@ const BookingHistory = () => {
     await axios
       .request(config)
       .then((response) => {
-        console.log("response.data", response.data);
-        setData(response.data.sort((a, b) => b.createdAt - a.createdAt));
+        // setData(response.data.sort((a, b) => b.createdAt - a.createdAt));
+        setData(response.data.data);
+        setIsLoading(false);
       })
       .catch((error) => {
         console.log("error", error);
+        setIsLoading(false);
       });
   };
   useEffect(() => {
+    setIsLoading(true);
     getAllUsers();
   }, [select, select1]);
   const ApprovedData = () => {};
@@ -223,7 +167,6 @@ const BookingHistory = () => {
   return (
     <>
       <TextMainWrapper>
-        {/* <SideBar><LeftSlideBar/></SideBar>  */}
         <TextRoot>
           <Root>
             <TextWrapper>
@@ -283,50 +226,83 @@ const BookingHistory = () => {
                   <option value="pending" onClick={PendingData}>
                     Pending Booking
                   </option>
+                  {/* <option value="cancelled" onClick={CancelledData}>
+                    Cancelled Booking
+                  </option> */}
                 </Select>
               </TextSelectField>
             </TextWrapper>
           </Root>
-          <RecentlyUploadedHeader>
-            <RecentlyUploadedHeaderElem>Hotel Name</RecentlyUploadedHeaderElem>
-            <RecentlyUploadedHeaderElem>Creation Date</RecentlyUploadedHeaderElem>
-            <RecentlyUploadedHeaderElem>
-              CheckIn Date
-            </RecentlyUploadedHeaderElem>
-            <RecentlyUploadedHeaderElem>
-              CheckOut Date
-            </RecentlyUploadedHeaderElem>
-            <RecentlyUploadedHeaderElem>Status</RecentlyUploadedHeaderElem>
-            <RecentlyUploadedHeaderElem>Action</RecentlyUploadedHeaderElem>
-          </RecentlyUploadedHeader>
-
-          {data.data &&
-            data.data.map((item, key) => {
-              const bookingDate = new Date(item.createdAt);
-              console.log("------www-", item);
-
-              return (
-                <RecentlyUploaded key={key}>
-                  <DocInfo>
-                    <DocImage />
-                    <DocName>{item.hotelname}</DocName>
-                  </DocInfo>
-                  <RecentlyUploadedDate>{bookingDate.toLocaleDateString()}</RecentlyUploadedDate>
-                  <RecentlyUploadedDate>
-                    {item.checkIn}
-                  </RecentlyUploadedDate>
-                  <RecentlyUploadedDate>
-                   {item.checkOut}
-                  </RecentlyUploadedDate>
-                  <RecentlyUploadedStatus>{item.status}</RecentlyUploadedStatus>
-                  <RecentlyUploadedButtonWrapper>
-                    <RecentlyUploadedButton onClick={() => handleClick(item)}>
-                      View
-                    </RecentlyUploadedButton>
-                  </RecentlyUploadedButtonWrapper>
-                </RecentlyUploaded>
-              );
-            })}
+          {isLoading === true ? (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                marginTop: "30px",
+              }}
+            >
+              <CircularLoader></CircularLoader>
+            </div>
+          ) : (
+            <TableContainer component={Paper}>
+              <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell style={boldTextCss}>Hotel Name</TableCell>
+                    <TableCell style={boldTextCss} align="right">
+                      CheckIn Date
+                    </TableCell>
+                    <TableCell style={boldTextCss} align="right">
+                      Checkout Date
+                    </TableCell>
+                    <TableCell style={boldTextCss} align="right">
+                      Creation date
+                    </TableCell>
+                    <TableCell style={boldTextCss} align="right">
+                      Status
+                    </TableCell>
+                    <TableCell style={boldTextCss} align="right">
+                      Action
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {data &&
+                    data.map((item, index) => {
+                      const bookingDate = new Date(item.createdAt);
+                      return (
+                        <TableRow
+                          key={index}
+                          sx={{
+                            "&:last-child td, &:last-child th": { border: 0 },
+                          }}
+                        >
+                          <TableCell component="th" scope="row">
+                            {item.hotelname}
+                          </TableCell>
+                          <TableCell align="right">{item.checkIn}</TableCell>
+                          <TableCell align="right">{item.checkIn}</TableCell>
+                          <TableCell align="right">
+                            {bookingDate.toLocaleDateString()}
+                          </TableCell>
+                          <TableCell align="right">{item.status}</TableCell>
+                          <TableCell align="right">
+                            <Button
+                              size="small"
+                              variant="contained"
+                              type="button"
+                              onClick={() => handleClick(item)}
+                            >
+                              View
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          )}
         </TextRoot>
       </TextMainWrapper>
     </>
