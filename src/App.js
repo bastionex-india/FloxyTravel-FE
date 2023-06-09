@@ -21,7 +21,6 @@ import BookingHistoryofAdmin from "./Pages/admin/BookingHistoryofAdmin";
 import BookingHistorybyOrderid from "./Pages/admin/BookingHistorybyOrderid";
 import ManageAdmin from "./Pages/admin/ManageAdmin/ManageAdmin";
 import ManageHotels from "./Pages/admin/ManageHotels/ManageHotels";
-import HotelList from "./Pages/admin/ManageHotels/HotelList";
 
 const Root = styled.div``;
 const LeftWrapper = styled.div`
