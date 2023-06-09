@@ -210,7 +210,9 @@ const UserLandingPageHome = () => {
           <RecentlyDocumentHeaderElem>City Name</RecentlyDocumentHeaderElem>
           <RecentlyDocumentHeaderElem>Title</RecentlyDocumentHeaderElem>
           <RecentlyDocumentHeaderElem>Theme</RecentlyDocumentHeaderElem>
-          <RecentlyDocumentHeaderElem style={{justifyContent:"flex-end"}}>Actions</RecentlyDocumentHeaderElem>
+          <RecentlyDocumentHeaderElem style={{ justifyContent: "flex-end" }}>
+            Actions
+          </RecentlyDocumentHeaderElem>
         </RecentlyDocumentHeader>
         {isLoading === true ? (
           <div style={{ display: "flex", justifyContent: "center" }}>
@@ -232,7 +234,7 @@ const UserLandingPageHome = () => {
                     <ThemeBoxElement>{val?.city}</ThemeBoxElement>
                     <ThemeBoxElement>{val?.title}</ThemeBoxElement>
                     <ThemeBoxElement>{val?.theme}</ThemeBoxElement>
-                    <ThemeBoxElement style={{justifyContent:"flex-end"}}>
+                    <ThemeBoxElement style={{ justifyContent: "flex-end" }}>
                       <DeleteIcon
                         id={val?._id}
                         onClick={(e) => handleDeletePopUp(e)}
@@ -267,7 +269,12 @@ const UserLandingPageHome = () => {
         <AddThemePopUpContainer>
           <AddThemePopUp>
             <div
-              style={{ color: "#fff", textAlign: "center", fontSize: "20px",marginTop:"20px" }}
+              style={{
+                color: "#fff",
+                textAlign: "center",
+                fontSize: "20px",
+                marginTop: "20px",
+              }}
             >
               {console.log(themeId)}
               {`${themeId === null ? "Add" : "Edit"} Section`}
@@ -321,7 +328,10 @@ const UserLandingPageHome = () => {
               </AddThemeInputWrapper>
             </AddThemeWrapper>
             <ButtonWrapper>
-              <AddButton style={{backgroundColor:"#fff",color:"#000"}} onClick={handleAddData}>
+              <AddButton
+                style={{ backgroundColor: "#fff", color: "#000" }}
+                onClick={handleAddData}
+              >
                 Submit
               </AddButton>
             </ButtonWrapper>
@@ -483,7 +493,7 @@ const MainHeading = styled.div`
   text-align: center;
   color: #01575c; */
   font-size: 1.75rem;
-  font-weight: 500;
+  /* font-weight: 500; */
   /* text-align: center; */
   color: #000;
   margin: 0 5% 10px 5%;
@@ -582,6 +592,7 @@ const AddStatePopUpContainer = styled.div`
 const AddThemePopUpContainer = styled.div`
   position: fixed;
   top: 0;
+  backdrop-filter: blur(2px);
   z-index: 99999;
   left: 0;
   width: 100%;
@@ -635,7 +646,7 @@ const AddStatePopUpLabel = styled.div`
 const ButtonWrapper = styled.div`
   display: flex;
   justify-content: center;
-  margin-bottom:20px;
+  margin-bottom: 20px;
 `;
 
 const AddStateInputSelect = styled.select`
@@ -674,9 +685,9 @@ const AddStatePopUpSubmitButton = styled.div`
 `;
 
 export const RecentlyDocumentHeader = styled.div`
- display: flex;
+  display: flex;
   margin: 5px 5%;
-  justify-content:space-between;
+  justify-content: space-between;
   padding: 14px 15px;
   @media (max-width: 768px) {
     display: none;
@@ -700,8 +711,8 @@ export const RecentlyDocumentHeaderElem = styled.div`
 export const RecentlyDocumentUploaded = styled.div`
   cursor: move;
   background: #fff;
-  display:flex;
-  justify-content:space-between;
+  display: flex;
+  justify-content: space-between;
   -webkit-box-align: center;
   align-items: center;
   margin: 10px 5%;

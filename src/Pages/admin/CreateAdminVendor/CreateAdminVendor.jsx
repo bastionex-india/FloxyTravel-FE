@@ -18,18 +18,18 @@ const ErrorText = styled.div`
 `;
 const AddThemePopUpContainer = styled.div`
   position: fixed;
+  backdrop-filter: blur(2px);
   top: 0;
   z-index: 99999;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: transparent;
   display: flex;
   justify-content: center;
   align-items: center;
 `;
 const AddThemeLabel = styled.div`
-  color: #fff;
+  color: #000;
   margin-left: 20px;
 `;
 const RadioWrapper = styled.div`
@@ -38,7 +38,8 @@ const RadioWrapper = styled.div`
 const RadioInput = styled.input``;
 const AddThemePopUp = styled.div`
   position: relative;
-  background-color: #01575c;
+  z-index: 999;
+  background-color: #fff;
   margin: auto;
   box-shadow: #000 2px 1px 1px 1px;
   /* width: 42vw; */
@@ -65,10 +66,10 @@ const AddStatePopUpSubmitButton = styled.div`
   color: #fff;
   background-color: #333;
   border-radius: 50px; */
-  background-color: #fff;
+  background-color: #01565c;
   height: 40px;
   font-size: 14px;
-  color: #01565c;
+  color: #fff;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -195,7 +196,7 @@ const CreateAdminVendor = ({ open, setOpen }) => {
     <>
       <AddThemePopUpContainer>
         <AddThemePopUp>
-          <div style={{ color: "#fff", textAlign: "center", fontSize: "20px" }}>
+          <div style={{ color: "#000", textAlign: "center", fontSize: "20px" }}>
             Add Admin/Vendor
           </div>
           <AddStatePopUpCloseIcon

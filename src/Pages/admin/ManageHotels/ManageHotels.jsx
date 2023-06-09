@@ -20,6 +20,50 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 
 import moment from "moment";
+
+const HotelCardsWrapper = styled.div``;
+const HotelCard = styled.div`
+  display: flex;
+  margin-bottom: 20px;
+  border: 1px solid #aec5c5;
+  border-radius: 5px;
+`;
+
+const HotelImage = styled.img`
+  width: 280px;
+`;
+
+const HotelBigText = styled.div`
+  font-size: 18px;
+  padding-bottom: 10px;
+`;
+
+const HotelInfoText = styled.div`
+  font-size: 14px;
+`;
+const HotelIcon = styled.i``;
+const HotelIconWrapper = styled.div``;
+const HotelActionButtons = styled.div`
+  background-color: #17a2b8;
+  color: #fff;
+  padding: 5px 10px;
+  margin: 5px;
+  border-radius: 5px;
+  cursor: pointer;
+`;
+
+const HotelInfoWrapper = styled.div`
+  width: 50%;
+  margin: 10px 30px;
+`;
+const HotelButtonWrapper = styled.div`
+  width: 30%;
+  display: flex;
+  align-items: flex-end;
+  margin-bottom: 10px;
+`;
+const HotelImageWrapper = styled.div``;
+
 const TextRoot = styled.div`
   // background-color: #9f94942b;
   padding: 20px 0px;
@@ -59,7 +103,15 @@ const TextSelectField = styled.div`
     margin: 0;
   }
 `;
-
+const SelectVendor = styled.select`
+  width: 85%;
+  font-size: 14px;
+  border-radius: 5px;
+  padding: 0 10px;
+`;
+const SelectOption = styled.option`
+  font-size: 14px;
+`;
 const Select = styled.select`
   padding: 10px;
   border-radius: 5px;
@@ -71,6 +123,7 @@ const Select = styled.select`
 const TextWrapper = styled.div`
   display: flex;
   justify-content: space-between;
+  margin-top: 20px;
   @media (max-width: 768px) {
     justify-content: flex-end;
   }
@@ -169,9 +222,9 @@ const TextMainWrapper = styled.div`
 const ManageAdmin = () => {
   const [select, setSelect] = useState("");
   const [select1, setSelect1] = useState("");
-  const [isLoading,setIsLoading]=useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const { authData, setAuthData } = useContext(AuthContext);
-  const [addVendorPopUp,setAddVendorPopUp]=useState(false)
+  const [addVendorPopUp, setAddVendorPopUp] = useState(false);
   const [data, setData] = useState("");
   const navigation = useNavigate();
 
@@ -179,16 +232,14 @@ const ManageAdmin = () => {
     console.log("hcjhcjhf", item);
     navigation("/bookinghistorybyorderid", { state: item });
   };
-  
 
-  
-   const getAllListData = async () => {
+  const getAllListData = async () => {
     await axios
       .get(`${environmentVariables.apiUrl}/auth/getvendorlist`, {
         headers: { _token: authData.data.token },
       })
       .then((response) => {
-        console.log("vendorlist",response.data)
+        console.log("vendorlist", response.data);
         setData(response.data.message);
         setIsLoading(false);
       })
@@ -196,87 +247,244 @@ const ManageAdmin = () => {
         console.log("error", err);
         setIsLoading(false);
       });
+      
   };
   useEffect(() => {
     setIsLoading(true);
     getAllListData();
   }, []);
-
-  const ApprovedData = () => {};
-  const PendingData = () => {};
+  
   const boldTextCss = {
     fontWeight: 700,
   };
   return (
     <>
       <TextMainWrapper>
-        <Check open={addVendorPopUp} setOpen={setAddVendorPopUp}></Check>
         <TextRoot>
           <Root>
+            <Heading> Manage Hotels</Heading>
             <TextWrapper>
-              <Heading> Manage Hotels</Heading>
-              <AddButton onClick={()=>setAddVendorPopUp(true)}>Add Hotel</AddButton>
+              <SelectVendor>
+                <SelectOption>Select Vendor*</SelectOption>
+                <SelectOption>All</SelectOption>
+                <SelectOption>Vendor 1</SelectOption>
+                <SelectOption>Vendor 2</SelectOption>
+              </SelectVendor>
+              <AddButton onClick={() => setAddVendorPopUp(true)}>
+                Add Hotel
+              </AddButton>
             </TextWrapper>
           </Root>
-          {isLoading===true?<div style={{display:"flex",justifyContent:"center",marginTop:"30px"}}><CircularLoader></CircularLoader></div>:<TableContainer component={Paper}>
-            <Table sx={{ minWidth: 650 }} aria-label="simple table">
-              <TableHead>
-                <TableRow>
-                  <TableCell style={boldTextCss}>Name</TableCell>
-                  <TableCell style={boldTextCss} align="left">
-                    Email
-                  </TableCell>
-                  <TableCell style={boldTextCss} align="left">
-                    Contact Number
-                  </TableCell>
-                  {/* <TableCell style={boldTextCss} align="right">
-                    Creation date
-                  </TableCell> */}
-                  {/* <TableCell style={boldTextCss} align="right">
-                    Status
-                  </TableCell> */}
-                  <TableCell style={boldTextCss} align="right">
-                    Action
-                  </TableCell>
-                </TableRow>
-              </TableHead>
-              
-             <TableBody>
-                {data &&
-                  data.map((item, index) => {
-                    const bookingDate = new Date(item.createdAt);
-                    return (
-                      <TableRow
-                        key={index}
-                        sx={{
-                          "&:last-child td, &:last-child th": { border: 0 },
-                        }}
-                      >
-                        <TableCell component="th" scope="row">
-                          {item?.name}
-                        </TableCell>
-                        <TableCell align="left">{item?.email}</TableCell>
-                        {/* <TableCell align="right">{item.checkIn}</TableCell> */}
-                        <TableCell align="left">
-                          {item?.mobile}
-                        </TableCell>
-                        {/* <TableCell align="right">{item.status}</TableCell> */}
-                        <TableCell align="right">
-                          <Button
-                            size="small"
-                            variant="contained"
-                            type="button"
-                            onClick={() => handleClick(item)}
-                          >
-                            View
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-              </TableBody>
-            </Table>
-          </TableContainer>}
+          {/* {isLoading === true ? (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                marginTop: "30px",
+              }}
+            >
+              <CircularLoader></CircularLoader>
+            </div>
+          ) : ( */}
+          <HotelCardsWrapper>
+            <HotelCard>
+              <HotelImageWrapper>
+                <HotelImage
+                  src={
+                    "https://uat-travel-api.floxypay.com/uploads/1675936089112-teanest1.jpg"
+                  }
+                />
+              </HotelImageWrapper>
+              <HotelInfoWrapper>
+                <HotelBigText>Hotel Radisson Blue</HotelBigText>
+
+                <HotelIconWrapper>
+                  {" "}
+                  <HotelIcon></HotelIcon>
+                  <HotelInfoText>City : Noida</HotelInfoText>
+                  <HotelInfoText>State : UP</HotelInfoText>
+                  <HotelInfoText>Country : India</HotelInfoText>
+                  <HotelInfoText>Theme : Heritage</HotelInfoText>
+                  <HotelInfoText>Category : Luxury</HotelInfoText>
+                </HotelIconWrapper>
+              </HotelInfoWrapper>
+              <HotelButtonWrapper>
+                <HotelActionButtons>View</HotelActionButtons>
+                <HotelActionButtons>Edit</HotelActionButtons>
+                <HotelActionButtons>Delete</HotelActionButtons>
+                <HotelActionButtons>Hide</HotelActionButtons>
+              </HotelButtonWrapper>
+            </HotelCard>
+            <HotelCard>
+              <HotelImageWrapper>
+                <HotelImage
+                  src={
+                    "https://uat-travel-api.floxypay.com/uploads/1675936089112-teanest1.jpg"
+                  }
+                />
+              </HotelImageWrapper>
+              <HotelInfoWrapper>
+                <HotelBigText>Hotel Radisson Blue</HotelBigText>
+
+                <HotelIconWrapper>
+                  {" "}
+                  <HotelIcon></HotelIcon>
+                  <HotelInfoText>City : Noida</HotelInfoText>
+                  <HotelInfoText>State : UP</HotelInfoText>
+                  <HotelInfoText>Country : India</HotelInfoText>
+                  <HotelInfoText>Theme : Heritage</HotelInfoText>
+                  <HotelInfoText>Category : Luxury</HotelInfoText>
+                </HotelIconWrapper>
+              </HotelInfoWrapper>
+              <HotelButtonWrapper>
+                <HotelActionButtons>View</HotelActionButtons>
+                <HotelActionButtons>Edit</HotelActionButtons>
+                <HotelActionButtons>Delete</HotelActionButtons>
+                <HotelActionButtons>Hide</HotelActionButtons>
+              </HotelButtonWrapper>
+            </HotelCard>{" "}
+            <HotelCard>
+              <HotelImageWrapper>
+                <HotelImage
+                  src={
+                    "https://uat-travel-api.floxypay.com/uploads/1675936089112-teanest1.jpg"
+                  }
+                />
+              </HotelImageWrapper>
+              <HotelInfoWrapper>
+                <HotelBigText>Hotel Radisson Blue</HotelBigText>
+
+                <HotelIconWrapper>
+                  {" "}
+                  <HotelIcon></HotelIcon>
+                  <HotelInfoText>City : Noida</HotelInfoText>
+                  <HotelInfoText>State : UP</HotelInfoText>
+                  <HotelInfoText>Country : India</HotelInfoText>
+                  <HotelInfoText>Theme : Heritage</HotelInfoText>
+                  <HotelInfoText>Category : Luxury</HotelInfoText>
+                </HotelIconWrapper>
+              </HotelInfoWrapper>
+              <HotelButtonWrapper>
+                <HotelActionButtons>View</HotelActionButtons>
+                <HotelActionButtons>Edit</HotelActionButtons>
+                <HotelActionButtons>Delete</HotelActionButtons>
+                <HotelActionButtons>Hide</HotelActionButtons>
+              </HotelButtonWrapper>
+            </HotelCard>{" "}
+            <HotelCard>
+              <HotelImageWrapper>
+                <HotelImage
+                  src={
+                    "https://uat-travel-api.floxypay.com/uploads/1675936089112-teanest1.jpg"
+                  }
+                />
+              </HotelImageWrapper>
+              <HotelInfoWrapper>
+                <HotelBigText>Hotel Radisson Blue</HotelBigText>
+
+                <HotelIconWrapper>
+                  {" "}
+                  <HotelIcon></HotelIcon>
+                  <HotelInfoText>City : Noida</HotelInfoText>
+                  <HotelInfoText>State : UP</HotelInfoText>
+                  <HotelInfoText>Country : India</HotelInfoText>
+                  <HotelInfoText>Theme : Heritage</HotelInfoText>
+                  <HotelInfoText>Category : Luxury</HotelInfoText>
+                </HotelIconWrapper>
+              </HotelInfoWrapper>
+              <HotelButtonWrapper>
+                <HotelActionButtons>View</HotelActionButtons>
+                <HotelActionButtons>Edit</HotelActionButtons>
+                <HotelActionButtons>Delete</HotelActionButtons>
+                <HotelActionButtons>Hide</HotelActionButtons>
+              </HotelButtonWrapper>
+            </HotelCard>{" "}
+            <HotelCard>
+              <HotelImageWrapper>
+                <HotelImage
+                  src={
+                    "https://uat-travel-api.floxypay.com/uploads/1675936089112-teanest1.jpg"
+                  }
+                />
+              </HotelImageWrapper>
+              <HotelInfoWrapper>
+                <HotelBigText>Hotel Radisson Blue</HotelBigText>
+
+                <HotelIconWrapper>
+                  {" "}
+                  <HotelIcon></HotelIcon>
+                  <HotelInfoText>City : Noida</HotelInfoText>
+                  <HotelInfoText>State : UP</HotelInfoText>
+                  <HotelInfoText>Country : India</HotelInfoText>
+                  <HotelInfoText>Theme : Heritage</HotelInfoText>
+                  <HotelInfoText>Category : Luxury</HotelInfoText>
+                </HotelIconWrapper>
+              </HotelInfoWrapper>
+              <HotelButtonWrapper>
+                <HotelActionButtons>View</HotelActionButtons>
+                <HotelActionButtons>Edit</HotelActionButtons>
+                <HotelActionButtons>Delete</HotelActionButtons>
+                <HotelActionButtons>Hide</HotelActionButtons>
+              </HotelButtonWrapper>
+            </HotelCard>{" "}
+            <HotelCard>
+              <HotelImageWrapper>
+                <HotelImage
+                  src={
+                    "https://uat-travel-api.floxypay.com/uploads/1675936089112-teanest1.jpg"
+                  }
+                />
+              </HotelImageWrapper>
+              <HotelInfoWrapper>
+                <HotelBigText>Hotel Radisson Blue</HotelBigText>
+
+                <HotelIconWrapper>
+                  {" "}
+                  <HotelIcon></HotelIcon>
+                  <HotelInfoText>City : Noida</HotelInfoText>
+                  <HotelInfoText>State : UP</HotelInfoText>
+                  <HotelInfoText>Country : India</HotelInfoText>
+                  <HotelInfoText>Theme : Heritage</HotelInfoText>
+                  <HotelInfoText>Category : Luxury</HotelInfoText>
+                </HotelIconWrapper>
+              </HotelInfoWrapper>
+              <HotelButtonWrapper>
+                <HotelActionButtons>View</HotelActionButtons>
+                <HotelActionButtons>Edit</HotelActionButtons>
+                <HotelActionButtons>Delete</HotelActionButtons>
+                <HotelActionButtons>Hide</HotelActionButtons>
+              </HotelButtonWrapper>
+            </HotelCard>{" "}
+            <HotelCard>
+              <HotelImageWrapper>
+                <HotelImage
+                  src={
+                    "https://uat-travel-api.floxypay.com/uploads/1675936089112-teanest1.jpg"
+                  }
+                />
+              </HotelImageWrapper>
+              <HotelInfoWrapper>
+                <HotelBigText>Hotel Radisson Blue</HotelBigText>
+
+                <HotelIconWrapper>
+                  {" "}
+                  <HotelIcon></HotelIcon>
+                  <HotelInfoText>City : Noida</HotelInfoText>
+                  <HotelInfoText>State : UP</HotelInfoText>
+                  <HotelInfoText>Country : India</HotelInfoText>
+                  <HotelInfoText>Theme : Heritage</HotelInfoText>
+                  <HotelInfoText>Category : Luxury</HotelInfoText>
+                </HotelIconWrapper>
+              </HotelInfoWrapper>
+              <HotelButtonWrapper>
+                <HotelActionButtons>View</HotelActionButtons>
+                <HotelActionButtons>Edit</HotelActionButtons>
+                <HotelActionButtons>Delete</HotelActionButtons>
+                <HotelActionButtons>Hide</HotelActionButtons>
+              </HotelButtonWrapper>
+            </HotelCard>
+          </HotelCardsWrapper>
+          {/* )} */}
         </TextRoot>
       </TextMainWrapper>
     </>

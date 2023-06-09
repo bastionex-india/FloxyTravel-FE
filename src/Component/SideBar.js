@@ -52,11 +52,14 @@ function SideBar(props) {
       } else if (window.location.href.split("/").pop() === "userselectedcity") {
         setselected("Landing page");
       } else if (
-        window.location.href.split("/").pop() === "bookinghistoryofadmin" || window.location.href.split("/").pop() === "bookinghistory"
+        window.location.href.split("/").pop() === "bookinghistoryofadmin" ||
+        window.location.href.split("/").pop() === "bookinghistory"
       ) {
         setselected("Booking history");
       } else if (window.location.href.split("/").pop() === "manageadmin") {
         setselected("manageadmin");
+      } else if (window.location.href.split("/").pop() === "managehotels") {
+        setselected("managehotels");
       } else {
         setselected("Dashboard");
       }
@@ -85,6 +88,16 @@ function SideBar(props) {
           >
             <Link>Manage Admin/Vendor</Link>
           </LinkWrapper>
+          
+          <LinkWrapper
+            select={selected === "managehotels"}
+            onClick={() => {
+              setselected("managehotels");
+              navigate("/managehotels");
+            }}
+          >
+            <Link>Manage Hotels</Link>
+          </LinkWrapper>
           <LinkWrapper
             select={selected === "user homepage slider"}
             onClick={() => {
@@ -92,7 +105,7 @@ function SideBar(props) {
               navigate("/userhomepage");
             }}
           >
-            <Link>User Homepage Slider</Link>
+            <Link>Manage Home Landing Page</Link>
           </LinkWrapper>
           <LinkWrapper
             select={selected === "Landing page"}
@@ -101,7 +114,7 @@ function SideBar(props) {
               navigate("/userselectedcity");
             }}
           >
-            <Link>User Selected City</Link>
+            <Link>Manage City Landing Page</Link>
           </LinkWrapper>
           <LinkWrapper
             select={selected === "Booking history"}
