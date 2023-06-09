@@ -20,6 +20,7 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 
 import moment from "moment";
+import CreateAdminVendor from "../CreateAdminVendor/CreateAdminVendor";
 const TextRoot = styled.div`
   // background-color: #9f94942b;
   padding: 20px 0px;
@@ -169,9 +170,9 @@ const TextMainWrapper = styled.div`
 const ManageAdmin = () => {
   const [select, setSelect] = useState("");
   const [select1, setSelect1] = useState("");
-  const [isLoading,setIsLoading]=useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const { authData, setAuthData } = useContext(AuthContext);
-  const [addVendorPopUp,setAddVendorPopUp]=useState(false)
+  const [addVendorPopUp, setAddVendorPopUp] = useState(false);
   const [data, setData] = useState("");
   const navigation = useNavigate();
 
@@ -179,16 +180,14 @@ const ManageAdmin = () => {
     console.log("hcjhcjhf", item);
     navigation(`/managehotels/${item}`);
   };
-  
 
-  
-   const getAllListData = async () => {
+  const getAllListData = async () => {
     await axios
       .get(`${environmentVariables.apiUrl}/auth/getvendorlist`, {
         headers: { _token: authData.data.token },
       })
       .then((response) => {
-        console.log("vendorlist",response.data)
+        console.log("vendorlist", response.data);
         setData(response.data.message);
         setIsLoading(false);
       })
@@ -210,73 +209,91 @@ const ManageAdmin = () => {
   return (
     <>
       <TextMainWrapper>
-        <Check open={addVendorPopUp} setOpen={setAddVendorPopUp}></Check>
+        {/* <Check open={addVendorPopUp} setOpen={setAddVendorPopUp}></Check> */}
+        {addVendorPopUp && (
+          <CreateAdminVendor
+            open={addVendorPopUp}
+            setOpen={setAddVendorPopUp}
+          ></CreateAdminVendor>
+        )}
         <TextRoot>
           <Root>
             <TextWrapper>
               <Heading> Manage Admin/Vendor</Heading>
-              <AddButton onClick={()=>setAddVendorPopUp(true)}>Add Vendor/Admin</AddButton>
+              <AddButton onClick={() => setAddVendorPopUp(true)}>
+                Add Vendor/Admin
+              </AddButton>
             </TextWrapper>
           </Root>
-          {isLoading===true?<div style={{display:"flex",justifyContent:"center",marginTop:"30px"}}><CircularLoader></CircularLoader></div>:<TableContainer component={Paper}>
-            <Table sx={{ minWidth: 650 }} aria-label="simple table">
-              <TableHead>
-                <TableRow>
-                  <TableCell style={boldTextCss}>Name</TableCell>
-                  <TableCell style={boldTextCss} align="left">
-                    Email
-                  </TableCell>
-                  <TableCell style={boldTextCss} align="left">
-                    Contact Number
-                  </TableCell>
-                  {/* <TableCell style={boldTextCss} align="right">
+          {isLoading === true ? (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                marginTop: "30px",
+              }}
+            >
+              <CircularLoader></CircularLoader>
+            </div>
+          ) : (
+            <TableContainer component={Paper}>
+              <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell style={boldTextCss}>Name</TableCell>
+                    <TableCell style={boldTextCss} align="left">
+                      Email
+                    </TableCell>
+                    <TableCell style={boldTextCss} align="left">
+                      Contact Number
+                    </TableCell>
+                    {/* <TableCell style={boldTextCss} align="right">
                     Creation date
                   </TableCell> */}
-                  {/* <TableCell style={boldTextCss} align="right">
+                    {/* <TableCell style={boldTextCss} align="right">
                     Status
                   </TableCell> */}
-                  <TableCell style={boldTextCss} align="right">
-                    Action
-                  </TableCell>
-                </TableRow>
-              </TableHead>
-              
-             <TableBody>
-                {data &&
-                  data.map((item, index) => {
-                    const bookingDate = new Date(item.createdAt);
-                    return (
-                      <TableRow
-                        key={index}
-                        sx={{
-                          "&:last-child td, &:last-child th": { border: 0 },
-                        }}
-                      >
-                        <TableCell component="th" scope="row">
-                          {item?.name}
-                        </TableCell>
-                        <TableCell align="left">{item?.email}</TableCell>
-                        {/* <TableCell align="right">{item.checkIn}</TableCell> */}
-                        <TableCell align="left">
-                          {item?.mobile}
-                        </TableCell>
-                        {/* <TableCell align="right">{item.status}</TableCell> */}
-                        <TableCell align="right">
-                          <Button
-                            size="small"
-                            variant="contained"
-                            type="button"
-                            onClick={(e) => handleClick(item?._id)}
-                          >
-                            View
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-              </TableBody>
-            </Table>
-          </TableContainer>}
+                    <TableCell style={boldTextCss} align="right">
+                      Action
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+
+                <TableBody>
+                  {data &&
+                    data.map((item, index) => {
+                      const bookingDate = new Date(item.createdAt);
+                      return (
+                        <TableRow
+                          key={index}
+                          sx={{
+                            "&:last-child td, &:last-child th": { border: 0 },
+                          }}
+                        >
+                          <TableCell component="th" scope="row">
+                            {item?.name}
+                          </TableCell>
+                          <TableCell align="left">{item?.email}</TableCell>
+                          {/* <TableCell align="right">{item.checkIn}</TableCell> */}
+                          <TableCell align="left">{item?.mobile}</TableCell>
+                          {/* <TableCell align="right">{item.status}</TableCell> */}
+                          <TableCell align="right">
+                            <Button
+                              size="small"
+                              variant="contained"
+                              type="button"
+                              onClick={(e) => handleClick(item?._id)}
+                            >
+                              View
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          )}
         </TextRoot>
       </TextMainWrapper>
     </>

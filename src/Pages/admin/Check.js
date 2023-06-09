@@ -5,13 +5,8 @@ import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Button from "@mui/material/Button";
-import { environmentVariables } from "../../config/config";
 import Typography from "@mui/material/Typography";
 import { useEffect, useState } from "react";
-import axios from "axios";
-import { useContext } from "react";
-import { AuthContext } from "../../ContextApi/ContextApi";
-import { useNavigate } from "react-router-dom";
 import { ButtonBase, TextField } from "@material-ui/core";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -29,6 +24,11 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useFormik } from "formik";
 import { VendorRegisterSchema } from "./schemas/VendorRegisterSchems";
+import { useNavigate } from "react-router-dom";
+import { environmentVariables } from "../../config/config";
+import axios from "axios";
+import { useContext } from "react";
+import { AuthContext } from "../../ContextApi/ContextApi";
 
 const Root = styled.div`
   width: 90%;
