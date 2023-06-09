@@ -4,6 +4,7 @@ import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
+import CircularLoader from "../../Component/CircularLoader/CircularLoader";
 import Button from "@mui/material/Button";
 import { environmentVariables } from "../../config/config";
 import Typography from "@mui/material/Typography";
@@ -29,6 +30,15 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useFormik } from "formik";
 import { VendorRegisterSchema } from "./schemas/VendorRegisterSchems";
+import Check from "./Check.js";
+
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
 
 const Root = styled.div`
   width: 90%;
@@ -49,8 +59,13 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
+const boldTextCss = {
+  fontWeight: 700,
+};
+
 const VendorList = () => {
   const [data, setData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const [responseData, setResponseData] = useState([]);
   const [adminResponseData, setAdminResponseData] = useState([]);
   const { authData, setAuthData } = useContext(AuthContext);
@@ -73,12 +88,15 @@ const VendorList = () => {
       .then((response) => {
         // console.log("vendorlist",response.data)
         setData(response.data.message);
+        setIsLoading(false);
       })
       .catch((err) => {
         console.log("error", err);
+        setIsLoading(false);
       });
   };
   useEffect(() => {
+    setIsLoading(true);
     getAllListData();
   }, []);
 
@@ -299,302 +317,144 @@ const VendorList = () => {
   // console.log("first",errors);
 
   return (
-    <Root>
-      <button onClick={handleClickOpen}>Add Vendor or admin</button>
-      {/* <button onClick={handleClickOpen1}>Add Admin</button> */}
-      <CardWrapper>
-        {data.map((item, index) => {
-          // console.log("dddddddddd",item)
-          return (
-            item.active !== true && (
-              <Card
-                sx={{ maxWidth: 345 }}
-                key={index}
-                style={{ cursor: "pointer" }}
+    <>
+      <div class="row row-cols-4 g-4" style={{ width: "70rem" }}>
+        <div class="col">
+          <div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
+            <div class="card-body">
+              <h6 style={{ textAlign: "center" }} class="card-title">
+                PENDING
+              </h6>
+              <h1
+                style={{ textAlign: "center", color: "#008080" }}
+                class="card-text"
               >
-                {/* <CardMedia
-                            component="img"
-                            alt="green iguana"
-                            height="140"
-                            image="../../Images/brandLogo.png"
-                            onClick={()=>getAnotherComponent(item)}
-                        /> */}
-                <CardContent>
-                  <DeleteIcon onClick={() => deleteVendor(item)} />
-                  <Typography
-                    gutterBottom
-                    variant="h5"
-                    component="div"
-                    onClick={() => getAnotherComponent(item)}
-                  >
-                    Name : {item.name}
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    onClick={() => getAnotherComponent(item)}
-                  >
-                    Email : {item.email}
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    onClick={() => getAnotherComponent(item)}
-                  >
-                    Contact : {item.mobile}
-                  </Typography>
-                </CardContent>
-                {/* <CardActions>
-                            <Button size="small">Share</Button>
-                            <Button size="small">Learn More</Button>
-                        </CardActions> */}
-              </Card>
-            )
-          );
-        })}
-
-        <div>
-          <Dialog
-            open={open}
-            TransitionComponent={Transition}
-            keepMounted
-            onClose={handleClose}
-            aria-describedby="alert-dialog-slide-description"
-          >
-            <DialogTitle>{"Add Vendor or Admin"}</DialogTitle>
-            <DialogContent>
-              <DialogContentText id="alert-dialog-slide-description">
-                <TextField
-                  type="text"
-                  placeholder="User Name*"
-                  name="name"
-                  value={values.name}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  id="outlined-basic"
-                  label="Name"
-                  variant="outlined"
-                  required
-                />
-                {errors.name && touched.name ? (
-                  <ErrorMessage>{errors.name}</ErrorMessage>
-                ) : null}
-                <TextField
-                  type="email"
-                  placeholder="Email*"
-                  name="email"
-                  value={values.email}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  id="outlined-basic"
-                  label="Email"
-                  variant="outlined"
-                  required
-                />
-                {errors.email && touched.email ? (
-                  <ErrorMessage>{errors.email}</ErrorMessage>
-                ) : null}
-                <TextField
-                  type="number"
-                  placeholder="Contact*"
-                  name="contact"
-                  value={values.contact}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  id="outlined-basic"
-                  label="Contact"
-                  variant="outlined"
-                  required
-                />
-                {errors.contact && touched.contact ? (
-                  <ErrorMessage>{errors.contact}</ErrorMessage>
-                ) : null}
-                <TextField
-                  type="password"
-                  placeholder="Password*"
-                  name="password"
-                  value={values.password}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  id="outlined-basic"
-                  label="Password"
-                  variant="outlined"
-                  required
-                />
-                {errors.password && touched.password ? (
-                  <ErrorMessage>{errors.password}</ErrorMessage>
-                ) : null}
-                <TextField
-                  type="password"
-                  placeholder="Confirm Password*"
-                  name="confirmPassword"
-                  value={values.confirmPassword}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  id="outlined-basic"
-                  label="Confirm Password"
-                  variant="outlined"
-                  required
-                />
-                {errors.confirmPassword && touched.confirmPassword ? (
-                  <ErrorMessage>{errors.confirmPassword}</ErrorMessage>
-                ) : null}
-                <FormControl>
-                  {/* <FormLabel id="demo-row-radio-buttons-group-label">Gender</FormLabel> */}
-                  <RadioGroup
-                    row
-                    aria-labelledby="demo-row-radio-buttons-group-label"
-                    name="row-radio-buttons-group"
-                    onChange={(e) => setAdminValue(e.target.value)}
-                    onClick={() => setError("")}
-                  >
-                    <FormControlLabel
-                      value="admin"
-                      control={<Radio />}
-                      label="Admin"
-                      checked={adminValue === "admin"}
-                      name="option"
-                    />
-                    <FormControlLabel
-                      value="vendor"
-                      control={<Radio />}
-                      label="Vendor"
-                      checked={adminValue === "vendor"}
-                      name="option"
-                    />
-                  </RadioGroup>
-                </FormControl>
-              </DialogContentText>
-              {error !== "" && <ErrorMessage>{error}</ErrorMessage>}
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={handleClose1}>Cancel</Button>
-              <Button onClick={handleSubmit}>Submit</Button>
-            </DialogActions>
-          </Dialog>
+                $80
+              </h1>
+              <p style={{ textAlign: "center" }} class="card-title">
+                Total pendings
+              </p>
+            </div>
+          </div>
         </div>
-        {/* <div>
-      <Dialog
-        open={open1}
-        TransitionComponent={Transition}
-        keepMounted
-        onClose={handleClose2}
-        aria-describedby="alert-dialog-slide-description"
-      >
-        <DialogTitle>{"Add Vendor or Admin"}</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-slide-description">
-            <TextField id="outlined-basic" label="Name" variant="outlined" required type='text' value={adminName} onChange={e=>setadminName(e.target.value)}/>
-            <TextField id="outlined-basic" label="Email" variant="outlined" required type='email' value={adminEmail} onChange={e=>setAdminEmail(e.target.value)}/>
-            <TextField id="outlined-basic" label="Password" variant="outlined" required type='password' value={adminPassword} onChange={e=>setAdminPassword(e.target.value)}/>
-            <TextField id="outlined-basic" label="Confirm Password" variant="outlined" required type='password' value={admincpassword} onChange={e=>setAdminCPassword(e.target.value)}/>
-            <FormControl>
-              <RadioGroup
-                row
-                aria-labelledby="demo-row-radio-buttons-group-label"
-                name="row-radio-buttons-group"
-                onChange={(e)=>setAdminValue1(e.target.value)}
+        <div class="col">
+          <div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
+            <div class="card-body">
+              <h6 style={{ textAlign: "center" }} class="card-title">
+                EARNINGS
+              </h6>
+              <h1
+                style={{ textAlign: "center", color: "#008080" }}
+                class="card-text"
               >
-                <FormControlLabel value="admin" control={<Radio />} label="Admin"  checked={adminValue1 === "admin"} />
-                <FormControlLabel value="vendor" control={<Radio />} label="Vendor" checked={adminValue1 === "vendor"}/>
-              </RadioGroup>
-            </FormControl>
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose3}>Cancel</Button>  
-          <Button onClick={handleClose2}>Submit</Button>
-        </DialogActions>
-      </Dialog>
-      
-    </div> */}
-        <ToastContainer />
-        {/* <Card sx={{ maxWidth: 345 }}>
-      <CardMedia
-        component="img"
-        alt="green iguana"
-        height="140"
-        image="../../Images/download.jpg"
-      />
-      <CardContent>
-        <Typography gutterBottom variant="h5" component="div">
-          Lizard
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          Lizards are a widespread group of squamate reptiles, with over 6,000
-          species, ranging across all continents except Antarctica
-        </Typography>
-      </CardContent>
-      <CardActions>
-        <Button size="small">Share</Button>
-        <Button size="small">Learn More</Button>
-      </CardActions>
-    </Card>
-    <Card sx={{ maxWidth: 345 }}>
-      <CardMedia
-        component="img"
-        alt="green iguana"
-        height="140"
-        image="../../../public/download.jpg"
-      />
-      <CardContent>
-        <Typography gutterBottom variant="h5" component="div">
-          Lizard
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          Lizards are a widespread group of squamate reptiles, with over 6,000
-          species, ranging across all continents except Antarctica
-        </Typography>
-      </CardContent>
-      <CardActions>
-        <Button size="small">Share</Button>
-        <Button size="small">Learn More</Button>
-      </CardActions>
-    </Card>
-    <Card sx={{ maxWidth: 345 }}>
-      <CardMedia
-        component="img"
-        alt="green iguana"
-        height="140"
-        image="../../../public/download.jpg"
-      />
-      <CardContent>
-        <Typography gutterBottom variant="h5" component="div">
-          Lizard
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          Lizards are a widespread group of squamate reptiles, with over 6,000
-          species, ranging across all continents except Antarctica
-        </Typography>
-      </CardContent>
-      <CardActions>
-        <Button size="small">Share</Button>
-        <Button size="small">Learn More</Button>
-      </CardActions>
-    </Card>
-    <Card sx={{ maxWidth: 345 }}>
-      <CardMedia
-        component="img"
-        alt="green iguana"
-        height="140"
-        image="../../../public/download.jpg"
-      />
-      <CardContent>
-        <Typography gutterBottom variant="h5" component="div">
-          Lizard
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          Lizards are a widespread group of squamate reptiles, with over 6,000
-          species, ranging across all continents except Antarctica
-        </Typography>
-      </CardContent>
-      <CardActions>
-        <Button size="small">Share</Button>
-        <Button size="small">Learn More</Button>
-      </CardActions>
-    </Card> */}
-      </CardWrapper>
-    </Root>
+                $50
+              </h1>
+              <p style={{ textAlign: "center" }} class="card-title">
+                Total earnings
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
+            <div class="card-body">
+              <h6 style={{ textAlign: "center" }} class="card-title">
+                BOOKINS
+              </h6>
+              <h1
+                style={{ textAlign: "center", color: "#008080" }}
+                class="card-text"
+              >
+                68
+              </h1>
+              <p style={{ textAlign: "center" }} class="card-title">
+                Total bookings
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
+            <div class="card-body">
+              <h6 style={{ textAlign: "center" }} class="card-title">
+                SERVICES
+              </h6>
+              <h1
+                style={{ textAlign: "center", color: "#008080" }}
+                class="card-text"
+              >
+                25
+              </h1>
+              <p style={{ textAlign: "center" }} class="card-title">
+                Total services
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {isLoading === true ? (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            marginTop: "30px",
+          }}
+        >
+          <CircularLoader></CircularLoader>
+        </div>
+      ) : (
+        <TableContainer component={Paper} style={{ width: "70rem" }}>
+          <Table sx={{ minWidth: 650 }} aria-label="simple table">
+            <TableHead>
+              <TableRow>
+                <TableCell style={boldTextCss}>Vendor Name</TableCell>
+                <TableCell style={boldTextCss} align="left">
+                  Email
+                </TableCell>
+                <TableCell style={boldTextCss} align="left">
+                  Contact Number
+                </TableCell>
+                <TableCell style={boldTextCss} align="left">
+                  Action
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {data &&
+                data.map((item, index) => {
+                  const bookingDate = new Date(item.createdAt);
+                  return (
+                    item.active !== true && (
+                      <TableRow
+                        key={index}
+                        sx={{
+                          "&:last-child td, &:last-child th": { border: 0 },
+                        }}
+                      >
+                        <TableCell component="th" scope="row">
+                          {item.name}
+                        </TableCell>
+                        <TableCell align="left">{item.email}</TableCell>
+                        <TableCell align="left">{item.mobile}</TableCell>
+                        <TableCell align="left">
+                          <Button
+                            size="small"
+                            variant="contained"
+                            type="button"
+                          >
+                            <DeleteIcon onClick={() => deleteVendor(item)} />
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    )
+                  );
+                })}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      )}
+    </>
   );
 };
 
