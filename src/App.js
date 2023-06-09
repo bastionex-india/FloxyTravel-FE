@@ -79,7 +79,7 @@ function App() {
                       path="userhomepage"
                       element={<UserLandingPageHome />}
                     />
-                    <Route path="managehotels/:id" element={<ManageHotels />} />
+                    <Route path="managehotels" element={<ManageHotels />} />
                     {/* <Route path="/bookinghistory" element={<BookingHistory />} />
                     <Route path="/hoteldetails" element={<HotelDetails />} />
                     <Route path="/profile" element={<Profile />} /> */}

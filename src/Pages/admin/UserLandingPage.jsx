@@ -864,7 +864,7 @@ const Root = styled.div`
 
 const MainHeading = styled.div`
   font-size: 1.75rem;
-  font-weight: 500;
+  /* font-weight: 500; */
   /* text-align: center; */
   color: #000;
   margin: 0 5% 10px 5%;
