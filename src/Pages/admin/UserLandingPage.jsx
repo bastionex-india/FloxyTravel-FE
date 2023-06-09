@@ -962,6 +962,7 @@ const AddStatePopUpContainer = styled.div`
   position: fixed;
   top: 0;
   z-index: 99999;
+  backdrop-filter: blur(2px);
   left: 0;
   width: 100%;
   height: 100%;
@@ -973,6 +974,7 @@ const AddStatePopUpContainer = styled.div`
 
 const AddThemePopUpContainer = styled.div`
   position: fixed;
+  backdrop-filter: blur(2px);
   top: 0;
   z-index: 99999;
   left: 0;
@@ -1088,7 +1090,7 @@ const AddStatePopUpSubmitButton = styled.div`
 export const RecentlyDocumentHeader = styled.div`
   display: flex;
   margin: 5px 5%;
-  justify-content:space-between;
+  justify-content: space-between;
   padding: 14px 15px;
   @media (max-width: 768px) {
     display: none;
