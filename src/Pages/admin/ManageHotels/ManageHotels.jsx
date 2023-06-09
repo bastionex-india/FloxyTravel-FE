@@ -196,14 +196,13 @@ const ManageAdmin = () => {
         console.log("error", err);
         setIsLoading(false);
       });
+      
   };
   useEffect(() => {
     setIsLoading(true);
     getAllListData();
   }, []);
-
-  const ApprovedData = () => {};
-  const PendingData = () => {};
+  
   const boldTextCss = {
     fontWeight: 700,
   };
