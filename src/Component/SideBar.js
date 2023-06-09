@@ -52,7 +52,7 @@ function SideBar(props) {
       } else if (window.location.href.split("/").pop() === "userselectedcity") {
         setselected("Landing page");
       } else if (
-        window.location.href.split("/").pop() === "bookinghistoryofadmin"
+        window.location.href.split("/").pop() === "bookinghistoryofadmin" || window.location.href.split("/").pop() === "bookinghistory"
       ) {
         setselected("Booking history");
       } else if (window.location.href.split("/").pop() === "manageadmin") {
