@@ -247,13 +247,12 @@ const ManageAdmin = () => {
         console.log("error", err);
         setIsLoading(false);
       });
-      
   };
   useEffect(() => {
     setIsLoading(true);
     getAllListData();
   }, []);
-  
+
   const boldTextCss = {
     fontWeight: 700,
   };
@@ -270,7 +269,11 @@ const ManageAdmin = () => {
                 <SelectOption>Vendor 1</SelectOption>
                 <SelectOption>Vendor 2</SelectOption>
               </SelectVendor>
-              <AddButton onClick={() => setAddVendorPopUp(true)}>
+              <AddButton
+                onClick={() => {
+                  navigation("/addhotels");
+                }}
+              >
                 Add Hotel
               </AddButton>
             </TextWrapper>
