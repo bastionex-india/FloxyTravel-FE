@@ -217,6 +217,7 @@ const CreateAdminVendor = ({ open, setOpen }) => {
     });
   return (
     <>
+    
       <AddThemePopUpContainer>
       
         <AddThemePopUp>
