@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { environmentVariables } from "../../../config/config";
 import axios from "axios";
 import { useContext } from "react";
+import Swal from "sweetalert2";
 import { AuthContext } from "../../../ContextApi/ContextApi";
 const ErrorText = styled.div`
   color: red;
@@ -147,7 +148,11 @@ const CreateAdminVendor = ({ open, setOpen }) => {
                 // console.log(response.data.data,"00000000000001111111111")
                 // setUpdatedHotelData(response.data.message)
                 // setResponseData(response.data.data);
-
+                Swal.fire({
+                  title: "Success",
+                  text: "Admin/Vendor created successfully",
+                  timer: 2000,
+                });
                 action.resetForm();
                 // getAllListData();
                 // toast(response.data.message);
@@ -156,6 +161,11 @@ const CreateAdminVendor = ({ open, setOpen }) => {
               .catch((error) => {
                 console.log("///////////////", error);
                 // setError('Details are not valid');
+                Swal.fire({
+                  title: "Error",
+                  text: error,
+                  timer: 2000,
+                });
               });
           } else {
             axios({
