@@ -22,6 +22,8 @@ import BookingHistorybyOrderid from "./Pages/admin/BookingHistorybyOrderid";
 import ManageAdmin from "./Pages/admin/ManageAdmin/ManageAdmin";
 import ManageHotels from "./Pages/admin/ManageHotels/ManageHotels";
 import AddHotels from "./Pages/admin/AddHotels/AddHotels";
+import VendorManageHotels from './Pages/VendorManageHotels';
+
 const Root = styled.div``;
 const LeftWrapper = styled.div`
   width: 300px;
@@ -95,6 +97,10 @@ function App() {
                     <Route
                       path="/bookinghotelbyid"
                       element={<BookingHotelById />}
+                    />
+                    <Route
+                      path="/vendormanagehotels"
+                      element={<VendorManageHotels />}
                     />
                     <Route path="/hoteldetails" element={<HotelDetails />} />
                     <Route path="/profile" element={<Profile />} />

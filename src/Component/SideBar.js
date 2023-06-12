@@ -58,8 +58,8 @@ function SideBar(props) {
         setselected("Booking history");
       } else if (window.location.href.split("/").pop() === "manageadmin") {
         setselected("manageadmin");
-      } else if (window.location.href.split("/").pop() === "managehotels") {
-        setselected("managehotels");
+      } else if (window.location.href.split("/").pop() === "vendormanagehotels") {
+        setselected("vendormanagehotels");
       } else {
         setselected("Dashboard");
       }
@@ -146,15 +146,19 @@ function SideBar(props) {
           >
             <Link>Dashboard</Link>
           </LinkWrapper>
+
+          
           <LinkWrapper
-            // select={selected === "Booking history"}
-            // onClick={() => {
-            //   setselected("Booking history");
-            //   navigate("/bookinghistory");
-            // }}
+            select={selected === "vendormanagehotels"}
+            onClick={() => {
+              setselected("vendormanagehotels");
+              navigate("/vendormanagehotels");
+            }}
           >
             <Link>Manage Hotels</Link>
           </LinkWrapper>
+
+
           <LinkWrapper
             select={selected === "Booking history"}
             onClick={() => {
