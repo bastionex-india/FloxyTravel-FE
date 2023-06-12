@@ -5,7 +5,7 @@ import { AuthContext } from "../../ContextApi/ContextApi";
 import CircularLoader from "../../Component/CircularLoader/CircularLoader";
 import Swal from "sweetalert2";
 import { environmentVariables } from "../../config/config";
-const UserLandingPageHome = () => {
+const VendorBookingHistory = () => {
   const [isPriorityChanged, setIsPriority] = useState(false);
   const [addThemePopUp, setAddThemePopUp] = useState(false);
   const [themeId, setThemeId] = useState(null);
@@ -552,7 +552,7 @@ const DeletePopUp = styled.div`
   position: relative;
   background-color: #01575c;
   margin: auto;
-  /* box-shadow: #000 2px 1px 1px 1px; */
+  box-shadow: #000 2px 1px 1px 1px;
   /* width: 30vw; */
   /* height: 30vh; */
   border-radius: 5px;
@@ -607,7 +607,7 @@ const AddThemePopUp = styled.div`
   position: relative;
   background-color: #01575c;
   margin: auto;
-  /* box-shadow: #000 2px 1px 1px 1px; */
+  box-shadow: #000 2px 1px 1px 1px;
   width: 42vw;
   // height: 50vh;
   border-radius: 5px;
@@ -615,7 +615,7 @@ const AddThemePopUp = styled.div`
 const AddStatePopUp = styled.div`
   position: relative;
   background-color: #01575c;
-  /* box-shadow: #000 2px 1px 1px 1px; */
+  box-shadow: #000 2px 1px 1px 1px;
   margin: auto;
   width: 42vw;
   height: 34vh;
@@ -717,8 +717,7 @@ export const RecentlyDocumentUploaded = styled.div`
   align-items: center;
   margin: 10px 5%;
   padding: 14px 15px;
-  border: 1px solid #b8b8b8;
-  /* box-shadow: 2px 2px 4px 1px #000; */
+  box-shadow: 2px 2px 4px 1px #000;
   border-radius: 5px;
   @media (max-width: 768px) {
     display: flex;
@@ -756,4 +755,4 @@ export const PriorityButton = styled.div`
   font-weight: 700;
   margin-left: 20px;
 `;
-export default UserLandingPageHome;
+export default VendorBookingHistory;

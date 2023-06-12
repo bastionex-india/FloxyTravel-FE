@@ -306,7 +306,11 @@ const ManageAdmin = () => {
                   })
                 }
               </SelectVendor>
-              <AddButton onClick={() => setAddVendorPopUp(true)}>
+              <AddButton
+                onClick={() => {
+                  navigation("/addhotels");
+                }}
+              >
                 Add Hotel
               </AddButton>
             </TextWrapper>

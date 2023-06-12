@@ -18,7 +18,7 @@ const ErrorText = styled.div`
 `;
 const AddThemePopUpContainer = styled.div`
   position: fixed;
-  backdrop-filter: blur(2px);
+  background-color: rgba(0, 0, 0, 0.5);
   top: 0;
   z-index: 99999;
   left: 0;
@@ -41,7 +41,7 @@ const AddThemePopUp = styled.div`
   z-index: 999;
   background-color: #fff;
   margin: auto;
-  box-shadow: #000 2px 1px 1px 1px;
+  /* box-shadow: #000 2px 1px 1px 1px; */
   /* width: 42vw; */
   // height: 50vh;
   border-radius: 5px;
@@ -196,7 +196,14 @@ const CreateAdminVendor = ({ open, setOpen }) => {
     <>
       <AddThemePopUpContainer>
         <AddThemePopUp>
-          <div style={{ color: "#000", textAlign: "center", fontSize: "20px" }}>
+          <div
+            style={{
+              color: "#000",
+              textAlign: "center",
+              fontSize: "20px",
+              marginTop: "20px",
+            }}
+          >
             Add Admin/Vendor
           </div>
           <AddStatePopUpCloseIcon

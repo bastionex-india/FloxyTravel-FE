@@ -21,7 +21,7 @@ import BookingHistoryofAdmin from "./Pages/admin/BookingHistoryofAdmin";
 import BookingHistorybyOrderid from "./Pages/admin/BookingHistorybyOrderid";
 import ManageAdmin from "./Pages/admin/ManageAdmin/ManageAdmin";
 import ManageHotels from "./Pages/admin/ManageHotels/ManageHotels";
-
+import AddHotels from "./Pages/admin/AddHotels/AddHotels";
 const Root = styled.div``;
 const LeftWrapper = styled.div`
   width: 300px;
@@ -54,6 +54,7 @@ function App() {
                     <Route path="/" element={<Dashboard1 />} />
                     <Route path="/profile" element={<Profile />} />
                     <Route path="manageadmin" element={<ManageAdmin />} />
+                    <Route path="/addhotels" element={<AddHotels />} />
                     <Route
                       path="/upcomingbookings"
                       element={<UpcomingBookings />}
