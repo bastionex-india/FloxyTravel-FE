@@ -33,7 +33,7 @@ const Button = styled.div`
   margin: 20px auto;
 `;
 const HotelAddForm = styled.div`
-  border: 1px solid #c4c4c4;
+  /* border: 1px solid #c4c4c4; */
   border-radius: 5px;
   margin: 20px;
 `;
