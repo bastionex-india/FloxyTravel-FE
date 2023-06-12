@@ -150,7 +150,7 @@ const CreateAdminVendor = ({ open, setOpen }) => {
                 // setResponseData(response.data.data);
                 Swal.fire({
                   title: "Success",
-                  text: "Admin/Vendor created successfully",
+                  text: "Vendor created successfully",
                   timer: 2000,
                 });
                 action.resetForm();
@@ -189,7 +189,11 @@ const CreateAdminVendor = ({ open, setOpen }) => {
                 // console.log(response.data.data,"00000000000001111111111")
                 // setUpdatedHotelData(response.data.message)
                 // setAdminResponseData(response.data.data);
-
+                Swal.fire({
+                  title: "Success",
+                  text: "Admin created successfully",
+                  timer: 2000,
+                });
                 action.resetForm();
                 // toast(response.data.message);
                 setOpen(false);
@@ -197,6 +201,11 @@ const CreateAdminVendor = ({ open, setOpen }) => {
               .catch((error) => {
                 console.log("///////////////", error);
                 // setError('Details are not valid');
+                Swal.fire({
+                  title: "Error",
+                  text: error,
+                  timer: 2000,
+                });
               });
           }
         }
