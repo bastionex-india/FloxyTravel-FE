@@ -305,6 +305,8 @@ const Check = ({ open, setOpen }) => {
       </button> */}
       {/* <button onClick={handleClickOpen1}>Add Admin</button> */}
       <CardWrapper>
+      <Button variant="outlined" onClick={() => navigate(-1)} type="button"> <i className="fa-solid fa fa-arrow-circle-left"
+                ></i> Back</Button>
         <div>
           <Dialog
             open={open}

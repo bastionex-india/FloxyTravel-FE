@@ -4,6 +4,9 @@ import styled from "styled-components";
 import { AuthContext } from "../../ContextApi/ContextApi";
 import CircularLoader from "../../Component/CircularLoader/CircularLoader";
 import Swal from "sweetalert2";
+import { useNavigate } from 'react-router-dom';
+import { Button } from "@mui/material";
+
 import { environmentVariables } from "../../config/config";
 const UserLandingPageHome = () => {
   const [isPriorityChanged, setIsPriority] = useState(false);
@@ -19,6 +22,8 @@ const UserLandingPageHome = () => {
   const [deletePopUp, setDeletePopUp] = useState(false);
   const [cityData, setCityData] = useState();
   const [city, setCity] = useState(null);
+  const navigate = useNavigate();
+
   const getPopularCities = () => {
     axios
       .get(`${environmentVariables.apiUrl}/auth/getnameofcity`)
@@ -191,6 +196,8 @@ const UserLandingPageHome = () => {
   };
   return (
     <Root>
+      <Button variant="outlined" onClick={() => navigate(-1)} type="button"> <i className="fa-solid fa fa-arrow-circle-left"
+                ></i> Back</Button>
       <MainHeading>Manage Home Landing Page</MainHeading>
       <div style={{ backgroundColor: "#fff", marginBottom: "10px" }}>
         {" "}

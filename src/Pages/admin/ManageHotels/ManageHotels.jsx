@@ -10,16 +10,8 @@ import { useContext } from "react";
 import { AuthContext } from "../../../ContextApi/ContextApi";
 import io, { socketIOClient } from "socket.io-client";
 
-import Table from "@mui/material/Table";
 import { Button } from "@mui/material";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
 
-import moment from "moment";
 
 const HotelCardsWrapper = styled.div``;
 const HotelCard = styled.div`
@@ -219,6 +211,7 @@ const TextMainWrapper = styled.div`
     display: flex;
   }
 `;
+
 const ManageAdmin = () => {
   const [select, setSelect] = useState("");
   const [select1, setSelect1] = useState("");
@@ -227,8 +220,8 @@ const ManageAdmin = () => {
   const [addVendorPopUp, setAddVendorPopUp] = useState(false);
   const [data, setData] = useState("");
   const [vendorlist,setVendorList] = useState(null);
-  const navigation = useNavigate();
-  
+  const navigate = useNavigate();
+
   const getAllListData = async () => {
     await axios
       .get(`${environmentVariables.apiUrl}/admin/getallhotels`, {
@@ -281,6 +274,7 @@ const ManageAdmin = () => {
     fontWeight: 700,
   };
   const vendorHandler = (e)=>{
+    setIsLoading(true);
     if(e.target.value=='all'){
       getAllListData();
     }
@@ -291,8 +285,11 @@ const ManageAdmin = () => {
   return (
     <>
       <TextMainWrapper>
+
         <TextRoot>
           <Root>
+            <Button variant="outlined" onClick={() => navigate(-1)} type="button"> <i className="fa-solid fa fa-arrow-circle-left"
+                ></i> Back</Button>
             <Heading> Manage Hotels</Heading>
             <TextWrapper>
               <SelectVendor onChange={vendorHandler}>
@@ -306,19 +303,24 @@ const ManageAdmin = () => {
                   })
                 }
               </SelectVendor>
-              <AddButton
-                onClick={() => {
-                  navigation("/addhotels");
-                }}
-              >
+              <AddButton onClick={() => setAddVendorPopUp(true)}>
                 Add Hotel
               </AddButton>
             </TextWrapper>
           </Root>
           <HotelCardsWrapper>
-
-            {
-              data && data.length ? 
+          {isLoading === true ? (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                marginTop: "30px",
+              }}
+            >
+              <CircularLoader></CircularLoader>
+            </div>
+          ) : 
+          data && data.length ? 
               data.map((row, index) => {
                 let imageSrc = row.image.length ? row.image[0]: '1675936089112-teanest1.jpg'
                 return (
@@ -357,8 +359,9 @@ const ManageAdmin = () => {
                 <span>No hotel found </span>
               </TextRoot>
               </>
-            }
-            
+          }
+
+           
 
 
           </HotelCardsWrapper>

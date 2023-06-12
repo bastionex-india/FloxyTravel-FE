@@ -9,7 +9,6 @@ import { useEffect } from "react";
 import { useContext } from "react";
 import { AuthContext } from "../../../ContextApi/ContextApi";
 import io, { socketIOClient } from "socket.io-client";
-
 import Table from "@mui/material/Table";
 import { Button } from "@mui/material";
 import TableBody from "@mui/material/TableBody";
@@ -174,11 +173,10 @@ const ManageAdmin = () => {
   const { authData, setAuthData } = useContext(AuthContext);
   const [addVendorPopUp, setAddVendorPopUp] = useState(false);
   const [data, setData] = useState("");
-  const navigation = useNavigate();
+  const navigate = useNavigate();
 
   const handleClick = (item) => {
-    console.log("hcjhcjhf", item);
-    navigation(`/managehotels/${item}`);
+    navigate(`/managehotels/${item}`);
   };
 
   const getAllListData = async () => {
@@ -219,6 +217,8 @@ const ManageAdmin = () => {
         <TextRoot>
           <Root>
             <TextWrapper>
+            <Button variant="outlined" onClick={() => navigate(-1)} type="button"> <i className="fa-solid fa fa-arrow-circle-left"
+                ></i> Back</Button>
               <Heading> Manage Admin/Vendor</Heading>
               <AddButton onClick={() => setAddVendorPopUp(true)}>
                 Add Vendor/Admin

@@ -8,6 +8,8 @@ import { environmentVariables } from "../../../config/config";
 import axios from "axios";
 import { useContext } from "react";
 import { AuthContext } from "../../../ContextApi/ContextApi";
+import { Button } from "@mui/material";
+
 const ErrorText = styled.div`
   color: red;
   left: 132px;
@@ -102,6 +104,8 @@ const CreateAdminVendor = ({ open, setOpen }) => {
   const [vendorValue, setVendorValue] = useState("");
   const [adminValue, setAdminValue] = useState("");
   const [error, setError] = useState("");
+  const navigate = useNavigate();
+
   const { authData, setAuthData } = useContext(AuthContext);
   const handleClose = () => {
     setOpen(false);
@@ -195,6 +199,8 @@ const CreateAdminVendor = ({ open, setOpen }) => {
   return (
     <>
       <AddThemePopUpContainer>
+      <Button variant="outlined" onClick={() => navigate(-1)} type="button"> <i className="fa-solid fa fa-arrow-circle-left"
+                ></i> Back</Button>
         <AddThemePopUp>
           <div
             style={{
