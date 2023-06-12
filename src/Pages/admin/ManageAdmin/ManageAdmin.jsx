@@ -175,6 +175,19 @@ const ManageAdmin = () => {
   const [data, setData] = useState("");
   const navigate = useNavigate();
 
+
+  const [showModal,setShowModel] = useState(false);
+
+  function deleteConfirmation()
+  {
+    setShowModel(true);
+  }
+
+  function hideModal()
+  {
+    setShowModel(false);
+  }
+
   const handleClick = (item) => {
     navigate(`/managehotels/${item}`);
   };
@@ -302,22 +315,7 @@ const ManageAdmin = () => {
             </TableContainer>
           )}
         </TextRoot>
-        <Modal show={showModal} onHide={hideModal}>
-          <Modal.Header closeButton>
-            <Modal.Title>Delete Confirmation</Modal.Title>
-          </Modal.Header>
-          <Modal.Body><div className="alert alert-danger">Are you sure you want to delete the vendor?</div></Modal.Body>
-          <Modal.Footer>
-            <Button variant="default" onClick={hideModal}>
-            {/*  */}
-              Cancel
-            </Button>
-            <Button variant="danger" >
-            {/*  */}
-              Delete
-            </Button>
-          </Modal.Footer>
-        </Modal>
+        
       </TextMainWrapper>
     </>
   );

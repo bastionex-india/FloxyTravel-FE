@@ -218,8 +218,7 @@ const CreateAdminVendor = ({ open, setOpen }) => {
   return (
     <>
       <AddThemePopUpContainer>
-      <Button variant="outlined" onClick={() => navigate(-1)} type="button"> <i className="fa-solid fa fa-arrow-circle-left"
-                ></i> Back</Button>
+      
         <AddThemePopUp>
           <div
             style={{
