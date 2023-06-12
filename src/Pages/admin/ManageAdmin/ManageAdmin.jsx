@@ -210,7 +210,7 @@ const ManageAdmin = () => {
   useEffect(() => {
     setIsLoading(true);
     getAllListData();
-  }, []);
+  }, [addVendorPopUp]);
 
   const ApprovedData = () => {};
   const PendingData = () => {};
