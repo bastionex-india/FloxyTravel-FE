@@ -159,6 +159,8 @@ const BookingHistoryofAdmin = () => {
       <TextMainWrapper>
         <TextRoot>
           <Root>
+          <Button variant="outlined" onClick={() => navigation(-1)} type="button"> <i className="fa-solid fa fa-arrow-circle-left"
+                ></i> Back</Button>
             <TextWrapper>
               <Heading> Booking History</Heading>
               <TextSelectField>

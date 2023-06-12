@@ -1,19 +1,13 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import CircularLoader from "../../../Component/CircularLoader/CircularLoader";
 import styled from "styled-components";
 import axios from "axios";
-import Check from "../Check";
-import { environmentVariables } from "../../../config/config";
+import { environmentVariables } from "../config/config";
 import { useEffect } from "react";
 import { useContext } from "react";
-import { AuthContext } from "../../../ContextApi/ContextApi";
-import io, { socketIOClient } from "socket.io-client";
-
+import { AuthContext } from "../ContextApi/ContextApi";
 import { Button } from "@mui/material";
-
-
-
+import CircularLoader from "../Component/CircularLoader/CircularLoader";
 const HotelCardsWrapper = styled.div``;
 const HotelCard = styled.div`
   display: flex;
@@ -65,6 +59,10 @@ const TextRoot = styled.div`
   @media (max-width: 768px) {
     width: 100vw;
   }
+`;
+const TextCenter = styled.div`
+  color: red; 
+  text-align:center;
 `;
 const DocInfo = styled.div`
   // display: flex;
@@ -212,11 +210,6 @@ const TextMainWrapper = styled.div`
     display: flex;
   }
 `;
-const TextCenter = styled.div`
-  color: red; 
-  text-align:center;
-`;
-
 const ManageAdmin = () => {
   const [select, setSelect] = useState("");
   const [select1, setSelect1] = useState("");
@@ -226,24 +219,15 @@ const ManageAdmin = () => {
   const [data, setData] = useState("");
   const [vendorlist,setVendorList] = useState(null);
   const navigate = useNavigate();
-  
+
+  const handleClick = (item) => {
+    console.log("hcjhcjhf", item);
+    navigate("/bookinghistorybyorderid", { state: item });
+  };
+
   const getAllListData = async () => {
     await axios
-      .get(`${environmentVariables.apiUrl}/admin/getallhotels`, {
-        headers: { _token: authData.data.token },
-      })
-      .then((response) => {
-        setData(response.data.data);
-        setIsLoading(false);
-      })
-      .catch((err) => {
-        console.log("error", err);
-        setIsLoading(false);
-      });
-  };
-  const getHotelByVendorId = async (vendorID) => {
-    await axios
-      .get(`${environmentVariables.apiUrl}/admin/gethoteldetailbyvendorid/${vendorID}`, {
+      .get(`${environmentVariables.apiUrl}/vendor/vendorget`, {
         headers: { _token: authData.data.token },
       })
       .then((response) => {
@@ -255,13 +239,18 @@ const ManageAdmin = () => {
         setIsLoading(false);
       });
   };
-  const getVendorList = async()=>{
+ 
+
+  const [vendor,setVendor] = useState();
+
+  const getVendor = async()=>{
     await axios
-      .get(`${environmentVariables.apiUrl}/auth/getvendorlist`, {
+      .get(`https://travel-api.floxypay.com/auth/vendorget`, {
         headers: { _token: authData.data.token },
       })
       .then((response) => {
-        setVendorList(response.data.message);
+        setVendor(response.data);
+        console.log(vendor);
         setIsLoading(false);
       })
       .catch((err) => {
@@ -269,68 +258,50 @@ const ManageAdmin = () => {
         setIsLoading(false);
       });
   }
+
   useEffect(() => {
     setIsLoading(true);
+    // getVendorList();
+    getVendor();
+    const lclstorage = JSON.parse(localStorage.getItem('authdata'));
     getAllListData();
-    getVendorList()
   }, []);
 
   const boldTextCss = {
     fontWeight: 700,
   };
-  const vendorHandler = (e)=>{
-    setIsLoading(true);
-    if(e.target.value=='all'){
-      getAllListData();
-    }
-    else{
-      getHotelByVendorId(e.target.value)
-    }
-  }
+  
   return (
     <>
       <TextMainWrapper>
-
         <TextRoot>
           <Root>
-            <Button variant="outlined" onClick={() => navigate(-1)} type="button"> <i className="fa-solid fa fa-arrow-circle-left"
+          <Button variant="outlined" onClick={() => navigate(-1)} type="button"> <i className="fa-solid fa fa-arrow-circle-left"
                 ></i> Back</Button>
             <Heading> Manage Hotels</Heading>
             <TextWrapper>
-              <SelectVendor onChange={vendorHandler}>
-                <SelectOption value={'all'}>Select Vendor*</SelectOption>
-                <SelectOption value={'all'}>All</SelectOption>
-                {
-                  vendorlist && vendorlist.map((row,index)=>{
-                    
-                    return(
-                      <SelectOption key={index} value={row.vendorId}>{row.name}</SelectOption>
-                    )
-                  })
-                }
-              </SelectVendor>
-              <AddButton onClick={() => setAddVendorPopUp(true)}>
-                Add Hotel
-              </AddButton>
+              
+              
             </TextWrapper>
           </Root>
           <HotelCardsWrapper>
-          {isLoading === true ? (
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                marginTop: "30px",
-              }}
-            >
-              <CircularLoader></CircularLoader>
-            </div>
-          ) : 
-          data && data.length ? 
+
+            {
+              isLoading === true ? (
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    marginTop: "30px",
+                  }}
+                >
+                  <CircularLoader></CircularLoader>
+                </div>
+              ) : (data && data.length) ? 
               data.map((row, index) => {
                 let imageSrc = row.image.length ? row.image[0]: '1675936089112-teanest1.jpg'
                 return (
-                  <HotelCard key={index}>
+                  <HotelCard>
                     <HotelImageWrapper>
                       <HotelImage
                         src={
@@ -351,29 +322,27 @@ const ManageAdmin = () => {
                         <HotelInfoText>Category : {row.hotelCategory}</HotelInfoText>
                       </HotelIconWrapper>
                     </HotelInfoWrapper>
-                    <HotelButtonWrapper>
+                    {/* <HotelButtonWrapper>
                       <HotelActionButtons>Edit</HotelActionButtons>
                       <HotelActionButtons>Delete</HotelActionButtons>
                       <HotelActionButtons>Hide</HotelActionButtons>
-                    </HotelButtonWrapper>
+                    </HotelButtonWrapper> */}
                   </HotelCard>
                 )
               })
               :
               <>
               <TextCenter>
-                <span>No hotels found </span>
+                <span >No hotels found.</span>
               </TextCenter>
               </>
-          }
-
-           
+            }
+            
 
 
           </HotelCardsWrapper>
           {/* )} */}
         </TextRoot>
-        
       </TextMainWrapper>
     </>
   );

@@ -1,5 +1,9 @@
 import styled from "styled-components";
 import React from "react";
+
+import { useNavigate } from 'react-router-dom';
+
+
 const Root = styled.div`
   width: 967px;
   margin: 10px auto;
@@ -228,8 +232,12 @@ const AddHotels = () => {
       code: "WB",
     },
   ];
+  const navigate = useNavigate();
+
   return (
     <Root>
+      <Button variant="outlined" onClick={() => navigate(-1)} type="button"> <i className="fa-solid fa fa-arrow-circle-left"
+                ></i> Back</Button>
       <MainHeading>Add New Hotel</MainHeading>
       <MainContainer>
         <HotelAddForm>

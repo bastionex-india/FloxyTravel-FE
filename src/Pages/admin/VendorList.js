@@ -100,30 +100,14 @@ const VendorList = () => {
   const getAnotherComponent = (item) => {
     navigate("/gethotelsbyvendorid", { state: item });
   };
-  // const addVendor=()=>{
-
-  // }
   const [open, setOpen] = useState(false);
-  // const [open1, setOpen1] = useState(false);
 
   const handleClickOpen = () => {
     setOpen(true);
   };
-  // const handleClickOpen1 = () => {
-  //   setOpen1(true);
-  // };
 
   const handleClose = () => {
-    // alert("ddd")
-    console.log(
-      "aaaaaaa",
-      name,
-      email,
-      number,
-      password,
-      cpassword,
-      adminValue
-    );
+    
     if (adminValue === "vendor") {
       axios({
         method: "post",
@@ -143,7 +127,6 @@ const VendorList = () => {
         headers: { _token: authData.data.token },
       })
         .then((response) => {
-          // console.log(response.data.data,"00000000000001111111111")
           // setUpdatedHotelData(response.data.message)
           setResponseData(response.data.data);
 
