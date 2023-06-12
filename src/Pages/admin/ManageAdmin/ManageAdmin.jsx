@@ -10,7 +10,7 @@ import { useContext } from "react";
 import { AuthContext } from "../../../ContextApi/ContextApi";
 import io, { socketIOClient } from "socket.io-client";
 import Table from "@mui/material/Table";
-import { Button } from "@mui/material";
+import { Button,ButtonGroup,Modal } from "@mui/material";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
@@ -278,14 +278,21 @@ const ManageAdmin = () => {
                           <TableCell align="left">{item?.mobile}</TableCell>
                           {/* <TableCell align="right">{item.status}</TableCell> */}
                           <TableCell align="right">
-                            <Button
+                         
+                            
+                            <ButtonGroup size="small" type="button" variant="outlined" aria-label="outlined button group">
+                              <Button>View</Button>
+                              <Button>Edit</Button>
+                              <Button>Delete</Button>
+                            </ButtonGroup>
+                            {/* <Button
                               size="small"
                               variant="contained"
                               type="button"
                               onClick={(e) => handleClick(item?._id)}
                             >
                               View
-                            </Button>
+                            </Button> */}
                           </TableCell>
                         </TableRow>
                       );
@@ -295,6 +302,22 @@ const ManageAdmin = () => {
             </TableContainer>
           )}
         </TextRoot>
+        <Modal show={showModal} onHide={hideModal}>
+          <Modal.Header closeButton>
+            <Modal.Title>Delete Confirmation</Modal.Title>
+          </Modal.Header>
+          <Modal.Body><div className="alert alert-danger">Are you sure you want to delete the vendor?</div></Modal.Body>
+          <Modal.Footer>
+            <Button variant="default" onClick={hideModal}>
+            {/*  */}
+              Cancel
+            </Button>
+            <Button variant="danger" >
+            {/*  */}
+              Delete
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </TextMainWrapper>
     </>
   );

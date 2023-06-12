@@ -13,6 +13,7 @@ import io, { socketIOClient } from "socket.io-client";
 import { Button } from "@mui/material";
 
 
+
 const HotelCardsWrapper = styled.div``;
 const HotelCard = styled.div`
   display: flex;
@@ -211,6 +212,10 @@ const TextMainWrapper = styled.div`
     display: flex;
   }
 `;
+const TextCenter = styled.div`
+  color: red; 
+  text-align:center;
+`;
 
 const ManageAdmin = () => {
   const [select, setSelect] = useState("");
@@ -221,7 +226,7 @@ const ManageAdmin = () => {
   const [data, setData] = useState("");
   const [vendorlist,setVendorList] = useState(null);
   const navigate = useNavigate();
-
+  
   const getAllListData = async () => {
     await axios
       .get(`${environmentVariables.apiUrl}/admin/getallhotels`, {
@@ -297,8 +302,9 @@ const ManageAdmin = () => {
                 <SelectOption value={'all'}>All</SelectOption>
                 {
                   vendorlist && vendorlist.map((row,index)=>{
+                    
                     return(
-                      <SelectOption value={row._id}>{row.name}</SelectOption>
+                      <SelectOption key={index} value={row.vendorId}>{row.name}</SelectOption>
                     )
                   })
                 }
@@ -324,7 +330,7 @@ const ManageAdmin = () => {
               data.map((row, index) => {
                 let imageSrc = row.image.length ? row.image[0]: '1675936089112-teanest1.jpg'
                 return (
-                  <HotelCard>
+                  <HotelCard key={index}>
                     <HotelImageWrapper>
                       <HotelImage
                         src={
@@ -355,9 +361,9 @@ const ManageAdmin = () => {
               })
               :
               <>
-              <TextRoot>
-                <span>No hotel found </span>
-              </TextRoot>
+              <TextCenter>
+                <span>No hotels found </span>
+              </TextCenter>
               </>
           }
 
@@ -367,6 +373,7 @@ const ManageAdmin = () => {
           </HotelCardsWrapper>
           {/* )} */}
         </TextRoot>
+        
       </TextMainWrapper>
     </>
   );

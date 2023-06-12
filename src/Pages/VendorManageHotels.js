@@ -6,7 +6,8 @@ import { environmentVariables } from "../config/config";
 import { useEffect } from "react";
 import { useContext } from "react";
 import { AuthContext } from "../ContextApi/ContextApi";
-
+import { Button } from "@mui/material";
+import CircularLoader from "../Component/CircularLoader/CircularLoader";
 const HotelCardsWrapper = styled.div``;
 const HotelCard = styled.div`
   display: flex;
@@ -58,6 +59,10 @@ const TextRoot = styled.div`
   @media (max-width: 768px) {
     width: 100vw;
   }
+`;
+const TextCenter = styled.div`
+  color: red; 
+  text-align:center;
 `;
 const DocInfo = styled.div`
   // display: flex;
@@ -213,37 +218,20 @@ const ManageAdmin = () => {
   const [addVendorPopUp, setAddVendorPopUp] = useState(false);
   const [data, setData] = useState("");
   const [vendorlist,setVendorList] = useState(null);
-  const navigation = useNavigate();
+  const navigate = useNavigate();
 
   const handleClick = (item) => {
     console.log("hcjhcjhf", item);
-    navigation("/bookinghistorybyorderid", { state: item });
+    navigate("/bookinghistorybyorderid", { state: item });
   };
 
   const getAllListData = async () => {
     await axios
-      .get(`${environmentVariables.apiUrl}/admin/getallhotels`, {
-        headers: { _token: authData.data.token },
-      })
-      .then((response) => {
-        setData(response.data.data);
-        setIsLoading(false);
-      })
-      .catch((err) => {
-        console.log("error", err);
-        setIsLoading(false);
-      });
-  };
-
-
-  const getHotelByVendorId = async (vendorID) => {
-    await axios
-      .get(`${environmentVariables.apiUrl}/admin/gethoteldetailbyvendorid/${vendorID}`, {
+      .get(`${environmentVariables.apiUrl}/vendor/vendorget`, {
         headers: { _token: authData.data.token },
       })
       .then((response) => {
         setData(response.data.data.hotels);
-        console.log(response);
         setIsLoading(false);
       })
       .catch((err) => {
@@ -251,21 +239,7 @@ const ManageAdmin = () => {
         setIsLoading(false);
       });
   };
-
-  const getVendorList = async()=>{
-    await axios
-      .get(`${environmentVariables.apiUrl}/auth/getvendorlist`, {
-        headers: { _token: authData.data.token },
-      })
-      .then((response) => {
-        setVendorList(response.data.message);
-        setIsLoading(false);
-      })
-      .catch((err) => {
-        console.log("error", err);
-        setIsLoading(false);
-      });
-  }
+ 
 
   const [vendor,setVendor] = useState();
 
@@ -287,57 +261,43 @@ const ManageAdmin = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    // getAllListData();
     // getVendorList();
     getVendor();
     const lclstorage = JSON.parse(localStorage.getItem('authdata'));
-    console.log(lclstorage);
-    console.log(lclstorage.data.vendorId);
-    getHotelByVendorId(lclstorage.data.vendord);
+    getAllListData();
   }, []);
 
   const boldTextCss = {
     fontWeight: 700,
   };
-  const vendorHandler = (e)=>{
-    if(e.target.value=='all'){
-      getAllListData();
-    }
-    else{
-      getHotelByVendorId(e.target.value)
-    }
-  }
+  
   return (
     <>
       <TextMainWrapper>
         <TextRoot>
           <Root>
+          <Button variant="outlined" onClick={() => navigate(-1)} type="button"> <i className="fa-solid fa fa-arrow-circle-left"
+                ></i> Back</Button>
             <Heading> Manage Hotels</Heading>
             <TextWrapper>
-              <SelectVendor onChange={vendorHandler}>
-                <SelectOption value={'all'}>Select Vendor*</SelectOption>
-                <SelectOption value={'all'}>All</SelectOption>
-                {
-                  vendorlist && vendorlist.map((row,index)=>{
-                    return(
-                      <SelectOption value={row._id}>{row.name}</SelectOption>
-                    )
-                  })
-                }
-              </SelectVendor>
-              <AddButton
-                onClick={() => {
-                  navigation("/addhotels");
-                }}
-              >
-                Add Hotel
-              </AddButton>
+              
+              
             </TextWrapper>
           </Root>
           <HotelCardsWrapper>
 
             {
-              data && data.length ? 
+              isLoading === true ? (
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    marginTop: "30px",
+                  }}
+                >
+                  <CircularLoader></CircularLoader>
+                </div>
+              ) : (data && data.length) ? 
               data.map((row, index) => {
                 let imageSrc = row.image.length ? row.image[0]: '1675936089112-teanest1.jpg'
                 return (
@@ -362,19 +322,19 @@ const ManageAdmin = () => {
                         <HotelInfoText>Category : {row.hotelCategory}</HotelInfoText>
                       </HotelIconWrapper>
                     </HotelInfoWrapper>
-                    <HotelButtonWrapper>
+                    {/* <HotelButtonWrapper>
                       <HotelActionButtons>Edit</HotelActionButtons>
                       <HotelActionButtons>Delete</HotelActionButtons>
                       <HotelActionButtons>Hide</HotelActionButtons>
-                    </HotelButtonWrapper>
+                    </HotelButtonWrapper> */}
                   </HotelCard>
                 )
               })
               :
               <>
-              <TextRoot>
-                <span>No hotel found </span>
-              </TextRoot>
+              <TextCenter>
+                <span >No hotels found.</span>
+              </TextCenter>
               </>
             }
             

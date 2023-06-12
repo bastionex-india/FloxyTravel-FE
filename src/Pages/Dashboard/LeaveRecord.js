@@ -183,21 +183,21 @@ export default function LeaveRecord() {
                         <TableCell align="left">{item.state}</TableCell>
                         <TableCell align="left"><Button size="small" variant="contained" type="button"><DeleteIcon style={{color: '#008080'}} onClick={deleteConfirmation} /></Button></TableCell>
                         <Modal show={showModal} onHide={hideModal}>
-            <Modal.Header closeButton>
-              <Modal.Title>Delete Confirmation</Modal.Title>
-            </Modal.Header>
-            <Modal.Body><div className="alert alert-danger">Are you sure you want to delete the vendor?</div></Modal.Body>
-            <Modal.Footer>
-              <Button variant="default" onClick={hideModal}>
-              {/*  */}
-                Cancel
-              </Button>
-              <Button variant="danger" >
-              {/*  */}
-                Delete
-              </Button>
-            </Modal.Footer>
-          </Modal>
+                        <Modal.Header closeButton>
+                          <Modal.Title>Delete Confirmation</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body><div className="alert alert-danger">Are you sure you want to delete the vendor?</div></Modal.Body>
+                        <Modal.Footer>
+                          <Button variant="default" onClick={hideModal}>
+                          {/*  */}
+                            Cancel
+                          </Button>
+                          <Button variant="danger" >
+                          {/*  */}
+                            Delete
+                          </Button>
+                        </Modal.Footer>
+                      </Modal>
                       </TableRow>
 
                       
