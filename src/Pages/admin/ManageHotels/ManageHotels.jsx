@@ -228,12 +228,7 @@ const ManageAdmin = () => {
   const [data, setData] = useState("");
   const [vendorlist,setVendorList] = useState(null);
   const navigation = useNavigate();
-
-  const handleClick = (item) => {
-    console.log("hcjhcjhf", item);
-    navigation("/bookinghistorybyorderid", { state: item });
-  };
-
+  
   const getAllListData = async () => {
     await axios
       .get(`${environmentVariables.apiUrl}/admin/getallhotels`, {
