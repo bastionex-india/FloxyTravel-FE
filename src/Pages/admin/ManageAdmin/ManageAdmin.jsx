@@ -31,6 +31,7 @@ import DialogActions from "@mui/material/DialogActions";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import Typography from "@mui/material/Typography";
+import TablePagination from "@mui/material/TablePagination";
 import EditAdminVendor from "../edit admin_vendor/EditAdminVendor";
 
 const BootstrapDialog = newStyle(Dialog)(({ theme }) => ({
@@ -252,6 +253,20 @@ const ManageAdmin = () => {
     setOpen(false);
   };
 
+  //  pagination
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+  // //  pagination  End
+
   const handleClick = (item) => {
     navigate(`/managehotels/${item}`);
   };
@@ -447,6 +462,14 @@ const ManageAdmin = () => {
                     })}
                 </TableBody>
               </Table>
+              <TablePagination
+                component="div"
+                count={data.length}
+                page={page}
+                onPageChange={handleChangePage}
+                rowsPerPage={rowsPerPage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+              />
             </TableContainer>
           )}
         </TextRoot>

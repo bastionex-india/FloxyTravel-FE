@@ -17,6 +17,8 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import TablePagination from '@mui/material/TablePagination';
+
 
 const TextRoot = styled.div`
   // background-color: #9f94942b;
@@ -80,6 +82,21 @@ const BookingHistoryofAdmin = () => {
   const { authData, setAuthData } = useContext(AuthContext);
   const [data, setData] = useState("");
   const navigation = useNavigate();
+
+  //  pagination 
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  const handleChangePage = (event, newPage) => {
+    
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+  // //  pagination  End 
 
   const handleClick = (item) => {
     console.log("hcjhcjhf", item);
@@ -149,11 +166,12 @@ const BookingHistoryofAdmin = () => {
     getAllUsers();
   }, [select, select1]);
 
-  const ApprovedData = () => {};
-  const PendingData = () => {};
+  const ApprovedData = () => { };
+  const PendingData = () => { };
   const boldTextCss = {
     fontWeight: 700,
   };
+  
   return (
     <>
       <TextMainWrapper>
@@ -231,6 +249,7 @@ const BookingHistoryofAdmin = () => {
               </TextSelectField>
             </TextWrapper>
           </Root>
+          
           {isLoading === true ? (
             <div
               style={{
@@ -268,37 +287,45 @@ const BookingHistoryofAdmin = () => {
                   {data &&
                     data.map((item, index) => {
                       const bookingDate = new Date(item.createdAt);
-                      return (
-                        <TableRow
-                          key={index}
-                          sx={{
-                            "&:last-child td, &:last-child th": { border: 0 },
-                          }}
-                        >
-                          <TableCell component="th" scope="row">
-                            {item.hotelname}
-                          </TableCell>
-                          <TableCell align="right">{item.checkIn}</TableCell>
-                          <TableCell align="right">{item.checkIn}</TableCell>
-                          <TableCell align="right">
-                            {bookingDate.toLocaleDateString()}
-                          </TableCell>
-                          <TableCell align="right">{item.status}</TableCell>
-                          <TableCell align="right">
-                            <Button
-                              size="small"
-                              variant="contained"
-                              type="button"
-                              onClick={() => handleClick(item)}
-                            >
-                              View
-                            </Button>
-                          </TableCell>
-                        </TableRow>
-                      );
+                        return (
+                          <TableRow
+                            key={index}
+                            sx={{
+                              "&:last-child td, &:last-child th": { border: 0 },
+                            }}
+                          >
+                            <TableCell component="th" scope="row">
+                              {item.hotelname}
+                            </TableCell>
+                            <TableCell align="right">{item.checkIn}</TableCell>
+                            <TableCell align="right">{item.checkIn}</TableCell>
+                            <TableCell align="right">
+                              {bookingDate.toLocaleDateString()}
+                            </TableCell>
+                            <TableCell align="right">{item.status}</TableCell>
+                            <TableCell align="right">
+                              <Button
+                                size="small"
+                                variant="contained"
+                                type="button"
+                                onClick={() => handleClick(item)}
+                              >
+                                View
+                              </Button>
+                            </TableCell>
+                          </TableRow>
+                        );
                     })}
                 </TableBody>
               </Table>
+              <TablePagination
+                component="div"
+                count={data.length}
+                page={page}
+                onPageChange={handleChangePage}
+                rowsPerPage={rowsPerPage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+              />
             </TableContainer>
           )}
         </TextRoot>
