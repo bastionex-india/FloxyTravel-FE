@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from "@mui/material";
 
 import { environmentVariables } from "../../config/config";
-import { Modal, Button } from "react-bootstrap";
+import { Modal } from "react-bootstrap";
 
 const UserLandingPageHome = () => {
   const [isPriorityChanged, setIsPriority] = useState(false);
@@ -25,6 +25,7 @@ const UserLandingPageHome = () => {
   const [cityData, setCityData] = useState();
   const [city, setCity] = useState(null);
   const [showModal,setShowModal] = useState(false);
+
 
   const navigate = useNavigate();
 
@@ -163,6 +164,7 @@ const UserLandingPageHome = () => {
     setTheme(null);
     setCity(null);
     setTitle(null);
+
   };
   useEffect(() => {
     setIsLoading(true);
@@ -365,7 +367,7 @@ const UserLandingPageHome = () => {
 </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary" onClick={handleAddData}>Submit</button>
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" aria-label="Close" onClick={handleAddData}>Submit</button>
       </div>
     </div>
   </div>

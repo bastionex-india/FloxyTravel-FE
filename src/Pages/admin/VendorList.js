@@ -31,6 +31,8 @@ import { useFormik } from "formik";
 import { VendorRegisterSchema } from "./schemas/VendorRegisterSchems";
 import Check from './Check.js';
 import { Modal } from "react-bootstrap";
+import Chart from "./BarChart.js";
+import { BarChart, Bar, CartesianGrid, XAxis, YAxis } from 'recharts';
 
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -54,6 +56,7 @@ const ErrorMessage = styled.div`
   font-size: 12px;
   margin-bottom: 20px;
 `;
+
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -79,6 +82,15 @@ const VendorList = () => {
   const [adminValue, setAdminValue] = useState("");
   const [error, setError] = useState("");
   const [showModal,setShowModel] = useState(false);
+
+  const graphdata = [
+    { name: '2012', students: 400 },
+    { name: '2013', students: 700 },
+    { name: '2014', students: 200 },
+    { name: '2015', students: 1000 },
+    { name: '2016', students: 500 },
+    { name: '2017', students: 800 }
+];
 
   const getAllListData = async () => {
     await axios
@@ -317,7 +329,7 @@ const VendorList = () => {
         <h1 style={{textAlign: 'center', color: '#008080'}} class="card-text">
         $80
         </h1>
-        <p style={{textAlign: 'center'}} class="card-title">Total pendings</p>
+        <p style={{textAlign: 'center'}} class="card-title">Pending Bookings</p>
       </div>
     </div>
   </div>
@@ -335,7 +347,7 @@ const VendorList = () => {
   <div class="col">
     <div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
       <div class="card-body">
-        <h6 style={{textAlign: 'center'}} class="card-title">BOOKINS</h6>
+        <h6 style={{textAlign: 'center'}} class="card-title">BOOKINGS</h6>
         <h1 style={{textAlign: 'center', color: '#008080'}} class="card-text">
         68
         </h1>
@@ -346,17 +358,25 @@ const VendorList = () => {
   <div class="col">
     <div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
       <div class="card-body">
-        <h6 style={{textAlign: 'center'}} class="card-title">SERVICES</h6>
+        <h6 style={{textAlign: 'center'}} class="card-title">HOTELS</h6>
         <h1 style={{textAlign: 'center', color: '#008080'}} class="card-text">
         25
         </h1>
-        <p style={{textAlign: 'center'}} class="card-title">Total services</p>
+        <p style={{textAlign: 'center'}} class="card-title">Total Hotels</p>
       </div>
     </div>
   </div>
 </div>
 
-<TableContainer component={Paper} style={{width: '70rem'}}>
+<Chart/>
+
+<BarChart width={900} height={500} data={graphdata}>
+            <Bar dataKey="students" fill="#B5F4D3" />
+            <CartesianGrid stroke="#ccc" />
+            <XAxis dataKey="name" />
+            <YAxis />
+        </BarChart>
+{/* <TableContainer component={Paper} style={{width: '70rem'}}>
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
               <TableHead >
                 <TableRow>
@@ -389,11 +409,11 @@ const VendorList = () => {
             <Modal.Body><div className="alert alert-danger">Are you sure you want to delete the vendor?</div></Modal.Body>
             <Modal.Footer>
               <Button variant="default" onClick={hideModal}>
-              {/*  */}
+            
                 Cancel
               </Button>
               <Button variant="danger" onClick={() => deleteVendor(item) } >
-              {/*  */}
+      
                 Delete
               </Button>
             </Modal.Footer>
@@ -407,7 +427,7 @@ const VendorList = () => {
                   })}
               </TableBody>
             </Table>
-          </TableContainer>
+          </TableContainer> */}
       
 
 </>    
