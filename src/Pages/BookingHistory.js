@@ -13,6 +13,7 @@ import styled from "styled-components";
 // import { DocInfo } from '../Dashboard/Dashboard.styles';
 
 
+
 import { Button,Table,TableBody,TableCell,TableContainer,TableHead,TableRow,Paper } from "@mui/material";
 
 
@@ -85,7 +86,7 @@ const BookingHistory = () => {
   const { authData, setAuthData } = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState("");
-  const navigation = useNavigate();
+  const navigate = useNavigate();
   const [select, setSelect] = useState("");
   const [data1, setData1] = useState([]);
   const [confirm, setConfirm] = useState();
@@ -122,7 +123,7 @@ const BookingHistory = () => {
   }, []);
   const handleClick = (item) => {
     // console.log("hcjhcjhf",item)
-    navigation("/bookinghotelbyid", { state: item });
+    navigate("/bookinghotelbyid", { state: item });
   };
 
   const getAllUsers = async () => {
@@ -169,7 +170,10 @@ const BookingHistory = () => {
       <TextMainWrapper>
         <TextRoot>
           <Root>
+          <Button variant="outlined" onClick={() => navigate(-1)} type="button"> <i className="fa-solid fa fa-arrow-circle-left"
+                ></i> Back</Button>
             <TextWrapper>
+              
               <Heading> Booking History</Heading>
               <TextSelectField>
                 <Select
