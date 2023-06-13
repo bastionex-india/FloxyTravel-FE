@@ -11,8 +11,8 @@ import { environmentVariables } from "../../config/config";
 import './BookingHistorybyOrderid.css'
 import { styled as newStyled } from '@mui/material/styles';
 import { Box, Paper, Grid, Container } from '@mui/material';
-
-
+import { useNavigate } from 'react-router-dom';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 
 import Table from '@mui/material/Table';
 import { Button } from '@mui/material'
@@ -72,10 +72,11 @@ const BookingHistorybyOrderid = () => {
   const { state } = useLocation();
   const { authData } = useContext(AuthContext);
   const [data, setData] = useState("");
-
+  const navigate = useNavigate();
 
 
   const getAllUsers = async () => {
+    
     await axios
       .get(
         `${environmentVariables.apiUrl}/admin/getallbookingbyorderid/${state._id}`,
@@ -96,6 +97,8 @@ const BookingHistorybyOrderid = () => {
     <>
       <TextMainWrapper>
         <TextRoot>
+        <Button variant="outlined" onClick={() => navigate(-1)} type="button"> <i className="fa-solid fa fa-arrow-circle-left"
+                ></i> Back</Button>
           <Root>
             <TextWrapper>
               <Heading> Booking Details</Heading>
@@ -140,6 +143,7 @@ const BookingHistorybyOrderid = () => {
                       </TableRow>
                     </TableBody>
                   </Table>
+                  <Button variant="contained" endIcon={<PictureAsPdfIcon />} >Generate Invoice </Button>
                 </Grid>
                 <Grid xs={6}>
                   <h4>Booking Details</h4>
@@ -165,13 +169,13 @@ const BookingHistorybyOrderid = () => {
                       </TableRow>
                       <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                         <TableCell component="th" scope="row">
-                          CheckIn Time
+                          CheckIn Date
                         </TableCell>
                         <TableCell align="right">{data.checkIn}</TableCell>
                       </TableRow>
                       <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                         <TableCell component="th" scope="row">
-                          CheckOut Time
+                          CheckOut Date
                         </TableCell>
                         <TableCell align="right">{data.checkOut}</TableCell>
                       </TableRow>

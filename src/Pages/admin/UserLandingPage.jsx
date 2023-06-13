@@ -5,6 +5,9 @@ import { AuthContext } from "../../ContextApi/ContextApi";
 import { environmentVariables } from "../../config/config";
 import CircularLoader from "../../Component/CircularLoader/CircularLoader";
 import Swal from "sweetalert2";
+import { useNavigate } from 'react-router-dom';
+import { Button } from "@mui/material";
+
 const UserLandingPage = () => {
   const [allStates, setAllStates] = useState([]);
   const [stateSelected, setStateSelected] = useState();
@@ -26,6 +29,7 @@ const UserLandingPage = () => {
   const [dragId, setDragId] = useState();
   const [priority, setPriority] = useState(null);
   const [file, setFile] = useState(null);
+  const navigate = useNavigate();
   const stateData = [
     {
       name: "Andhra Pradesh",
@@ -454,6 +458,8 @@ const UserLandingPage = () => {
   }, [chosenState, stateSelected]);
   return (
     <Root>
+      <Button variant="outlined" onClick={() => navigate(-1)} type="button"> <i className="fa-solid fa fa-arrow-circle-left"
+                ></i> Back</Button>
       <MainHeading>Manage City Landing Page</MainHeading>
       <StatesContainer>
         {/* <StateHeading>States : </StateHeading> */}

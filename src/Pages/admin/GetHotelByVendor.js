@@ -89,7 +89,7 @@ const GetHotelByVendor = () => {
   const [lat, setLat] = useState("");
   const [long, setLong] = useState("");
   const [open, setOpen] = useState(false);
-
+  
   const getData = async () => {
     await axios
       .get(
@@ -379,6 +379,8 @@ const GetHotelByVendor = () => {
 
   return (
     <Root>
+      <Button variant="outlined" onClick={() => navigate(-1)} type="button"> <i className="fa-solid fa fa-arrow-circle-left"
+                ></i> Back</Button>
       <NavigationSecvtion>
         <b
           style={{ marginRight: "5px", cursor: "pointer", color: "#01575c" }}

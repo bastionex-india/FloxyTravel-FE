@@ -9,18 +9,84 @@ import { useEffect } from "react";
 import { useContext } from "react";
 import { AuthContext } from "../../../ContextApi/ContextApi";
 import io, { socketIOClient } from "socket.io-client";
-
 import Table from "@mui/material/Table";
-import { Button } from "@mui/material";
+import { Button, ButtonGroup, Modal } from "@mui/material";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import Box from '@mui/material/Box';
 
 import moment from "moment";
 import CreateAdminVendor from "../CreateAdminVendor/CreateAdminVendor";
+
+
+import PropTypes from 'prop-types';
+import { styled as newStyle } from '@mui/material/styles';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
+import Typography from '@mui/material/Typography';
+
+const BootstrapDialog = newStyle(Dialog)(({ theme }) => ({
+  '& .MuiDialogContent-root': {
+    padding: theme.spacing(2),
+  },
+  '& .MuiDialogActions-root': {
+    padding: theme.spacing(1),
+  },
+}));
+
+function BootstrapDialogTitle(props) {
+  const { children, onClose, ...other } = props;
+
+  return (
+    <DialogTitle sx={{ m: 0, p: 2 }} {...other}>
+      {children}
+      {onClose ? (
+        <IconButton
+          aria-label="close"
+          onClick={onClose}
+          sx={{
+            position: 'absolute',
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+      ) : null}
+    </DialogTitle>
+  );
+}
+
+BootstrapDialogTitle.propTypes = {
+  children: PropTypes.node,
+  onClose: PropTypes.func.isRequired,
+};
+
+
+
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  pt: 2,
+  px: 4,
+  pb: 3,
+};
+
 const TextRoot = styled.div`
   // background-color: #9f94942b;
   padding: 20px 0px;
@@ -174,11 +240,21 @@ const ManageAdmin = () => {
   const { authData, setAuthData } = useContext(AuthContext);
   const [addVendorPopUp, setAddVendorPopUp] = useState(false);
   const [data, setData] = useState("");
-  const navigation = useNavigate();
+  const navigate = useNavigate();
+
+  const [selectedVendor, setSelectedVendor] = useState(null);
+
+  const [open, setOpen] = useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   const handleClick = (item) => {
-    console.log("hcjhcjhf", item);
-    navigation(`/managehotels/${item}`);
+    navigate(`/managehotels/${item}`);
   };
 
   const getAllListData = async () => {
@@ -196,13 +272,29 @@ const ManageAdmin = () => {
         setIsLoading(false);
       });
   };
+  const deleteVendor = async (vendorId) => {
+    await axios
+      .delete(`${environmentVariables.apiUrl}/auth/deletevendor/${vendorId}`, {
+        headers: { _token: authData.data.token },
+      })
+      .then((response) => {
+        setIsLoading(true);
+        getAllListData();
+      })
+      .catch((err) => {
+        console.log("error", err);
+        setIsLoading(false);
+      });
+  };
   useEffect(() => {
     setIsLoading(true);
     getAllListData();
-  }, []);
-
-  const ApprovedData = () => {};
-  const PendingData = () => {};
+  }, [addVendorPopUp]);
+  const  deleteRecord = ()=>{
+    deleteVendor(selectedVendor)
+  }
+  const ApprovedData = () => { };
+  const PendingData = () => { };
   const boldTextCss = {
     fontWeight: 700,
   };
@@ -219,8 +311,10 @@ const ManageAdmin = () => {
         <TextRoot>
           <Root>
             <TextWrapper>
+              <Button variant="outlined" onClick={() => navigate(-1)} type="button"> <i className="fa-solid fa fa-arrow-circle-left"
+              ></i> Back</Button>
               <Heading> Manage Admin/Vendor</Heading>
-              <AddButton onClick={() => setAddVendorPopUp(true)}>
+              <AddButton onClick={() => setAddVendorPopUp(true) }>
                 Add Vendor/Admin
               </AddButton>
             </TextWrapper>
@@ -278,14 +372,24 @@ const ManageAdmin = () => {
                           <TableCell align="left">{item?.mobile}</TableCell>
                           {/* <TableCell align="right">{item.status}</TableCell> */}
                           <TableCell align="right">
-                            <Button
+
+
+                            <ButtonGroup size="small" type="button" variant="outlined" aria-label="outlined button group">
+                              <Button>View</Button>
+                              <Button>Edit</Button>
+                              <Button onClick={()=> {
+                                handleClickOpen() 
+                                setSelectedVendor(item.vendorId)
+                              } } >Delete</Button>
+                            </ButtonGroup>
+                            {/* <Button
                               size="small"
                               variant="contained"
                               type="button"
                               onClick={(e) => handleClick(item?._id)}
                             >
                               View
-                            </Button>
+                            </Button> */}
                           </TableCell>
                         </TableRow>
                       );
@@ -295,6 +399,28 @@ const ManageAdmin = () => {
             </TableContainer>
           )}
         </TextRoot>
+        <BootstrapDialog
+          onClose={handleClose}
+          aria-labelledby="customized-dialog-title"
+          open={open}
+        >
+          <BootstrapDialogTitle id="customized-dialog-title" onClose={handleClose}>
+            Delete
+          </BootstrapDialogTitle>
+          <DialogContent dividers>
+            <Typography gutterBottom>
+              Are you sure you want to delete the vendor?
+            </Typography>
+          </DialogContent>
+          <DialogActions>
+            <Button variant="contained" color="success"  onClick={handleClose}>
+              Cancel
+            </Button>
+            <Button variant="contained" color="error" onClick={deleteRecord} >
+              Delete
+            </Button>
+          </DialogActions>
+        </BootstrapDialog>
       </TextMainWrapper>
     </>
   );

@@ -58,7 +58,11 @@ function SideBar(props) {
         setselected("Booking history");
       } else if (window.location.href.split("/").pop() === "manageadmin") {
         setselected("manageadmin");
-      } else if (window.location.href.split("/").pop() === "vendormanagehotels") {
+      } 
+      else if (window.location.href.split("/").pop() === "managehotels") {
+        setselected("managehotels");
+      }
+      else if (window.location.href.split("/").pop() === "vendormanagehotels") {
         setselected("vendormanagehotels");
       } else {
         setselected("Dashboard");
