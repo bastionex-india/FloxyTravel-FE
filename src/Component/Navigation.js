@@ -201,7 +201,7 @@ function Navigation(props) {
         headers: { _token: authData?.data?.token },
       })
       .then((response) => {
-        console.log(response.data.data);
+        // console.log(response.data.data);
         setNotificationData(
           response.data.data.sort((a, b) => b.createdAt - a.createdAt)
         );

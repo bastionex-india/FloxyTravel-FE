@@ -10,6 +10,7 @@ import { useContext } from "react";
 import Swal from "sweetalert2";
 import { AuthContext } from "../../../ContextApi/ContextApi";
 import { Button } from "@mui/material";
+import { VendorEditSchema } from "../schemas/EditVendorSchema";
 
 const ErrorText = styled.div`
   color: red;
@@ -96,7 +97,7 @@ const AddThemePopUpInput = styled.input`
   width: 500px;
   margin: 0 20px;
 `;
-const CreateAdminVendor = ({ open, setOpen,vendorDetails }) => {
+const EditAdminVendor = ({ open, setOpen,vendorDetails }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [number, setNumber] = useState("");
@@ -106,102 +107,54 @@ const CreateAdminVendor = ({ open, setOpen,vendorDetails }) => {
   const [adminValue, setAdminValue] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
+// console.log("vendor",vendorDetails)
   const { authData, setAuthData } = useContext(AuthContext);
   const handleClose = () => {
     setOpen(false);
   };
   const initialValues = {
-    name: "",
-    email: "",
-    contact: "",
-    password: "",
-    confirmPassword: "",
+    name: vendorDetails.name || "",
+    email: vendorDetails.email || "",
+    contact: vendorDetails.mobile || "",
   };
 
   const { values, errors, touched, handleBlur, handleChange, handleSubmit } =
     useFormik({
       initialValues,
-      validationSchema: VendorRegisterSchema,
+      validationSchema: VendorEditSchema,
       onSubmit: async (values, action) => {
-        if (adminValue === "") {
-          setError("Options must be selected");
-        } else {
-          if (adminValue === "vendor") {
-            axios({
-              method: "post",
-              url: `${environmentVariables.apiUrl}/admin/addvendor`,
-              headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
-              },
-              data: {
+        axios({
+            method: "put",
+            url: `${environmentVariables.apiUrl}/admin/updatevendor/${vendorDetails.vendorId}`,
+            headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            },
+            data: {
                 name: values.name,
                 email: values.email,
                 mobile: values.contact,
-                password: values.password,
-                cpassword: values.confirmPassword,
-                adminType: adminValue,
-              },
-              headers: { _token: authData.data.token },
+            },
+            headers: { _token: authData.data.token },
+        })
+            .then((response) => {
+            Swal.fire({
+                title: "Success",
+                text: "Vendor Updated successfully",
+                timer: 2000,
+            });
+            action.resetForm();
+            setOpen(false);
             })
-              .then((response) => {
-
-                Swal.fire({
-                  title: "Success",
-                  text: "Vendor created successfully",
-                  timer: 2000,
-                });
-                action.resetForm();
-                setOpen(false);
-              })
-              .catch((error) => {
-                console.log("///////////////", error);
-                // setError('Details are not valid');
-                Swal.fire({
-                  title: "Error",
-                  text: error,
-                  timer: 2000,
-                });
-              });
-          } else {
-            axios({
-              method: "post",
-              url: `${environmentVariables.apiUrl}/auth/admin/register`,
-              headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
-              },
-              data: {
-                username: values.name,
-                email: values.email,
-                mobile: values.contact,
-                password: values.password,
-                cpassword: values.confirmPassword,
-                adminType: adminValue,
-              },
-              headers: { _token: authData.data.token },
-            })
-              .then((response) => {
-                Swal.fire({
-                  title: "Success",
-                  text: "Admin created successfully",
-                  timer: 2000,
-                });
-                action.resetForm();
-                // toast(response.data.message);
-                setOpen(false);
-              })
-              .catch((error) => {
-                console.log("///////////////", error);
-                // setError('Details are not valid');
-                Swal.fire({
-                  title: "Error",
-                  text: error,
-                  timer: 2000,
-                });
-              });
-          }
-        }
+            .catch((error) => {
+            console.log("///////////////", error);
+            // setError('Details are not valid');
+            Swal.fire({
+                title: "Error",
+                text: error,
+                timer: 2000,
+            });
+            });
       },
     });
   return (
@@ -218,7 +171,7 @@ const CreateAdminVendor = ({ open, setOpen,vendorDetails }) => {
               marginTop: "20px",
             }}
           >
-            Add Admin/Vendor
+            Edit Vendor
           </div>
           <AddStatePopUpCloseIcon
             onClick={() => setOpen(false)}
@@ -262,53 +215,6 @@ const CreateAdminVendor = ({ open, setOpen,vendorDetails }) => {
                 <ErrorText>{errors.contact}</ErrorText>
               ) : null}
           </AddThemeInputWrapper>{" "}
-          <AddThemeInputWrapper>
-            <AddThemeLabel>Password* : </AddThemeLabel>
-            <AddThemePopUpInput
-              name="password"
-              value={values.password}
-              type="password"
-              onChange={handleChange}
-              onBlur={handleBlur}
-            />
-             {errors.password && touched.password ? (
-                <ErrorText>{errors.password}</ErrorText>
-              ) : null}
-          </AddThemeInputWrapper>{" "}
-          <AddThemeInputWrapper>
-            <AddThemeLabel>Confirm* : </AddThemeLabel>
-            <AddThemePopUpInput
-              name="confirmPassword"
-              value={values.confirmPassword}
-              type="password"
-              onChange={handleChange}
-              onBlur={handleBlur}
-            />
-            {errors.confirmPassword && touched.confirmPassword ? (
-                <ErrorText>{errors.confirmPassword}</ErrorText>
-              ) : null}
-          </AddThemeInputWrapper>
-          <AddThemeInputWrapper style={{ marginRight: "240px" }}>
-            <AddThemeLabel>Admin/Vendor* : </AddThemeLabel>
-            <RadioWrapper>
-              <RadioInput
-                onClick={() => setAdminValue("admin")}
-                value="admin"
-                checked={adminValue === "admin"}
-                type="radio"
-              />
-              <AddThemeLabel>Admin</AddThemeLabel>
-            </RadioWrapper>
-            <RadioWrapper>
-              <RadioInput
-                onClick={() => setAdminValue("vendor")}
-                value="vendor"
-                checked={adminValue === "vendor"}
-                type="radio"
-              />
-              <AddThemeLabel>Vendor</AddThemeLabel>
-            </RadioWrapper>
-          </AddThemeInputWrapper>
           <ButtonWrapper>
             <AddStatePopUpSubmitButton onClick={handleSubmit}>
               Submit
@@ -323,4 +229,4 @@ const CreateAdminVendor = ({ open, setOpen,vendorDetails }) => {
   );
 };
 
-export default CreateAdminVendor;
+export default EditAdminVendor;
