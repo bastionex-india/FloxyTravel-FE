@@ -159,10 +159,16 @@ const BookingHistoryofAdmin = () => {
       <TextMainWrapper>
         <TextRoot>
           <Root>
-          <Button variant="outlined" onClick={() => navigation(-1)} type="button"> <i className="fa-solid fa fa-arrow-circle-left"
-                ></i> Back</Button>
-            <TextWrapper>
+            <div style={{ display: "flex", alignItems: "center" }}>
+              {" "}
+              <i
+                style={{ cursor: "pointer", marginRight: "50px" }}
+                onClick={() => navigation(-1)}
+                class="fa-solid fa-chevron-left fa-2x"
+              ></i>
               <Heading> Booking History</Heading>
+            </div>
+            <TextWrapper>
               <TextSelectField>
                 <Select
                   onChange={(e) => {

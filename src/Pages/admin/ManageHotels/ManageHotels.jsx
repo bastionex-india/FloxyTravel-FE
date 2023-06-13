@@ -12,8 +12,6 @@ import io, { socketIOClient } from "socket.io-client";
 
 import { Button } from "@mui/material";
 
-
-
 const HotelCardsWrapper = styled.div``;
 const HotelCard = styled.div`
   display: flex;
@@ -213,8 +211,8 @@ const TextMainWrapper = styled.div`
   }
 `;
 const TextCenter = styled.div`
-  color: red; 
-  text-align:center;
+  color: red;
+  text-align: center;
 `;
 
 const ManageAdmin = () => {
@@ -224,9 +222,9 @@ const ManageAdmin = () => {
   const { authData, setAuthData } = useContext(AuthContext);
   const [addVendorPopUp, setAddVendorPopUp] = useState(false);
   const [data, setData] = useState("");
-  const [vendorlist,setVendorList] = useState(null);
+  const [vendorlist, setVendorList] = useState(null);
   const navigate = useNavigate();
-  
+
   const getAllListData = async () => {
     await axios
       .get(`${environmentVariables.apiUrl}/admin/getallhotels`, {
@@ -243,9 +241,12 @@ const ManageAdmin = () => {
   };
   const getHotelByVendorId = async (vendorID) => {
     await axios
-      .get(`${environmentVariables.apiUrl}/admin/gethoteldetailbyvendorid/${vendorID}`, {
-        headers: { _token: authData.data.token },
-      })
+      .get(
+        `${environmentVariables.apiUrl}/admin/gethoteldetailbyvendorid/${vendorID}`,
+        {
+          headers: { _token: authData.data.token },
+        }
+      )
       .then((response) => {
         setData(response.data.data.hotels);
         setIsLoading(false);
@@ -255,7 +256,7 @@ const ManageAdmin = () => {
         setIsLoading(false);
       });
   };
-  const getVendorList = async()=>{
+  const getVendorList = async () => {
     await axios
       .get(`${environmentVariables.apiUrl}/auth/getvendorlist`, {
         headers: { _token: authData.data.token },
@@ -268,74 +269,81 @@ const ManageAdmin = () => {
         console.log("error", err);
         setIsLoading(false);
       });
-  }
+  };
   useEffect(() => {
     setIsLoading(true);
     getAllListData();
-    getVendorList()
+    getVendorList();
   }, []);
 
   const boldTextCss = {
     fontWeight: 700,
   };
-  const vendorHandler = (e)=>{
+  const vendorHandler = (e) => {
     setIsLoading(true);
-    if(e.target.value=='all'){
+    if (e.target.value == "all") {
       getAllListData();
+    } else {
+      getHotelByVendorId(e.target.value);
     }
-    else{
-      getHotelByVendorId(e.target.value)
-    }
-  }
+  };
   return (
     <>
       <TextMainWrapper>
-
         <TextRoot>
           <Root>
-            <Button variant="outlined" onClick={() => navigate(-1)} type="button"> <i className="fa-solid fa fa-arrow-circle-left"
-                ></i> Back</Button>
-            <Heading> Manage Hotels</Heading>
+            <div style={{ display: "flex", alignItems: "center" }}>
+              {" "}
+              <i
+                style={{ cursor: "pointer", marginRight: "50px" }}
+                onClick={() => navigate(-1)}
+                class="fa-solid fa-chevron-left fa-2x"
+              ></i>
+              <Heading> Manage Hotels</Heading>
+            </div>
             <TextWrapper>
               <SelectVendor onChange={vendorHandler}>
-                <SelectOption value={'all'}>Select Vendor*</SelectOption>
-                <SelectOption value={'all'}>All</SelectOption>
-                {
-                  vendorlist && vendorlist.map((row,index)=>{
-                    
-                    return(
-                      <SelectOption key={index} value={row.vendorId}>{row.name}</SelectOption>
-                    )
-                  })
-                }
+                <SelectOption value={"all"}>Select Vendor*</SelectOption>
+                <SelectOption value={"all"}>All</SelectOption>
+                {vendorlist &&
+                  vendorlist.map((row, index) => {
+                    return (
+                      <SelectOption key={index} value={row.vendorId}>
+                        {row.name}
+                      </SelectOption>
+                    );
+                  })}
               </SelectVendor>
-              <AddButton onClick={() => setAddVendorPopUp(true)}>
+              <AddButton
+                onClick={() => {
+                  navigate("/addhotels");
+                }}
+              >
                 Add Hotel
               </AddButton>
             </TextWrapper>
           </Root>
           <HotelCardsWrapper>
-          {isLoading === true ? (
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                marginTop: "30px",
-              }}
-            >
-              <CircularLoader></CircularLoader>
-            </div>
-          ) : 
-          data && data.length ? 
+            {isLoading === true ? (
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  marginTop: "30px",
+                }}
+              >
+                <CircularLoader></CircularLoader>
+              </div>
+            ) : data && data.length ? (
               data.map((row, index) => {
-                let imageSrc = row.image.length ? row.image[0]: '1675936089112-teanest1.jpg'
+                let imageSrc = row.image.length
+                  ? row.image[0]
+                  : "1675936089112-teanest1.jpg";
                 return (
                   <HotelCard key={index}>
                     <HotelImageWrapper>
                       <HotelImage
-                        src={
-                          `https://uat-travel-api.floxypay.com/uploads/${imageSrc}`
-                        }
+                        src={`https://uat-travel-api.floxypay.com/uploads/${imageSrc}`}
                       />
                     </HotelImageWrapper>
                     <HotelInfoWrapper>
@@ -348,7 +356,9 @@ const ManageAdmin = () => {
                         <HotelInfoText>State : {row.state}</HotelInfoText>
                         <HotelInfoText>Country : {row.country}</HotelInfoText>
                         <HotelInfoText>Theme : {row.theme}</HotelInfoText>
-                        <HotelInfoText>Category : {row.hotelCategory}</HotelInfoText>
+                        <HotelInfoText>
+                          Category : {row.hotelCategory}
+                        </HotelInfoText>
                       </HotelIconWrapper>
                     </HotelInfoWrapper>
                     <HotelButtonWrapper>
@@ -357,23 +367,18 @@ const ManageAdmin = () => {
                       <HotelActionButtons>Hide</HotelActionButtons>
                     </HotelButtonWrapper>
                   </HotelCard>
-                )
+                );
               })
-              :
+            ) : (
               <>
-              <TextCenter>
-                <span>No hotels found </span>
-              </TextCenter>
+                <TextCenter>
+                  <span>No hotels found </span>
+                </TextCenter>
               </>
-          }
-
-           
-
-
+            )}
           </HotelCardsWrapper>
           {/* )} */}
         </TextRoot>
-        
       </TextMainWrapper>
     </>
   );
