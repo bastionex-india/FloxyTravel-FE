@@ -8,6 +8,8 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@mui/material";
 
 import { environmentVariables } from "../../config/config";
+import { Modal } from "react-bootstrap";
+
 const UserLandingPageHome = () => {
   const [isPriorityChanged, setIsPriority] = useState(false);
   const [addThemePopUp, setAddThemePopUp] = useState(false);
@@ -22,6 +24,9 @@ const UserLandingPageHome = () => {
   const [deletePopUp, setDeletePopUp] = useState(false);
   const [cityData, setCityData] = useState();
   const [city, setCity] = useState(null);
+  const [showModal,setShowModal] = useState(false);
+
+
   const navigate = useNavigate();
 
   const getPopularCities = () => {
@@ -158,6 +163,7 @@ const UserLandingPageHome = () => {
     setTheme(null);
     setCity(null);
     setTitle(null);
+
   };
   useEffect(() => {
     setIsLoading(true);

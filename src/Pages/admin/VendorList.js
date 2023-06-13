@@ -31,6 +31,8 @@ import { useFormik } from "formik";
 import { VendorRegisterSchema } from "./schemas/VendorRegisterSchems";
 import Check from "./Check.js";
 import { Modal } from "react-bootstrap";
+import Chart from "./BarChart.js";
+import { BarChart, Bar, CartesianGrid, XAxis, YAxis } from 'recharts';
 
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -54,6 +56,7 @@ const ErrorMessage = styled.div`
   font-size: 12px;
   margin-bottom: 20px;
 `;
+
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -80,6 +83,15 @@ const VendorList = () => {
   const [error, setError] = useState("");
   const [showModal, setShowModel] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  const graphdata = [
+    { name: '2012', students: 400 },
+    { name: '2013', students: 700 },
+    { name: '2014', students: 200 },
+    { name: '2015', students: 1000 },
+    { name: '2016', students: 500 },
+    { name: '2017', students: 800 }
+];
 
   const getAllListData = async () => {
     await axios
