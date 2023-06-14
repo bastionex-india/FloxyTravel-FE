@@ -8,6 +8,7 @@ import { AuthContext } from "../../../ContextApi/ContextApi";
 import MultiSelect from "react-multiple-select-dropdown-lite";
 import "react-multiple-select-dropdown-lite/dist/index.css";
 import { environmentVariables } from "../../../config/config";
+import Swal from "sweetalert2";
 
 const Root = styled.div`
   width: 967px;
@@ -124,6 +125,7 @@ const FormSelectTheme = styled.select`
 `;
 
 const AddHotels = () => {
+  const navigation = useNavigate();
   const { authData } = useContext(AuthContext);
   const [allCountries, setAllCountries] = useState([]);
   const [countryCode, setCountryCode] = useState("");
@@ -162,7 +164,7 @@ const AddHotels = () => {
 
   const getVendorList = async () => {
     await axios
-      .get(`${environmentVariables.apiUrl}/auth/getvendorlist`, {
+      .get(`http://localhost:4000/auth/getvendorlist`, {
         headers: { _token: authData.data.token },
       })
       .then((response) => {
@@ -248,7 +250,7 @@ const AddHotels = () => {
   };
   const handleClose = async (e) => {
     e.preventDefault();
-    console.log("aaaaaa",name,countryName,area,stateName,cityName,totalRooms,category,general,services,internet,parking,overview,multipleFiles,multipleFiles.length,vendorId,lat,long,theme,address)
+    // console.log("aaaaaa",name,countryName,area,stateName,cityName,totalRooms,category,general,services,internet,parking,overview,multipleFiles,multipleFiles.length,vendorId,lat,long,theme,address)
     const formdata = new FormData();
     for (let i = 0; i < multipleFiles.length; i++) {
       // console.log("aaaaaaaaaaaaaaaaaaaaaaaa",multipleFiles[i])
@@ -270,16 +272,13 @@ const AddHotels = () => {
     // for (let i = 0; i < theme.length; i++) {
     //   formdata.append(`theme[${i}]`, theme[i]);
     // }
-    console.log(theme.split(","))
     formdata.append(`theme`, theme);
     formdata.append("lat", lat);
     formdata.append("long", long);
     formdata.append("hotelVendorId",vendorId);
-    // formdata.append('email',authData.data.token)
-    console.log("sssssss", formdata);
     axios({
       method: "post",
-      url: `${environmentVariables.apiUrl}/admin/addhotel`,
+      url: `http://localhost:4000/admin/addhotel`,
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
@@ -288,27 +287,49 @@ const AddHotels = () => {
       headers: { _token: authData.data.token },
     })
       .then((response) => {
-        console.log("aaaaaaaaaaaasssssss", response.data);
-        // setResponseData(response.data);
-        // toast(response.data.message);
-        // setName("");
-        // setArea("");
-        // setStateName("");
-        // setCityName("");
-        // setCategory("");
-        // setTotalRooms("");
-        // setGeneral("");
-        // setServices("");
-        // setInternet("");
-        // setParking("");
-        // setOverview("");
-        // setTheme([]);
-        // setLat("");
-        // setLong("");
-        // setMultipleFiles("");
+        setName("");
+        setArea("");
+        setAddress("")
+        setStateName("");
+        setCityName("");
+        setCategory("");
+        setTotalRooms("");
+        setGeneral("");
+        setServices("");
+        setInternet("");
+        setParking("");
+        setOverview("");
+        setTheme([]);
+        setLat("");
+        setLong("");
+        setMultipleFiles("");
+        Swal.fire(
+          "Added",
+          "New Hotel added successfully",
+          "success"
+        );
+        navigation('/managehotels')
       })
       .catch((error) => {
         console.log("///////////////", error);
+        Swal.fire("Error", "Something went wrong", "error");
+      });
+  };
+
+  const getHotelLatLong = (e) => {
+    e.preventDefault();
+    // console.log("fdgfdgfdgdf",lat,long)
+    axios({
+      method: "get",
+      url: "https://geolocation-db.com/json/",
+    })
+      .then((response) => {
+        // console.log(response.data)
+        setLat(response.data.latitude);
+        setLong(response.data.longitude);
+      })
+      .catch((error) => {
+        console.log("Geo location error", error);
       });
   };
   return (
@@ -399,7 +420,7 @@ const AddHotels = () => {
                 <FormLabel>Longitude*</FormLabel>
                 <FormInput type="text" value={long} onChange={(e) => setLong(e.target.value)} />
               </div>
-              <GetLocationText>Get Coordinates</GetLocationText>
+              <GetLocationText onClick={getHotelLatLong}>Get Coordinates</GetLocationText>
               
               <SelectVendor onChange={(e) => setVendorId(e.target.value)}>
                 <SelectOption>Select Vendor*</SelectOption>
