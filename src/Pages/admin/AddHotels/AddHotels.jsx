@@ -10,9 +10,9 @@ import "react-multiple-select-dropdown-lite/dist/index.css";
 import { environmentVariables } from "../../../config/config";
 
 const Root = styled.div`
-  width: 967px;
+  /* width: 967px; */
   margin: 10px auto;
-  padding: 20px 0;
+  padding: 20px;
 `;
 const MainHeading = styled.div`
   font-size: 1.75rem;
@@ -117,7 +117,7 @@ const SelectOption = styled.option`
 `;
 
 const FormSelectTheme = styled.select`
- appearance: none;
+  appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
   background-image: none;
@@ -157,7 +157,7 @@ const AddHotels = () => {
     { label: "Wildlife", value: "wildlife" },
     { label: "Romantic", value: "romantic" },
     { label: "Hill", value: "hill" },
-    { label: "Heritage", value: "heritage" }
+    { label: "Heritage", value: "heritage" },
   ];
 
   const getVendorList = async () => {
@@ -226,29 +226,50 @@ const AddHotels = () => {
       });
   }, [countryCode, stateCode]);
 
-  const handleCountryChange = (e) =>{
+  const handleCountryChange = (e) => {
     setCountryCode(e.target.value);
     const selectedOption = e.target.selectedOptions[0];
-    setCountryName(selectedOption.getAttribute('data-value'));    
-  }
-  const handleStateChange = (e)=>{
+    setCountryName(selectedOption.getAttribute("data-value"));
+  };
+  const handleStateChange = (e) => {
     setStateCode(e.target.value);
     const selectedOption = e.target.selectedOptions[0];
-    setStateName(selectedOption.getAttribute('data-value'));    
-  }
+    setStateName(selectedOption.getAttribute("data-value"));
+  };
 
-  const handleCityChange =(e)=>{
+  const handleCityChange = (e) => {
     setCityCode(e.target.value);
     const selectedOption = e.target.selectedOptions[0];
-    setCityName(selectedOption.getAttribute('data-value'));
-  }
+    setCityName(selectedOption.getAttribute("data-value"));
+  };
   const handleOnchangeTheme = (val) => setTheme(val);
   const MultipleFileChange = (e) => {
     setMultipleFiles(e.target.files);
   };
   const handleClose = async (e) => {
     e.preventDefault();
-    console.log("aaaaaa",name,countryName,area,stateName,cityName,totalRooms,category,general,services,internet,parking,overview,multipleFiles,multipleFiles.length,vendorId,lat,long,theme,address)
+    console.log(
+      "aaaaaa",
+      name,
+      countryName,
+      area,
+      stateName,
+      cityName,
+      totalRooms,
+      category,
+      general,
+      services,
+      internet,
+      parking,
+      overview,
+      multipleFiles,
+      multipleFiles.length,
+      vendorId,
+      lat,
+      long,
+      theme,
+      address
+    );
     const formdata = new FormData();
     for (let i = 0; i < multipleFiles.length; i++) {
       // console.log("aaaaaaaaaaaaaaaaaaaaaaaa",multipleFiles[i])
@@ -270,11 +291,11 @@ const AddHotels = () => {
     // for (let i = 0; i < theme.length; i++) {
     //   formdata.append(`theme[${i}]`, theme[i]);
     // }
-    console.log(theme.split(","))
+    console.log(theme.split(","));
     formdata.append(`theme`, theme);
     formdata.append("lat", lat);
     formdata.append("long", long);
-    formdata.append("hotelVendorId",vendorId);
+    formdata.append("hotelVendorId", vendorId);
     // formdata.append('email',authData.data.token)
     console.log("sssssss", formdata);
     axios({
@@ -313,11 +334,15 @@ const AddHotels = () => {
   };
   return (
     <Root>
-      <Button variant="outlined" onClick={() => navigate(-1)} type="button">
+      <div style={{ display: "flex", alignItems: "center" }}>
         {" "}
-        <i className="fa-solid fa fa-arrow-circle-left"></i> Back
-      </Button>
-      <MainHeading>Add New Hotel</MainHeading>
+        <i
+          style={{ cursor: "pointer", marginRight: "50px" }}
+          onClick={() => navigate(-1)}
+          class="fa-solid fa-chevron-left fa-2x"
+        ></i>
+        <MainHeading>Add New Hotel</MainHeading>
+      </div>
       <MainContainer>
         <HotelAddForm>
           <FormWrapper>
@@ -333,7 +358,11 @@ const AddHotels = () => {
                 <FormSelect onChange={handleCountryChange}>
                   <FormOptions>Select Country</FormOptions>
                   {allCountries.map((country, index) => (
-                    <option key={index} value={country.isoCode} data-value={country.name}>
+                    <option
+                      key={index}
+                      value={country.isoCode}
+                      data-value={country.name}
+                    >
                       {country.name}
                     </option>
                   ))}
@@ -345,7 +374,11 @@ const AddHotels = () => {
                   <FormOptions>Select State</FormOptions>
                   {allStates.map((val, index) => {
                     return (
-                      <FormOptions key={index} value={val.isoCode} data-value={val.name}>
+                      <FormOptions
+                        key={index}
+                        value={val.isoCode}
+                        data-value={val.name}
+                      >
                         {val.name}
                       </FormOptions>
                     );
@@ -357,7 +390,11 @@ const AddHotels = () => {
                 <FormSelect onChange={handleCityChange}>
                   {allCities.map((val, index) => {
                     return (
-                      <FormOptions key={index} value={val.isoCode} data-value={val.name}>
+                      <FormOptions
+                        key={index}
+                        value={val.isoCode}
+                        data-value={val.name}
+                      >
                         {val.name}
                       </FormOptions>
                     );
@@ -366,11 +403,19 @@ const AddHotels = () => {
               </div>
               <div style={{ marginLeft: "1.8rem" }}>
                 <FormLabel>Area*</FormLabel>
-                <FormInput type="text" value={area} onChange={(e) => setArea(e.target.value)}/>
+                <FormInput
+                  type="text"
+                  value={area}
+                  onChange={(e) => setArea(e.target.value)}
+                />
               </div>
               <div style={{ marginLeft: "1.8rem" }}>
                 <FormLabel>Address*</FormLabel>
-                <FormInput type="text" value={address} onChange={(e) => setAddress(e.target.value)}/>
+                <FormInput
+                  type="text"
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                />
               </div>
             </LocationWrapper>
             <ThemeWrapper>
@@ -384,23 +429,31 @@ const AddHotels = () => {
               </div>
               <div style={{ marginLeft: "1.8rem" }}>
                 <FormLabel>Category*</FormLabel>
-                <FormSelect onChange={(e)=>setCategory(e.target.value)}>
+                <FormSelect onChange={(e) => setCategory(e.target.value)}>
                   <FormOptions>Select Category</FormOptions>
-                  <FormOptions value={'economy'}>Economy</FormOptions>
-                  <FormOptions value={'midrange'}>Mid Range</FormOptions>
-                  <FormOptions value={'luxury'}>Luxury</FormOptions>
+                  <FormOptions value={"economy"}>Economy</FormOptions>
+                  <FormOptions value={"midrange"}>Mid Range</FormOptions>
+                  <FormOptions value={"luxury"}>Luxury</FormOptions>
                 </FormSelect>
               </div>
               <div>
                 <FormLabel>Latitude*</FormLabel>
-                <FormInput type="text" value={lat} onChange={(e) => setLat(e.target.value)}/>
+                <FormInput
+                  type="text"
+                  value={lat}
+                  onChange={(e) => setLat(e.target.value)}
+                />
               </div>
               <div>
                 <FormLabel>Longitude*</FormLabel>
-                <FormInput type="text" value={long} onChange={(e) => setLong(e.target.value)} />
+                <FormInput
+                  type="text"
+                  value={long}
+                  onChange={(e) => setLong(e.target.value)}
+                />
               </div>
               <GetLocationText>Get Coordinates</GetLocationText>
-              
+
               <SelectVendor onChange={(e) => setVendorId(e.target.value)}>
                 <SelectOption>Select Vendor*</SelectOption>
                 {vendorlist &&
@@ -412,24 +465,51 @@ const AddHotels = () => {
                     );
                   })}
               </SelectVendor>
-
             </ThemeWrapper>
             <div>
               <FormLabel>Total Rooms*</FormLabel>
-              <FormInput type="number" value={totalRooms} onChange={(e) => setTotalRooms(e.target.value)}/>
+              <FormInput
+                type="number"
+                value={totalRooms}
+                onChange={(e) => setTotalRooms(e.target.value)}
+              />
             </div>
             <FormLabel>General Info*</FormLabel>
-            <FormInput type="text"  value={general} onChange={(e) => setGeneral(e.target.value)}/>
+            <FormInput
+              type="text"
+              value={general}
+              onChange={(e) => setGeneral(e.target.value)}
+            />
             <FormLabel>Services*</FormLabel>
-            <FormInput type="text" value={services} onChange={(e) => setServices(e.target.value)}/>
+            <FormInput
+              type="text"
+              value={services}
+              onChange={(e) => setServices(e.target.value)}
+            />
             <FormLabel>Internet*</FormLabel>
-            <FormInput type="text"  value={internet} onChange={(e) => setInternet(e.target.value)} />
+            <FormInput
+              type="text"
+              value={internet}
+              onChange={(e) => setInternet(e.target.value)}
+            />
             <FormLabel>Parking*</FormLabel>
-            <FormInput type="text"   value={parking} onChange={(e) => setParking(e.target.value)}/>
+            <FormInput
+              type="text"
+              value={parking}
+              onChange={(e) => setParking(e.target.value)}
+            />
             <FormLabel>Overview*</FormLabel>
-            <FormTextArea  value={overview} onChange={(e) => setOverview(e.target.value)}/>
+            <FormTextArea
+              value={overview}
+              onChange={(e) => setOverview(e.target.value)}
+            />
             <FormLabel>Images*</FormLabel>
-            <FormFileInput type="file" multiple name="myFiles" onChange={(e) => MultipleFileChange(e)} />
+            <FormFileInput
+              type="file"
+              multiple
+              name="myFiles"
+              onChange={(e) => MultipleFileChange(e)}
+            />
           </FormWrapper>
           <Button onClick={(e) => handleClose(e)}>Save</Button>
         </HotelAddForm>

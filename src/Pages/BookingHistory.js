@@ -29,8 +29,8 @@ const boldTextCss = {
 
 const TextRoot = styled.div`
   // background-color: #9f94942b;
-  padding: 20px 0px;
-  width: 967px;
+  padding: 20px;
+  /* width: 967px; */
   margin: 10px auto;
   @media (max-width: 768px) {
     width: 100vw;
@@ -151,7 +151,7 @@ const BookingHistory = () => {
       .request(config)
       .then((response) => {
         // setData(response.data.sort((a, b) => b.createdAt - a.createdAt));
-        setData(response.data.data);
+        setData(response?.data?.data?.records);
         setIsLoading(false);
       })
       .catch((error) => {
