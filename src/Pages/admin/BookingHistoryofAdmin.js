@@ -17,6 +17,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import TablePagination from "@mui/material/TablePagination";
 
 const TextRoot = styled.div`
   // background-color: #9f94942b;
@@ -81,6 +82,20 @@ const BookingHistoryofAdmin = () => {
   const [data, setData] = useState("");
   const navigation = useNavigate();
 
+  //  pagination
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+  // //  pagination  End
+
   const handleClick = (item) => {
     console.log("hcjhcjhf", item);
     navigation("/bookinghistorybyorderid", { state: item });
@@ -136,7 +151,9 @@ const BookingHistoryofAdmin = () => {
     axios
       .request(config)
       .then((response) => {
-        setData(response?.data?.data.sort((a, b) => b.createdAt - a.createdAt));
+        setData(
+          response?.data?.data.Records.sort((a, b) => b.createdAt - a.createdAt)
+        );
         setIsLoading(false);
       })
       .catch((err) => {
@@ -154,15 +171,22 @@ const BookingHistoryofAdmin = () => {
   const boldTextCss = {
     fontWeight: 700,
   };
+
   return (
     <>
       <TextMainWrapper>
         <TextRoot>
           <Root>
-          <Button variant="outlined" onClick={() => navigation(-1)} type="button"> <i className="fa-solid fa fa-arrow-circle-left"
-                ></i> Back</Button>
-            <TextWrapper>
+            <div style={{ display: "flex", alignItems: "center" }}>
+              {" "}
+              <i
+                style={{ cursor: "pointer", marginRight: "50px" }}
+                onClick={() => navigation(-1)}
+                class="fa-solid fa-chevron-left fa-2x"
+              ></i>
               <Heading> Booking History</Heading>
+            </div>
+            <TextWrapper>
               <TextSelectField>
                 <Select
                   onChange={(e) => {
@@ -225,6 +249,7 @@ const BookingHistoryofAdmin = () => {
               </TextSelectField>
             </TextWrapper>
           </Root>
+
           {isLoading === true ? (
             <div
               style={{
@@ -293,6 +318,14 @@ const BookingHistoryofAdmin = () => {
                     })}
                 </TableBody>
               </Table>
+              <TablePagination
+                component="div"
+                count={data.length}
+                page={page}
+                onPageChange={handleChangePage}
+                rowsPerPage={rowsPerPage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+              />
             </TableContainer>
           )}
         </TextRoot>

@@ -5,14 +5,14 @@ import Cardbg1 from "../../Images/bg.jpg";
 import { useNavigate } from "react-router-dom";
 import { environmentVariables } from "../../config/config";
 import { Modal, Button } from "react-bootstrap";
-
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
+import CircularLoader from "../../Component/CircularLoader/CircularLoader";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 import axios from "axios";
@@ -62,6 +62,7 @@ const CardText = styled.div`
 
 export default function LeaveRecord() {
   const { authData } = useContext(AuthContext);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const [data, setData] = useState([]);
   // console.log("jjjjjjjjjjjjjj",data)
@@ -80,137 +81,190 @@ export default function LeaveRecord() {
       .then((response) => {
         // console.log('rrrrrrrrrrrr',response.data.data.hotels)
         setData(response.data.data.hotels);
+        setIsLoading(false);
       })
       .catch((error) => {
         console.log("error", error);
+        setIsLoading(false);
       });
   };
 
-
   useEffect(() => {
+    setIsLoading(true);
     getVendorData();
   }, []);
 
-  const [showModal,setShowModel] = useState(false);
+  const [showModal, setShowModel] = useState(false);
 
-  function deleteConfirmation()
-  {
+  function deleteConfirmation() {
     setShowModel(true);
   }
 
-  function hideModal()
-  {
+  function hideModal() {
     setShowModel(false);
   }
 
   const boldTextCss = {
-    fontWeight: 700
-  }
+    fontWeight: 700,
+  };
 
   return (
     <>
-    <div class="row row-cols-4 g-4" style={{width: '70rem'}}>
-  <div class="col">
-    <div class="card shadow p-3 mb-5 bg-body-tertiary rounded" >
-      <div  class="card-body">
-        <h6 style={{textAlign: 'center'}} class="card-title">PENDING</h6>
-        <h1 style={{textAlign: 'center', color: '#008080'}} class="card-text">
-        $80
-        </h1>
-        <p style={{textAlign: 'center'}} class="card-title">Total pendings</p>
+      <div class="row row-cols-4 g-4" style={{ width: "70rem" }}>
+        <div class="col">
+          <div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
+            <div class="card-body">
+              <h6 style={{ textAlign: "center" }} class="card-title">
+                PENDING
+              </h6>
+              <h1
+                style={{ textAlign: "center", color: "#008080" }}
+                class="card-text"
+              >
+                $80
+              </h1>
+              <p style={{ textAlign: "center" }} class="card-title">
+                Total pendings
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
+            <div class="card-body">
+              <h6 style={{ textAlign: "center" }} class="card-title">
+                EARNINGS
+              </h6>
+              <h1
+                style={{ textAlign: "center", color: "#008080" }}
+                class="card-text"
+              >
+                $50
+              </h1>
+              <p style={{ textAlign: "center" }} class="card-title">
+                Total earnings
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
+            <div class="card-body">
+              <h6 style={{ textAlign: "center" }} class="card-title">
+                BOOKINS
+              </h6>
+              <h1
+                style={{ textAlign: "center", color: "#008080" }}
+                class="card-text"
+              >
+                68
+              </h1>
+              <p style={{ textAlign: "center" }} class="card-title">
+                Total bookings
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
+            <div class="card-body">
+              <h6 style={{ textAlign: "center" }} class="card-title">
+                SERVICES
+              </h6>
+              <h1
+                style={{ textAlign: "center", color: "#008080" }}
+                class="card-text"
+              >
+                25
+              </h1>
+              <p style={{ textAlign: "center" }} class="card-title">
+                Total services
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-  <div class="col">
-    <div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
-      <div class="card-body">
-        <h6 style={{textAlign: 'center'}} class="card-title">EARNINGS</h6>
-        <h1 style={{textAlign: 'center', color: '#008080'}} class="card-text">
-        $50
-        </h1>
-        <p style={{textAlign: 'center'}} class="card-title">Total earnings</p>
-      </div>
-    </div>
-  </div>
-  <div class="col">
-    <div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
-      <div class="card-body">
-        <h6 style={{textAlign: 'center'}} class="card-title">BOOKINS</h6>
-        <h1 style={{textAlign: 'center', color: '#008080'}} class="card-text">
-        68
-        </h1>
-        <p style={{textAlign: 'center'}} class="card-title">Total bookings</p>
-      </div>
-    </div>
-  </div>
-  <div class="col">
-    <div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
-      <div class="card-body">
-        <h6 style={{textAlign: 'center'}} class="card-title">SERVICES</h6>
-        <h1 style={{textAlign: 'center', color: '#008080'}} class="card-text">
-        25
-        </h1>
-        <p style={{textAlign: 'center'}} class="card-title">Total services</p>
-      </div>
-    </div>
-  </div>
-</div>
+      {isLoading === true ? (
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <CircularLoader></CircularLoader>
+        </div>
+      ) : (
+        <TableContainer component={Paper} style={{ width: "70rem" }}>
+          <Table sx={{ minWidth: 650 }} aria-label="simple table">
+            <TableHead>
+              <TableRow>
+                <TableCell style={boldTextCss}>HotelName</TableCell>
+                <TableCell style={boldTextCss} align="left">
+                  City
+                </TableCell>
+                <TableCell style={boldTextCss} align="left">
+                  State
+                </TableCell>
+                <TableCell style={boldTextCss} align="left">
+                  Action
+                </TableCell>
+              </TableRow>
+            </TableHead>
 
-<TableContainer component={Paper} style={{width: '70rem'}}>
-            <Table sx={{ minWidth: 650 }} aria-label="simple table">
-              <TableHead >
-                <TableRow>
-                  <TableCell style={boldTextCss}>HotelName</TableCell>
-                  <TableCell style={boldTextCss} align="left">City</TableCell>
-                  <TableCell style={boldTextCss} align="left">State</TableCell>
-                  <TableCell style={boldTextCss} align="left">Action</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {
-                  data && data.map((item, key) => {
-                    const bookingDate = new Date(item.createdAt);
-                    return (
-                      item.active !== true &&(
-                        <TableRow
+            <TableBody>
+              {data &&
+                data.map((item, key) => {
+                  const bookingDate = new Date(item.createdAt);
+                  return (
+                    item.active !== true && (
+                      <TableRow
                         key={item}
-                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                        sx={{
+                          "&:last-child td, &:last-child th": { border: 0 },
+                        }}
                       >
                         <TableCell component="th" scope="row">
-                        {item.hotelname}             
+                          {item.hotelname}
                         </TableCell>
                         <TableCell align="left">{item.city}</TableCell>
                         <TableCell align="left">{item.state}</TableCell>
-                        <TableCell align="left"><Button size="small" variant="contained" type="button"><DeleteIcon style={{color: '#008080'}} onClick={deleteConfirmation} /></Button></TableCell>
+                        <TableCell align="left">
+                          <Button
+                            size="small"
+                            variant="contained"
+                            type="button"
+                          >
+                            <DeleteIcon
+                              style={{ color: "#008080" }}
+                              onClick={deleteConfirmation}
+                            />
+                          </Button>
+                        </TableCell>
                         <Modal show={showModal} onHide={hideModal}>
-                        <Modal.Header closeButton>
-                          <Modal.Title>Delete Confirmation</Modal.Title>
-                        </Modal.Header>
-                        <Modal.Body><div className="alert alert-danger">Are you sure you want to delete the vendor?</div></Modal.Body>
-                        <Modal.Footer>
-                          <Button variant="default" onClick={hideModal}>
-                          {/*  */}
-                            Cancel
-                          </Button>
-                          <Button variant="danger" >
-                          {/*  */}
-                            Delete
-                          </Button>
-                        </Modal.Footer>
-                      </Modal>
+                          <Modal.Header closeButton>
+                            <Modal.Title>Delete Confirmation</Modal.Title>
+                          </Modal.Header>
+                          <Modal.Body>
+                            <div className="alert alert-danger">
+                              Are you sure you want to delete the vendor?
+                            </div>
+                          </Modal.Body>
+                          <Modal.Footer>
+                            <Button variant="default" onClick={hideModal}>
+                              {/*  */}
+                              Cancel
+                            </Button>
+                            <Button variant="danger">
+                              {/*  */}
+                              Delete
+                            </Button>
+                          </Modal.Footer>
+                        </Modal>
                       </TableRow>
-
-                      
-                      )
-                      
                     )
-                  })}
-              </TableBody>
-            </Table>
-          </TableContainer>
+                  );
+                })}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      )}
 
-
-    {/* <div>
+      {/* <div>
       <div>
         {data.map((item, key) => {
           console.log(".................", item, key);
