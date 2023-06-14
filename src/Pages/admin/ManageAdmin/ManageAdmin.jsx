@@ -278,7 +278,7 @@ const ManageAdmin = () => {
       })
       .then((response) => {
         console.log("vendorlist", response.data);
-        setData(response.data.message);
+        setData(response.data.data.Records);
         setIsLoading(false);
       })
       .catch((err) => {

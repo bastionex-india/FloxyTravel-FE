@@ -231,7 +231,7 @@ const ManageAdmin = () => {
         headers: { _token: authData.data.token },
       })
       .then((response) => {
-        setData(response.data.data);
+        setData(response.data.data.records);
         setIsLoading(false);
       })
       .catch((err) => {
@@ -262,7 +262,7 @@ const ManageAdmin = () => {
         headers: { _token: authData.data.token },
       })
       .then((response) => {
-        setVendorList(response.data.message);
+        setVendorList(response.data.data.Records);
         setIsLoading(false);
       })
       .catch((err) => {
