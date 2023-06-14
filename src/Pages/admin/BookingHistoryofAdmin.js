@@ -88,7 +88,6 @@ const BookingHistoryofAdmin = () => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const handleChangePage = (event, newPage) => {
-    
     setPage(newPage);
   };
 
@@ -99,7 +98,6 @@ const BookingHistoryofAdmin = () => {
   // //  pagination  End 
 
   const handleClick = (item) => {
-    console.log("hcjhcjhf", item);
     navigation("/bookinghistorybyorderid", { state: item });
   };
   useEffect(() => {
@@ -126,7 +124,6 @@ const BookingHistoryofAdmin = () => {
   }, []);
 
   const getAllUsers = async () => {
-    console.log("aaa", select1);
     let data;
     if (select1 !== "") {
       data = {
@@ -139,7 +136,7 @@ const BookingHistoryofAdmin = () => {
         status: select,
       };
     }
-
+    data.page = page+1
     let config = {
       method: "post",
       url: `${environmentVariables.apiUrl}/admin/getallbooking`,
@@ -153,7 +150,9 @@ const BookingHistoryofAdmin = () => {
     axios
       .request(config)
       .then((response) => {
-        setData(response?.data?.data.sort((a, b) => b.createdAt - a.createdAt));
+        // setData(response?.data?.data.sort((a, b) => b.createdAt - a.createdAt));
+        setData(response.data.data)
+        // setPage(response.data.data.currentPage-1)
         setIsLoading(false);
       })
       .catch((err) => {
@@ -164,7 +163,7 @@ const BookingHistoryofAdmin = () => {
   useEffect(() => {
     setIsLoading(true);
     getAllUsers();
-  }, [select, select1]);
+  }, [select, select1,page]);
 
   const ApprovedData = () => { };
   const PendingData = () => { };
@@ -279,7 +278,7 @@ const BookingHistoryofAdmin = () => {
                 </TableHead>
                 <TableBody>
                   {data &&
-                    data.map((item, index) => {
+                    data.Records.map((item, index) => {
                       const bookingDate = new Date(item.createdAt);
                         return (
                           <TableRow
@@ -314,7 +313,7 @@ const BookingHistoryofAdmin = () => {
               </Table>
               <TablePagination
                 component="div"
-                count={data.length}
+                count={data.totalRecords}
                 page={page}
                 onPageChange={handleChangePage}
                 rowsPerPage={rowsPerPage}

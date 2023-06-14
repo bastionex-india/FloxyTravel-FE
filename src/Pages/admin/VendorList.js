@@ -87,7 +87,7 @@ const VendorList = () => {
       })
       .then((response) => {
         // console.log("vendorlist",response.data)
-        setData(response.data.message);
+        setData(response.data.data.Records);
       })
       .catch((err) => {
         console.log("error", err);

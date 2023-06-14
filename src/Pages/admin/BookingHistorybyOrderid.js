@@ -83,7 +83,7 @@ const BookingHistorybyOrderid = () => {
         { headers: { _token: authData.data.token } }
       )
       .then((response) => {
-        console.log("response.data", response.data.data);
+        // console.log("response.data", response.data.data);
         setData(response.data.data);
       })
       .catch((error) => {
@@ -93,6 +93,10 @@ const BookingHistorybyOrderid = () => {
   useEffect(() => {
     getAllUsers();
   }, []);
+
+  const generateInvoiceHandler = ()=>{
+    navigate("/generateInvoice", { state: data });
+  }
   return (
     <>
       <TextMainWrapper>
@@ -143,7 +147,7 @@ const BookingHistorybyOrderid = () => {
                       </TableRow>
                     </TableBody>
                   </Table>
-                  <Button variant="contained" endIcon={<PictureAsPdfIcon />} >Generate Invoice </Button>
+                  <Button variant="contained" onClick={generateInvoiceHandler} endIcon={<PictureAsPdfIcon />} >Generate Invoice </Button>
                 </Grid>
                 <Grid xs={6}>
                   <h4>Booking Details</h4>
