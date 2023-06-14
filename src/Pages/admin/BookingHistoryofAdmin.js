@@ -21,8 +21,8 @@ import TablePagination from "@mui/material/TablePagination";
 
 const TextRoot = styled.div`
   // background-color: #9f94942b;
-  padding: 20px 0px;
-  width: 967px;
+  padding: 20px;
+  /* width: 967px; */
   margin: 10px auto;
   @media (max-width: 768px) {
     width: 100vw;
@@ -78,7 +78,7 @@ const BookingHistoryofAdmin = () => {
   const [select, setSelect] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [select1, setSelect1] = useState("");
-  const [response,setResponse] = useState({}); 
+  const [response, setResponse] = useState({});
   const { authData, setAuthData } = useContext(AuthContext);
   const [data, setData] = useState("");
   const navigation = useNavigate();
@@ -136,7 +136,7 @@ const BookingHistoryofAdmin = () => {
         status: select,
       };
     }
-    data.page = page+1
+    data.page = page + 1;
     let config = {
       method: "post",
       url: `${environmentVariables.apiUrl}/admin/getallbooking`,
@@ -150,8 +150,10 @@ const BookingHistoryofAdmin = () => {
     axios
       .request(config)
       .then((response) => {
-        let records = response?.data?.data.records.sort((a, b) => b.createdAt - a.createdAt)
-        setResponse(response.data.data)
+        let records = response?.data?.data.records.sort(
+          (a, b) => b.createdAt - a.createdAt
+        );
+        setResponse(response.data.data);
         setData(
           response?.data?.data.records.sort((a, b) => b.createdAt - a.createdAt)
         );
@@ -165,7 +167,7 @@ const BookingHistoryofAdmin = () => {
   useEffect(() => {
     setIsLoading(true);
     getAllUsers();
-  }, [select, select1,page]);
+  }, [select, select1, page]);
 
   const ApprovedData = () => {};
   const PendingData = () => {};
@@ -178,10 +180,16 @@ const BookingHistoryofAdmin = () => {
       <TextMainWrapper>
         <TextRoot>
           <Root>
-            <Button variant="outlined" onClick={() => navigation(-1)} type="button"> <i className="fa-solid fa fa-arrow-circle-left"
-            ></i> Back</Button>
-            <TextWrapper>
+            <div style={{ display: "flex", alignItems: "center" }}>
+              {" "}
+              <i
+                style={{ cursor: "pointer", marginRight: "50px" }}
+                onClick={() => navigation(-1)}
+                class="fa-solid fa-chevron-left fa-2x"
+              ></i>
               <Heading> Booking History</Heading>
+            </div>
+            <TextWrapper>
               <TextSelectField>
                 <Select
                   onChange={(e) => {

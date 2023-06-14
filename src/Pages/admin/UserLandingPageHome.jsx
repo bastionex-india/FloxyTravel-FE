@@ -4,10 +4,12 @@ import styled from "styled-components";
 import { AuthContext } from "../../ContextApi/ContextApi";
 import CircularLoader from "../../Component/CircularLoader/CircularLoader";
 import Swal from "sweetalert2";
-import { useNavigate } from 'react-router-dom';
-import { Button,Modal } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@mui/material";
 
 import { environmentVariables } from "../../config/config";
+import { Modal } from "react-bootstrap";
+
 const UserLandingPageHome = () => {
   const [isPriorityChanged, setIsPriority] = useState(false);
   const [addThemePopUp, setAddThemePopUp] = useState(false);
@@ -19,10 +21,11 @@ const UserLandingPageHome = () => {
   const { authData } = useContext(AuthContext);
   const [priority, setPriority] = useState();
   const [dragId, setDragId] = useState();
-  const [showModal,setShowModal] = useState(false)
   const [deletePopUp, setDeletePopUp] = useState(false);
   const [cityData, setCityData] = useState();
   const [city, setCity] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+
   const navigate = useNavigate();
 
   const getPopularCities = () => {
@@ -60,7 +63,7 @@ const UserLandingPageHome = () => {
         headers: { _token: authData.data.token },
       })
       .then((response) => {
-        // console.log("response.data", response.data.data);
+        console.log("response.data", response.data.data);
         setAllData(response.data.data);
         setIsLoading(false);
       })
@@ -84,7 +87,6 @@ const UserLandingPageHome = () => {
   };
 
   const handleDeleteData = () => {
-    
     axios({
       method: "delete",
       url: `${environmentVariables.apiUrl}/admin/deleteprioritybyid/${themeId}`,
@@ -197,21 +199,25 @@ const UserLandingPageHome = () => {
     setAllData(newBoxState);
   };
 
-  function deleteConfirmation(e)
-  {
+  function deleteConfirmation(e) {
     setThemeId(e.target.id);
     setShowModal(true);
   }
 
-  function hideModal()
-  {
+  function hideModal() {
     setShowModal(false);
   }
   return (
     <Root>
-      <Button variant="outlined" onClick={() => navigate(-1)} type="button"> <i className="fa-solid fa fa-arrow-circle-left"
-                ></i> Back</Button>
-      <MainHeading>Manage Home Landing Page</MainHeading>
+      <div style={{ display: "flex", alignItems: "center" }}>
+        {" "}
+        <i
+          style={{ cursor: "pointer", marginRight: "50px" }}
+          onClick={() => navigate(-1)}
+          class="fa-solid fa-chevron-left fa-2x"
+        ></i>
+        <MainHeading>Manage Home Landing Page</MainHeading>
+      </div>
       <div style={{ backgroundColor: "#fff", marginBottom: "10px" }}>
         {" "}
         <ThemeContainer>
@@ -220,7 +226,12 @@ const UserLandingPageHome = () => {
           {/* <AddButton onClick={() => setAddThemePopUp(true)}>
             Add Hotel Card Sections
           </AddButton> */}
-          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+          <button
+            type="button"
+            class="btn btn-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#exampleModal"
+          >
             Add Hotel Card Sections
           </button>
           {/* <StateAddIcon
@@ -259,34 +270,46 @@ const UserLandingPageHome = () => {
                     <ThemeBoxElement>{val?.theme}</ThemeBoxElement>
                     <ThemeBoxElement style={{ justifyContent: "flex-end" }}>
                       <button type="button" class="btn">
-                      <DeleteIcon
-                        id={val?._id}
-                        onClick={(e) => deleteConfirmation(e)}
-                        className="fa-solid fa-trash"
-                      />
+                        <DeleteIcon
+                          id={val?._id}
+                          onClick={(e) => deleteConfirmation(e)}
+                          className="fa-solid fa-trash"
+                        />
                       </button>
-                      <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                      <EditIcon
-                        onClick={(e) => handleEditPopUp(e)}
-                        id={val?._id}
-                        className="fa-solid fa-pen-to-square"
-                        
-                      />
+                      <button
+                        type="button"
+                        class="btn"
+                        data-bs-toggle="modal"
+                        data-bs-target="#exampleModal"
+                      >
+                        <EditIcon
+                          onClick={(e) => handleEditPopUp(e)}
+                          id={val?._id}
+                          className="fa-solid fa-pen-to-square"
+                        />
                       </button>
                       <Modal show={showModal} onHide={hideModal}>
-            <Modal.Header closeButton>
-              <Modal.Title>Delete Confirmation</Modal.Title>
-            </Modal.Header>
-            <Modal.Body><div className="alert alert-danger">Are you sure you want to delete ?</div></Modal.Body>
-            <Modal.Footer>
-              <Button variant="default" onClick={hideModal}>
-                Cancel
-              </Button>
-              <Button variant="danger" id={val?._id} onClick={() => handleDeleteData()}>
-                Delete
-              </Button>
-            </Modal.Footer>
-          </Modal>
+                        <Modal.Header closeButton>
+                          <Modal.Title>Delete Confirmation</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                          <div className="alert alert-danger">
+                            Are you sure you want to delete ?
+                          </div>
+                        </Modal.Body>
+                        <Modal.Footer>
+                          <Button variant="default" onClick={hideModal}>
+                            Cancel
+                          </Button>
+                          <Button
+                            variant="danger"
+                            id={val?._id}
+                            onClick={() => handleDeleteData()}
+                          >
+                            Delete
+                          </Button>
+                        </Modal.Footer>
+                      </Modal>
                       {/* <EditIcon
                         onClick={(e) => handleEditPopUp(e)}
                         id={val?._id}
@@ -313,60 +336,94 @@ const UserLandingPageHome = () => {
           </ThemeCardWrapper>
         )}
       </div>
-  
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">{`${themeId === null ? "Add" : "Edit"} Section`}</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
 
-      <div class="input-group mb-3">
-  <label class="input-group-text" for="inputGroupSelect01">City Name* :</label>
-  <select class="form-select" id="inputGroupSelect01"
-  value={city}
-  onChange={(e) => setCity(e.target.value)}
-  >
-    <option>Select City Name</option>
+      <div
+        class="modal fade"
+        id="exampleModal"
+        tabindex="-1"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="exampleModalLabel">{`${
+                themeId === null ? "Add" : "Edit"
+              } Section`}</h1>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <div class="input-group mb-3">
+                <label class="input-group-text" for="inputGroupSelect01">
+                  City Name* :
+                </label>
+                <select
+                  class="form-select"
+                  id="inputGroupSelect01"
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
+                >
+                  <option>Select City Name</option>
                   {cityData &&
                     cityData.map((val) => (
                       <option value={val.city}>{val.city}</option>
                     ))}
-  </select>
-</div>
+                </select>
+              </div>
 
-<div class="input-group mb-3">
-  <label class="input-group-text" for="inputGroupSelect01">Theme Name* : </label>
-  <select class="form-select" id="inputGroupSelect01"
-  value={theme}
-  onChange={(e) => setTheme(e.target.value)}
-  >
-    <option>Select Theme Name</option>
+              <div class="input-group mb-3">
+                <label class="input-group-text" for="inputGroupSelect01">
+                  Theme Name* :{" "}
+                </label>
+                <select
+                  class="form-select"
+                  id="inputGroupSelect01"
+                  value={theme}
+                  onChange={(e) => setTheme(e.target.value)}
+                >
+                  <option>Select Theme Name</option>
                   <option value={`All`}>All</option>
                   <option value={`Beach`}>Beach</option>
                   <option value={`Wildlife`}>Wildlife</option>
                   <option value={`Romantic`}>Romantic</option>
                   <option value={`Hill`}>Hill</option>
                   <option value={`Heritage`}>Heritage</option>
-  </select>
-</div>
-      
-<div class="input-group mb-3">
-  <span class="input-group-text" id="inputGroup-sizing-default">Title* : </span>
-  <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default"
-  value={title}
-  onChange={(e) => setTitle(e.target.value)}
-  />
-</div>
+                </select>
+              </div>
+
+              <div class="input-group mb-3">
+                <span class="input-group-text" id="inputGroup-sizing-default">
+                  Title* :{" "}
+                </span>
+                <input
+                  type="text"
+                  class="form-control"
+                  aria-label="Sizing example input"
+                  aria-describedby="inputGroup-sizing-default"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                />
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-primary"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+                onClick={handleAddData}
+              >
+                Submit
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" aria-label="Close" onClick={handleAddData}>Submit</button>
-      </div>
-    </div>
-  </div>
-</div>
       {/* {addThemePopUp && (
     
         <AddThemePopUpContainer style={{border: 'black'}} >
@@ -442,8 +499,8 @@ const UserLandingPageHome = () => {
         </AddThemePopUpContainer>
       )} */}
       {deletePopUp && (
-        <DeletePopUpContainer >
-          <DeletePopUp style={{backgroundColor: 'white'}}>
+        <DeletePopUpContainer>
+          <DeletePopUp style={{ backgroundColor: "white" }}>
             <AddStatePopUpCloseIcon
               onClick={() => setDeletePopUp(false)}
               className="fa-solid fa-circle-xmark"
@@ -462,10 +519,6 @@ const UserLandingPageHome = () => {
           </DeletePopUp>
         </DeletePopUpContainer>
       )}
-
-
-
-
     </Root>
   );
 };

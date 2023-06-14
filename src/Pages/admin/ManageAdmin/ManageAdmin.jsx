@@ -17,28 +17,27 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import Box from '@mui/material/Box';
+import Box from "@mui/material/Box";
 
 import moment from "moment";
 import CreateAdminVendor from "../CreateAdminVendor/CreateAdminVendor";
 
-
-import PropTypes from 'prop-types';
-import { styled as newStyle } from '@mui/material/styles';
-import Dialog from '@mui/material/Dialog';
-import DialogTitle from '@mui/material/DialogTitle';
-import DialogContent from '@mui/material/DialogContent';
-import DialogActions from '@mui/material/DialogActions';
-import IconButton from '@mui/material/IconButton';
-import CloseIcon from '@mui/icons-material/Close';
-import Typography from '@mui/material/Typography';
-import TablePagination from '@mui/material/TablePagination';
+import PropTypes from "prop-types";
+import { styled as newStyle } from "@mui/material/styles";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
+import Typography from "@mui/material/Typography";
+import TablePagination from "@mui/material/TablePagination";
 
 const BootstrapDialog = newStyle(Dialog)(({ theme }) => ({
-  '& .MuiDialogContent-root': {
+  "& .MuiDialogContent-root": {
     padding: theme.spacing(2),
   },
-  '& .MuiDialogActions-root': {
+  "& .MuiDialogActions-root": {
     padding: theme.spacing(1),
   },
 }));
@@ -54,7 +53,7 @@ function BootstrapDialogTitle(props) {
           aria-label="close"
           onClick={onClose}
           sx={{
-            position: 'absolute',
+            position: "absolute",
             right: 8,
             top: 8,
             color: (theme) => theme.palette.grey[500],
@@ -72,16 +71,14 @@ BootstrapDialogTitle.propTypes = {
   onClose: PropTypes.func.isRequired,
 };
 
-
-
 const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
   width: 400,
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
+  bgcolor: "background.paper",
+  border: "2px solid #000",
   boxShadow: 24,
   pt: 2,
   px: 4,
@@ -90,8 +87,8 @@ const style = {
 
 const TextRoot = styled.div`
   // background-color: #9f94942b;
-  padding: 20px 0px;
-  width: 967px;
+  padding: 20px;
+  /* width: 967px; */
   margin: 10px auto;
   @media (max-width: 768px) {
     width: 100vw;
@@ -241,6 +238,8 @@ const ManageAdmin = () => {
   const { authData, setAuthData } = useContext(AuthContext);
   const [addVendorPopUp, setAddVendorPopUp] = useState(false);
   const [data, setData] = useState("");
+  const [response, setResponse] = useState();
+
   const navigate = useNavigate();
 
   const [selectedVendor, setSelectedVendor] = useState(null);
@@ -254,20 +253,19 @@ const ManageAdmin = () => {
     setOpen(false);
   };
 
-    //  pagination 
-    const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(10);
-  
-    const handleChangePage = (event, newPage) => {
-      
-      setPage(newPage);
-    };
-  
-    const handleChangeRowsPerPage = (event) => {
-      setRowsPerPage(parseInt(event.target.value, 10));
-      setPage(0);
-    };
-    // //  pagination  End
+  //  pagination
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+  // //  pagination  End
 
   const handleClick = (item) => {
     navigate(`/managehotels/${item}`);
@@ -281,6 +279,7 @@ const ManageAdmin = () => {
       .then((response) => {
         console.log("vendorlist", response.data);
         setData(response.data.data.records);
+        setResponse(response?.data?.data);
         setIsLoading(false);
       })
       .catch((err) => {
@@ -306,11 +305,11 @@ const ManageAdmin = () => {
     setIsLoading(true);
     getAllListData();
   }, [addVendorPopUp]);
-  const  deleteRecord = ()=>{
-    deleteVendor(selectedVendor)
-  }
-  const ApprovedData = () => { };
-  const PendingData = () => { };
+  const deleteRecord = () => {
+    deleteVendor(selectedVendor);
+  };
+  const ApprovedData = () => {};
+  const PendingData = () => {};
   const boldTextCss = {
     fontWeight: 700,
   };
@@ -327,10 +326,16 @@ const ManageAdmin = () => {
         <TextRoot>
           <Root>
             <TextWrapper>
-              <Button variant="outlined" onClick={() => navigate(-1)} type="button"> <i className="fa-solid fa fa-arrow-circle-left"
-              ></i> Back</Button>
-              <Heading> Manage Admin/Vendor</Heading>
-              <AddButton onClick={() => setAddVendorPopUp(true) }>
+              <div style={{ display: "flex", alignItems: "center" }}>
+                {" "}
+                <i
+                  style={{ cursor: "pointer", marginRight: "50px" }}
+                  onClick={() => navigate(-1)}
+                  class="fa-solid fa-chevron-left fa-2x"
+                ></i>
+                <Heading> Manage Admin/Vendor</Heading>
+              </div>
+              <AddButton onClick={() => setAddVendorPopUp(true)}>
                 Add Vendor/Admin
               </AddButton>
             </TextWrapper>
@@ -388,15 +393,22 @@ const ManageAdmin = () => {
                           <TableCell align="left">{item?.mobile}</TableCell>
                           {/* <TableCell align="right">{item.status}</TableCell> */}
                           <TableCell align="right">
-
-
-                            <ButtonGroup size="small" type="button" variant="outlined" aria-label="outlined button group">
+                            <ButtonGroup
+                              size="small"
+                              type="button"
+                              variant="outlined"
+                              aria-label="outlined button group"
+                            >
                               <Button>View</Button>
                               <Button>Edit</Button>
-                              <Button onClick={()=> {
-                                handleClickOpen() 
-                                setSelectedVendor(item.vendorId)
-                              } } >Delete</Button>
+                              <Button
+                                onClick={() => {
+                                  handleClickOpen();
+                                  setSelectedVendor(item.vendorId);
+                                }}
+                              >
+                                Delete
+                              </Button>
                             </ButtonGroup>
                             {/* <Button
                               size="small"
@@ -414,7 +426,7 @@ const ManageAdmin = () => {
               </Table>
               <TablePagination
                 component="div"
-                count={45}
+                count={response?.totalrecords}
                 page={page}
                 onPageChange={handleChangePage}
                 rowsPerPage={rowsPerPage}
@@ -428,7 +440,10 @@ const ManageAdmin = () => {
           aria-labelledby="customized-dialog-title"
           open={open}
         >
-          <BootstrapDialogTitle id="customized-dialog-title" onClose={handleClose}>
+          <BootstrapDialogTitle
+            id="customized-dialog-title"
+            onClose={handleClose}
+          >
             Delete
           </BootstrapDialogTitle>
           <DialogContent dividers>
@@ -437,10 +452,10 @@ const ManageAdmin = () => {
             </Typography>
           </DialogContent>
           <DialogActions>
-            <Button variant="contained" color="success"  onClick={handleClose}>
+            <Button variant="contained" color="success" onClick={handleClose}>
               Cancel
             </Button>
-            <Button variant="contained" color="error" onClick={deleteRecord} >
+            <Button variant="contained" color="error" onClick={deleteRecord}>
               Delete
             </Button>
           </DialogActions>
