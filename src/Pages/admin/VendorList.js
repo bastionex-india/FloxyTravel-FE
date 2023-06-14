@@ -69,7 +69,7 @@ const VendorList = () => {
   const [adminResponseData, setAdminResponseData] = useState([]);
   const { authData, setAuthData } = useContext(AuthContext);
   const navigate = useNavigate();
-
+  const [isLoading,setIsLoading] =  useState(false)
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [number, setNumber] = useState("");

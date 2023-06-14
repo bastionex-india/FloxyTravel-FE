@@ -280,7 +280,7 @@ const ManageAdmin = () => {
       })
       .then((response) => {
         console.log("vendorlist", response.data);
-        setData(response.data.data.Records);
+        setData(response.data.data.records);
         setIsLoading(false);
       })
       .catch((err) => {
@@ -414,7 +414,7 @@ const ManageAdmin = () => {
               </Table>
               <TablePagination
                 component="div"
-                count={data.length}
+                count={45}
                 page={page}
                 onPageChange={handleChangePage}
                 rowsPerPage={rowsPerPage}

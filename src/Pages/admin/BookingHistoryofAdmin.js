@@ -78,6 +78,7 @@ const BookingHistoryofAdmin = () => {
   const [select, setSelect] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [select1, setSelect1] = useState("");
+  const [response,setResponse] = useState({}); 
   const { authData, setAuthData } = useContext(AuthContext);
   const [data, setData] = useState("");
   const navigation = useNavigate();
@@ -149,8 +150,10 @@ const BookingHistoryofAdmin = () => {
     axios
       .request(config)
       .then((response) => {
+        let records = response?.data?.data.records.sort((a, b) => b.createdAt - a.createdAt)
+        setResponse(response.data.data)
         setData(
-          response?.data?.data.Records.sort((a, b) => b.createdAt - a.createdAt)
+          response?.data?.data.records.sort((a, b) => b.createdAt - a.createdAt)
         );
         setIsLoading(false);
       })
@@ -169,7 +172,7 @@ const BookingHistoryofAdmin = () => {
   const boldTextCss = {
     fontWeight: 700,
   };
-
+  // console.log('response',response)
   return (
     <>
       <TextMainWrapper>
@@ -277,7 +280,7 @@ const BookingHistoryofAdmin = () => {
                 </TableHead>
                 <TableBody>
                   {data &&
-                    data.Records.map((item, index) => {
+                    data.map((item, index) => {
                       const bookingDate = new Date(item.createdAt);
                       return (
                         <TableRow
@@ -312,7 +315,7 @@ const BookingHistoryofAdmin = () => {
               </Table>
               <TablePagination
                 component="div"
-                count={data.totalRecords}
+                count={response.totalrecords}
                 page={page}
                 onPageChange={handleChangePage}
                 rowsPerPage={rowsPerPage}

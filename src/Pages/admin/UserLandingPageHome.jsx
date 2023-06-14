@@ -5,7 +5,7 @@ import { AuthContext } from "../../ContextApi/ContextApi";
 import CircularLoader from "../../Component/CircularLoader/CircularLoader";
 import Swal from "sweetalert2";
 import { useNavigate } from 'react-router-dom';
-import { Button } from "@mui/material";
+import { Button,Modal } from "@mui/material";
 
 import { environmentVariables } from "../../config/config";
 const UserLandingPageHome = () => {
@@ -19,6 +19,7 @@ const UserLandingPageHome = () => {
   const { authData } = useContext(AuthContext);
   const [priority, setPriority] = useState();
   const [dragId, setDragId] = useState();
+  const [showModal,setShowModal] = useState(false)
   const [deletePopUp, setDeletePopUp] = useState(false);
   const [cityData, setCityData] = useState();
   const [city, setCity] = useState(null);
