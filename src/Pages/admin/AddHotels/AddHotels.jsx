@@ -164,7 +164,7 @@ const AddHotels = () => {
 
   const getVendorList = async () => {
     await axios
-      .get(`http://localhost:4000/auth/getvendorlist`, {
+      .get(`${environmentVariables.apiUrl}/auth/getvendorlist`, {
         headers: { _token: authData.data.token },
       })
       .then((response) => {
@@ -278,7 +278,7 @@ const AddHotels = () => {
     formdata.append("hotelVendorId",vendorId);
     axios({
       method: "post",
-      url: `http://localhost:4000/admin/addhotel`,
+      url: `${environmentVariables.apiUrl}/admin/addhotel`,
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
