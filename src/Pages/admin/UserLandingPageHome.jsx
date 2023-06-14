@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { AuthContext } from "../../ContextApi/ContextApi";
 import CircularLoader from "../../Component/CircularLoader/CircularLoader";
 import Swal from "sweetalert2";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 import { Button } from "@mui/material";
 
 import { environmentVariables } from "../../config/config";
@@ -88,6 +88,7 @@ const UserLandingPageHome = () => {
   };
 
   const handleDeleteData = () => {
+    
     axios({
       method: "delete",
       url: `${environmentVariables.apiUrl}/admin/deleteprioritybyid/${themeId}`,
@@ -103,7 +104,7 @@ const UserLandingPageHome = () => {
           Swal.fire("Error", "Something went wrong!", "error");
         }
         setThemeId(null);
-        setDeletePopUp(false);
+        setShowModal(false);
       })
       .catch((err) => {
         Swal.fire("Error", "Something went wrong!", "error");
@@ -200,25 +201,33 @@ const UserLandingPageHome = () => {
     });
     setAllData(newBoxState);
   };
+
+  function deleteConfirmation(e)
+  {
+    setThemeId(e.target.id);
+    setShowModal(true);
+  }
+
+  function hideModal()
+  {
+    setShowModal(false);
+  }
   return (
     <Root>
-      <div style={{ display: "flex", alignItems: "center" }}>
-        {" "}
-        <i
-          style={{ cursor: "pointer", marginRight: "30px" }}
-          onClick={() => navigate(-1)}
-          class="fa-solid fa-chevron-left fa-2x"
-        ></i>
-        <MainHeading>Manage Home Landing Page</MainHeading>
-      </div>
+      <Button variant="outlined" onClick={() => navigate(-1)} type="button"> <i className="fa-solid fa fa-arrow-circle-left"
+                ></i> Back</Button>
+      <MainHeading>Manage Home Landing Page</MainHeading>
       <div style={{ backgroundColor: "#fff", marginBottom: "10px" }}>
         {" "}
         <ThemeContainer>
           <StateHeading>Hotel Card Sections :</StateHeading>
 
-          <AddButton onClick={() => setAddThemePopUp(true)}>
+          {/* <AddButton onClick={() => setAddThemePopUp(true)}>
             Add Hotel Card Sections
-          </AddButton>
+          </AddButton> */}
+          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            Add Hotel Card Sections
+          </button>
           {/* <StateAddIcon
           onClick={() => setAddThemePopUp(true)}
           className="fa-solid fa-circle-plus"
@@ -254,16 +263,41 @@ const UserLandingPageHome = () => {
                     <ThemeBoxElement>{val?.title}</ThemeBoxElement>
                     <ThemeBoxElement>{val?.theme}</ThemeBoxElement>
                     <ThemeBoxElement style={{ justifyContent: "flex-end" }}>
+                      <button type="button" class="btn">
                       <DeleteIcon
                         id={val?._id}
-                        onClick={(e) => handleDeletePopUp(e)}
+                        onClick={(e) => deleteConfirmation(e)}
                         className="fa-solid fa-trash"
                       />
+                      </button>
+                      <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#exampleModal">
                       <EditIcon
                         onClick={(e) => handleEditPopUp(e)}
                         id={val?._id}
                         className="fa-solid fa-pen-to-square"
+                        
                       />
+                      </button>
+                      <Modal show={showModal} onHide={hideModal}>
+            <Modal.Header closeButton>
+              <Modal.Title>Delete Confirmation</Modal.Title>
+            </Modal.Header>
+            <Modal.Body><div className="alert alert-danger">Are you sure you want to delete ?</div></Modal.Body>
+            <Modal.Footer>
+              <Button variant="default" onClick={hideModal}>
+                Cancel
+              </Button>
+              <Button variant="danger" id={val?._id} onClick={() => handleDeleteData()}>
+                Delete
+              </Button>
+            </Modal.Footer>
+          </Modal>
+                      {/* <EditIcon
+                        onClick={(e) => handleEditPopUp(e)}
+                        id={val?._id}
+                        className="fa-solid fa-pen-to-square"
+                        
+                      /> */}
                     </ThemeBoxElement>
                   </RecentlyDocumentUploaded>
                 ))}
@@ -284,12 +318,67 @@ const UserLandingPageHome = () => {
           </ThemeCardWrapper>
         )}
       </div>
-      {addThemePopUp && (
-        <AddThemePopUpContainer>
-          <AddThemePopUp>
+  
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">{`${themeId === null ? "Add" : "Edit"} Section`}</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+
+      <div class="input-group mb-3">
+  <label class="input-group-text" for="inputGroupSelect01">City Name* :</label>
+  <select class="form-select" id="inputGroupSelect01"
+  value={city}
+  onChange={(e) => setCity(e.target.value)}
+  >
+    <option>Select City Name</option>
+                  {cityData &&
+                    cityData.map((val) => (
+                      <option value={val.city}>{val.city}</option>
+                    ))}
+  </select>
+</div>
+
+<div class="input-group mb-3">
+  <label class="input-group-text" for="inputGroupSelect01">Theme Name* : </label>
+  <select class="form-select" id="inputGroupSelect01"
+  value={theme}
+  onChange={(e) => setTheme(e.target.value)}
+  >
+    <option>Select Theme Name</option>
+                  <option value={`All`}>All</option>
+                  <option value={`Beach`}>Beach</option>
+                  <option value={`Wildlife`}>Wildlife</option>
+                  <option value={`Romantic`}>Romantic</option>
+                  <option value={`Hill`}>Hill</option>
+                  <option value={`Heritage`}>Heritage</option>
+  </select>
+</div>
+      
+<div class="input-group mb-3">
+  <span class="input-group-text" id="inputGroup-sizing-default">Title* : </span>
+  <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default"
+  value={title}
+  onChange={(e) => setTitle(e.target.value)}
+  />
+</div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" aria-label="Close" onClick={handleAddData}>Submit</button>
+      </div>
+    </div>
+  </div>
+</div>
+      {/* {addThemePopUp && (
+    
+        <AddThemePopUpContainer style={{border: 'black'}} >
+          <AddThemePopUp style={{backgroundColor: '#E3FAEE'}}> 
             <div
               style={{
-                color: "#fff",
+                color: "black",
                 textAlign: "center",
                 fontSize: "20px",
                 marginTop: "20px",
@@ -307,11 +396,11 @@ const UserLandingPageHome = () => {
                 setTitle(null);
               }}
               className="fa-solid fa-circle-xmark"
-              style={{ color: "#fff", fontSize: "20px" }}
+              style={{ color: "black", fontSize: "20px" }}
             />
             <AddThemeWrapper>
               <AddThemeInputWrapper>
-                <AddThemeLabel>City Name* : </AddThemeLabel>
+                <AddThemeLabel style={{color: 'black'}}>City Name* : </AddThemeLabel>
                 <AddThemePopUpSelect
                   value={city}
                   onChange={(e) => setCity(e.target.value)}
@@ -324,7 +413,7 @@ const UserLandingPageHome = () => {
                 </AddThemePopUpSelect>
               </AddThemeInputWrapper>{" "}
               <AddThemeInputWrapper>
-                <AddThemeLabel>Theme Name* : </AddThemeLabel>
+                <AddThemeLabel style={{color: 'black'}}>Theme Name* : </AddThemeLabel>
                 <AddThemePopUpSelect
                   value={theme}
                   onChange={(e) => setTheme(e.target.value)}
@@ -339,7 +428,7 @@ const UserLandingPageHome = () => {
                 </AddThemePopUpSelect>
               </AddThemeInputWrapper>
               <AddThemeInputWrapper>
-                <AddThemeLabel>Title* : </AddThemeLabel>
+                <AddThemeLabel style={{color: 'black'}}>Title* : </AddThemeLabel>
                 <AddThemePopUpInput
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
@@ -348,7 +437,7 @@ const UserLandingPageHome = () => {
             </AddThemeWrapper>
             <ButtonWrapper>
               <AddButton
-                style={{ backgroundColor: "#fff", color: "#000" }}
+                
                 onClick={handleAddData}
               >
                 Submit
@@ -356,14 +445,14 @@ const UserLandingPageHome = () => {
             </ButtonWrapper>
           </AddThemePopUp>
         </AddThemePopUpContainer>
-      )}
+      )} */}
       {deletePopUp && (
-        <DeletePopUpContainer>
-          <DeletePopUp>
+        <DeletePopUpContainer >
+          <DeletePopUp style={{backgroundColor: 'white'}}>
             <AddStatePopUpCloseIcon
               onClick={() => setDeletePopUp(false)}
               className="fa-solid fa-circle-xmark"
-              style={{ color: "#fff", fontSize: "20px" }}
+              style={{ color: "black", fontSize: "20px" }}
             />
             <DeletePopUpHeading>Delete Theme</DeletePopUpHeading>
             <DeletePopUpText>Are you sure you want to delete?</DeletePopUpText>
@@ -378,6 +467,10 @@ const UserLandingPageHome = () => {
           </DeletePopUp>
         </DeletePopUpContainer>
       )}
+
+
+
+
     </Root>
   );
 };

@@ -5,7 +5,7 @@ import { AuthContext } from "../../ContextApi/ContextApi";
 import { environmentVariables } from "../../config/config";
 import CircularLoader from "../../Component/CircularLoader/CircularLoader";
 import Swal from "sweetalert2";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 import { Button } from "@mui/material";
 import { Modal } from "react-bootstrap";
 
@@ -472,15 +472,9 @@ const UserLandingPage = () => {
   }, [chosenState, stateSelected]);
   return (
     <Root>
-      <div style={{ display: "flex", alignItems: "center" }}>
-        {" "}
-        <i
-          style={{ cursor: "pointer", marginRight: "50px" }}
-          onClick={() => navigate(-1)}
-          class="fa-solid fa-chevron-left fa-2x"
-        ></i>
-        <MainHeading>Manage City Landing Page</MainHeading>
-      </div>
+      <Button variant="outlined" onClick={() => navigate(-1)} type="button"> <i className="fa-solid fa fa-arrow-circle-left"
+                ></i> Back</Button>
+      <MainHeading>Manage City Landing Page</MainHeading>
       <StatesContainer>
         {/* <StateHeading>States : </StateHeading> */}
 
