@@ -86,8 +86,8 @@ const VendorList = () => {
         headers: { _token: authData.data.token },
       })
       .then((response) => {
-        // console.log("vendorlist",response.data)
-        setData(response.data.message);
+        // console.log("vendorlismmt",response.data.data.Records)
+        setData(response.data.data.Records);
       })
       .catch((err) => {
         console.log("error", err);

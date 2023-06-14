@@ -9,6 +9,7 @@ import { useEffect } from "react";
 import { useContext } from "react";
 import { AuthContext } from "../../../ContextApi/ContextApi";
 import io, { socketIOClient } from "socket.io-client";
+import Swal from "sweetalert2";
 
 import { Button } from "@mui/material";
 
@@ -261,7 +262,7 @@ const ManageAdmin = () => {
         headers: { _token: authData.data.token },
       })
       .then((response) => {
-        setVendorList(response.data.message);
+        setVendorList(response.data.data.Records);
         setIsLoading(false);
       })
       .catch((err) => {
@@ -287,6 +288,27 @@ const ManageAdmin = () => {
       getHotelByVendorId(e.target.value)
     }
   }
+  const DeleteHotel=(id)=>{
+    const config = {
+      method: 'delete',
+      url: `${environmentVariables.apiUrl}/admin/deletehotel/${id}`,
+      headers: { 
+        '_token': authData.data.token
+      }
+    };
+
+    axios(config)
+      .then(function (response) {
+        Swal.fire(
+          "Deleted",
+          "Hotel Deleted Successfully",
+          "success"
+        );        
+      })
+      .catch(function (error) {
+        Swal.fire("Error", "Something went wrong", "error");
+      });
+  }
   return (
     <>
       <TextMainWrapper>
@@ -309,7 +331,7 @@ const ManageAdmin = () => {
                   })
                 }
               </SelectVendor>
-              <AddButton onClick={() => setAddVendorPopUp(true)}>
+              <AddButton onClick={() => navigate('/addhotels')}>
                 Add Hotel
               </AddButton>
             </TextWrapper>
@@ -353,7 +375,7 @@ const ManageAdmin = () => {
                     </HotelInfoWrapper>
                     <HotelButtonWrapper>
                       <HotelActionButtons>Edit</HotelActionButtons>
-                      <HotelActionButtons>Delete</HotelActionButtons>
+                      <HotelActionButtons onClick={()=>DeleteHotel(row._id)}>Delete</HotelActionButtons>
                       <HotelActionButtons>Hide</HotelActionButtons>
                     </HotelButtonWrapper>
                   </HotelCard>
