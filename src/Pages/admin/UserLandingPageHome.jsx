@@ -4,12 +4,10 @@ import styled from "styled-components";
 import { AuthContext } from "../../ContextApi/ContextApi";
 import CircularLoader from "../../Component/CircularLoader/CircularLoader";
 import Swal from "sweetalert2";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 import { Button } from "@mui/material";
 
 import { environmentVariables } from "../../config/config";
-import { Modal } from "react-bootstrap";
-
 const UserLandingPageHome = () => {
   const [isPriorityChanged, setIsPriority] = useState(false);
   const [addThemePopUp, setAddThemePopUp] = useState(false);
@@ -24,9 +22,6 @@ const UserLandingPageHome = () => {
   const [deletePopUp, setDeletePopUp] = useState(false);
   const [cityData, setCityData] = useState();
   const [city, setCity] = useState(null);
-  const [showModal,setShowModal] = useState(false);
-
-
   const navigate = useNavigate();
 
   const getPopularCities = () => {
@@ -163,7 +158,6 @@ const UserLandingPageHome = () => {
     setTheme(null);
     setCity(null);
     setTitle(null);
-
   };
   useEffect(() => {
     setIsLoading(true);
@@ -202,15 +196,9 @@ const UserLandingPageHome = () => {
   };
   return (
     <Root>
-      <div style={{ display: "flex", alignItems: "center" }}>
-        {" "}
-        <i
-          style={{ cursor: "pointer", marginRight: "30px" }}
-          onClick={() => navigate(-1)}
-          class="fa-solid fa-chevron-left fa-2x"
-        ></i>
-        <MainHeading>Manage Home Landing Page</MainHeading>
-      </div>
+      <Button variant="outlined" onClick={() => navigate(-1)} type="button"> <i className="fa-solid fa fa-arrow-circle-left"
+                ></i> Back</Button>
+      <MainHeading>Manage Home Landing Page</MainHeading>
       <div style={{ backgroundColor: "#fff", marginBottom: "10px" }}>
         {" "}
         <ThemeContainer>

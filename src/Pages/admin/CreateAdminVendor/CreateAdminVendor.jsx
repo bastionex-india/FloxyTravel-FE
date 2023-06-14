@@ -96,7 +96,7 @@ const AddThemePopUpInput = styled.input`
   width: 500px;
   margin: 0 20px;
 `;
-const CreateAdminVendor = ({ open, setOpen,vendorDetails }) => {
+const CreateAdminVendor = ({ open, setOpen }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [number, setNumber] = useState("");
@@ -106,6 +106,7 @@ const CreateAdminVendor = ({ open, setOpen,vendorDetails }) => {
   const [adminValue, setAdminValue] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
+
   const { authData, setAuthData } = useContext(AuthContext);
   const handleClose = () => {
     setOpen(false);
@@ -117,19 +118,22 @@ const CreateAdminVendor = ({ open, setOpen,vendorDetails }) => {
     password: "",
     confirmPassword: "",
   };
-
+  useEffect(() => {
+    console.log(errors);
+  });
   const { values, errors, touched, handleBlur, handleChange, handleSubmit } =
     useFormik({
       initialValues,
       validationSchema: VendorRegisterSchema,
       onSubmit: async (values, action) => {
+        console.log("aaaa", values, adminValue);
         if (adminValue === "") {
           setError("Options must be selected");
         } else {
           if (adminValue === "vendor") {
             axios({
               method: "post",
-              url: `${environmentVariables.apiUrl}/admin/addvendor`,
+              url: `${environmentVariables.apiUrl}/auth/addvendor`,
               headers: {
                 Accept: "application/json",
                 "Content-Type": "application/json",
@@ -145,13 +149,17 @@ const CreateAdminVendor = ({ open, setOpen,vendorDetails }) => {
               headers: { _token: authData.data.token },
             })
               .then((response) => {
-
+                // console.log(response.data.data,"00000000000001111111111")
+                // setUpdatedHotelData(response.data.message)
+                // setResponseData(response.data.data);
                 Swal.fire({
                   title: "Success",
                   text: "Vendor created successfully",
                   timer: 2000,
                 });
                 action.resetForm();
+                // getAllListData();
+                // toast(response.data.message);
                 setOpen(false);
               })
               .catch((error) => {
@@ -182,6 +190,9 @@ const CreateAdminVendor = ({ open, setOpen,vendorDetails }) => {
               headers: { _token: authData.data.token },
             })
               .then((response) => {
+                // console.log(response.data.data,"00000000000001111111111")
+                // setUpdatedHotelData(response.data.message)
+                // setAdminResponseData(response.data.data);
                 Swal.fire({
                   title: "Success",
                   text: "Admin created successfully",
@@ -229,13 +240,11 @@ const CreateAdminVendor = ({ open, setOpen,vendorDetails }) => {
             <AddThemeLabel>Name* : </AddThemeLabel>
             <AddThemePopUpInput
               name="name"
-              value={ values.name}
+              value={values.name}
               onChange={handleChange}
               onBlur={handleBlur}
             />
-             {errors.name && touched.name ? (
-                <ErrorText>{errors.name}</ErrorText>
-              ) : null}
+            <ErrorText>{errors.name}</ErrorText>
           </AddThemeInputWrapper>
           <AddThemeInputWrapper>
             <AddThemeLabel>Email* : </AddThemeLabel>
@@ -245,9 +254,7 @@ const CreateAdminVendor = ({ open, setOpen,vendorDetails }) => {
               onChange={handleChange}
               onBlur={handleBlur}
             />
-             {errors.email && touched.email ? (
-                <ErrorText>{errors.email}</ErrorText>
-              ) : null}
+            <ErrorText>{errors.email}</ErrorText>
           </AddThemeInputWrapper>
           <AddThemeInputWrapper>
             <AddThemeLabel>Contact* : </AddThemeLabel>
@@ -258,9 +265,7 @@ const CreateAdminVendor = ({ open, setOpen,vendorDetails }) => {
               onChange={handleChange}
               onBlur={handleBlur}
             />
-             {errors.contact && touched.contact ? (
-                <ErrorText>{errors.contact}</ErrorText>
-              ) : null}
+            <ErrorText>{errors.contact}</ErrorText>
           </AddThemeInputWrapper>{" "}
           <AddThemeInputWrapper>
             <AddThemeLabel>Password* : </AddThemeLabel>
@@ -271,9 +276,7 @@ const CreateAdminVendor = ({ open, setOpen,vendorDetails }) => {
               onChange={handleChange}
               onBlur={handleBlur}
             />
-             {errors.password && touched.password ? (
-                <ErrorText>{errors.password}</ErrorText>
-              ) : null}
+            <ErrorText>{errors.password}</ErrorText>
           </AddThemeInputWrapper>{" "}
           <AddThemeInputWrapper>
             <AddThemeLabel>Confirm* : </AddThemeLabel>
@@ -284,9 +287,7 @@ const CreateAdminVendor = ({ open, setOpen,vendorDetails }) => {
               onChange={handleChange}
               onBlur={handleBlur}
             />
-            {errors.confirmPassword && touched.confirmPassword ? (
-                <ErrorText>{errors.confirmPassword}</ErrorText>
-              ) : null}
+            <ErrorText>{errors.confirmPassword}</ErrorText>
           </AddThemeInputWrapper>
           <AddThemeInputWrapper style={{ marginRight: "240px" }}>
             <AddThemeLabel>Admin/Vendor* : </AddThemeLabel>
