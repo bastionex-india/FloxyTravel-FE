@@ -20,7 +20,7 @@ const Root = styled.div`
   align-items: center;
   position: sticky;
   top: 0;
-  z-index: 100;
+  z-index: 99999;
 `;
 const Logo = styled.div`
   font-size: 40px;

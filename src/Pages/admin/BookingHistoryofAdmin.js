@@ -17,8 +17,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import TablePagination from '@mui/material/TablePagination';
-
+import TablePagination from "@mui/material/TablePagination";
 
 const TextRoot = styled.div`
   // background-color: #9f94942b;
@@ -83,7 +82,7 @@ const BookingHistoryofAdmin = () => {
   const [data, setData] = useState("");
   const navigation = useNavigate();
 
-  //  pagination 
+  //  pagination
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
@@ -95,7 +94,7 @@ const BookingHistoryofAdmin = () => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
-  // //  pagination  End 
+  // //  pagination  End
 
   const handleClick = (item) => {
     navigation("/bookinghistorybyorderid", { state: item });
@@ -150,9 +149,9 @@ const BookingHistoryofAdmin = () => {
     axios
       .request(config)
       .then((response) => {
-        // setData(response?.data?.data.sort((a, b) => b.createdAt - a.createdAt));
-        setData(response.data.data)
-        // setPage(response.data.data.currentPage-1)
+        setData(
+          response?.data?.data.Records.sort((a, b) => b.createdAt - a.createdAt)
+        );
         setIsLoading(false);
       })
       .catch((err) => {
@@ -165,12 +164,12 @@ const BookingHistoryofAdmin = () => {
     getAllUsers();
   }, [select, select1,page]);
 
-  const ApprovedData = () => { };
-  const PendingData = () => { };
+  const ApprovedData = () => {};
+  const PendingData = () => {};
   const boldTextCss = {
     fontWeight: 700,
   };
-  
+
   return (
     <>
       <TextMainWrapper>
@@ -242,7 +241,7 @@ const BookingHistoryofAdmin = () => {
               </TextSelectField>
             </TextWrapper>
           </Root>
-          
+
           {isLoading === true ? (
             <div
               style={{
@@ -280,34 +279,34 @@ const BookingHistoryofAdmin = () => {
                   {data &&
                     data.Records.map((item, index) => {
                       const bookingDate = new Date(item.createdAt);
-                        return (
-                          <TableRow
-                            key={index}
-                            sx={{
-                              "&:last-child td, &:last-child th": { border: 0 },
-                            }}
-                          >
-                            <TableCell component="th" scope="row">
-                              {item.hotelname}
-                            </TableCell>
-                            <TableCell align="right">{item.checkIn}</TableCell>
-                            <TableCell align="right">{item.checkIn}</TableCell>
-                            <TableCell align="right">
-                              {bookingDate.toLocaleDateString()}
-                            </TableCell>
-                            <TableCell align="right">{item.status}</TableCell>
-                            <TableCell align="right">
-                              <Button
-                                size="small"
-                                variant="contained"
-                                type="button"
-                                onClick={() => handleClick(item)}
-                              >
-                                View
-                              </Button>
-                            </TableCell>
-                          </TableRow>
-                        );
+                      return (
+                        <TableRow
+                          key={index}
+                          sx={{
+                            "&:last-child td, &:last-child th": { border: 0 },
+                          }}
+                        >
+                          <TableCell component="th" scope="row">
+                            {item.hotelname}
+                          </TableCell>
+                          <TableCell align="right">{item.checkIn}</TableCell>
+                          <TableCell align="right">{item.checkIn}</TableCell>
+                          <TableCell align="right">
+                            {bookingDate.toLocaleDateString()}
+                          </TableCell>
+                          <TableCell align="right">{item.status}</TableCell>
+                          <TableCell align="right">
+                            <Button
+                              size="small"
+                              variant="contained"
+                              type="button"
+                              onClick={() => handleClick(item)}
+                            >
+                              View
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      );
                     })}
                 </TableBody>
               </Table>
