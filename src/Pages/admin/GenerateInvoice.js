@@ -14,13 +14,7 @@ import { Box, Paper, Grid, Container } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 
-import Table from '@mui/material/Table';
 import { Button } from '@mui/material'
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
 import moment from "moment";
 import logo from '../../Images/LogoDark.png'
 
