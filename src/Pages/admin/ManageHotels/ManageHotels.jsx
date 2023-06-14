@@ -277,18 +277,13 @@ const ManageAdmin = () => {
     getVendorList();
   }, []);
 
-  const boldTextCss = {
-    fontWeight: 700,
-  };
+
   const vendorHandler = (e) => {
     setIsLoading(true);
-    if (e.target.value == "all") {
+    if (e.target.value === "all") {
       getAllListData();
     } else {
       getHotelByVendorId(e.target.value);
-    }
-    else{
-      getHotelByVendorId(e.target.value)
     }
   }
   const DeleteHotel=(id)=>{
