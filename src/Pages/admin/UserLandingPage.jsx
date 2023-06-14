@@ -31,16 +31,14 @@ const UserLandingPage = () => {
   const [priority, setPriority] = useState(null);
   const [file, setFile] = useState(null);
   const navigate = useNavigate();
-  const [showModal,setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
-  function deleteConfirmation(e)
-  {
+  function deleteConfirmation(e) {
     setThemeId(e.target.id);
     setShowModal(true);
   }
 
-  function hideModal()
-  {
+  function hideModal() {
     setShowModal(false);
   }
 
@@ -457,7 +455,6 @@ const UserLandingPage = () => {
     setTitle(editTheme[0].heading);
     setDescription(editTheme[0].description);
     setPriority(editTheme[0].priority);
-    
   };
   useEffect(() => {
     setIsLoading(true);
@@ -484,116 +481,222 @@ const UserLandingPage = () => {
       <StatesContainer>
         {/* <StateHeading>States : </StateHeading> */}
 
-        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="staticBackdropLabel">Add State</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
+        <div
+          class="modal fade"
+          id="staticBackdrop"
+          data-bs-backdrop="static"
+          data-bs-keyboard="false"
+          tabindex="-1"
+          aria-labelledby="staticBackdropLabel"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">
+                  Add State
+                </h1>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="modal-body">
+                <div class="input-group mb-3">
+                  <label class="input-group-text" for="inputGroupSelect01">
+                    State*:{" "}
+                  </label>
+                  <select
+                    class="form-select"
+                    onChange={(e) => setChosenState(e.target.value)}
+                    id="inputGroupSelect01"
+                  >
+                    <option>Select State</option>
+                    {stateData.map((val) => (
+                      <option value={val.name}>{val.name}</option>
+                    ))}
+                  </select>
+                </div>
 
-      <div class="input-group mb-3">
-  <label class="input-group-text" for="inputGroupSelect01">State*: </label>
-  <select class="form-select" onChange={(e) => setChosenState(e.target.value)} id="inputGroupSelect01">
-  <option>Select State</option>
-                  {stateData.map((val) => (
-                    <option value={val.name}>{val.name}</option>
-                  ))}
-  </select>
-</div>
+                <div class="input-group mb-3">
+                  <label class="input-group-text" for="inputGroupFile01">
+                    Background Image*:{" "}
+                  </label>
+                  <input
+                    type="file"
+                    class="form-control"
+                    onChange={(e) => addImage(e)}
+                    id="inputGroupFile03"
+                    aria-describedby="inputGroupFileAddon03"
+                    aria-label="Upload"
+                  />
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-bs-dismiss="modal"
+                >
+                  Close
+                </button>
+                <button
+                  type="button"
+                  onClick={handleAddStateSubmit}
+                  data-bs-dismiss="modal"
+                  class="btn btn-primary"
+                >
+                  Submit
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
 
-<div class="input-group mb-3">
-<label class="input-group-text" for="inputGroupFile01">Background Image*: </label>
-  <input type="file" class="form-control" onChange={(e) => addImage(e)} id="inputGroupFile03" aria-describedby="inputGroupFileAddon03" aria-label="Upload"/>
-</div>
-
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" onClick={handleAddStateSubmit} data-bs-dismiss="modal" class="btn btn-primary">Submit</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="modal fade" id="staticBackdrop1" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="staticBackdropLabel1">Add Theme</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-
-        <div class="input-group mb-3">
-  <label class="input-group-text" for="inputGroupSelect01">Name*: </label>
-  <select class="form-select" id="inputGroupSelect01" value={theme}
-                    onChange={(e) => setTheme(e.target.value)}>
+        <div
+          class="modal fade"
+          id="staticBackdrop1"
+          data-bs-backdrop="static"
+          data-bs-keyboard="false"
+          tabindex="-1"
+          aria-labelledby="staticBackdropLabel1"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel1">
+                  Add Theme
+                </h1>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="modal-body">
+                <div class="input-group mb-3">
+                  <label class="input-group-text" for="inputGroupSelect01">
+                    Name*:{" "}
+                  </label>
+                  <select
+                    class="form-select"
+                    id="inputGroupSelect01"
+                    value={theme}
+                    onChange={(e) => setTheme(e.target.value)}
+                  >
                     <option>Select Theme Name</option>
                     <option value={`beach`}>Beach</option>
                     <option value={`wildlife`}>Wildlife</option>
                     <option value={`romantic`}>Romantic</option>
                     <option value={`hill`}>Hill</option>
                     <option value={`heritage`}>Heritage</option>
-  </select>
-</div>        
+                  </select>
+                </div>
 
-<div class="input-group mb-3">
-  <span class="input-group-text" id="basic-addon1">Title*: </span>
-  <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} class="form-control" aria-label="Username" aria-describedby="basic-addon1"/>
-</div>
+                <div class="input-group mb-3">
+                  <span class="input-group-text" id="basic-addon1">
+                    Title*:{" "}
+                  </span>
+                  <input
+                    type="text"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    class="form-control"
+                    aria-label="Username"
+                    aria-describedby="basic-addon1"
+                  />
+                </div>
 
-<div class="input-group">
-  <span class="input-group-text">Description*: </span>
-  <textarea class="form-control" aria-label="With textarea" value={description} onChange={(e) => setDescription(e.target.value)} rows="4" cols="50"></textarea>
-</div>
+                <div class="input-group">
+                  <span class="input-group-text">Description*: </span>
+                  <textarea
+                    class="form-control"
+                    aria-label="With textarea"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    rows="4"
+                    cols="50"
+                  ></textarea>
+                </div>
 
-<br></br>
+                <br></br>
 
-<div class="input-group mb-3">
-  <span class="input-group-text" id="basic-addon1">Priority*: </span>
-  <input class="form-control" aria-label="Username" aria-describedby="basic-addon1" value={priority}
+                <div class="input-group mb-3">
+                  <span class="input-group-text" id="basic-addon1">
+                    Priority*:{" "}
+                  </span>
+                  <input
+                    class="form-control"
+                    aria-label="Username"
+                    aria-describedby="basic-addon1"
+                    value={priority}
                     onChange={(e) => setPriority(e.target.value)}
                     type="number"
                     min="1"
-                    max="5"/>
-</div>
+                    max="5"
+                  />
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-bs-dismiss="modal"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  data-bs-dismiss="modal"
+                  onClick={handleAddThemeSubmit}
+                >
+                  Submit
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
 
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onClick={handleAddThemeSubmit}>Submit</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-<div class="modal fade" id="staticBackdrop2" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel2" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="staticBackdropLabel2"></h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-
+        <div
+          class="modal fade"
+          id="staticBackdrop2"
+          data-bs-backdrop="static"
+          data-bs-keyboard="false"
+          tabindex="-1"
+          aria-labelledby="staticBackdropLabel2"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel2"></h1>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="modal-body">
                 {/* <StateHeading>Background Image : </StateHeading> */}
-                <BackgroundImage style={{width: '45rem'}}
+                <BackgroundImage
+                  style={{ width: "45rem" }}
                   src={`${environmentVariables.apiUrl}/uploadscitiesimages/${backgroundImage}`}
                 />
-
-      </div>
-      <div class="modal-footer">
-        {/* <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              </div>
+              <div class="modal-footer">
+                {/* <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
         <button type="button" class="btn btn-primary">Understood</button> */}
-      </div>
-    </div>
-  </div>
-</div>
+              </div>
+            </div>
+          </div>
+        </div>
 
-        
         <StatesWrapper>
           <SelectState
             onChange={(e) => {
@@ -612,13 +715,30 @@ const UserLandingPage = () => {
         </StatesWrapper>
         <div style={{ display: "flex" }}>
           {" "}
-          <button type="button" style={{marginRight: '1rem'}} class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+          <button
+            type="button"
+            style={{ marginRight: "1rem" }}
+            class="btn btn-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#staticBackdrop"
+          >
             Add State
           </button>
-          <button type="button" style={{marginRight: '1rem'}} class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop1">
+          <button
+            type="button"
+            style={{ marginRight: "1rem" }}
+            class="btn btn-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#staticBackdrop1"
+          >
             Add Theme
           </button>
-          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop2">
+          <button
+            type="button"
+            class="btn btn-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#staticBackdrop2"
+          >
             View Background Image
           </button>
         </div>
@@ -626,7 +746,6 @@ const UserLandingPage = () => {
       <div style={{ backgroundColor: "#fff", marginBottom: "10px" }}>
         <ThemeContainer>
           <StateHeading>Themes :</StateHeading>
-
         </ThemeContainer>
         <MainThemeContainer>
           <RecentlyDocumentHeader>
@@ -660,7 +779,8 @@ const UserLandingPage = () => {
                         <ThemeBoxElementDesc>{`${val?.description}`}</ThemeBoxElementDesc>
                         <ThemeBoxElement style={{ justifyContent: "flex-end" }}>
                           <DeleteIcon
-                            id={val?._id}deleteConfirmation
+                            id={val?._id}
+                            deleteConfirmation
                             onClick={(e) => deleteConfirmation(e)}
                             className="fa-solid fa-trash"
                           />
@@ -668,24 +788,32 @@ const UserLandingPage = () => {
                             onClick={(e) => handleEditTheme(e)}
                             id={val?._id}
                             className="fa-solid fa-pen-to-square"
-                            data-bs-toggle="modal" 
+                            data-bs-toggle="modal"
                             data-bs-target="#staticBackdrop1"
                           />
                         </ThemeBoxElement>
                         <Modal show={showModal} onHide={hideModal}>
-            <Modal.Header closeButton>
-              <Modal.Title>Delete Confirmation</Modal.Title>
-            </Modal.Header>
-            <Modal.Body><div className="alert alert-danger">Are you sure you want to delete ?</div></Modal.Body>
-            <Modal.Footer>
-              <Button variant="default" onClick={hideModal}>
-                Cancel
-              </Button>
-              <Button variant="danger" id={val?._id} onClick={() => handleDeleteTheme()}>
-                Delete
-              </Button>
-            </Modal.Footer>
-          </Modal>
+                          <Modal.Header closeButton>
+                            <Modal.Title>Delete Confirmation</Modal.Title>
+                          </Modal.Header>
+                          <Modal.Body>
+                            <div className="alert alert-danger">
+                              Are you sure you want to delete ?
+                            </div>
+                          </Modal.Body>
+                          <Modal.Footer>
+                            <Button variant="default" onClick={hideModal}>
+                              Cancel
+                            </Button>
+                            <Button
+                              variant="danger"
+                              id={val?._id}
+                              onClick={() => handleDeleteTheme()}
+                            >
+                              Delete
+                            </Button>
+                          </Modal.Footer>
+                        </Modal>
                       </RecentlyDocumentUploaded>
                     );
                   })}

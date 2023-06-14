@@ -12,6 +12,7 @@ import io, { socketIOClient } from "socket.io-client";
 import Swal from "sweetalert2";
 
 import { Button } from "@mui/material";
+import TablePagination from "@mui/material/TablePagination";
 
 const HotelCardsWrapper = styled.div``;
 const HotelCard = styled.div`
@@ -58,8 +59,8 @@ const HotelImageWrapper = styled.div``;
 
 const TextRoot = styled.div`
   // background-color: #9f94942b;
-  padding: 20px 0px;
-  width: 967px;
+  padding: 20px;
+  /* width: 967px; */
   margin: 10px auto;
   @media (max-width: 768px) {
     width: 100vw;
@@ -219,18 +220,32 @@ const TextCenter = styled.div`
 const ManageAdmin = () => {
   const [isLoading, setIsLoading] = useState(true);
   const { authData, setAuthData } = useContext(AuthContext);
+  const [addVendorPopUp, setAddVendorPopUp] = useState(false);
   const [data, setData] = useState();
-  const [vendorlist, setVendorList] = useState([]);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [response, setResponse] = useState();
+  const [vendorlist, setVendorList] = useState(null);
   const navigate = useNavigate();
-
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
   const getAllListData = async () => {
     await axios
-      .get(`${environmentVariables.apiUrl}/admin/getallhotels`, {
-        headers: { _token: authData.data.token },
-      })
+      .get(
+        `${environmentVariables.apiUrl}/admin/getallhotels?page=${page}&limit=${rowsPerPage}`,
+        {
+          headers: { _token: authData.data.token },
+        }
+      )
       .then((response) => {
-        setIsLoading(false);
+        setResponse(response.data.data);
         setData(response.data.data.records);
+        setIsLoading(false);
       })
       .catch((err) => {
         console.log("error", err);
@@ -272,14 +287,12 @@ const ManageAdmin = () => {
     setIsLoading(true);
     getAllListData();
     getVendorList();
-  }, []);
+  }, [page, rowsPerPage]);
 
   const vendorHandler = (e) => {
     setIsLoading(true);
     if (e.target.value === "all") {
       getAllListData();
-    } else {
-      getHotelByVendorId(e.target.value);
     }
   };
   const DeleteHotel = (id) => {
@@ -388,6 +401,7 @@ const ManageAdmin = () => {
               ></i>
               <Heading> Manage Hotels</Heading>
             </div>
+
             <TextWrapper>
               <SelectVendor onChange={vendorHandler}>
                 <SelectOption value={"all"}>Select Vendor*</SelectOption>

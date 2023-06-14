@@ -31,8 +31,6 @@ import { useFormik } from "formik";
 import { VendorRegisterSchema } from "./schemas/VendorRegisterSchems";
 import Check from "./Check.js";
 import { Modal } from "react-bootstrap";
-import Chart from "./BarChart.js";
-import { BarChart, Bar, CartesianGrid, XAxis, YAxis } from 'recharts';
 
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -41,7 +39,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import CircularLoader from "../../Component/CircularLoader/CircularLoader";
+
 const Root = styled.div`
   width: 90%;
   padding-left: 50px;
@@ -57,7 +55,6 @@ const ErrorMessage = styled.div`
   margin-bottom: 20px;
 `;
 
-
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -72,7 +69,7 @@ const VendorList = () => {
   const [adminResponseData, setAdminResponseData] = useState([]);
   const { authData, setAuthData } = useContext(AuthContext);
   const navigate = useNavigate();
-
+  const [isLoading, setIsLoading] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [number, setNumber] = useState("");
@@ -82,16 +79,6 @@ const VendorList = () => {
   const [adminValue, setAdminValue] = useState("");
   const [error, setError] = useState("");
   const [showModal, setShowModel] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-
-  const graphdata = [
-    { name: '2012', students: 400 },
-    { name: '2013', students: 700 },
-    { name: '2014', students: 200 },
-    { name: '2015', students: 1000 },
-    { name: '2016', students: 500 },
-    { name: '2017', students: 800 }
-];
 
   const getAllListData = async () => {
     await axios
@@ -105,11 +92,9 @@ const VendorList = () => {
       })
       .catch((err) => {
         console.log("error", err);
-        setIsLoading(false);
       });
   };
   useEffect(() => {
-    setIsLoading(true);
     getAllListData();
   }, []);
 
@@ -322,7 +307,7 @@ const VendorList = () => {
 
   return (
     <>
-      <div class="row row-cols-4 g-4" style={{ width: "70rem" }}>
+      <div class="row row-cols-4 g-4" style={{ width: "75vw" }}>
         <div class="col">
           <div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
             <div class="card-body">
@@ -396,91 +381,73 @@ const VendorList = () => {
           </div>
         </div>
       </div>
-      {isLoading === true ? (
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            marginLeft: "300px",
-          }}
-        >
-          <CircularLoader></CircularLoader>
-        </div>
-      ) : (
-        <TableContainer component={Paper} style={{ width: "70rem" }}>
-          <Table sx={{ minWidth: 650 }} aria-label="simple table">
-            <TableHead>
-              <TableRow>
-                <TableCell style={boldTextCss}>Vendor Name</TableCell>
-                <TableCell style={boldTextCss} align="left">
-                  Email
-                </TableCell>
-                <TableCell style={boldTextCss} align="left">
-                  Contact Number
-                </TableCell>
-                <TableCell style={boldTextCss} align="left">
-                  Action
-                </TableCell>
-              </TableRow>
-            </TableHead>
 
-            <TableBody>
-              {data &&
-                data.map((item, index) => {
-                  const bookingDate = new Date(item.createdAt);
-                  return (
-                    item.active !== true && (
-                      <TableRow
-                        key={index}
-                        sx={{
-                          "&:last-child td, &:last-child th": { border: 0 },
-                        }}
-                      >
-                        <TableCell component="th" scope="row">
-                          {item.name}
-                        </TableCell>
-                        <TableCell align="left">{item.email}</TableCell>
-                        <TableCell align="left">{item.mobile}</TableCell>
-                        <TableCell align="left">
-                          <Button
-                            size="small"
-                            variant="contained"
-                            type="button"
-                          >
-                            <DeleteIcon onClick={deleteConfirmation} />
+      <TableContainer component={Paper} style={{ width: "75vw" }}>
+        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+          <TableHead>
+            <TableRow>
+              <TableCell style={boldTextCss}>Vendor Name</TableCell>
+              <TableCell style={boldTextCss} align="left">
+                Email
+              </TableCell>
+              <TableCell style={boldTextCss} align="left">
+                Contact Number
+              </TableCell>
+              <TableCell style={boldTextCss} align="left">
+                Action
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {data &&
+              data.map((item, index) => {
+                const bookingDate = new Date(item.createdAt);
+                return (
+                  item.active !== true && (
+                    <TableRow
+                      key={index}
+                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                    >
+                      <TableCell component="th" scope="row">
+                        {item.name}
+                      </TableCell>
+                      <TableCell align="left">{item.email}</TableCell>
+                      <TableCell align="left">{item.mobile}</TableCell>
+                      <TableCell align="left">
+                        <Button size="small" variant="contained" type="button">
+                          <DeleteIcon onClick={deleteConfirmation} />
+                        </Button>
+                      </TableCell>
+                      <Modal show={showModal} onHide={hideModal}>
+                        <Modal.Header closeButton>
+                          <Modal.Title>Delete Confirmation</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                          <div className="alert alert-danger">
+                            Are you sure you want to delete the vendor?
+                          </div>
+                        </Modal.Body>
+                        <Modal.Footer>
+                          <Button variant="default" onClick={hideModal}>
+                            {/*  */}
+                            Cancel
                           </Button>
-                        </TableCell>
-                        <Modal show={showModal} onHide={hideModal}>
-                          <Modal.Header closeButton>
-                            <Modal.Title>Delete Confirmation</Modal.Title>
-                          </Modal.Header>
-                          <Modal.Body>
-                            <div className="alert alert-danger">
-                              Are you sure you want to delete the vendor?
-                            </div>
-                          </Modal.Body>
-                          <Modal.Footer>
-                            <Button variant="default" onClick={hideModal}>
-                              {/*  */}
-                              Cancel
-                            </Button>
-                            <Button
-                              variant="danger"
-                              onClick={() => deleteVendor(item)}
-                            >
-                              {/*  */}
-                              Delete
-                            </Button>
-                          </Modal.Footer>
-                        </Modal>
-                      </TableRow>
-                    )
-                  );
-                })}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      )}
+                          <Button
+                            variant="danger"
+                            onClick={() => deleteVendor(item)}
+                          >
+                            {/*  */}
+                            Delete
+                          </Button>
+                        </Modal.Footer>
+                      </Modal>
+                    </TableRow>
+                  )
+                );
+              })}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </>
   );
 };

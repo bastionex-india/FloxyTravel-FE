@@ -23,6 +23,8 @@ import ManageAdmin from "./Pages/admin/ManageAdmin/ManageAdmin";
 import ManageHotels from "./Pages/admin/ManageHotels/ManageHotels";
 import AddHotels from "./Pages/admin/AddHotels/AddHotels";
 import VendorManageHotels from './Pages/VendorManageHotels';
+import GenerateInvoice from "./Pages/admin/GenerateInvoice";
+
 
 const Root = styled.div``;
 const LeftWrapper = styled.div`
@@ -69,6 +71,7 @@ function App() {
                       path="/bookinghistoryofadmin"
                       element={<BookingHistoryofAdmin />}
                     />
+                    <Route  path="/generateInvoice" element={<GenerateInvoice/>}/>
                     <Route
                       path="/bookinghistorybyorderid"
                       element={<BookingHistorybyOrderid />}

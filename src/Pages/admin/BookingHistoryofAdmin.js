@@ -21,8 +21,8 @@ import TablePagination from "@mui/material/TablePagination";
 
 const TextRoot = styled.div`
   // background-color: #9f94942b;
-  padding: 20px 0px;
-  width: 967px;
+  padding: 20px;
+  /* width: 967px; */
   margin: 10px auto;
   @media (max-width: 768px) {
     width: 100vw;
@@ -78,6 +78,7 @@ const BookingHistoryofAdmin = () => {
   const [select, setSelect] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [select1, setSelect1] = useState("");
+  const [response, setResponse] = useState({});
   const { authData, setAuthData } = useContext(AuthContext);
   const [data, setData] = useState("");
   const navigation = useNavigate();
@@ -97,7 +98,6 @@ const BookingHistoryofAdmin = () => {
   // //  pagination  End
 
   const handleClick = (item) => {
-    console.log("hcjhcjhf", item);
     navigation("/bookinghistorybyorderid", { state: item });
   };
   useEffect(() => {
@@ -124,7 +124,6 @@ const BookingHistoryofAdmin = () => {
   }, []);
 
   const getAllUsers = async () => {
-    console.log("aaa", select1);
     let data;
     if (select1 !== "") {
       data = {
@@ -137,7 +136,7 @@ const BookingHistoryofAdmin = () => {
         status: select,
       };
     }
-
+    data.page = page + 1;
     let config = {
       method: "post",
       url: `${environmentVariables.apiUrl}/admin/getallbooking`,
@@ -151,8 +150,12 @@ const BookingHistoryofAdmin = () => {
     axios
       .request(config)
       .then((response) => {
+        let records = response?.data?.data.records.sort(
+          (a, b) => b.createdAt - a.createdAt
+        );
+        setResponse(response.data.data);
         setData(
-          response?.data?.data.Records.sort((a, b) => b.createdAt - a.createdAt)
+          response?.data?.data.records.sort((a, b) => b.createdAt - a.createdAt)
         );
         setIsLoading(false);
       })
@@ -164,14 +167,14 @@ const BookingHistoryofAdmin = () => {
   useEffect(() => {
     setIsLoading(true);
     getAllUsers();
-  }, [select, select1]);
+  }, [select, select1, page]);
 
   const ApprovedData = () => {};
   const PendingData = () => {};
   const boldTextCss = {
     fontWeight: 700,
   };
-
+  // console.log('response',response)
   return (
     <>
       <TextMainWrapper>
@@ -320,7 +323,7 @@ const BookingHistoryofAdmin = () => {
               </Table>
               <TablePagination
                 component="div"
-                count={data.length}
+                count={response.totalrecords}
                 page={page}
                 onPageChange={handleChangePage}
                 rowsPerPage={rowsPerPage}

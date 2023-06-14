@@ -32,7 +32,6 @@ import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import Typography from "@mui/material/Typography";
 import TablePagination from "@mui/material/TablePagination";
-import EditAdminVendor from "../edit admin_vendor/EditAdminVendor";
 
 const BootstrapDialog = newStyle(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -88,8 +87,8 @@ const style = {
 
 const TextRoot = styled.div`
   // background-color: #9f94942b;
-  padding: 20px 0px;
-  width: 967px;
+  padding: 20px;
+  /* width: 967px; */
   margin: 10px auto;
   @media (max-width: 768px) {
     width: 100vw;
@@ -137,7 +136,6 @@ const Select = styled.select`
 const TextWrapper = styled.div`
   display: flex;
   justify-content: space-between;
-  align-items: center;
   @media (max-width: 768px) {
     justify-content: flex-end;
   }
@@ -239,10 +237,12 @@ const ManageAdmin = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { authData, setAuthData } = useContext(AuthContext);
   const [addVendorPopUp, setAddVendorPopUp] = useState(false);
-  const [editVendorPopUp, setEditVendorPopUp] = useState(false);
   const [data, setData] = useState("");
-  const [vendorDetails, setVendorDetails] = useState("");
+  const [response, setResponse] = useState();
+
   const navigate = useNavigate();
+
+  const [selectedVendor, setSelectedVendor] = useState(null);
 
   const [open, setOpen] = useState(false);
 
@@ -278,7 +278,8 @@ const ManageAdmin = () => {
       })
       .then((response) => {
         console.log("vendorlist", response.data);
-        setData(response.data.data.Records);
+        setData(response.data.data.records);
+        setResponse(response?.data?.data);
         setIsLoading(false);
       })
       .catch((err) => {
@@ -286,14 +287,11 @@ const ManageAdmin = () => {
         setIsLoading(false);
       });
   };
-  const deleteVendor = async (item) => {
+  const deleteVendor = async (vendorId) => {
     await axios
-      .delete(
-        `${environmentVariables.apiUrl}/admin/deletevendor/${item.vendorId}`,
-        {
-          headers: { _token: authData.data.token },
-        }
-      )
+      .delete(`${environmentVariables.apiUrl}/auth/deletevendor/${vendorId}`, {
+        headers: { _token: authData.data.token },
+      })
       .then((response) => {
         setIsLoading(true);
         getAllListData();
@@ -306,46 +304,37 @@ const ManageAdmin = () => {
   useEffect(() => {
     setIsLoading(true);
     getAllListData();
-  }, [addVendorPopUp, editVendorPopUp]);
-
-  const deleteRecord = (item) => {
-    deleteVendor(item);
-    // deleteVendor(selectedVendor)
+  }, [addVendorPopUp]);
+  const deleteRecord = () => {
+    deleteVendor(selectedVendor);
   };
   const ApprovedData = () => {};
   const PendingData = () => {};
-  const EditVendor = (item) => {
-    setEditVendorPopUp(true);
-    setVendorDetails(item);
-  };
   const boldTextCss = {
     fontWeight: 700,
   };
   return (
     <>
       <TextMainWrapper>
+        {/* <Check open={addVendorPopUp} setOpen={setAddVendorPopUp}></Check> */}
         {addVendorPopUp && (
           <CreateAdminVendor
             open={addVendorPopUp}
             setOpen={setAddVendorPopUp}
           ></CreateAdminVendor>
         )}
-        {editVendorPopUp && (
-          <EditAdminVendor
-            open={editVendorPopUp}
-            setOpen={setEditVendorPopUp}
-            vendorDetails={vendorDetails}
-          ></EditAdminVendor>
-        )}
         <TextRoot>
           <Root>
             <TextWrapper>
-              <i
-                style={{ cursor: "pointer" }}
-                onClick={() => navigate(-1)}
-                class="fa-solid fa-chevron-left fa-2x"
-              ></i>
-              <Heading> Manage Admin/Vendor</Heading>
+              <div style={{ display: "flex", alignItems: "center" }}>
+                {" "}
+                <i
+                  style={{ cursor: "pointer", marginRight: "50px" }}
+                  onClick={() => navigate(-1)}
+                  class="fa-solid fa-chevron-left fa-2x"
+                ></i>
+                <Heading> Manage Admin/Vendor</Heading>
+              </div>
               <AddButton onClick={() => setAddVendorPopUp(true)}>
                 Add Vendor/Admin
               </AddButton>
@@ -388,83 +377,56 @@ const ManageAdmin = () => {
                 <TableBody>
                   {data &&
                     data.map((item, index) => {
+                      const bookingDate = new Date(item.createdAt);
                       return (
-                        item.active === false && (
-                          <TableRow
-                            key={index}
-                            sx={{
-                              "&:last-child td, &:last-child th": { border: 0 },
-                            }}
-                          >
-                            <TableCell component="th" scope="row">
-                              {item?.name}
-                            </TableCell>
-                            <TableCell align="left">{item?.email}</TableCell>
-                            {/* <TableCell align="right">{item.checkIn}</TableCell> */}
-                            <TableCell align="left">{item?.mobile}</TableCell>
-                            {/* <TableCell align="right">{item.status}</TableCell> */}
-                            <TableCell align="right">
-                              <ButtonGroup
-                                size="small"
-                                type="button"
-                                variant="outlined"
-                                aria-label="outlined button group"
-                              >
-                                {/* <Button>View</Button> */}
-                                <Button onClick={() => EditVendor(item)}>
-                                  Edit
-                                </Button>
-                                <Button
-                                  onClick={() => {
-                                    handleClickOpen();
-                                  }}
-                                >
-                                  Delete
-                                </Button>
-                              </ButtonGroup>
-                            </TableCell>
-                            <BootstrapDialog
-                              onClose={handleClose}
-                              aria-labelledby="customized-dialog-title"
-                              open={open}
+                        <TableRow
+                          key={index}
+                          sx={{
+                            "&:last-child td, &:last-child th": { border: 0 },
+                          }}
+                        >
+                          <TableCell component="th" scope="row">
+                            {item?.name}
+                          </TableCell>
+                          <TableCell align="left">{item?.email}</TableCell>
+                          {/* <TableCell align="right">{item.checkIn}</TableCell> */}
+                          <TableCell align="left">{item?.mobile}</TableCell>
+                          {/* <TableCell align="right">{item.status}</TableCell> */}
+                          <TableCell align="right">
+                            <ButtonGroup
+                              size="small"
+                              type="button"
+                              variant="outlined"
+                              aria-label="outlined button group"
                             >
-                              <BootstrapDialogTitle
-                                id="customized-dialog-title"
-                                onClose={handleClose}
+                              <Button>View</Button>
+                              <Button>Edit</Button>
+                              <Button
+                                onClick={() => {
+                                  handleClickOpen();
+                                  setSelectedVendor(item.vendorId);
+                                }}
                               >
                                 Delete
-                              </BootstrapDialogTitle>
-                              <DialogContent dividers>
-                                <Typography gutterBottom>
-                                  Are you sure you want to delete the vendor?
-                                </Typography>
-                              </DialogContent>
-                              <DialogActions>
-                                <Button
-                                  variant="contained"
-                                  color="success"
-                                  onClick={handleClose}
-                                >
-                                  Cancel
-                                </Button>
-                                <Button
-                                  variant="contained"
-                                  color="error"
-                                  onClick={() => deleteRecord(item)}
-                                >
-                                  Delete
-                                </Button>
-                              </DialogActions>
-                            </BootstrapDialog>
-                          </TableRow>
-                        )
+                              </Button>
+                            </ButtonGroup>
+                            {/* <Button
+                              size="small"
+                              variant="contained"
+                              type="button"
+                              onClick={(e) => handleClick(item?._id)}
+                            >
+                              View
+                            </Button> */}
+                          </TableCell>
+                        </TableRow>
                       );
                     })}
                 </TableBody>
               </Table>
               <TablePagination
                 component="div"
-                count={data.length}
+                count={response?.totalrecords}
                 page={page}
                 onPageChange={handleChangePage}
                 rowsPerPage={rowsPerPage}
@@ -473,9 +435,34 @@ const ManageAdmin = () => {
             </TableContainer>
           )}
         </TextRoot>
+        <BootstrapDialog
+          onClose={handleClose}
+          aria-labelledby="customized-dialog-title"
+          open={open}
+        >
+          <BootstrapDialogTitle
+            id="customized-dialog-title"
+            onClose={handleClose}
+          >
+            Delete
+          </BootstrapDialogTitle>
+          <DialogContent dividers>
+            <Typography gutterBottom>
+              Are you sure you want to delete the vendor?
+            </Typography>
+          </DialogContent>
+          <DialogActions>
+            <Button variant="contained" color="success" onClick={handleClose}>
+              Cancel
+            </Button>
+            <Button variant="contained" color="error" onClick={deleteRecord}>
+              Delete
+            </Button>
+          </DialogActions>
+        </BootstrapDialog>
       </TextMainWrapper>
     </>
   );
 };
-// item.vendorId
+
 export default ManageAdmin;

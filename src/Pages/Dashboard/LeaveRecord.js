@@ -5,7 +5,7 @@ import Cardbg1 from "../../Images/bg.jpg";
 import { useNavigate } from "react-router-dom";
 import { environmentVariables } from "../../config/config";
 import { Modal, Button } from "react-bootstrap";
-import CircularLoader from "../../Component/CircularLoader/CircularLoader";
+
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -62,7 +62,6 @@ const CardText = styled.div`
 
 export default function LeaveRecord() {
   const { authData } = useContext(AuthContext);
-  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const [data, setData] = useState([]);
   // console.log("jjjjjjjjjjjjjj",data)
@@ -81,16 +80,13 @@ export default function LeaveRecord() {
       .then((response) => {
         // console.log('rrrrrrrrrrrr',response.data.data.hotels)
         setData(response.data.data.hotels);
-        setIsLoading(false);
       })
       .catch((error) => {
         console.log("error", error);
-        setIsLoading(false);
       });
   };
 
   useEffect(() => {
-    setIsLoading(true);
     getVendorData();
   }, []);
 
@@ -110,7 +106,7 @@ export default function LeaveRecord() {
 
   return (
     <>
-      <div class="row row-cols-4 g-4" style={{ width: "70rem" }}>
+      <div class="row row-cols-4 g-4" style={{ width: "75vw" }}>
         <div class="col">
           <div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
             <div class="card-body">
@@ -184,85 +180,73 @@ export default function LeaveRecord() {
           </div>
         </div>
       </div>
-      {isLoading === true ? (
-        <div style={{ display: "flex", justifyContent: "center" }}>
-          <CircularLoader></CircularLoader>
-        </div>
-      ) : (
-        <TableContainer component={Paper} style={{ width: "70rem" }}>
-          <Table sx={{ minWidth: 650 }} aria-label="simple table">
-            <TableHead>
-              <TableRow>
-                <TableCell style={boldTextCss}>HotelName</TableCell>
-                <TableCell style={boldTextCss} align="left">
-                  City
-                </TableCell>
-                <TableCell style={boldTextCss} align="left">
-                  State
-                </TableCell>
-                <TableCell style={boldTextCss} align="left">
-                  Action
-                </TableCell>
-              </TableRow>
-            </TableHead>
 
-            <TableBody>
-              {data &&
-                data.map((item, key) => {
-                  const bookingDate = new Date(item.createdAt);
-                  return (
-                    item.active !== true && (
-                      <TableRow
-                        key={item}
-                        sx={{
-                          "&:last-child td, &:last-child th": { border: 0 },
-                        }}
-                      >
-                        <TableCell component="th" scope="row">
-                          {item.hotelname}
-                        </TableCell>
-                        <TableCell align="left">{item.city}</TableCell>
-                        <TableCell align="left">{item.state}</TableCell>
-                        <TableCell align="left">
-                          <Button
-                            size="small"
-                            variant="contained"
-                            type="button"
-                          >
-                            <DeleteIcon
-                              style={{ color: "#008080" }}
-                              onClick={deleteConfirmation}
-                            />
+      <TableContainer component={Paper} style={{ width: "75vw" }}>
+        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+          <TableHead>
+            <TableRow>
+              <TableCell style={boldTextCss}>HotelName</TableCell>
+              <TableCell style={boldTextCss} align="left">
+                City
+              </TableCell>
+              <TableCell style={boldTextCss} align="left">
+                State
+              </TableCell>
+              <TableCell style={boldTextCss} align="left">
+                Action
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {data &&
+              data.map((item, key) => {
+                const bookingDate = new Date(item.createdAt);
+                return (
+                  item.active !== true && (
+                    <TableRow
+                      key={item}
+                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                    >
+                      <TableCell component="th" scope="row">
+                        {item.hotelname}
+                      </TableCell>
+                      <TableCell align="left">{item.city}</TableCell>
+                      <TableCell align="left">{item.state}</TableCell>
+                      <TableCell align="left">
+                        <Button size="small" variant="contained" type="button">
+                          <DeleteIcon
+                            style={{ color: "#008080" }}
+                            onClick={deleteConfirmation}
+                          />
+                        </Button>
+                      </TableCell>
+                      <Modal show={showModal} onHide={hideModal}>
+                        <Modal.Header closeButton>
+                          <Modal.Title>Delete Confirmation</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                          <div className="alert alert-danger">
+                            Are you sure you want to delete the vendor?
+                          </div>
+                        </Modal.Body>
+                        <Modal.Footer>
+                          <Button variant="default" onClick={hideModal}>
+                            {/*  */}
+                            Cancel
                           </Button>
-                        </TableCell>
-                        <Modal show={showModal} onHide={hideModal}>
-                          <Modal.Header closeButton>
-                            <Modal.Title>Delete Confirmation</Modal.Title>
-                          </Modal.Header>
-                          <Modal.Body>
-                            <div className="alert alert-danger">
-                              Are you sure you want to delete the vendor?
-                            </div>
-                          </Modal.Body>
-                          <Modal.Footer>
-                            <Button variant="default" onClick={hideModal}>
-                              {/*  */}
-                              Cancel
-                            </Button>
-                            <Button variant="danger">
-                              {/*  */}
-                              Delete
-                            </Button>
-                          </Modal.Footer>
-                        </Modal>
-                      </TableRow>
-                    )
-                  );
-                })}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      )}
+                          <Button variant="danger">
+                            {/*  */}
+                            Delete
+                          </Button>
+                        </Modal.Footer>
+                      </Modal>
+                    </TableRow>
+                  )
+                );
+              })}
+          </TableBody>
+        </Table>
+      </TableContainer>
 
       {/* <div>
       <div>

@@ -53,8 +53,8 @@ const HotelImageWrapper = styled.div``;
 
 const TextRoot = styled.div`
   // background-color: #9f94942b;
-  padding: 20px 0px;
-  width: 967px;
+  padding: 20px;
+  /* width: 967px; */
   margin: 10px auto;
   @media (max-width: 768px) {
     width: 100vw;
