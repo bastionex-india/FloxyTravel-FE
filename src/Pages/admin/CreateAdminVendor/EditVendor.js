@@ -10,6 +10,7 @@ import { useContext } from "react";
 import Swal from "sweetalert2";
 import { AuthContext } from "../../../ContextApi/ContextApi";
 import { Button } from "@mui/material";
+import { VendorEditSchema } from "../schemas/vendorEditSchema";
 
 const ErrorText = styled.div`
   color: red;
@@ -96,14 +97,10 @@ const AddThemePopUpInput = styled.input`
   width: 500px;
   margin: 0 20px;
 `;
-const CreateAdminVendor = ({ open, setOpen }) => {
+const EditVendor = ({ open, setOpen, vendorDetails }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [number, setNumber] = useState("");
-  const [password, setPassword] = useState("");
-  const [cpassword, setCPassword] = useState("");
-  const [vendorValue, setVendorValue] = useState("");
-  const [adminValue, setAdminValue] = useState("vendor");
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
@@ -112,24 +109,18 @@ const CreateAdminVendor = ({ open, setOpen }) => {
     setOpen(false);
   };
   const initialValues = {
-    name: "",
-    email: "",
-    contact: "",
-    password: "",
-    confirmPassword: "",
+    name: "" || vendorDetails.name,
+    email: "" || vendorDetails.email,
+    contact: "" || vendorDetails.mobile,
   };
   const { values, errors, touched, handleBlur, handleChange, handleSubmit } =
     useFormik({
       initialValues,
-      validationSchema: VendorRegisterSchema,
+      validationSchema: VendorEditSchema,
       onSubmit: async (values, action) => {
-        if (adminValue === "") {
-          setError("Options must be selected");
-        } else {
-          if (adminValue === "vendor") {
             axios({
-              method: "post",
-              url: `${environmentVariables.apiUrl}/admin/addvendor`,
+              method: "put",
+              url: `${environmentVariables.apiUrl}/admin/updatevendor/${vendorDetails.vendorId}`,
               headers: {
                 Accept: "application/json",
                 "Content-Type": "application/json",
@@ -138,19 +129,16 @@ const CreateAdminVendor = ({ open, setOpen }) => {
                 name: values.name,
                 email: values.email,
                 mobile: values.contact,
-                password: values.password,
-                cpassword: values.confirmPassword,
-                adminType: adminValue,
               },
               headers: { _token: authData.data.token },
             })
               .then((response) => {
-                // console.log(response.data.data,"00000000000001111111111")
+                console.log(response.data,"00000000000001111111111")
                 // setUpdatedHotelData(response.data.message)
                 // setResponseData(response.data.data);
                 Swal.fire({
                   title: "Success",
-                  text: "Vendor created successfully",
+                  text: "Vendor updated successfully",
                   timer: 2000,
                 });
                 action.resetForm();
@@ -168,53 +156,55 @@ const CreateAdminVendor = ({ open, setOpen }) => {
                 });
                 setOpen(false);
               });
-          } else {
-            axios({
-              method: "post",
-              url: `${environmentVariables.apiUrl}/auth/admin/register`,
-              headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
-              },
-              data: {
-                username: values.name,
-                email: values.email,
-                mobile: values.contact,
-                password: values.password,
-                cpassword: values.confirmPassword,
-                adminType: adminValue,
-              },
-              headers: { _token: authData.data.token },
-            })
-              .then((response) => {
-                // console.log(response.data.data,"00000000000001111111111")
-                // setUpdatedHotelData(response.data.message)
-                // setAdminResponseData(response.data.data);
-                Swal.fire({
-                  title: "Success",
-                  text: "Admin created successfully",
-                  timer: 2000,
-                });
-                action.resetForm();
-                // toast(response.data.message);
-                setOpen(false);
-              })
-              .catch((error) => {
-                console.log("///////////////", error);
-                // setError('Details are not valid');
-                Swal.fire({
-                  title: "Error",
-                  text: error,
-                  timer: 2000,
-                });
-              });
-          }
-        }
+        //   } else {
+        //     axios({
+        //       method: "post",
+        //       url: `${environmentVariables.apiUrl}/auth/admin/register`,
+        //       headers: {
+        //         Accept: "application/json",
+        //         "Content-Type": "application/json",
+        //       },
+        //       data: {
+        //         username: values.name,
+        //         email: values.email,
+        //         mobile: values.contact,
+        //         password: values.password,
+        //         cpassword: values.confirmPassword,
+        //         adminType: adminValue,
+        //       },
+        //       headers: { _token: authData.data.token },
+        //     })
+        //       .then((response) => {
+        //         // console.log(response.data.data,"00000000000001111111111")
+        //         // setUpdatedHotelData(response.data.message)
+        //         // setAdminResponseData(response.data.data);
+        //         Swal.fire({
+        //           title: "Success",
+        //           text: "Admin created successfully",
+        //           timer: 2000,
+        //         });
+        //         action.resetForm();
+        //         // toast(response.data.message);
+        //         setOpen(false);
+        //       })
+        //       .catch((error) => {
+        //         console.log("///////////////", error);
+        //         // setError('Details are not valid');
+        //         Swal.fire({
+        //           title: "Error",
+        //           text: error,
+        //           timer: 2000,
+        //         });
+        //       });
+        //   }
+        // }
       },
     });
   return (
     <>
+    
       <AddThemePopUpContainer>
+      
         <AddThemePopUp>
           <div
             style={{
@@ -224,7 +214,7 @@ const CreateAdminVendor = ({ open, setOpen }) => {
               marginTop: "20px",
             }}
           >
-            Add Vendor
+            Edit Admin/Vendor
           </div>
           <AddStatePopUpCloseIcon
             onClick={() => setOpen(false)}
@@ -268,53 +258,6 @@ const CreateAdminVendor = ({ open, setOpen }) => {
               <ErrorText>{errors.contact}</ErrorText>
              ) : null}
           </AddThemeInputWrapper>{" "}
-          <AddThemeInputWrapper>
-            <AddThemeLabel>Password* : </AddThemeLabel>
-            <AddThemePopUpInput
-              name="password"
-              value={values.password}
-              type="password"
-              onChange={handleChange}
-              onBlur={handleBlur}
-            />
-            {errors.password && touched.password ? (
-              <ErrorText>{errors.password}</ErrorText>
-             ) : null}
-          </AddThemeInputWrapper>{" "}
-          <AddThemeInputWrapper>
-            <AddThemeLabel>Confirm* : </AddThemeLabel>
-            <AddThemePopUpInput
-              name="confirmPassword"
-              value={values.confirmPassword}
-              type="password"
-              onChange={handleChange}
-              onBlur={handleBlur}
-            />
-            {errors.confirmPassword && touched.confirmPassword ? (
-              <ErrorText>{errors.confirmPassword}</ErrorText>
-             ) : null}
-          </AddThemeInputWrapper>
-          {/* <AddThemeInputWrapper style={{ marginRight: "240px" }}>
-            <AddThemeLabel>Admin/Vendor* : </AddThemeLabel>
-            <RadioWrapper>
-              <RadioInput
-                onClick={() => setAdminValue("admin")}
-                value="admin"
-                checked={adminValue === "admin"}
-                type="radio"
-              />
-              <AddThemeLabel>Admin</AddThemeLabel>
-            </RadioWrapper>
-            <RadioWrapper>
-              <RadioInput
-                onClick={() => setAdminValue("vendor")}
-                value="vendor"
-                checked={adminValue === "vendor"}
-                type="radio"
-              />
-              <AddThemeLabel>Vendor</AddThemeLabel>
-            </RadioWrapper>
-          </AddThemeInputWrapper> */}
           <ButtonWrapper>
             <AddStatePopUpSubmitButton onClick={handleSubmit}>
               Submit
@@ -329,4 +272,4 @@ const CreateAdminVendor = ({ open, setOpen }) => {
   );
 };
 
-export default CreateAdminVendor;
+export default EditVendor;

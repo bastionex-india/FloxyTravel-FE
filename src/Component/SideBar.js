@@ -56,13 +56,13 @@ function SideBar(props) {
         window.location.href.split("/").pop() === "bookinghistory"
       ) {
         setselected("Booking history");
-      } else if (window.location.href.split("/").pop() === "manageadmin") {
+      } else if (window.location.href.split("/").pop() === "managevendors") {
         setselected("manageadmin");
-      } 
-      else if (window.location.href.split("/").pop() === "managehotels") {
+      } else if (window.location.href.split("/").pop() === "managehotels") {
         setselected("managehotels");
-      }
-      else if (window.location.href.split("/").pop() === "vendormanagehotels") {
+      } else if (
+        window.location.href.split("/").pop() === "vendormanagehotels"
+      ) {
         setselected("vendormanagehotels");
       } else {
         setselected("Dashboard");
@@ -87,12 +87,11 @@ function SideBar(props) {
             select={selected === "manageadmin"}
             onClick={() => {
               setselected("manageadmin");
-              navigate("/manageadmin");
+              navigate("/managevendors");
             }}
           >
-            <Link>Manage Admin/Vendor</Link>
+            <Link>Manage Vendors</Link>
           </LinkWrapper>
-          
           <LinkWrapper
             select={selected === "managehotels"}
             onClick={() => {
@@ -151,7 +150,6 @@ function SideBar(props) {
             <Link>Dashboard</Link>
           </LinkWrapper>
 
-          
           <LinkWrapper
             select={selected === "vendormanagehotels"}
             onClick={() => {
@@ -161,7 +159,6 @@ function SideBar(props) {
           >
             <Link>Manage Hotels</Link>
           </LinkWrapper>
-
 
           <LinkWrapper
             select={selected === "Booking history"}

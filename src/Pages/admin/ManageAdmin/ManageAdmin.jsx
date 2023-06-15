@@ -17,6 +17,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import Swal from "sweetalert2";
 import Box from "@mui/material/Box";
 
 import moment from "moment";
@@ -32,6 +33,7 @@ import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import Typography from "@mui/material/Typography";
 import TablePagination from "@mui/material/TablePagination";
+import EditVendor from './../CreateAdminVendor/EditVendor';
 
 const BootstrapDialog = newStyle(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -94,6 +96,12 @@ const TextRoot = styled.div`
     width: 100vw;
   }
 `;
+const HeadingWrapper = styled.div`
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
 const DocInfo = styled.div`
   // display: flex;
 `;
@@ -112,7 +120,7 @@ const Root = styled.div`
 
 const Heading = styled.div`
   font-size: 1.75rem;
-  margin-right: 360px;
+  /* ; */
   @media (max-width: 768px) {
     display: none;
   }
@@ -135,7 +143,7 @@ const Select = styled.select`
 `;
 const TextWrapper = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   @media (max-width: 768px) {
     justify-content: flex-end;
   }
@@ -232,21 +240,20 @@ const TextMainWrapper = styled.div`
   }
 `;
 const ManageAdmin = () => {
-  const [select, setSelect] = useState("");
-  const [select1, setSelect1] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { authData, setAuthData } = useContext(AuthContext);
   const [addVendorPopUp, setAddVendorPopUp] = useState(false);
+  const [editVendorPopUp, setEditVendorPopUp] = useState(false);
   const [data, setData] = useState("");
   const [response, setResponse] = useState();
+  const [vendorDetails, setVendorDetails] = useState();
 
   const navigate = useNavigate();
 
-  const [selectedVendor, setSelectedVendor] = useState(null);
-
   const [open, setOpen] = useState(false);
 
-  const handleClickOpen = () => {
+  const handleClickOpen = (item) => {
+    setVendorDetails(item)
     setOpen(true);
   };
   const handleClose = () => {
@@ -277,7 +284,6 @@ const ManageAdmin = () => {
         headers: { _token: authData.data.token },
       })
       .then((response) => {
-        console.log("vendorlist", response.data);
         setData(response.data.data.records);
         setResponse(response?.data?.data);
         setIsLoading(false);
@@ -289,54 +295,73 @@ const ManageAdmin = () => {
   };
   const deleteVendor = async (vendorId) => {
     await axios
-      .delete(`${environmentVariables.apiUrl}/auth/deletevendor/${vendorId}`, {
+      .delete(`${environmentVariables.apiUrl}/admin/deletevendor/${vendorId._id}`, {
         headers: { _token: authData.data.token },
       })
       .then((response) => {
         setIsLoading(true);
         getAllListData();
+        setOpen(false)
+        Swal.fire(
+          "Deleted",
+          "Hotel Deleted Successfully",
+          "success"
+        );
       })
       .catch((err) => {
         console.log("error", err);
         setIsLoading(false);
+        Swal.fire(
+          "Error",
+          "Something went wrong",
+          "error"
+        );
       });
   };
   useEffect(() => {
     setIsLoading(true);
     getAllListData();
-  }, [addVendorPopUp]);
-  const deleteRecord = () => {
-    deleteVendor(selectedVendor);
+  }, [addVendorPopUp,editVendorPopUp]);
+  const deleteRecord = (item) => {
+    deleteVendor(item);
   };
   const ApprovedData = () => {};
   const PendingData = () => {};
   const boldTextCss = {
     fontWeight: 700,
   };
+
   return (
     <>
       <TextMainWrapper>
-        {/* <Check open={addVendorPopUp} setOpen={setAddVendorPopUp}></Check> */}
         {addVendorPopUp && (
           <CreateAdminVendor
             open={addVendorPopUp}
             setOpen={setAddVendorPopUp}
           ></CreateAdminVendor>
         )}
+
+        {editVendorPopUp && (
+          <EditVendor
+            open={editVendorPopUp}
+            setOpen={setEditVendorPopUp}
+            vendorDetails={vendorDetails}
+          ></EditVendor>
+        )}
         <TextRoot>
           <Root>
+            <HeadingWrapper>
+              {" "}
+              <i
+                style={{ position: "absolute", left: "0" }}
+                onClick={() => navigate(-1)}
+                class="fa-solid fa-chevron-left fa-2x"
+              ></i>
+              <Heading> Manage Vendors</Heading>
+            </HeadingWrapper>
             <TextWrapper>
-              <div style={{ display: "flex", alignItems: "center" }}>
-                {" "}
-                <i
-                  style={{ cursor: "pointer", marginRight: "50px" }}
-                  onClick={() => navigate(-1)}
-                  class="fa-solid fa-chevron-left fa-2x"
-                ></i>
-                <Heading> Manage Admin/Vendor</Heading>
-              </div>
               <AddButton onClick={() => setAddVendorPopUp(true)}>
-                Add Vendor/Admin
+                Add Vendor
               </AddButton>
             </TextWrapper>
           </Root>
@@ -399,29 +424,21 @@ const ManageAdmin = () => {
                               variant="outlined"
                               aria-label="outlined button group"
                             >
-                              <Button>View</Button>
-                              <Button>Edit</Button>
+                              {/* <Button>View</Button> */}
+                              <Button onClick={()=>{setEditVendorPopUp(true);setVendorDetails(item)}}>Edit</Button>
                               <Button
                                 onClick={() => {
-                                  handleClickOpen();
-                                  setSelectedVendor(item.vendorId);
+                                  handleClickOpen(item);
                                 }}
                               >
                                 Delete
                               </Button>
                             </ButtonGroup>
-                            {/* <Button
-                              size="small"
-                              variant="contained"
-                              type="button"
-                              onClick={(e) => handleClick(item?._id)}
-                            >
-                              View
-                            </Button> */}
                           </TableCell>
                         </TableRow>
                       );
                     })}
+                   
                 </TableBody>
               </Table>
               <TablePagination
@@ -435,31 +452,31 @@ const ManageAdmin = () => {
             </TableContainer>
           )}
         </TextRoot>
-        <BootstrapDialog
-          onClose={handleClose}
-          aria-labelledby="customized-dialog-title"
-          open={open}
-        >
-          <BootstrapDialogTitle
-            id="customized-dialog-title"
+          <BootstrapDialog
             onClose={handleClose}
+            aria-labelledby="customized-dialog-title"
+            open={open}
           >
-            Delete
-          </BootstrapDialogTitle>
-          <DialogContent dividers>
-            <Typography gutterBottom>
-              Are you sure you want to delete the vendor?
-            </Typography>
-          </DialogContent>
-          <DialogActions>
-            <Button variant="contained" color="success" onClick={handleClose}>
-              Cancel
-            </Button>
-            <Button variant="contained" color="error" onClick={deleteRecord}>
+            <BootstrapDialogTitle
+              id="customized-dialog-title"
+              onClose={handleClose}
+            >
               Delete
-            </Button>
-          </DialogActions>
-        </BootstrapDialog>
+            </BootstrapDialogTitle>
+            <DialogContent dividers>
+              <Typography gutterBottom>
+                Are you sure you want to delete the vendor?
+              </Typography>
+            </DialogContent>
+            <DialogActions>
+              <Button variant="contained" color="success" onClick={handleClose}>
+                Cancel
+              </Button>
+              <Button variant="contained" color="error" onClick={()=>deleteRecord(vendorDetails)}>
+                Delete
+              </Button>
+            </DialogActions>
+          </BootstrapDialog>
       </TextMainWrapper>
     </>
   );

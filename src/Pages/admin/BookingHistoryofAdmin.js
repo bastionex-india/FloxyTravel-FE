@@ -18,7 +18,12 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import TablePagination from "@mui/material/TablePagination";
-
+const HeadingWrapper = styled.div`
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
 const TextRoot = styled.div`
   // background-color: #9f94942b;
   padding: 20px;
@@ -38,7 +43,6 @@ const Root = styled.div`
 
 const Heading = styled.div`
   font-size: 1.75rem;
-  margin-right: 360px;
   @media (max-width: 768px) {
     display: none;
   }
@@ -180,15 +184,14 @@ const BookingHistoryofAdmin = () => {
       <TextMainWrapper>
         <TextRoot>
           <Root>
-            <div style={{ display: "flex", alignItems: "center" }}>
-              {" "}
+            <HeadingWrapper>
               <i
-                style={{ cursor: "pointer", marginRight: "50px" }}
+                style={{ position: "absolute", left: "0" }}
                 onClick={() => navigation(-1)}
                 class="fa-solid fa-chevron-left fa-2x"
               ></i>
               <Heading> Booking History</Heading>
-            </div>
+            </HeadingWrapper>
             <TextWrapper>
               <TextSelectField>
                 <Select

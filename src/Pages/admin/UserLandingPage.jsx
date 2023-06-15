@@ -469,15 +469,15 @@ const UserLandingPage = () => {
   }, [chosenState, stateSelected]);
   return (
     <Root>
-      <div style={{ display: "flex", alignItems: "center" }}>
+      <HeadingWrapper>
         {" "}
         <i
-          style={{ cursor: "pointer", marginRight: "50px" }}
+          style={{ position: "absolute", left: "0" }}
           onClick={() => navigate(-1)}
           class="fa-solid fa-chevron-left fa-2x"
         ></i>
         <MainHeading>Manage City Landing Page</MainHeading>
-      </div>
+      </HeadingWrapper>
       <StatesContainer>
         {/* <StateHeading>States : </StateHeading> */}
 
@@ -843,6 +843,13 @@ const UserLandingPage = () => {
 const ThemeNameIconWrapper = styled.div`
   display: flex;
   justify-content: space-between;
+`;
+
+const HeadingWrapper = styled.div`
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 const DeleteIcon = styled.i`
   color: #07515c;
