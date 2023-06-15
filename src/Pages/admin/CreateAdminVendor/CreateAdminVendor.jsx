@@ -103,7 +103,7 @@ const CreateAdminVendor = ({ open, setOpen }) => {
   const [password, setPassword] = useState("");
   const [cpassword, setCPassword] = useState("");
   const [vendorValue, setVendorValue] = useState("");
-  const [adminValue, setAdminValue] = useState("");
+  const [adminValue, setAdminValue] = useState("vendor");
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
@@ -217,9 +217,7 @@ const CreateAdminVendor = ({ open, setOpen }) => {
     });
   return (
     <>
-    
       <AddThemePopUpContainer>
-      
         <AddThemePopUp>
           <div
             style={{
@@ -229,7 +227,7 @@ const CreateAdminVendor = ({ open, setOpen }) => {
               marginTop: "20px",
             }}
           >
-            Add Admin/Vendor
+            Add Vendor
           </div>
           <AddStatePopUpCloseIcon
             onClick={() => setOpen(false)}
@@ -289,7 +287,7 @@ const CreateAdminVendor = ({ open, setOpen }) => {
             />
             <ErrorText>{errors.confirmPassword}</ErrorText>
           </AddThemeInputWrapper>
-          <AddThemeInputWrapper style={{ marginRight: "240px" }}>
+          {/* <AddThemeInputWrapper style={{ marginRight: "240px" }}>
             <AddThemeLabel>Admin/Vendor* : </AddThemeLabel>
             <RadioWrapper>
               <RadioInput
@@ -309,7 +307,7 @@ const CreateAdminVendor = ({ open, setOpen }) => {
               />
               <AddThemeLabel>Vendor</AddThemeLabel>
             </RadioWrapper>
-          </AddThemeInputWrapper>
+          </AddThemeInputWrapper> */}
           <ButtonWrapper>
             <AddStatePopUpSubmitButton onClick={handleSubmit}>
               Submit
