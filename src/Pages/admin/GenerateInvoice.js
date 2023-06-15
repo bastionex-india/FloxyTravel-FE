@@ -13,7 +13,7 @@ import { styled as newStyled } from "@mui/material/styles";
 import { Box, Paper, Grid, Container } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
-
+import Swal from "sweetalert2";
 import Table from "@mui/material/Table";
 import { Button } from "@mui/material";
 import TableBody from "@mui/material/TableBody";
@@ -77,8 +77,55 @@ const GenerateInvoice = () => {
   const [data, setData] = useState("");
   const navigate = useNavigate();
   const [discountAmount, setDiscountAmount] = useState(0);
-  const hotelPrice = 200;
+  const [hotelPrice,setHotelPrice] = useState('');
   console.log(state);
+  const sendInvoice = ()=>{
+    let amount = Number(hotelPrice)-Number(discountAmount)
+    let data = {
+      bookingID : state._id,
+      amount : amount.toString(),
+      discount: Number(discountAmount)
+  }
+    let config = {
+      method: "post",
+      url: `${environmentVariables.apiUrl}/admin/sendInvoice`,
+      headers: {
+        _token: authData.data.token,
+        "Content-Type": "application/json",
+      },
+      data: data,
+    };
+
+    axios
+      .request(config)
+      .then((response) => {
+        if(response.data.status){
+          Swal.fire({
+            icon: "success",
+            title: "Invoice sent successfully",
+            timer: "800",
+          });
+        }
+        else{
+            Swal.fire({
+              icon: "error",
+              title: response.data.message,
+              timer: "800",
+            });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        Swal.fire({
+          icon: "error",
+          title: err.response.data.message,
+          timer: "800",
+        });
+      });
+  }
+  const  sendInvoiceHandler = ()=>{
+    sendInvoice()
+  }
   return (
     <>
       <TextMainWrapper>
@@ -136,6 +183,8 @@ const GenerateInvoice = () => {
                   <p>CheckIn Date</p>
                   <p>CheckOut Date</p>
                   <p>Days</p>
+                  <p>Amount</p>
+                  <p>Discount Amount</p>
                 </Grid>
                 <Grid xs={6} className="pull-right">
                   <p>665265</p>
@@ -149,34 +198,25 @@ const GenerateInvoice = () => {
                       "days"
                     )}
                   </p>
-                </Grid>
-                <Grid xs={6}>
-                  <p>Pricing</p>
-                </Grid>
-                <Grid xs={2}>
-                  <span>
-                    ${hotelPrice} * $
-                    {moment(state.checkOut, "DD/MM/YYYY").diff(
-                      moment(state.checkIn, "DD/MM/YYYY"),
-                      "days"
-                    )}{" "}
-                  </span>
                   <p>
-                    <b>Discount Amount</b>
+                  <FormControl
+                      sx={{ width: "80px" }}
+                      variant="standard"
+                      className="pull-right"
+                    >
+                      {/* <InputLabel htmlFor="standard-adornment-amount">Discount Amount</InputLabel> */}
+                      <Input
+                        id="standard-adornment-amount"
+                        startAdornment={
+                          <InputAdornment position="start">$</InputAdornment>
+                        }
+                        size="small"
+                        onChange={(e) => setHotelPrice(e.target.value)}
+                      />
+                    </FormControl>
                   </p>
-                </Grid>
-
-                <Grid xs={4} className="pull-right">
-                  <span>
-                    $
-                    {hotelPrice *
-                      moment(state.checkOut, "DD/MM/YYYY").diff(
-                        moment(state.checkIn, "DD/MM/YYYY"),
-                        "days"
-                      )}
-                  </span>
-                  <div className="form-group ">
-                    <FormControl
+                  <p>
+                  <FormControl
                       sx={{ width: "80px" }}
                       variant="standard"
                       className="pull-right"
@@ -191,8 +231,9 @@ const GenerateInvoice = () => {
                         onChange={(e) => setDiscountAmount(e.target.value)}
                       />
                     </FormControl>
-                  </div>
+                  </p>
                 </Grid>
+                
               </Grid>
               <hr />
               <Grid container>
@@ -210,21 +251,12 @@ const GenerateInvoice = () => {
                 <Grid xs={6} className="pull-right">
                   <p>
                     $
-                    {hotelPrice *
-                      moment(state.checkOut, "DD/MM/YYYY").diff(
-                        moment(state.checkIn, "DD/MM/YYYY"),
-                        "days"
-                      ) -
-                      Number(discountAmount)}
+                    { Number(hotelPrice) -Number(discountAmount)}
                   </p>
                   <p>0.00</p>
                   <p>
                     $
-                    {hotelPrice *
-                      moment(state.checkOut, "DD/MM/YYYY").diff(
-                        moment(state.checkIn, "DD/MM/YYYY"),
-                        "days"
-                      ) -
+                    {Number(hotelPrice) -
                       Number(discountAmount)}
                   </p>
                 </Grid>
@@ -232,7 +264,7 @@ const GenerateInvoice = () => {
               <Grid container>
                 <Grid xs={8}></Grid>
                 <Grid xs={4} className="pull-right">
-                  <Button variant="contained">Send Invoice</Button>
+                  <Button disabled={hotelPrice.length?false:true} variant="contained" onClick={sendInvoiceHandler}>Send Invoice</Button>
                 </Grid>
               </Grid>
             </Item>
