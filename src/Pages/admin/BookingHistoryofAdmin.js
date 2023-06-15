@@ -98,6 +98,9 @@ const BookingHistoryofAdmin = () => {
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
+    if(page==0){
+      getAllUsers()
+    }
   };
   // //  pagination  End
 
@@ -141,6 +144,8 @@ const BookingHistoryofAdmin = () => {
       };
     }
     data.page = page + 1;
+    data.limit = rowsPerPage;
+
     let config = {
       method: "post",
       url: `${environmentVariables.apiUrl}/admin/getallbooking`,
@@ -197,6 +202,7 @@ const BookingHistoryofAdmin = () => {
                 <Select
                   onChange={(e) => {
                     setSelect1(e.target.value);
+                    setPage(0)
                   }}
                   //   value={select1}
                   required
@@ -235,6 +241,7 @@ const BookingHistoryofAdmin = () => {
                 <Select
                   onChange={(e) => {
                     setSelect(e.target.value);
+                    setPage(0)
                   }}
                   value={select}
                   required
