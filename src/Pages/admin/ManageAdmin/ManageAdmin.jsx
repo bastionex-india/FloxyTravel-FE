@@ -33,7 +33,7 @@ import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import Typography from "@mui/material/Typography";
 import TablePagination from "@mui/material/TablePagination";
-import EditVendor from './../CreateAdminVendor/EditVendor';
+import EditVendor from "./../CreateAdminVendor/EditVendor";
 
 const BootstrapDialog = newStyle(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -253,7 +253,7 @@ const ManageAdmin = () => {
   const [open, setOpen] = useState(false);
 
   const handleClickOpen = (item) => {
-    setVendorDetails(item)
+    setVendorDetails(item);
     setOpen(true);
   };
   const handleClose = () => {
@@ -295,33 +295,28 @@ const ManageAdmin = () => {
   };
   const deleteVendor = async (vendorId) => {
     await axios
-      .delete(`${environmentVariables.apiUrl}/admin/deletevendor/${vendorId._id}`, {
-        headers: { _token: authData.data.token },
-      })
+      .delete(
+        `${environmentVariables.apiUrl}/admin/deletevendor/${vendorId._id}`,
+        {
+          headers: { _token: authData.data.token },
+        }
+      )
       .then((response) => {
         setIsLoading(true);
         getAllListData();
-        setOpen(false)
-        Swal.fire(
-          "Deleted",
-          "Hotel Deleted Successfully",
-          "success"
-        );
+        setOpen(false);
+        Swal.fire("Deleted", "Hotel Deleted Successfully", "success");
       })
       .catch((err) => {
         console.log("error", err);
         setIsLoading(false);
-        Swal.fire(
-          "Error",
-          "Something went wrong",
-          "error"
-        );
+        Swal.fire("Error", "Something went wrong", "error");
       });
   };
   useEffect(() => {
     setIsLoading(true);
     getAllListData();
-  }, [addVendorPopUp,editVendorPopUp]);
+  }, [addVendorPopUp, editVendorPopUp]);
   const deleteRecord = (item) => {
     deleteVendor(item);
   };
@@ -425,7 +420,14 @@ const ManageAdmin = () => {
                               aria-label="outlined button group"
                             >
                               {/* <Button>View</Button> */}
-                              <Button onClick={()=>{setEditVendorPopUp(true);setVendorDetails(item)}}>Edit</Button>
+                              <Button
+                                onClick={() => {
+                                  setEditVendorPopUp(true);
+                                  setVendorDetails(item);
+                                }}
+                              >
+                                Edit
+                              </Button>
                               <Button
                                 onClick={() => {
                                   handleClickOpen(item);
@@ -438,7 +440,6 @@ const ManageAdmin = () => {
                         </TableRow>
                       );
                     })}
-                   
                 </TableBody>
               </Table>
               <TablePagination
@@ -452,31 +453,35 @@ const ManageAdmin = () => {
             </TableContainer>
           )}
         </TextRoot>
-          <BootstrapDialog
+        <BootstrapDialog
+          onClose={handleClose}
+          aria-labelledby="customized-dialog-title"
+          open={open}
+        >
+          <BootstrapDialogTitle
+            id="customized-dialog-title"
             onClose={handleClose}
-            aria-labelledby="customized-dialog-title"
-            open={open}
           >
-            <BootstrapDialogTitle
-              id="customized-dialog-title"
-              onClose={handleClose}
+            Delete
+          </BootstrapDialogTitle>
+          <DialogContent dividers>
+            <Typography gutterBottom>
+              Are you sure you want to delete the vendor?
+            </Typography>
+          </DialogContent>
+          <DialogActions>
+            <Button variant="contained" color="success" onClick={handleClose}>
+              Cancel
+            </Button>
+            <Button
+              variant="contained"
+              color="error"
+              onClick={() => deleteRecord(vendorDetails)}
             >
               Delete
-            </BootstrapDialogTitle>
-            <DialogContent dividers>
-              <Typography gutterBottom>
-                Are you sure you want to delete the vendor?
-              </Typography>
-            </DialogContent>
-            <DialogActions>
-              <Button variant="contained" color="success" onClick={handleClose}>
-                Cancel
-              </Button>
-              <Button variant="contained" color="error" onClick={()=>deleteRecord(vendorDetails)}>
-                Delete
-              </Button>
-            </DialogActions>
-          </BootstrapDialog>
+            </Button>
+          </DialogActions>
+        </BootstrapDialog>
       </TextMainWrapper>
     </>
   );
