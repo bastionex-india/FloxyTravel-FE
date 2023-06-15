@@ -31,6 +31,7 @@ import { useFormik } from "formik";
 import { VendorRegisterSchema } from "./schemas/VendorRegisterSchems";
 import Check from './Check.js';
 import { Modal } from "react-bootstrap";
+import { BarChart, Bar, CartesianGrid, XAxis, YAxis } from 'recharts';
 
 
 import Table from '@mui/material/Table';
@@ -57,6 +58,7 @@ const ErrorMessage = styled.div`
   margin-bottom: 20px;
 `;
 
+
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -73,7 +75,7 @@ const VendorList = () => {
   const [adminResponseData, setAdminResponseData] = useState([]);
   const { authData, setAuthData } = useContext(AuthContext);
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(false);
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [number, setNumber] = useState("");
@@ -90,9 +92,7 @@ const VendorList = () => {
         headers: { _token: authData.data.token },
       })
       .then((response) => {
-        // console.log("vendorlist",response.data)
-        setData(response.data.data.Records);
-        setIsLoading(false);
+        setData(response.data.message);
       })
       .catch((err) => {
         console.log("error", err);
@@ -168,8 +168,6 @@ const VendorList = () => {
         headers: { _token: authData.data.token },
       })
         .then((response) => {
-          // console.log(response.data.data,"00000000000001111111111")
-          // setUpdatedHotelData(response.data.message)
           setAdminResponseData(response.data.data);
 
           setName("");
@@ -184,7 +182,6 @@ const VendorList = () => {
         })
         .catch((error) => {
           console.log("///////////////", error);
-          // setError('Details are not valid');
         });
     }
   };
@@ -192,14 +189,8 @@ const VendorList = () => {
     setOpen(false);
   };
 
-  // const handleClose2=()=>{
-
-  // }
-  // const handleClose3=()=>{
-  //   setOpen1(false);
-  // }
   const deleteVendor = (item) => {
-    // alert(item._id)
+    
     axios
       .delete(`${environmentVariables.apiUrl}/auth/deletevendor/${item._id}`, {
         headers: { _token: authData.data.token },
@@ -210,8 +201,6 @@ const VendorList = () => {
         setShowModel(false);
         navigate("/");
 
-        // toast(response.data.data)
-        // getAllUSers();
       })
       .catch((error) => {
         console.log("err", error);
@@ -252,8 +241,6 @@ const VendorList = () => {
               headers: { _token: authData.data.token },
             })
               .then((response) => {
-                // console.log(response.data.data,"00000000000001111111111")
-                // setUpdatedHotelData(response.data.message)
                 setResponseData(response.data.data);
 
                 action.resetForm();
@@ -263,7 +250,6 @@ const VendorList = () => {
               })
               .catch((error) => {
                 console.log("///////////////", error);
-                // setError('Details are not valid');
               });
           } else {
             axios({
@@ -284,8 +270,6 @@ const VendorList = () => {
               headers: { _token: authData.data.token },
             })
               .then((response) => {
-                // console.log(response.data.data,"00000000000001111111111")
-                // setUpdatedHotelData(response.data.message)
                 setAdminResponseData(response.data.data);
 
                 action.resetForm();
@@ -294,13 +278,11 @@ const VendorList = () => {
               })
               .catch((error) => {
                 console.log("///////////////", error);
-                // setError('Details are not valid');
               });
           }
         }
       },
     });
-  // console.log("first",errors);
 
   function deleteConfirmation()
   {
@@ -318,22 +300,22 @@ const VendorList = () => {
   <div class="col">
     <div class="card shadow p-3 mb-5 bg-body-tertiary rounded" >
       <div  class="card-body">
-        <h6 style={{textAlign: 'center'}} class="card-title">PENDING</h6>
+        <h6 style={{textAlign: 'center'}} class="card-title">EARNINGS</h6>
         <h1 style={{textAlign: 'center', color: '#008080'}} class="card-text">
         $80
         </h1>
-        <p style={{textAlign: 'center'}} class="card-title">Pending Bookings</p>
+        <p style={{textAlign: 'center'}} class="card-title">Total earnings</p>
       </div>
     </div>
   </div>
   <div class="col">
     <div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
       <div class="card-body">
-        <h6 style={{textAlign: 'center'}} class="card-title">EARNINGS</h6>
+        <h6 style={{textAlign: 'center'}} class="card-title">HOTELS</h6>
         <h1 style={{textAlign: 'center', color: '#008080'}} class="card-text">
         $50
         </h1>
-        <p style={{textAlign: 'center'}} class="card-title">Total earnings</p>
+        <p style={{textAlign: 'center'}} class="card-title">Total hotels</p>
       </div>
     </div>
   </div>
@@ -351,11 +333,11 @@ const VendorList = () => {
   <div class="col">
     <div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
       <div class="card-body">
-        <h6 style={{textAlign: 'center'}} class="card-title">HOTELS</h6>
+        <h6 style={{textAlign: 'center'}} class="card-title">PENDING</h6>
         <h1 style={{textAlign: 'center', color: '#008080'}} class="card-text">
         25
         </h1>
-        <p style={{textAlign: 'center'}} class="card-title">Total Hotels</p>
+        <p style={{textAlign: 'center'}} class="card-title">Pending bookings</p>
       </div>
     </div>
   </div>

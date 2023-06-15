@@ -64,10 +64,6 @@ export default function LeaveRecord() {
   const { authData } = useContext(AuthContext);
   const navigate = useNavigate();
   const [data, setData] = useState([]);
-  // console.log("jjjjjjjjjjjjjj",data)
-  // const handleExpandClick = () => {
-  //   setExpanded(!expanded);
-  // };
   const componentClicked = (item) => {
     navigate("/hoteldetails", { state: item });
   };
@@ -78,7 +74,6 @@ export default function LeaveRecord() {
         headers: { _token: authData.data.token },
       })
       .then((response) => {
-        // console.log('rrrrrrrrrrrr',response.data.data.hotels)
         setData(response.data.data.hotels);
       })
       .catch((error) => {
@@ -113,20 +108,9 @@ export default function LeaveRecord() {
   <div class="col">
     <div class="card shadow p-3 mb-5 bg-body-tertiary rounded" >
       <div  class="card-body">
-        <h6 style={{textAlign: 'center'}} class="card-title">PENDING</h6>
-        <h1 style={{textAlign: 'center', color: '#008080'}} class="card-text">
-        $80
-        </h1>
-        <p style={{textAlign: 'center'}} class="card-title">Total pendings</p>
-      </div>
-    </div>
-  </div>
-  <div class="col">
-    <div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
-      <div class="card-body">
         <h6 style={{textAlign: 'center'}} class="card-title">EARNINGS</h6>
         <h1 style={{textAlign: 'center', color: '#008080'}} class="card-text">
-        $50
+        $80
         </h1>
         <p style={{textAlign: 'center'}} class="card-title">Total earnings</p>
       </div>
@@ -135,7 +119,18 @@ export default function LeaveRecord() {
   <div class="col">
     <div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
       <div class="card-body">
-        <h6 style={{textAlign: 'center'}} class="card-title">BOOKINS</h6>
+        <h6 style={{textAlign: 'center'}} class="card-title">HOTELS</h6>
+        <h1 style={{textAlign: 'center', color: '#008080'}} class="card-text">
+        $50
+        </h1>
+        <p style={{textAlign: 'center'}} class="card-title">Total hotels</p>
+      </div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
+      <div class="card-body">
+        <h6 style={{textAlign: 'center'}} class="card-title">BOOKINGS</h6>
         <h1 style={{textAlign: 'center', color: '#008080'}} class="card-text">
         68
         </h1>
@@ -146,11 +141,11 @@ export default function LeaveRecord() {
   <div class="col">
     <div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
       <div class="card-body">
-        <h6 style={{textAlign: 'center'}} class="card-title">SERVICES</h6>
+        <h6 style={{textAlign: 'center'}} class="card-title">PENDING</h6>
         <h1 style={{textAlign: 'center', color: '#008080'}} class="card-text">
         25
         </h1>
-        <p style={{textAlign: 'center'}} class="card-title">Total services</p>
+        <p style={{textAlign: 'center'}} class="card-title">Pending bookings</p>
       </div>
     </div>
   </div>
@@ -210,30 +205,6 @@ export default function LeaveRecord() {
           </TableContainer>
 
 
-    {/* <div>
-      <div>
-        {data.map((item, key) => {
-          console.log(".................", item, key);
-          return (
-            <LeftCardWrapper>
-              <Card
-                bgImage={`${environmentVariables.apiUrl}/uploads/${item.image[0]}`}
-                onClick={() => componentClicked(item)}
-              >
-                <TextWrapper>
-                  <TextWrapper>
-                    <CardText>{item.hotelname}</CardText>
-                    <CardText>
-                      {item.city} , {item.state}
-                    </CardText>
-                  </TextWrapper>
-                </TextWrapper>
-              </Card>
-            </LeftCardWrapper>
-          );
-        })}
-      </div>
-    </div> */}
     </>
   );
 }
