@@ -304,7 +304,7 @@ const ManageAdmin = () => {
         setOpen(false)
         Swal.fire(
           "Deleted",
-          "Hotel Deleted Successfully",
+          "Vendor Deleted Successfully",
           "success"
         );
       })

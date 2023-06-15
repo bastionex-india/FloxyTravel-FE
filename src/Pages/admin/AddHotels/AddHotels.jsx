@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import React, { useContext, useState } from "react";
 
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useEffect } from "react";
 import axios from "axios";
 import { AuthContext } from "../../../ContextApi/ContextApi";
@@ -127,6 +127,8 @@ const FormSelectTheme = styled.select`
 const AddHotels = () => {
   const navigation = useNavigate();
   const { authData } = useContext(AuthContext);
+  const { id } = useParams();
+  const [hotelData, setHotelData] = useState("");
   const [allCountries, setAllCountries] = useState([]);
   const [countryCode, setCountryCode] = useState("");
   const [countryName, setCountryName] = useState("");
@@ -152,6 +154,7 @@ const AddHotels = () => {
   const [overview, setOverview] = useState("");
   const [multipleFiles, setMultipleFiles] = useState("");
   const [totalRooms, setTotalRooms] = useState("");
+ 
 
   const navigate = useNavigate();
   const options = [
@@ -164,18 +167,35 @@ const AddHotels = () => {
 
   const getVendorList = async () => {
     await axios
-      .get(`${environmentVariables.apiUrl}/auth/getvendorlist`, {
+      .get(`http://localhost:4000/admin/getvendorlist`, {
         headers: { _token: authData.data.token },
       })
       .then((response) => {
-        setVendorList(response.data.data.Records);
+        // console.log("sddfsdsf",response.data.data)
+        setVendorList(response.data.data.records);
       })
       .catch((err) => {
         console.log("error", err);
       });
   };
+
+  const getHotelDetailById = async () => {
+    try {
+      const url = `http://localhost:4000/admin/gethoteldetailbyid/${id}`;
+      const response = await axios.get(url, {
+        headers: { _token: authData.data.token },
+      });
+      setHotelData(response.data.data)
+      setName(response.data.data.hotelname)
+      setArea(response.data.data.area)
+      setAddress(response.data.data.address)
+    } catch (error) {
+      console.log(error)
+    }
+  };
   useEffect(() => {
     getVendorList();
+    getHotelDetailById();
     let config = {
       method: "get",
       url: `${environmentVariables.apiUrl}/admin/getallcountries`,
@@ -275,10 +295,10 @@ const AddHotels = () => {
     formdata.append(`theme`, theme);
     formdata.append("lat", lat);
     formdata.append("long", long);
-    formdata.append("hotelVendorId",vendorId);
+    formdata.append("hotelVendorId", vendorId);
     axios({
       method: "post",
-      url: `${environmentVariables.apiUrl}/admin/addhotel`,
+      url: `http://localhost:4000/admin/addhotel`,
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
@@ -289,7 +309,7 @@ const AddHotels = () => {
       .then((response) => {
         setName("");
         setArea("");
-        setAddress("")
+        setAddress("");
         setStateName("");
         setCityName("");
         setCategory("");
@@ -303,12 +323,8 @@ const AddHotels = () => {
         setLat("");
         setLong("");
         setMultipleFiles("");
-        Swal.fire(
-          "Added",
-          "New Hotel added successfully",
-          "success"
-        );
-        navigation('/managehotels')
+        Swal.fire("Added", "New Hotel added successfully", "success");
+        navigation("/managehotels");
       })
       .catch((error) => {
         console.log("///////////////", error);
@@ -332,6 +348,7 @@ const AddHotels = () => {
         console.log("Geo location error", error);
       });
   };
+  console.log("dshksjdhjksad",hotelData.facilities)
   return (
     <Root>
       <div style={{ display: "flex", alignItems: "center" }}>
@@ -341,7 +358,7 @@ const AddHotels = () => {
           onClick={() => navigate(-1)}
           class="fa-solid fa-chevron-left fa-2x"
         ></i>
-        <MainHeading>Add New Hotel</MainHeading>
+        <MainHeading>{id===undefined?"Add New Hotel":"Edit Hotel"}</MainHeading>
       </div>
       <MainContainer>
         <HotelAddForm>
@@ -413,7 +430,7 @@ const AddHotels = () => {
                 <FormLabel>Address*</FormLabel>
                 <FormInput
                   type="text"
-                  value={address}
+                  value={id===undefined?address:hotelData.address}
                   onChange={(e) => setAddress(e.target.value)}
                 />
               </div>
@@ -440,7 +457,7 @@ const AddHotels = () => {
                 <FormLabel>Latitude*</FormLabel>
                 <FormInput
                   type="text"
-                  value={lat}
+                  value={id===undefined?lat:hotelData.lat}
                   onChange={(e) => setLat(e.target.value)}
                 />
               </div>
@@ -448,12 +465,14 @@ const AddHotels = () => {
                 <FormLabel>Longitude*</FormLabel>
                 <FormInput
                   type="text"
-                  value={long}
+                  value={id===undefined?long:hotelData.long}
                   onChange={(e) => setLong(e.target.value)}
                 />
               </div>
-              <GetLocationText onClick={getHotelLatLong}>Get Coordinates</GetLocationText>
-              
+              <GetLocationText onClick={getHotelLatLong}>
+                Get Coordinates
+              </GetLocationText>
+
               <SelectVendor onChange={(e) => setVendorId(e.target.value)}>
                 <SelectOption>Select Vendor*</SelectOption>
                 {vendorlist &&
@@ -470,37 +489,49 @@ const AddHotels = () => {
               <FormLabel>Total Rooms*</FormLabel>
               <FormInput
                 type="number"
-                value={totalRooms}
+                value={id===undefined?totalRooms:hotelData.noOfRooms}
                 onChange={(e) => setTotalRooms(e.target.value)}
               />
             </div>
             <FormLabel>General Info*</FormLabel>
             <FormInput
               type="text"
-              value={general}
+              value={id===undefined?general:hotelData.facilities!==undefined && hotelData.facilities[0].general}
               onChange={(e) => setGeneral(e.target.value)}
             />
             <FormLabel>Services*</FormLabel>
             <FormInput
               type="text"
-              value={services}
+              value={id===undefined?services:hotelData.facilities!==undefined && hotelData.facilities[0].services}
               onChange={(e) => setServices(e.target.value)}
             />
-            <FormLabel>Internet*</FormLabel>
-            <FormInput
-              type="text"
-              value={internet}
-              onChange={(e) => setInternet(e.target.value)}
-            />
-            <FormLabel>Parking*</FormLabel>
-            <FormInput
-              type="text"
-              value={parking}
-              onChange={(e) => setParking(e.target.value)}
-            />
+            {
+              id!==undefined && hotelData.facilities!==undefined && hotelData.facilities[0].internet && (
+                <>
+                <FormLabel>Internet*</FormLabel>
+                <FormInput
+                  type="text"
+                  value={id===undefined?internet:hotelData.facilities!==undefined && hotelData.facilities[0].internet}
+                  onChange={(e) => setInternet(e.target.value)}
+                />
+                </>
+              )              
+            }
+            {
+              id!==undefined && hotelData.facilities!==undefined && hotelData.facilities[0].parking && (
+                <>
+                <FormLabel>Parking*</FormLabel>
+                <FormInput
+                  type="text"
+                  value={id===undefined?parking:hotelData.facilities!==undefined && hotelData.facilities[0].parking}
+                  onChange={(e) => setParking(e.target.value)}
+                />
+                </>
+              )              
+            }
             <FormLabel>Overview*</FormLabel>
             <FormTextArea
-              value={overview}
+              value={id===undefined?overview:hotelData.overview}
               onChange={(e) => setOverview(e.target.value)}
             />
             <FormLabel>Images*</FormLabel>

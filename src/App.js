@@ -59,6 +59,7 @@ function App() {
                     <Route path="/profile" element={<Profile />} />
                     <Route path="managevendors" element={<ManageAdmin />} />
                     <Route path="/addhotels" element={<AddHotels />} />
+                    <Route path="/addhotels/:id" element={<AddHotels />} />
                     <Route
                       path="/upcomingbookings"
                       element={<UpcomingBookings />}
