@@ -426,6 +426,14 @@ const ManageAdmin = () => {
             </TextWrapper>
           </Root>
           <HotelCardsWrapper>{getComponents()}</HotelCardsWrapper>
+          <TablePagination
+            component="div"
+            count={response?.totalrecords}
+            page={page}
+            onPageChange={handleChangePage}
+            rowsPerPage={rowsPerPage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
         </TextRoot>
       </TextMainWrapper>
     </>

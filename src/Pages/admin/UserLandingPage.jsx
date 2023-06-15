@@ -8,6 +8,53 @@ import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@mui/material";
 import { Modal } from "react-bootstrap";
+import Typography from "@mui/material/Typography";
+import { styled as newStyle } from "@mui/material/styles";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
+import PropTypes from "prop-types";
+
+const BootstrapDialog = newStyle(Dialog)(({ theme }) => ({
+  "& .MuiDialogContent-root": {
+    padding: theme.spacing(2),
+  },
+  "& .MuiDialogActions-root": {
+    padding: theme.spacing(1),
+  },
+}));
+
+function BootstrapDialogTitle(props) {
+  const { children, onClose, ...other } = props;
+
+  return (
+    <DialogTitle sx={{ m: 0, p: 2 }} {...other}>
+      {children}
+      {onClose ? (
+        <IconButton
+          aria-label="close"
+          onClick={onClose}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+      ) : null}
+    </DialogTitle>
+  );
+}
+
+BootstrapDialogTitle.propTypes = {
+  children: PropTypes.node,
+  onClose: PropTypes.func.isRequired,
+};
 
 const UserLandingPage = () => {
   const [allStates, setAllStates] = useState([]);
@@ -35,13 +82,38 @@ const UserLandingPage = () => {
 
   function deleteConfirmation(e) {
     setThemeId(e.target.id);
-    setShowModal(true);
+    setDeletePopUp(true);
   }
-
+  const handleClose = () => {
+    setDeletePopUp(false);
+  };
   function hideModal() {
     setShowModal(false);
   }
+  const deleteRecord = () => {
+    handleDeleteTheme();
+  };
 
+  const deleteVendor = async (vendorId) => {
+    await axios
+      .delete(
+        `${environmentVariables.apiUrl}/admin/deletevendor/${vendorId._id}`,
+        {
+          headers: { _token: authData.data.token },
+        }
+      )
+      .then((response) => {
+        setIsLoading(true);
+        getThemes();
+        setDeletePopUp(false);
+        Swal.fire("Deleted", "Hotel Deleted Successfully", "success");
+      })
+      .catch((err) => {
+        console.log("error", err);
+        setIsLoading(false);
+        Swal.fire("Error", "Something went wrong", "error");
+      });
+  };
   const stateData = [
     {
       name: "Andhra Pradesh",
@@ -401,6 +473,7 @@ const UserLandingPage = () => {
               "Successfully added the entered theme",
               "success"
             );
+            getThemes();
           } else {
             setAddThemePopUp(false);
             setTheme(null);
@@ -440,12 +513,14 @@ const UserLandingPage = () => {
           Swal.fire("Error", "Something went wrong!", "error");
         }
         setThemeId(null);
-        setShowModal(false);
+        setDeletePopUp(false);
+        getThemes();
       })
       .catch((err) => {
         Swal.fire("Error", "Something went wrong!", "error");
         setThemeId(null);
-        setShowModal(false);
+        setDeletePopUp(false);
+        getThemes();
       });
   };
   const handleEditTheme = (e) => {
@@ -792,7 +867,7 @@ const UserLandingPage = () => {
                             data-bs-target="#staticBackdrop1"
                           />
                         </ThemeBoxElement>
-                        <Modal show={showModal} onHide={hideModal}>
+                        {/* <Modal show={showModal} onHide={hideModal}>
                           <Modal.Header closeButton>
                             <Modal.Title>Delete Confirmation</Modal.Title>
                           </Modal.Header>
@@ -813,7 +888,40 @@ const UserLandingPage = () => {
                               Delete
                             </Button>
                           </Modal.Footer>
-                        </Modal>
+                        </Modal> */}
+                        <BootstrapDialog
+                          onClose={handleClose}
+                          aria-labelledby="customized-dialog-title"
+                          open={deletePopUp}
+                        >
+                          <BootstrapDialogTitle
+                            id="customized-dialog-title"
+                            onClose={handleClose}
+                          >
+                            Delete
+                          </BootstrapDialogTitle>
+                          <DialogContent dividers>
+                            <Typography gutterBottom>
+                              Are you sure you want to delete?
+                            </Typography>
+                          </DialogContent>
+                          <DialogActions>
+                            <Button
+                              variant="contained"
+                              color="success"
+                              onClick={handleClose}
+                            >
+                              Cancel
+                            </Button>
+                            <Button
+                              variant="contained"
+                              color="error"
+                              onClick={() => deleteRecord()}
+                            >
+                              Delete
+                            </Button>
+                          </DialogActions>
+                        </BootstrapDialog>
                       </RecentlyDocumentUploaded>
                     );
                   })}

@@ -15,6 +15,13 @@ const Root = styled.div`
   margin: 10px auto;
   padding: 20px;
 `;
+
+const HeadingWrapper = styled.div`
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
 const MainHeading = styled.div`
   font-size: 1.75rem;
   color: #000;
@@ -275,7 +282,7 @@ const AddHotels = () => {
     formdata.append(`theme`, theme);
     formdata.append("lat", lat);
     formdata.append("long", long);
-    formdata.append("hotelVendorId",vendorId);
+    formdata.append("hotelVendorId", vendorId);
     axios({
       method: "post",
       url: `${environmentVariables.apiUrl}/admin/addhotel`,
@@ -289,7 +296,7 @@ const AddHotels = () => {
       .then((response) => {
         setName("");
         setArea("");
-        setAddress("")
+        setAddress("");
         setStateName("");
         setCityName("");
         setCategory("");
@@ -303,12 +310,8 @@ const AddHotels = () => {
         setLat("");
         setLong("");
         setMultipleFiles("");
-        Swal.fire(
-          "Added",
-          "New Hotel added successfully",
-          "success"
-        );
-        navigation('/managehotels')
+        Swal.fire("Added", "New Hotel added successfully", "success");
+        navigation("/managehotels");
       })
       .catch((error) => {
         console.log("///////////////", error);
@@ -334,15 +337,15 @@ const AddHotels = () => {
   };
   return (
     <Root>
-      <div style={{ display: "flex", alignItems: "center" }}>
+      <HeadingWrapper>
         {" "}
         <i
-          style={{ cursor: "pointer", marginRight: "50px" }}
+          style={{ position: "absolute", left: "0" }}
           onClick={() => navigate(-1)}
           class="fa-solid fa-chevron-left fa-2x"
         ></i>
         <MainHeading>Add New Hotel</MainHeading>
-      </div>
+      </HeadingWrapper>
       <MainContainer>
         <HotelAddForm>
           <FormWrapper>
@@ -452,8 +455,10 @@ const AddHotels = () => {
                   onChange={(e) => setLong(e.target.value)}
                 />
               </div>
-              <GetLocationText onClick={getHotelLatLong}>Get Coordinates</GetLocationText>
-              
+              <GetLocationText onClick={getHotelLatLong}>
+                Get Coordinates
+              </GetLocationText>
+
               <SelectVendor onChange={(e) => setVendorId(e.target.value)}>
                 <SelectOption>Select Vendor*</SelectOption>
                 {vendorlist &&
