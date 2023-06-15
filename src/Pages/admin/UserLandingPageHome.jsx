@@ -209,15 +209,15 @@ const UserLandingPageHome = () => {
   }
   return (
     <Root>
-      <div style={{ display: "flex", alignItems: "center" }}>
+      <HeadingWrapper>
         {" "}
         <i
-          style={{ cursor: "pointer", marginRight: "50px" }}
+          style={{ position: "absolute", left: "0" }}
           onClick={() => navigate(-1)}
           class="fa-solid fa-chevron-left fa-2x"
         ></i>
         <MainHeading>Manage Home Landing Page</MainHeading>
-      </div>
+      </HeadingWrapper>
       <div style={{ backgroundColor: "#fff", marginBottom: "10px" }}>
         {" "}
         <ThemeContainer>
@@ -523,6 +523,13 @@ const UserLandingPageHome = () => {
   );
 };
 
+const HeadingWrapper = styled.div`
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+const BackIcon = styled.i``;
 const AddButton = styled.div`
   background-color: #01575c;
   height: 40px;

@@ -96,6 +96,12 @@ const TextRoot = styled.div`
     width: 100vw;
   }
 `;
+const HeadingWrapper = styled.div`
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
 const DocInfo = styled.div`
   // display: flex;
 `;
@@ -114,7 +120,7 @@ const Root = styled.div`
 
 const Heading = styled.div`
   font-size: 1.75rem;
-  margin-right: 360px;
+  /* margin-right: 360px; */
   @media (max-width: 768px) {
     display: none;
   }
@@ -137,7 +143,7 @@ const Select = styled.select`
 `;
 const TextWrapper = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   @media (max-width: 768px) {
     justify-content: flex-end;
   }
@@ -344,18 +350,18 @@ const ManageAdmin = () => {
         )}
         <TextRoot>
           <Root>
+            <HeadingWrapper>
+              {" "}
+              <i
+                style={{ position: "absolute", left: "0" }}
+                onClick={() => navigate(-1)}
+                class="fa-solid fa-chevron-left fa-2x"
+              ></i>
+              <Heading> Manage Vendors</Heading>
+            </HeadingWrapper>
             <TextWrapper>
-              <div style={{ display: "flex", alignItems: "center" }}>
-                {" "}
-                <i
-                  style={{ cursor: "pointer", marginRight: "50px" }}
-                  onClick={() => navigate(-1)}
-                  class="fa-solid fa-chevron-left fa-2x"
-                ></i>
-                <Heading> Manage Admin/Vendor</Heading>
-              </div>
               <AddButton onClick={() => setAddVendorPopUp(true)}>
-                Add Vendor/Admin
+                Add Vendor
               </AddButton>
             </TextWrapper>
           </Root>
