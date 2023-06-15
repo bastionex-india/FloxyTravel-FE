@@ -13,7 +13,7 @@ import io, { socketIOClient } from "socket.io-client";
 const Root = styled.div`
   box-shadow: 0 0 49px 0 rgba(0, 0, 0, 0.11);
   background-color: #fff;
-  padding: 10px 100px;
+  padding: 10px 25px;
   display: flex;
   justify-content: space-between;
   height: 80px;
@@ -72,7 +72,7 @@ const RightWrapper = styled.div`
 
 const NotificationBell = styled.img`
   width: 24px;
-  margin-right: 80px;
+  margin-right: 20px;
   cursor: pointer;
 `;
 const NotificationsWrapper = styled.div`
@@ -81,13 +81,19 @@ const NotificationsWrapper = styled.div`
 
 const Notifications = styled.div`
   position: absolute;
-  background-color: #01515b;
-  color: #fff;
+  background-color: #fff;
+  color: #000;
   height: 240px;
   overflow: scroll;
-  width: 275px;
+  width: 400px;
   height: 275px;
+  right: 15px;
   overflow: scroll;
+  border: 1px solid #bdbdbd;
+  border-radius: 5px;
+  ::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 const Notification = styled.div`
@@ -101,7 +107,7 @@ const NotificationDiv = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: ${(props) => (props.opened === true ? "grey" : "#01515b")};
+  background-color: ${(props) => (props.opened === true ? "#fff" : "#f8f8fa")};
 `;
 const NotificationNumber = styled.div`
   position: absolute;
@@ -112,7 +118,7 @@ const NotificationNumber = styled.div`
   border-radius: 50%;
   background-color: #01515b;
   top: -3px;
-  right: 75px;
+  right: 13px;
   font-size: 13px;
 `;
 function Navigation(props) {
@@ -201,7 +207,6 @@ function Navigation(props) {
         headers: { _token: authData?.data?.token },
       })
       .then((response) => {
-        console.log(response.data.data);
         setNotificationData(
           response.data.data.sort((a, b) => b.createdAt - a.createdAt)
         );

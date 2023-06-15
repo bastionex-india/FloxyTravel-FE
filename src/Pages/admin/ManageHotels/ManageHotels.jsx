@@ -13,9 +13,12 @@ import Swal from "sweetalert2";
 
 import { Button } from "@mui/material";
 import TablePagination from "@mui/material/TablePagination";
-
-
-
+const HeadingWrapper = styled.div`
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
 const HotelCardsWrapper = styled.div``;
 const HotelCard = styled.div`
   display: flex;
@@ -86,7 +89,7 @@ const Root = styled.div`
 
 const Heading = styled.div`
   font-size: 1.75rem;
-  margin-right: 360px;
+  /* ; */
   @media (max-width: 768px) {
     display: none;
   }
@@ -392,15 +395,15 @@ const ManageAdmin = () => {
 
         <TextRoot>
           <Root>
-            <div style={{ display: "flex", alignItems: "center" }}>
+            <HeadingWrapper>
               {" "}
               <i
-                style={{ cursor: "pointer", marginRight: "50px" }}
+                style={{ position: "absolute", left: "0" }}
                 onClick={() => navigate(-1)}
                 class="fa-solid fa-chevron-left fa-2x"
               ></i>
               <Heading> Manage Hotels</Heading>
-            </div>
+            </HeadingWrapper>
 
             <TextWrapper>
               <SelectVendor onChange={vendorHandler}>
@@ -421,6 +424,14 @@ const ManageAdmin = () => {
             </TextWrapper>
           </Root>
           <HotelCardsWrapper>{getComponents()}</HotelCardsWrapper>
+          <TablePagination
+            component="div"
+            count={response?.totalrecords}
+            page={page}
+            onPageChange={handleChangePage}
+            rowsPerPage={rowsPerPage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
         </TextRoot>
         
       </TextMainWrapper>

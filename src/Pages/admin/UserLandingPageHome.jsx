@@ -9,6 +9,52 @@ import { Button } from "@mui/material";
 
 import { environmentVariables } from "../../config/config";
 import { Modal } from "react-bootstrap";
+import Typography from "@mui/material/Typography";
+import { styled as newStyle } from "@mui/material/styles";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
+import PropTypes from "prop-types";
+const BootstrapDialog = newStyle(Dialog)(({ theme }) => ({
+  "& .MuiDialogContent-root": {
+    padding: theme.spacing(2),
+  },
+  "& .MuiDialogActions-root": {
+    padding: theme.spacing(1),
+  },
+}));
+
+function BootstrapDialogTitle(props) {
+  const { children, onClose, ...other } = props;
+
+  return (
+    <DialogTitle sx={{ m: 0, p: 2 }} {...other}>
+      {children}
+      {onClose ? (
+        <IconButton
+          aria-label="close"
+          onClick={onClose}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+      ) : null}
+    </DialogTitle>
+  );
+}
+
+BootstrapDialogTitle.propTypes = {
+  children: PropTypes.node,
+  onClose: PropTypes.func.isRequired,
+};
 
 const UserLandingPageHome = () => {
   const [isPriorityChanged, setIsPriority] = useState(false);
@@ -28,6 +74,12 @@ const UserLandingPageHome = () => {
 
   const navigate = useNavigate();
 
+  const handleClose = () => {
+    setDeletePopUp(false);
+  };
+  const deleteRecord = (item) => {
+    handleDeleteData();
+  };
   const getPopularCities = () => {
     axios
       .get(`${environmentVariables.apiUrl}/auth/getnameofcity`)
@@ -212,15 +264,15 @@ const UserLandingPageHome = () => {
   }
   return (
     <Root>
-      <div style={{ display: "flex", alignItems: "center" }}>
+      <HeadingWrapper>
         {" "}
         <i
-          style={{ cursor: "pointer", marginRight: "50px" }}
+          style={{ position: "absolute", left: "0" }}
           onClick={() => navigate(-1)}
           class="fa-solid fa-chevron-left fa-2x"
         ></i>
         <MainHeading>Manage Home Landing Page</MainHeading>
-      </div>
+      </HeadingWrapper>
       <div style={{ backgroundColor: "#fff", marginBottom: "10px" }}>
         {" "}
         <ThemeContainer>
@@ -268,11 +320,14 @@ const UserLandingPageHome = () => {
                     <ThemeBoxElement>{val?.theme}</ThemeBoxElement>
                     <ThemeBoxElement style={{ justifyContent: "flex-end" }}>
                       <button type="button" class="btn">
-                      <DeleteIcon
-                        id={val?._id}
-                        onClick={(e) => deleteConfirmation(e)}
-                        className="fa-solid fa-trash"
-                      />
+                        <DeleteIcon
+                          id={val?._id}
+                          onClick={(e) => {
+                            setDeletePopUp(true);
+                            setThemeId(e.target.id);
+                          }}
+                          className="fa-solid fa-trash"
+                        />
                       </button>
                       <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#exampleModal">
                       <EditIcon
@@ -282,20 +337,39 @@ const UserLandingPageHome = () => {
                         
                       />
                       </button>
-                      <Modal show={showModal} onHide={hideModal}>
-            <Modal.Header closeButton>
-              <Modal.Title>Delete Confirmation</Modal.Title>
-            </Modal.Header>
-            <Modal.Body><div className="alert alert-danger">Are you sure you want to delete ?</div></Modal.Body>
-            <Modal.Footer>
-              <Button variant="default" onClick={hideModal}>
-                Cancel
-              </Button>
-              <Button variant="danger" id={val?._id} onClick={() => handleDeleteData()}>
-                Delete
-              </Button>
-            </Modal.Footer>
-          </Modal>
+                      <BootstrapDialog
+                        onClose={handleClose}
+                        aria-labelledby="customized-dialog-title"
+                        open={deletePopUp}
+                      >
+                        <BootstrapDialogTitle
+                          id="customized-dialog-title"
+                          onClose={handleClose}
+                        >
+                          Delete
+                        </BootstrapDialogTitle>
+                        <DialogContent dividers>
+                          <Typography gutterBottom>
+                            Are you sure you want to delete the vendor?
+                          </Typography>
+                        </DialogContent>
+                        <DialogActions>
+                          <Button
+                            variant="contained"
+                            color="success"
+                            onClick={handleClose}
+                          >
+                            Cancel
+                          </Button>
+                          <Button
+                            variant="contained"
+                            color="error"
+                            onClick={() => deleteRecord()}
+                          >
+                            Delete
+                          </Button>
+                        </DialogActions>
+                      </BootstrapDialog>
                       {/* <EditIcon
                         onClick={(e) => handleEditPopUp(e)}
                         id={val?._id}
@@ -450,9 +524,9 @@ const UserLandingPageHome = () => {
           </AddThemePopUp>
         </AddThemePopUpContainer>
       )} */}
-      {deletePopUp && (
-        <DeletePopUpContainer >
-          <DeletePopUp style={{backgroundColor: 'white'}}>
+      {/* {deletePopUp && (
+        <DeletePopUpContainer>
+          <DeletePopUp style={{ backgroundColor: "white" }}>
             <AddStatePopUpCloseIcon
               onClick={() => setDeletePopUp(false)}
               className="fa-solid fa-circle-xmark"
@@ -470,15 +544,18 @@ const UserLandingPageHome = () => {
             </DeletePopUpButtonWrapper>
           </DeletePopUp>
         </DeletePopUpContainer>
-      )}
-
-
-
-
+      )} */}
     </Root>
   );
 };
 
+const HeadingWrapper = styled.div`
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+const BackIcon = styled.i``;
 const AddButton = styled.div`
   background-color: #01575c;
   height: 40px;

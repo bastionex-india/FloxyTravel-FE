@@ -82,7 +82,6 @@ const Root = styled.div`
 
 const Heading = styled.div`
   font-size: 1.75rem;
-  margin-right: 360px;
   @media (max-width: 768px) {
     display: none;
   }
