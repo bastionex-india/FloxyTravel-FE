@@ -54,7 +54,7 @@ const VendorBookingHistory = () => {
         headers: { _token: authData.data.token },
       })
       .then((response) => {
-        console.log("response.data", response.data.data);
+        // console.log("response.data", response.data.data);
         setAllData(response.data.data);
         setIsLoading(false);
       })

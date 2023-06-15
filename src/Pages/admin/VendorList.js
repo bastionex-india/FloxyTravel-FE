@@ -31,8 +31,6 @@ import { useFormik } from "formik";
 import { VendorRegisterSchema } from "./schemas/VendorRegisterSchems";
 import Check from './Check.js';
 import { Modal } from "react-bootstrap";
-import Chart from "./BarChart.js";
-import { BarChart, Bar, CartesianGrid, XAxis, YAxis } from 'recharts';
 
 
 import Table from '@mui/material/Table';
@@ -59,7 +57,6 @@ const ErrorMessage = styled.div`
   margin-bottom: 20px;
 `;
 
-
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -76,7 +73,7 @@ const VendorList = () => {
   const [adminResponseData, setAdminResponseData] = useState([]);
   const { authData, setAuthData } = useContext(AuthContext);
   const navigate = useNavigate();
-
+  const [isLoading, setIsLoading] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [number, setNumber] = useState("");
@@ -94,7 +91,8 @@ const VendorList = () => {
       })
       .then((response) => {
         // console.log("vendorlist",response.data)
-        setData(response.data.message);
+        setData(response.data.data.Records);
+        setIsLoading(false);
       })
       .catch((err) => {
         console.log("error", err);

@@ -22,16 +22,16 @@ import Box from '@mui/material/Box';
 import moment from "moment";
 import CreateAdminVendor from "../CreateAdminVendor/CreateAdminVendor";
 
-
-import PropTypes from 'prop-types';
-import { styled as newStyle } from '@mui/material/styles';
-import Dialog from '@mui/material/Dialog';
-import DialogTitle from '@mui/material/DialogTitle';
-import DialogContent from '@mui/material/DialogContent';
-import DialogActions from '@mui/material/DialogActions';
-import IconButton from '@mui/material/IconButton';
-import CloseIcon from '@mui/icons-material/Close';
-import Typography from '@mui/material/Typography';
+import PropTypes from "prop-types";
+import { styled as newStyle } from "@mui/material/styles";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
+import Typography from "@mui/material/Typography";
+import TablePagination from "@mui/material/TablePagination";
 
 const BootstrapDialog = newStyle(Dialog)(({ theme }) => ({
   '& .MuiDialogContent-root': {
@@ -89,8 +89,8 @@ const style = {
 
 const TextRoot = styled.div`
   // background-color: #9f94942b;
-  padding: 20px 0px;
-  width: 967px;
+  padding: 20px;
+  /* width: 967px; */
   margin: 10px auto;
   @media (max-width: 768px) {
     width: 100vw;
@@ -240,6 +240,8 @@ const ManageAdmin = () => {
   const { authData, setAuthData } = useContext(AuthContext);
   const [addVendorPopUp, setAddVendorPopUp] = useState(false);
   const [data, setData] = useState("");
+  const [response, setResponse] = useState();
+
   const navigate = useNavigate();
 
   const [selectedVendor, setSelectedVendor] = useState(null);
@@ -264,7 +266,8 @@ const ManageAdmin = () => {
       })
       .then((response) => {
         console.log("vendorlist", response.data);
-        setData(response.data.message);
+        setData(response.data.data.records);
+        setResponse(response?.data?.data);
         setIsLoading(false);
       })
       .catch((err) => {
@@ -311,10 +314,16 @@ const ManageAdmin = () => {
         <TextRoot>
           <Root>
             <TextWrapper>
-              <Button variant="outlined" onClick={() => navigate(-1)} type="button"> <i className="fa-solid fa fa-arrow-circle-left"
-              ></i> Back</Button>
-              <Heading> Manage Admin/Vendor</Heading>
-              <AddButton onClick={() => setAddVendorPopUp(true) }>
+              <div style={{ display: "flex", alignItems: "center" }}>
+                {" "}
+                <i
+                  style={{ cursor: "pointer", marginRight: "50px" }}
+                  onClick={() => navigate(-1)}
+                  class="fa-solid fa-chevron-left fa-2x"
+                ></i>
+                <Heading> Manage Admin/Vendor</Heading>
+              </div>
+              <AddButton onClick={() => setAddVendorPopUp(true)}>
                 Add Vendor/Admin
               </AddButton>
             </TextWrapper>
@@ -396,6 +405,14 @@ const ManageAdmin = () => {
                     })}
                 </TableBody>
               </Table>
+              <TablePagination
+                component="div"
+                count={response?.totalrecords}
+                page={page}
+                onPageChange={handleChangePage}
+                rowsPerPage={rowsPerPage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+              />
             </TableContainer>
           )}
         </TextRoot>

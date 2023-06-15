@@ -9,8 +9,10 @@ import { useEffect } from "react";
 import { useContext } from "react";
 import { AuthContext } from "../../../ContextApi/ContextApi";
 import io, { socketIOClient } from "socket.io-client";
+import Swal from "sweetalert2";
 
 import { Button } from "@mui/material";
+import TablePagination from "@mui/material/TablePagination";
 
 
 
@@ -59,8 +61,8 @@ const HotelImageWrapper = styled.div``;
 
 const TextRoot = styled.div`
   // background-color: #9f94942b;
-  padding: 20px 0px;
-  width: 967px;
+  padding: 20px;
+  /* width: 967px; */
   margin: 10px auto;
   @media (max-width: 768px) {
     width: 100vw;
@@ -218,22 +220,33 @@ const TextCenter = styled.div`
 `;
 
 const ManageAdmin = () => {
-  const [select, setSelect] = useState("");
-  const [select1, setSelect1] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const { authData, setAuthData } = useContext(AuthContext);
   const [addVendorPopUp, setAddVendorPopUp] = useState(false);
-  const [data, setData] = useState("");
-  const [vendorlist,setVendorList] = useState(null);
+  const [data, setData] = useState();
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [response, setResponse] = useState();
+  const [vendorlist, setVendorList] = useState(null);
   const navigate = useNavigate();
-  
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
   const getAllListData = async () => {
     await axios
-      .get(`${environmentVariables.apiUrl}/admin/getallhotels`, {
-        headers: { _token: authData.data.token },
-      })
+      .get(
+        `${environmentVariables.apiUrl}/admin/getallhotels?page=${page}&limit=${rowsPerPage}`,
+        {
+          headers: { _token: authData.data.token },
+        }
+      )
       .then((response) => {
-        setData(response.data.data);
+        setResponse(response.data.data);
+        setData(response.data.data.records);
         setIsLoading(false);
       })
       .catch((err) => {
@@ -261,7 +274,7 @@ const ManageAdmin = () => {
         headers: { _token: authData.data.token },
       })
       .then((response) => {
-        setVendorList(response.data.message);
+        setVendorList(response.data.data.Records);
         setIsLoading(false);
       })
       .catch((err) => {
@@ -272,30 +285,123 @@ const ManageAdmin = () => {
   useEffect(() => {
     setIsLoading(true);
     getAllListData();
-    getVendorList()
-  }, []);
+    getVendorList();
+  }, [page, rowsPerPage]);
 
-  const boldTextCss = {
-    fontWeight: 700,
-  };
-  const vendorHandler = (e)=>{
+  const vendorHandler = (e) => {
     setIsLoading(true);
-    if(e.target.value=='all'){
+    if (e.target.value === "all") {
       getAllListData();
     }
-    else{
-      getHotelByVendorId(e.target.value)
+  };
+  const DeleteHotel = (id) => {
+    const config = {
+      method: "delete",
+      url: `${environmentVariables.apiUrl}/admin/deletehotel/${id}`,
+      headers: {
+        _token: authData.data.token,
+      },
+    };
+
+    axios(config)
+      .then(function (response) {
+        Swal.fire("Deleted", "Hotel Deleted Successfully", "success");
+      })
+      .catch(function (error) {
+        Swal.fire("Error", "Something went wrong", "error");
+      });
+  };
+  const getComponents = () => {
+    if (data === null || data === undefined) {
+      return (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            marginTop: "30px",
+          }}
+        >
+          <CircularLoader />
+        </div>
+      );
+    } else {
+      if (isLoading === true) {
+        return (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              marginTop: "30px",
+            }}
+          >
+            <CircularLoader />
+          </div>
+        );
+      } else {
+        if (data.length === 0) {
+          return (
+            <TextCenter>
+              <span>No hotels Found</span>
+            </TextCenter>
+          );
+        } else {
+          return data.map((row, index) => {
+            let imageSrc = row.image.length
+              ? row.image[0]
+              : "1675936089112-teanest1.jpg";
+            return (
+              <HotelCard key={index}>
+                <HotelImageWrapper>
+                  <HotelImage
+                    src={`https://uat-travel-api.floxypay.com/uploads/${imageSrc}`}
+                  />
+                </HotelImageWrapper>
+                <HotelInfoWrapper>
+                  <HotelBigText>{row.hotelname}</HotelBigText>
+
+                  <HotelIconWrapper>
+                    {" "}
+                    <HotelIcon></HotelIcon>
+                    <HotelInfoText>City : {row.city}</HotelInfoText>
+                    <HotelInfoText>State : {row.state}</HotelInfoText>
+                    <HotelInfoText>Country : {row.country}</HotelInfoText>
+                    <HotelInfoText>Theme : {row.theme}</HotelInfoText>
+                    <HotelInfoText>
+                      Category : {row.hotelCategory}
+                    </HotelInfoText>
+                  </HotelIconWrapper>
+                </HotelInfoWrapper>
+                <HotelButtonWrapper>
+                  <HotelActionButtons>Edit</HotelActionButtons>
+                  <HotelActionButtons onClick={() => DeleteHotel(row._id)}>
+                    Delete
+                  </HotelActionButtons>
+                  <HotelActionButtons>Hide</HotelActionButtons>
+                </HotelButtonWrapper>
+              </HotelCard>
+            );
+          });
+        }
+      }
     }
-  }
+  };
+  console.log("data", data);
   return (
     <>
       <TextMainWrapper>
 
         <TextRoot>
           <Root>
-            <Button variant="outlined" onClick={() => navigate(-1)} type="button"> <i className="fa-solid fa fa-arrow-circle-left"
-                ></i> Back</Button>
-            <Heading> Manage Hotels</Heading>
+            <div style={{ display: "flex", alignItems: "center" }}>
+              {" "}
+              <i
+                style={{ cursor: "pointer", marginRight: "50px" }}
+                onClick={() => navigate(-1)}
+                class="fa-solid fa-chevron-left fa-2x"
+              ></i>
+              <Heading> Manage Hotels</Heading>
+            </div>
+
             <TextWrapper>
               <SelectVendor onChange={vendorHandler}>
                 <SelectOption value={'all'}>Select Vendor*</SelectOption>
@@ -309,69 +415,12 @@ const ManageAdmin = () => {
                   })
                 }
               </SelectVendor>
-              <AddButton onClick={() => setAddVendorPopUp(true)}>
+              <AddButton onClick={() => navigate("/addhotels")}>
                 Add Hotel
               </AddButton>
             </TextWrapper>
           </Root>
-          <HotelCardsWrapper>
-          {isLoading === true ? (
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                marginTop: "30px",
-              }}
-            >
-              <CircularLoader></CircularLoader>
-            </div>
-          ) : 
-          data && data.length ? 
-              data.map((row, index) => {
-                let imageSrc = row.image.length ? row.image[0]: '1675936089112-teanest1.jpg'
-                return (
-                  <HotelCard key={index}>
-                    <HotelImageWrapper>
-                      <HotelImage
-                        src={
-                          `https://uat-travel-api.floxypay.com/uploads/${imageSrc}`
-                        }
-                      />
-                    </HotelImageWrapper>
-                    <HotelInfoWrapper>
-                      <HotelBigText>{row.hotelname}</HotelBigText>
-
-                      <HotelIconWrapper>
-                        {" "}
-                        <HotelIcon></HotelIcon>
-                        <HotelInfoText>City : {row.city}</HotelInfoText>
-                        <HotelInfoText>State : {row.state}</HotelInfoText>
-                        <HotelInfoText>Country : {row.country}</HotelInfoText>
-                        <HotelInfoText>Theme : {row.theme}</HotelInfoText>
-                        <HotelInfoText>Category : {row.hotelCategory}</HotelInfoText>
-                      </HotelIconWrapper>
-                    </HotelInfoWrapper>
-                    <HotelButtonWrapper>
-                      <HotelActionButtons>Edit</HotelActionButtons>
-                      <HotelActionButtons>Delete</HotelActionButtons>
-                      <HotelActionButtons>Hide</HotelActionButtons>
-                    </HotelButtonWrapper>
-                  </HotelCard>
-                )
-              })
-              :
-              <>
-              <TextCenter>
-                <span>No hotels found </span>
-              </TextCenter>
-              </>
-          }
-
-           
-
-
-          </HotelCardsWrapper>
-          {/* )} */}
+          <HotelCardsWrapper>{getComponents()}</HotelCardsWrapper>
         </TextRoot>
         
       </TextMainWrapper>

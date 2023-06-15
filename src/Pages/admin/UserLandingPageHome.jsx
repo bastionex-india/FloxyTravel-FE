@@ -24,8 +24,7 @@ const UserLandingPageHome = () => {
   const [deletePopUp, setDeletePopUp] = useState(false);
   const [cityData, setCityData] = useState();
   const [city, setCity] = useState(null);
-  const [showModal,setShowModal] = useState(false);
-
+  const [showModal, setShowModal] = useState(false);
 
   const navigate = useNavigate();
 
@@ -164,7 +163,6 @@ const UserLandingPageHome = () => {
     setTheme(null);
     setCity(null);
     setTitle(null);
-
   };
   useEffect(() => {
     setIsLoading(true);
@@ -214,9 +212,15 @@ const UserLandingPageHome = () => {
   }
   return (
     <Root>
-      <Button variant="outlined" onClick={() => navigate(-1)} type="button"> <i className="fa-solid fa fa-arrow-circle-left"
-                ></i> Back</Button>
-      <MainHeading>Manage Home Landing Page</MainHeading>
+      <div style={{ display: "flex", alignItems: "center" }}>
+        {" "}
+        <i
+          style={{ cursor: "pointer", marginRight: "50px" }}
+          onClick={() => navigate(-1)}
+          class="fa-solid fa-chevron-left fa-2x"
+        ></i>
+        <MainHeading>Manage Home Landing Page</MainHeading>
+      </div>
       <div style={{ backgroundColor: "#fff", marginBottom: "10px" }}>
         {" "}
         <ThemeContainer>

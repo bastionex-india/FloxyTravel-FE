@@ -12,21 +12,25 @@ import styled from "styled-components";
 // import { DocName } from '../Dashboard/Dashboard.styles';
 // import { DocInfo } from '../Dashboard/Dashboard.styles';
 
-
-
-import { Button,Table,TableBody,TableCell,TableContainer,TableHead,TableRow,Paper } from "@mui/material";
-
-
+import {
+  Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+} from "@mui/material";
 
 const boldTextCss = {
   fontWeight: 700,
 };
 
-
 const TextRoot = styled.div`
   // background-color: #9f94942b;
-  padding: 20px 0px;
-  width: 967px;
+  padding: 20px;
+  /* width: 967px; */
   margin: 10px auto;
   @media (max-width: 768px) {
     width: 100vw;
@@ -78,9 +82,6 @@ const TextMainWrapper = styled.div`
     display: flex;
   }
 `;
-
-
-
 
 const BookingHistory = () => {
   const { authData, setAuthData } = useContext(AuthContext);
@@ -150,7 +151,7 @@ const BookingHistory = () => {
       .request(config)
       .then((response) => {
         // setData(response.data.sort((a, b) => b.createdAt - a.createdAt));
-        setData(response.data.data);
+        setData(response?.data?.data?.records);
         setIsLoading(false);
       })
       .catch((error) => {
@@ -170,11 +171,17 @@ const BookingHistory = () => {
       <TextMainWrapper>
         <TextRoot>
           <Root>
-          <Button variant="outlined" onClick={() => navigate(-1)} type="button"> <i className="fa-solid fa fa-arrow-circle-left"
-                ></i> Back</Button>
-            <TextWrapper>
-              
+            <div style={{ display: "flex", alignItems: "center" }}>
+              {" "}
+              <i
+                style={{ cursor: "pointer", marginRight: "50px" }}
+                onClick={() => navigate(-1)}
+                class="fa-solid fa-chevron-left fa-2x"
+              ></i>
               <Heading> Booking History</Heading>
+            </div>
+            <TextWrapper>
+              {/* <Heading> Booking History</Heading> */}
               <TextSelectField>
                 <Select
                   onChange={(e) => {

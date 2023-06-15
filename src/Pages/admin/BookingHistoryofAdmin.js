@@ -17,11 +17,12 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import TablePagination from "@mui/material/TablePagination";
 
 const TextRoot = styled.div`
   // background-color: #9f94942b;
-  padding: 20px 0px;
-  width: 967px;
+  padding: 20px;
+  /* width: 967px; */
   margin: 10px auto;
   @media (max-width: 768px) {
     width: 100vw;
@@ -77,12 +78,26 @@ const BookingHistoryofAdmin = () => {
   const [select, setSelect] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [select1, setSelect1] = useState("");
+  const [response, setResponse] = useState({});
   const { authData, setAuthData } = useContext(AuthContext);
   const [data, setData] = useState("");
   const navigation = useNavigate();
 
+  //  pagination
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+  // //  pagination  End
+
   const handleClick = (item) => {
-    console.log("hcjhcjhf", item);
     navigation("/bookinghistorybyorderid", { state: item });
   };
   useEffect(() => {
@@ -109,7 +124,6 @@ const BookingHistoryofAdmin = () => {
   }, []);
 
   const getAllUsers = async () => {
-    console.log("aaa", select1);
     let data;
     if (select1 !== "") {
       data = {
@@ -122,7 +136,7 @@ const BookingHistoryofAdmin = () => {
         status: select,
       };
     }
-
+    data.page = page + 1;
     let config = {
       method: "post",
       url: `${environmentVariables.apiUrl}/admin/getallbooking`,
@@ -136,7 +150,13 @@ const BookingHistoryofAdmin = () => {
     axios
       .request(config)
       .then((response) => {
-        setData(response?.data?.data.sort((a, b) => b.createdAt - a.createdAt));
+        let records = response?.data?.data.records.sort(
+          (a, b) => b.createdAt - a.createdAt
+        );
+        setResponse(response.data.data);
+        setData(
+          response?.data?.data.records.sort((a, b) => b.createdAt - a.createdAt)
+        );
         setIsLoading(false);
       })
       .catch((err) => {
@@ -147,7 +167,7 @@ const BookingHistoryofAdmin = () => {
   useEffect(() => {
     setIsLoading(true);
     getAllUsers();
-  }, [select, select1]);
+  }, [select, select1, page]);
 
   const ApprovedData = () => {};
   const PendingData = () => {};
@@ -293,6 +313,14 @@ const BookingHistoryofAdmin = () => {
                     })}
                 </TableBody>
               </Table>
+              <TablePagination
+                component="div"
+                count={response.totalrecords}
+                page={page}
+                onPageChange={handleChangePage}
+                rowsPerPage={rowsPerPage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+              />
             </TableContainer>
           )}
         </TextRoot>

@@ -56,8 +56,8 @@ const TextRoot = styled.div`
   // padding: 20px 0px;
   // width: 967px;
   // margin: 10px auto;
-  padding: 0px 0px;
-    width: 967px;
+  padding: 20px;
+    /* width: 967px; */
     margin: 12px 0px 0px 25px;
   @media (max-width: 768px) {
     width: 100vw;
@@ -140,11 +140,18 @@ const BookingHotelById = () => {
     <>
     <TextMainWrapper>
         <TextRoot>
-        <Button variant="outlined" onClick={() => navigate(-1)} type="button"> <i className="fa-solid fa fa-arrow-circle-left"
-                ></i> Back</Button>
+        <div style={{ display: "flex", alignItems: "center" }}>
+              {" "}
+              <i
+                style={{ cursor: "pointer", marginRight: "50px" }}
+                onClick={() => navigate(-1)}
+                class="fa-solid fa-chevron-left fa-2x"
+              ></i>
+              
+              <Heading> Booking Details</Heading>
+            </div>
           <Root>
             <TextWrapper>
-              <Heading> Booking Details</Heading>
             </TextWrapper>
           </Root>
         </TextRoot>
