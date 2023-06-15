@@ -132,9 +132,6 @@ export default function GraphCheck() {
 
     const [graphdata,setGraphData] = useState(monthdata);
     const { authData, setAuthData } = useContext(AuthContext);
-    const [bookingdata,setBookingdata] = useState();
-    const [hoteldata,setHoteldata] = useState();
-    const [alldata,setAlldata] = useState();
 
     function planUpdate(e)
     {
@@ -161,14 +158,52 @@ export default function GraphCheck() {
           headers: { _token: authData.data.token },
         })
           .then((response) => {
-            setBookingdata(response.data.data[0].bookingCount);
-            setHoteldata(response.data.data[0].hotelCount);
             console.log(response.data.data);
-            const data = [...response.data.data[0].bookingCount,...response.data.data[0].hotelCount]; 
-            console.log(data);
-            // console.log(response.data.data[0].hotelCount);
-            // console.log(bookingdata);
-            // console.log(hoteldata);
+            
+            const mergedata = [
+              { month: "Jan", bookingCount: "", hotelCount: ""  },
+              { month: "March", bookingCount: "", hotelCount: ""  },
+              { month: "April", bookingCount: "", hotelCount: ""  },
+              { month: "May", bookingCount: "", hotelCount: ""  },
+              { month: "June", bookingCount: "", hotelCount: ""  },
+              { month: "", bookingCount: "", hotelCount: ""  },
+              { month: "", bookingCount: "", hotelCount: ""  },
+              { month: "", bookingCount: "", hotelCount: ""  },
+              { month: "", bookingCount: "", hotelCount: ""  },
+              { month: "", bookingCount: "", hotelCount: ""  },
+              { month: "", bookingCount: "", hotelCount: ""  },
+              { month: "", bookingCount: "", hotelCount: ""  }
+            ]   
+            const bookingdata = response.data.data[0].bookingCount;
+            const hoteldata = response.data.data[0].hotelCount;
+
+            // for(let i=0;i<mergedata.length;i++)
+            // {
+            //   if()
+            // }
+
+            if(hoteldata.length>bookingdata.length)
+            {
+              for(let i=0;i<hoteldata.length;i++)
+              {
+                mergedata[i].month = hoteldata[i].month;
+                mergedata[i].hotelCount = hoteldata[i].count;
+              }
+
+              for(let i=0;i<bookingdata.length;i++)
+              {
+                for(let j=0;j<mergedata.length;j++)
+                {
+                  if(bookingdata[i].month === mergedata[j].month)
+                  {
+                    mergedata[j].bookingCount = bookingdata[i].count;
+                  }
+                }
+              }
+
+              console.log(mergedata);
+            }
+          
           })
           .catch((err) => {
             console.log(err.message);
