@@ -137,7 +137,7 @@ const Root = styled.div`
 
 const Heading = styled.div`
   font-size: 1.75rem;
-  /* margin-right: 360px; */
+  /* ; */
   @media (max-width: 768px) {
     display: none;
   }
@@ -266,8 +266,8 @@ const TextMainWrapper = styled.div`
   }
 `;
 const TextCenter = styled.div`
-  color: red;
-  text-align: center;
+  color: red; 
+  text-align:center;
 `;
 
 const ManageAdmin = () => {
@@ -310,12 +310,9 @@ const ManageAdmin = () => {
   };
   const getHotelByVendorId = async (vendorID) => {
     await axios
-      .get(
-        `${environmentVariables.apiUrl}/admin/gethoteldetailbyvendorid/${vendorID}`,
-        {
-          headers: { _token: authData.data.token },
-        }
-      )
+      .get(`${environmentVariables.apiUrl}/admin/gethoteldetailbyvendorid/${vendorID}`, {
+        headers: { _token: authData.data.token },
+      })
       .then((response) => {
         setData(response.data.data.hotels);
         setIsLoading(false);
@@ -325,9 +322,9 @@ const ManageAdmin = () => {
         setIsLoading(false);
       });
   };
-  const getVendorList = async () => {
+  const getVendorList = async()=>{
     await axios
-      .get(`http://localhost:4000/admin/getvendorlist`, {
+      .get(`${environmentVariables.apiUrl}/admin/getvendorlist`, {
         headers: { _token: authData.data.token },
       })
       .then((response) => {
@@ -338,7 +335,7 @@ const ManageAdmin = () => {
         console.log("error", err);
         setIsLoading(false);
       });
-  };
+  }
   useEffect(() => {
     setIsLoading(true);
     getAllListData();
@@ -483,6 +480,7 @@ const ManageAdmin = () => {
   return (
     <>
       <TextMainWrapper>
+
         <TextRoot>
           <Root>
             <HeadingWrapper>
@@ -497,16 +495,16 @@ const ManageAdmin = () => {
 
             <TextWrapper>
               <SelectVendor onChange={vendorHandler}>
-                <SelectOption value={"all"}>Select Vendor*</SelectOption>
-                <SelectOption value={"all"}>All</SelectOption>
-                {vendorlist &&
-                  vendorlist.map((row, index) => {
-                    return (
-                      <SelectOption key={index} value={row.vendorId}>
-                        {row.name}
-                      </SelectOption>
-                    );
-                  })}
+                <SelectOption value={'all'}>Select Vendor*</SelectOption>
+                <SelectOption value={'all'}>All</SelectOption>
+                {
+                  vendorlist && vendorlist.map((row,index)=>{
+                    
+                    return(
+                      <SelectOption key={index} value={row.vendorId}>{row.name}</SelectOption>
+                    )
+                  })
+                }
               </SelectVendor>
               <AddButton onClick={() => navigate("/addhotels")}>
                 Add Hotel
@@ -514,7 +512,16 @@ const ManageAdmin = () => {
             </TextWrapper>
           </Root>
           <HotelCardsWrapper>{getComponents()}</HotelCardsWrapper>
+          <TablePagination
+            component="div"
+            count={response?.totalrecords}
+            page={page}
+            onPageChange={handleChangePage}
+            rowsPerPage={rowsPerPage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
         </TextRoot>
+        
       </TextMainWrapper>
     </>
   );

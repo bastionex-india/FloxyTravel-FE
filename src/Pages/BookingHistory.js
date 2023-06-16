@@ -46,7 +46,6 @@ const Root = styled.div`
 
 const Heading = styled.div`
   font-size: 1.75rem;
-  margin-right: 360px;
   @media (max-width: 768px) {
     display: none;
   }
@@ -180,8 +179,40 @@ const BookingHistory = () => {
               ></i>
               <Heading> Booking History</Heading>
             </div>
-            <TextWrapper>
-              {/* <Heading> Booking History</Heading> */}
+            
+            <TextWrapper style={{marginTop: '1rem'}}>
+            <div class="dropdown">
+  <button class="btn dropdown-toggle shadow p-3 mb-5 bg-body-tertiary rounded" style={{width: '10rem'}} type="button" data-bs-toggle="dropdown" aria-expanded="false">
+  Select Range
+  </button>
+  <ul class="dropdown-menu" >
+    <li><a class="dropdown-item" href="#">All</a>
+    </li>
+    <li><a class="dropdown-item" href="#">Past Two days</a>
+    </li>
+    <li><a class="dropdown-item" href="#">Past one week</a>
+    </li>
+    <li><a class="dropdown-item" href="#">Past one month</a>
+    </li>
+  </ul>
+</div>
+
+<div class="dropdown">
+  <button class="btn dropdown-toggle shadow p-3 mb-5 bg-body-tertiary rounded" style={{width: '10rem'}} type="button" data-bs-toggle="dropdown" aria-expanded="false">
+  Select Type
+  </button>
+  <ul class="dropdown-menu" >
+    <li><a class="dropdown-item" href="#">All</a>
+    </li>
+    <li><a class="dropdown-item" href="#">Approved Booking</a>
+    </li>
+    <li><a class="dropdown-item" href="#">Pending Booking</a>
+    </li>
+  </ul>
+</div>
+</TextWrapper>
+
+            {/* <TextWrapper>
               <TextSelectField>
                 <Select
                   onChange={(e) => {
@@ -191,6 +222,13 @@ const BookingHistory = () => {
                   required
                 >
                   <option value="">Select Range</option>
+                  <option
+                    value={
+                      new Date(new Date().getTime() - 2 * 24 * 60 * 60 * 1000)
+                    }
+                  >
+                    All
+                  </option>
                   <option
                     value={
                       new Date(new Date().getTime() - 2 * 24 * 60 * 60 * 1000)
@@ -212,14 +250,9 @@ const BookingHistory = () => {
                   >
                     Past one month
                   </option>
-                  {/* <option value="2" onClick={CompletedData}>
-                    Completed Booking
-                  </option>
-                  <option value="3" onClick={CancelledData}>
-                    Cancelled Booking
-                  </option> */}
                 </Select>
               </TextSelectField>
+              
               <TextSelectField>
                 <Select
                   onChange={(e) => {
@@ -229,6 +262,9 @@ const BookingHistory = () => {
                   required
                 >
                   <option value="all" onClick={ApprovedData}>
+                    Select Type
+                  </option>
+                  <option value="all" onClick={ApprovedData}>
                     All
                   </option>
                   <option value="approved" onClick={ApprovedData}>
@@ -237,12 +273,9 @@ const BookingHistory = () => {
                   <option value="pending" onClick={PendingData}>
                     Pending Booking
                   </option>
-                  {/* <option value="cancelled" onClick={CancelledData}>
-                    Cancelled Booking
-                  </option> */}
                 </Select>
               </TextSelectField>
-            </TextWrapper>
+            </TextWrapper> */}
           </Root>
           {isLoading === true ? (
             <div
