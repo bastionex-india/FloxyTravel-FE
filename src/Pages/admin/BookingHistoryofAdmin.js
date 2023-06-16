@@ -197,7 +197,7 @@ const BookingHistoryofAdmin = () => {
               <Heading> Booking History</Heading>
             </HeadingWrapper>
             <TextWrapper>
-              <Heading> Booking History</Heading>
+              {/* <Heading> Booking History</Heading> */}
               <TextSelectField>
                 <Select
                   onChange={(e) => {
