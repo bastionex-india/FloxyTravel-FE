@@ -169,7 +169,7 @@ const BookingHistorybyOrderid = () => {
                     onClick={generateInvoiceHandler}
                     endIcon={<PictureAsPdfIcon />}
                   >
-                    Generate Invoice{" "}
+                    View Invoice{" "}
                   </Button>
                 </Grid>
                 <Grid xs={6}>
