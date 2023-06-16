@@ -1075,7 +1075,7 @@ const StatesContainer = styled.div`
   align-items: flex-start;
   padding: 20px 0;
   margin: 0 5%;
-  margin-bottom: 40px;
+  /* margin-bottom: 40px; */
 `;
 
 const StateHeading = styled.div`
@@ -1360,6 +1360,7 @@ export const PriorityButton = styled.div`
   border-radius: 5px;
   font-weight: 700;
   margin-left: 20px;
+  margin-bottom: 10px;
   /* cursor: pointer; */
 `;
 export default UserLandingPage;

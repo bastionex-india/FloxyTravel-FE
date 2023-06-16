@@ -98,8 +98,8 @@ const BookingHistoryofAdmin = () => {
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
-    if(page==0){
-      getAllUsers()
+    if (page == 0) {
+      getAllUsers();
     }
   };
   // //  pagination  End
@@ -183,7 +183,6 @@ const BookingHistoryofAdmin = () => {
   const boldTextCss = {
     fontWeight: 700,
   };
-  // console.log('response',response)
   return (
     <>
       <TextMainWrapper>
@@ -198,11 +197,12 @@ const BookingHistoryofAdmin = () => {
               <Heading> Booking History</Heading>
             </HeadingWrapper>
             <TextWrapper>
+              {/* <Heading> Booking History</Heading> */}
               <TextSelectField>
                 <Select
                   onChange={(e) => {
                     setSelect1(e.target.value);
-                    setPage(0)
+                    setPage(0);
                   }}
                   //   value={select1}
                   required
@@ -241,7 +241,7 @@ const BookingHistoryofAdmin = () => {
                 <Select
                   onChange={(e) => {
                     setSelect(e.target.value);
-                    setPage(0)
+                    setPage(0);
                   }}
                   value={select}
                   required
@@ -262,7 +262,6 @@ const BookingHistoryofAdmin = () => {
               </TextSelectField>
             </TextWrapper>
           </Root>
-
           {isLoading === true ? (
             <div
               style={{

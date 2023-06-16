@@ -270,6 +270,23 @@ const UserLandingPageHome = () => {
         ></i>
         <MainHeading>Manage Home Landing Page</MainHeading>
       </HeadingWrapper>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          padding: "20px 0",
+          margin: "0 5%",
+        }}
+      >
+        <button
+          type="button"
+          class="btn btn-primary"
+          data-bs-toggle="modal"
+          data-bs-target="#exampleModal"
+        >
+          Add Hotel Card Sections
+        </button>
+      </div>
       <div style={{ backgroundColor: "#fff", marginBottom: "10px" }}>
         {" "}
         <ThemeContainer>
@@ -278,14 +295,7 @@ const UserLandingPageHome = () => {
           {/* <AddButton onClick={() => setAddThemePopUp(true)}>
             Add Hotel Card Sections
           </AddButton> */}
-          <button
-            type="button"
-            class="btn btn-primary"
-            data-bs-toggle="modal"
-            data-bs-target="#exampleModal"
-          >
-            Add Hotel Card Sections
-          </button>
+
           {/* <StateAddIcon
           onClick={() => setAddThemePopUp(true)}
           className="fa-solid fa-circle-plus"
