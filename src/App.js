@@ -57,7 +57,7 @@ function App() {
                   <>
                     <Route path="/" element={<Dashboard1 />} />
                     <Route path="/profile" element={<Profile />} />
-                    <Route path="manageadmin" element={<ManageAdmin />} />
+                    <Route path="managevendors" element={<ManageAdmin />} />
                     <Route path="/addhotels" element={<AddHotels />} />
                     <Route
                       path="/upcomingbookings"
