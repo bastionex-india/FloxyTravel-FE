@@ -9,6 +9,7 @@ import MultiSelect from "react-multiple-select-dropdown-lite";
 import "react-multiple-select-dropdown-lite/dist/index.css";
 import { environmentVariables } from "../../../config/config";
 import Swal from "sweetalert2";
+import Checkbox from "../Checkbox";
 
 const Root = styled.div`
   /* width: 967px; */
@@ -123,6 +124,7 @@ const FormSelectTheme = styled.select`
   -moz-appearance: none;
   background-image: none;
 `;
+const Image = styled.img``;
 
 const AddHotels = () => {
   const navigation = useNavigate();
@@ -154,7 +156,11 @@ const AddHotels = () => {
   const [overview, setOverview] = useState("");
   const [multipleFiles, setMultipleFiles] = useState("");
   const [totalRooms, setTotalRooms] = useState("");
- 
+  const [images, setImages] = useState([]);
+  const [list, setList] = useState([]);
+  const [arr, setArr] = useState([]);
+  const [isCheck, setIsCheck] = useState([]);
+  const [updatedHotelData, setUpdatedHotelData] = useState([]);
 
   const navigate = useNavigate();
   const options = [
@@ -185,12 +191,21 @@ const AddHotels = () => {
       const response = await axios.get(url, {
         headers: { _token: authData.data.token },
       });
-      setHotelData(response.data.data)
-      setName(response.data.data.hotelname)
-      setArea(response.data.data.area)
-      setAddress(response.data.data.address)
+      console.log("mmmmmmmmmmmm", response.data.data);
+      setHotelData(response.data.data);
+      setName(response.data.data.hotelname);
+
+      setTotalRooms(response.data.data.noOfRooms);
+      setGeneral(response.data.data.facilities[0].general);
+      setServices(response.data.data.facilities[0].services);
+      setInternet(response.data.data.facilities[0].internet);
+      setParking(response.data.data.facilities[0].parking);
+      setOverview(response.data.data.overview);
+      setTheme(response.data.data.hotelTheme);
+      setCategory(response.data.data.hotelCategory)
+      setImages(response.data.data.image)
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   };
   useEffect(() => {
@@ -264,13 +279,16 @@ const AddHotels = () => {
     const selectedOption = e.target.selectedOptions[0];
     setCityName(selectedOption.getAttribute("data-value"));
   };
-  const handleOnchangeTheme = (val) => setTheme(val);
+  const handleOnchangeTheme = (val) => {
+    setTheme(val);
+    console.log(val);
+  };
   const MultipleFileChange = (e) => {
     setMultipleFiles(e.target.files);
   };
   const handleClose = async (e) => {
     e.preventDefault();
-    // console.log("aaaaaa",name,countryName,area,stateName,cityName,totalRooms,category,general,services,internet,parking,overview,multipleFiles,multipleFiles.length,vendorId,lat,long,theme,address)
+    // console.log("aaaaaa",name,theme,category,totalRooms,general,services,internet,parking,overview)
     const formdata = new FormData();
     for (let i = 0; i < multipleFiles.length; i++) {
       // console.log("aaaaaaaaaaaaaaaaaaaaaaaa",multipleFiles[i])
@@ -332,6 +350,57 @@ const AddHotels = () => {
       });
   };
 
+  const handleUpdate = async(e)=>{
+    // console.log("update",name,theme,category,totalRooms,general,services,internet,parking,overview,hotelData)
+    axios({
+      method: "put",
+      url: `http://localhost:4000/admin/updatehotel/admin/${hotelData._id}`,
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      data: {
+        hotelName: name,
+        overview: overview,
+        hotelCategory: category,
+        theme: theme,
+        noOfRooms: totalRooms,
+        general: general,
+        services: services,
+        internet: internet,
+        parking: parking
+      },
+      headers: { _token: authData.data.token },
+    })
+      .then((response) => {
+        console.log(response.data.message)
+        setUpdatedHotelData(response.data.message);
+        // setName("");
+        // setOverview("");
+        // setGeneral("");
+        // setCategory("");
+        // setServices("");
+        // setInternet("");
+        // setParking("");
+        // setTheme([])
+        // setTotalRooms("")
+      })
+      .catch((error) => {
+        console.log("///////////////", error);
+        // setError('Details are not valid');
+      });
+  }
+
+  const handleClick = (e, index, image) => {
+    const { checked } = e.target;
+    // console.log("list uper wala", checked,id);
+    setIsCheck([...isCheck, image]);
+    // console.log("list niche wala", checked,isCheck);
+    if (!checked) {
+      setIsCheck(isCheck.filter((item) => item !== image));
+    }
+  };
+
   const getHotelLatLong = (e) => {
     e.preventDefault();
     // console.log("fdgfdgfdgdf",lat,long)
@@ -348,7 +417,35 @@ const AddHotels = () => {
         console.log("Geo location error", error);
       });
   };
-  console.log("dshksjdhjksad",hotelData.facilities)
+  // console.log("dshksjdhjksad",hotelData)
+  useEffect(() => {
+    for (let i of images) {
+      setArr((oldItems) => [
+        ...oldItems,
+        { image: `${environmentVariables.apiUrl}/uploads/${i}` },
+      ]);
+    }
+  }, [images]);
+  useEffect(() => {
+    setList(arr);
+  }, [list,arr]);
+  const catalog = list.map(({ image }, index) => {
+    
+    return (
+      <>
+        <Checkbox
+          key={index}
+          type="checkbox"
+          name={image}
+          id={index}
+          handleClick={(e) => handleClick(e, index, image)}
+          isChecked={isCheck.includes(image)}
+        />
+        <Image src={image} alt="image" height={150} width={150} />
+      </>
+    );
+    });
+    
   return (
     <Root>
       <div style={{ display: "flex", alignItems: "center" }}>
@@ -358,7 +455,9 @@ const AddHotels = () => {
           onClick={() => navigate(-1)}
           class="fa-solid fa-chevron-left fa-2x"
         ></i>
-        <MainHeading>{id===undefined?"Add New Hotel":"Edit Hotel"}</MainHeading>
+        <MainHeading>
+          {id === undefined ? "Add New Hotel" : "Edit Hotel"}
+        </MainHeading>
       </div>
       <MainContainer>
         <HotelAddForm>
@@ -369,72 +468,74 @@ const AddHotels = () => {
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
-            <LocationWrapper>
-              <div>
-                <FormLabel>Country*</FormLabel>
-                <FormSelect onChange={handleCountryChange}>
-                  <FormOptions>Select Country</FormOptions>
-                  {allCountries.map((country, index) => (
-                    <option
-                      key={index}
-                      value={country.isoCode}
-                      data-value={country.name}
-                    >
-                      {country.name}
-                    </option>
-                  ))}
-                </FormSelect>
-              </div>
-              <div>
-                <FormLabel>State*</FormLabel>
-                <FormSelect onChange={handleStateChange}>
-                  <FormOptions>Select State</FormOptions>
-                  {allStates.map((val, index) => {
-                    return (
-                      <FormOptions
+            {id === undefined && (
+              <LocationWrapper>
+                <div>
+                  <FormLabel>Country*</FormLabel>
+                  <FormSelect onChange={handleCountryChange}>
+                    <FormOptions>Select Country</FormOptions>
+                    {allCountries.map((country, index) => (
+                      <option
                         key={index}
-                        value={val.isoCode}
-                        data-value={val.name}
+                        value={country.isoCode}
+                        data-value={country.name}
                       >
-                        {val.name}
-                      </FormOptions>
-                    );
-                  })}
-                </FormSelect>
-              </div>
-              <div>
-                <FormLabel>City*</FormLabel>
-                <FormSelect onChange={handleCityChange}>
-                  {allCities.map((val, index) => {
-                    return (
-                      <FormOptions
-                        key={index}
-                        value={val.isoCode}
-                        data-value={val.name}
-                      >
-                        {val.name}
-                      </FormOptions>
-                    );
-                  })}
-                </FormSelect>
-              </div>
-              <div style={{ marginLeft: "1.8rem" }}>
-                <FormLabel>Area*</FormLabel>
-                <FormInput
-                  type="text"
-                  value={area}
-                  onChange={(e) => setArea(e.target.value)}
-                />
-              </div>
-              <div style={{ marginLeft: "1.8rem" }}>
-                <FormLabel>Address*</FormLabel>
-                <FormInput
-                  type="text"
-                  value={id===undefined?address:hotelData.address}
-                  onChange={(e) => setAddress(e.target.value)}
-                />
-              </div>
-            </LocationWrapper>
+                        {country.name}
+                      </option>
+                    ))}
+                  </FormSelect>
+                </div>
+                <div>
+                  <FormLabel>State*</FormLabel>
+                  <FormSelect onChange={handleStateChange}>
+                    <FormOptions>Select State</FormOptions>
+                    {allStates.map((val, index) => {
+                      return (
+                        <FormOptions
+                          key={index}
+                          value={val.isoCode}
+                          data-value={val.name}
+                        >
+                          {val.name}
+                        </FormOptions>
+                      );
+                    })}
+                  </FormSelect>
+                </div>
+                <div>
+                  <FormLabel>City*</FormLabel>
+                  <FormSelect onChange={handleCityChange}>
+                    {allCities.map((val, index) => {
+                      return (
+                        <FormOptions
+                          key={index}
+                          value={val.isoCode}
+                          data-value={val.name}
+                        >
+                          {val.name}
+                        </FormOptions>
+                      );
+                    })}
+                  </FormSelect>
+                </div>
+                <div style={{ marginLeft: "1.8rem" }}>
+                  <FormLabel>Area*</FormLabel>
+                  <FormInput
+                    type="text"
+                    value={area}
+                    onChange={(e) => setArea(e.target.value)}
+                  />
+                </div>
+                <div style={{ marginLeft: "1.8rem" }}>
+                  <FormLabel>Address*</FormLabel>
+                  <FormInput
+                    type="text"
+                    value={id === undefined ? address : hotelData.address}
+                    onChange={(e) => setAddress(e.target.value)}
+                  />
+                </div>
+              </LocationWrapper>
+            )}
             <ThemeWrapper>
               <div>
                 <FormLabel>Theme*</FormLabel>
@@ -442,108 +543,139 @@ const AddHotels = () => {
                   className="multi-select"
                   onChange={handleOnchangeTheme}
                   options={options}
+                  defaultValue={theme}
                 />
               </div>
               <div style={{ marginLeft: "1.8rem" }}>
                 <FormLabel>Category*</FormLabel>
-                <FormSelect onChange={(e) => setCategory(e.target.value)}>
+                <FormSelect onChange={(e) => setCategory(e.target.value)} value={category}>
                   <FormOptions>Select Category</FormOptions>
                   <FormOptions value={"economy"}>Economy</FormOptions>
                   <FormOptions value={"midrange"}>Mid Range</FormOptions>
                   <FormOptions value={"luxury"}>Luxury</FormOptions>
                 </FormSelect>
               </div>
-              <div>
-                <FormLabel>Latitude*</FormLabel>
-                <FormInput
-                  type="text"
-                  value={id===undefined?lat:hotelData.lat}
-                  onChange={(e) => setLat(e.target.value)}
-                />
-              </div>
-              <div>
-                <FormLabel>Longitude*</FormLabel>
-                <FormInput
-                  type="text"
-                  value={id===undefined?long:hotelData.long}
-                  onChange={(e) => setLong(e.target.value)}
-                />
-              </div>
-              <GetLocationText onClick={getHotelLatLong}>
-                Get Coordinates
-              </GetLocationText>
+              {id === undefined && (
+                <>
+                  <div>
+                    <FormLabel>Latitude*</FormLabel>
+                    <FormInput
+                      type="text"
+                      value={lat}
+                      onChange={(e) => setLat(e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <FormLabel>Longitude*</FormLabel>
+                    <FormInput
+                      type="text"
+                      value={long}
+                      onChange={(e) => setLong(e.target.value)}
+                    />
+                  </div>
+                  <GetLocationText onClick={getHotelLatLong}>
+                    Get Coordinates
+                  </GetLocationText>
 
-              <SelectVendor onChange={(e) => setVendorId(e.target.value)}>
-                <SelectOption>Select Vendor*</SelectOption>
-                {vendorlist &&
-                  vendorlist.map((row, index) => {
-                    return (
-                      <SelectOption key={index} value={row.vendorId}>
-                        {row.name}
-                      </SelectOption>
-                    );
-                  })}
-              </SelectVendor>
+                  <SelectVendor onChange={(e) => setVendorId(e.target.value)}>
+                    <SelectOption>Select Vendor*</SelectOption>
+                    {vendorlist &&
+                      vendorlist.map((row, index) => {
+                        return (
+                          <SelectOption key={index} value={row.vendorId}>
+                            {row.name}
+                          </SelectOption>
+                        );
+                      })}
+                  </SelectVendor>
+                </>
+              )}
             </ThemeWrapper>
             <div>
               <FormLabel>Total Rooms*</FormLabel>
               <FormInput
                 type="number"
-                value={id===undefined?totalRooms:hotelData.noOfRooms}
+                value={totalRooms}
                 onChange={(e) => setTotalRooms(e.target.value)}
               />
             </div>
             <FormLabel>General Info*</FormLabel>
             <FormInput
               type="text"
-              value={id===undefined?general:hotelData.facilities!==undefined && hotelData.facilities[0].general}
+              value={general}
               onChange={(e) => setGeneral(e.target.value)}
             />
             <FormLabel>Services*</FormLabel>
             <FormInput
               type="text"
-              value={id===undefined?services:hotelData.facilities!==undefined && hotelData.facilities[0].services}
+              value={services}
               onChange={(e) => setServices(e.target.value)}
             />
-            {
-              id!==undefined && hotelData.facilities!==undefined && hotelData.facilities[0].internet && (
+            {id !== undefined &&
+              hotelData.facilities !== undefined &&
+              hotelData.facilities[0].internet && (
                 <>
-                <FormLabel>Internet*</FormLabel>
-                <FormInput
-                  type="text"
-                  value={id===undefined?internet:hotelData.facilities!==undefined && hotelData.facilities[0].internet}
-                  onChange={(e) => setInternet(e.target.value)}
-                />
+                  <FormLabel>Internet*</FormLabel>
+                  <FormInput
+                    type="text"
+                    value={internet}
+                    onChange={(e) => setInternet(e.target.value)}
+                  />
                 </>
-              )              
-            }
-            {
-              id!==undefined && hotelData.facilities!==undefined && hotelData.facilities[0].parking && (
+              )}
+            {id !== undefined &&
+              hotelData.facilities !== undefined &&
+              hotelData.facilities[0].parking && (
                 <>
-                <FormLabel>Parking*</FormLabel>
-                <FormInput
-                  type="text"
-                  value={id===undefined?parking:hotelData.facilities!==undefined && hotelData.facilities[0].parking}
-                  onChange={(e) => setParking(e.target.value)}
-                />
+                  <FormLabel>Parking*</FormLabel>
+                  <FormInput
+                    type="text"
+                    value={parking}
+                    onChange={(e) => setParking(e.target.value)}
+                  />
                 </>
-              )              
-            }
+              )}
             <FormLabel>Overview*</FormLabel>
             <FormTextArea
-              value={id===undefined?overview:hotelData.overview}
+              value={overview}
               onChange={(e) => setOverview(e.target.value)}
             />
-            <FormLabel>Images*</FormLabel>
-            <FormFileInput
-              type="file"
-              multiple
-              name="myFiles"
-              onChange={(e) => MultipleFileChange(e)}
-            />
+            {
+              id===undefined && (
+                <>
+                  <FormLabel>Images*</FormLabel>
+                  <FormFileInput
+                    type="file"
+                    multiple
+                    name="myFiles"
+                    onChange={(e) => MultipleFileChange(e)}
+                  />
+                </>
+              )
+            }
           </FormWrapper>
-          <Button onClick={(e) => handleClose(e)}>Save</Button>
+          {id===undefined ? <Button onClick={(e) => handleClose(e)}>Save</Button> :<Button onClick={(e) => handleUpdate(e)}>Update</Button>}
         </HotelAddForm>
+        {
+          id!==undefined && (
+            <>
+              <FormLabel>Images*</FormLabel>
+              <FormFileInput
+                type="file"
+                multiple
+                name="myFiles"
+                onChange={(e) => MultipleFileChange(e)}
+              />
+            </>
+          )
+        }
+        <div style={{display:"flex",flexDirection:'column'}}>
+          <div style={{ display: "flex", overflow: "scroll" }}>
+              {catalog}
+          </div>
+          <Button>Submit</Button>
+        </div>
+        
       </MainContainer>
     </Root>
   );
