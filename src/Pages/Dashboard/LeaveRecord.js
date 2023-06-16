@@ -111,9 +111,9 @@ export default function LeaveRecord() {
       <div  class="card-body">
         <h6 style={{textAlign: 'center'}} class="card-title">EARNINGS</h6>
         <h1 style={{textAlign: 'center', color: '#008080'}} class="card-text">
-        $80
+        0
         </h1>
-        <p style={{textAlign: 'center'}} class="card-title">Total earnings</p>
+        <p style={{textAlign: 'center'}} class="card-title"></p>
       </div>
     </div>
   </div>

@@ -273,7 +273,7 @@ const ManageAdmin = () => {
   };
   const getVendorList = async()=>{
     await axios
-      .get(`${environmentVariables.apiUrl}/auth/getvendorlist`, {
+      .get(`${environmentVariables.apiUrl}/admin/getvendorlist`, {
         headers: { _token: authData.data.token },
       })
       .then((response) => {
