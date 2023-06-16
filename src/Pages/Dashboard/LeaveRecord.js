@@ -5,15 +5,15 @@ import Cardbg1 from "../../Images/bg.jpg";
 import { useNavigate } from "react-router-dom";
 import { environmentVariables } from "../../config/config";
 import { Modal, Button } from "react-bootstrap";
-import VendorGraphCheck from './VendorGraphCheck.js';
+import VendorGraphCheck from "./VendorGraphCheck.js";
 
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 import axios from "axios";
@@ -65,10 +65,18 @@ export default function LeaveRecord() {
   const { authData } = useContext(AuthContext);
   const navigate = useNavigate();
   const [data, setData] = useState([]);
+  const [summaryData, setSummaryData] = useState(null);
   const componentClicked = (item) => {
     navigate("/hoteldetails", { state: item });
   };
-
+  const getSummaryData = () => {
+    axios
+      .get(
+        `${environmentVariables.apiUrl}/vendor/getVendorSummary/${authData.data.vendorId}`
+      )
+      .then((res) => setSummaryData(res.data.data))
+      .catch((err) => console.log(err));
+  };
   const getVendorData = async () => {
     await axios
       .get(`${environmentVariables.apiUrl}/auth/vendorget`, {
@@ -82,78 +90,91 @@ export default function LeaveRecord() {
       });
   };
 
-
   useEffect(() => {
     getVendorData();
+    getSummaryData();
   }, []);
 
-  const [showModal,setShowModel] = useState(false);
+  const [showModal, setShowModel] = useState(false);
 
-  function deleteConfirmation()
-  {
+  function deleteConfirmation() {
     setShowModel(true);
   }
 
-  function hideModal()
-  {
+  function hideModal() {
     setShowModel(false);
   }
 
   const boldTextCss = {
-    fontWeight: 700
-  }
+    fontWeight: 700,
+  };
 
   return (
     <>
-    <div class="row row-cols-4 g-4" style={{width: '70rem'}}>
-  <div class="col">
-    <div class="card shadow p-3 mb-5 bg-body-tertiary rounded" >
-      <div  class="card-body">
-        <h6 style={{textAlign: 'center'}} class="card-title">EARNINGS</h6>
-        <h1 style={{textAlign: 'center', color: '#008080'}} class="card-text">
-        0
-        </h1>
-        <p style={{textAlign: 'center'}} class="card-title"></p>
+      <div class="row row-cols-4 g-4" style={{ width: "70rem" }}>
+        <div class="col">
+          <div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
+            <div class="card-body">
+              <h6 style={{ textAlign: "center" }} class="card-title">
+                EARNINGS
+              </h6>
+              <h1
+                style={{ textAlign: "center", color: "#008080" }}
+                class="card-text"
+              >
+                {summaryData?.totalEarnings}
+              </h1>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
+            <div class="card-body">
+              <h6 style={{ textAlign: "center" }} class="card-title">
+                HOTELS
+              </h6>
+              <h1
+                style={{ textAlign: "center", color: "#008080" }}
+                class="card-text"
+              >
+                {summaryData?.totalHotels}
+              </h1>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
+            <div class="card-body">
+              <h6 style={{ textAlign: "center" }} class="card-title">
+                BOOKINGS
+              </h6>
+              <h1
+                style={{ textAlign: "center", color: "#008080" }}
+                class="card-text"
+              >
+                {summaryData?.totalBookings}
+              </h1>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
+            <div class="card-body">
+              <h6 style={{ textAlign: "center" }} class="card-title">
+                PENDING
+              </h6>
+              <h1
+                style={{ textAlign: "center", color: "#008080" }}
+                class="card-text"
+              >
+                {summaryData?.pendingBookings}
+              </h1>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-  <div class="col">
-    <div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
-      <div class="card-body">
-        <h6 style={{textAlign: 'center'}} class="card-title">HOTELS</h6>
-        <h1 style={{textAlign: 'center', color: '#008080'}} class="card-text">
-        $50
-        </h1>
-        <p style={{textAlign: 'center'}} class="card-title">Total hotels</p>
-      </div>
-    </div>
-  </div>
-  <div class="col">
-    <div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
-      <div class="card-body">
-        <h6 style={{textAlign: 'center'}} class="card-title">BOOKINGS</h6>
-        <h1 style={{textAlign: 'center', color: '#008080'}} class="card-text">
-        68
-        </h1>
-        <p style={{textAlign: 'center'}} class="card-title">Total bookings</p>
-      </div>
-    </div>
-  </div>
-  <div class="col">
-    <div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
-      <div class="card-body">
-        <h6 style={{textAlign: 'center'}} class="card-title">PENDING</h6>
-        <h1 style={{textAlign: 'center', color: '#008080'}} class="card-text">
-        25
-        </h1>
-        <p style={{textAlign: 'center'}} class="card-title">Pending bookings</p>
-      </div>
-    </div>
-  </div>
-</div>
 
-<VendorGraphCheck/>
-
+      <VendorGraphCheck />
     </>
   );
 }
