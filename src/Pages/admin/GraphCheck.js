@@ -5,15 +5,10 @@ import axios from "axios";
 import { useContext } from "react";
 import { AuthContext } from "../../ContextApi/ContextApi";
 import { environmentVariables } from "../../config/config";
-import { MDBCard,
-    MDBCardBody
-  } from 'mdb-react-ui-kit';
-
-  
-
+import { MDBCard, MDBCardBody } from 'mdb-react-ui-kit';
 
   const monthdata = [
-    {Name: 'Jan', Bookings: 0, Hotels: 0},
+  {Name: 'Jan', Bookings: 0, Hotels: 0},
   {Name: 'Feb', Bookings: 0, Hotels: 0},
   {Name: 'March', Bookings: 0, Hotels: 0},
   {Name: 'April', Bookings: 0, Hotels: 0},
