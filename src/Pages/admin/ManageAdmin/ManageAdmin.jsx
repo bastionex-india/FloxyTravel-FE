@@ -280,7 +280,7 @@ const ManageAdmin = () => {
 
   const getAllListData = async () => {
     await axios
-      .get(`${environmentVariables.apiUrl}/admin/getvendorlist`, {
+      .get(`${environmentVariables.apiUrl}/admin/getvendorlist?page=${page}&limit=${rowsPerPage}`, {
         headers: { _token: authData.data.token },
       })
       .then((response) => {

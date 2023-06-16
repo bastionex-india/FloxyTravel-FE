@@ -29,18 +29,17 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useFormik } from "formik";
 import { VendorRegisterSchema } from "./schemas/VendorRegisterSchems";
-import Check from './Check.js';
+import Check from "./Check.js";
 import { Modal } from "react-bootstrap";
-import { BarChart, Bar, CartesianGrid, XAxis, YAxis } from 'recharts';
+import { BarChart, Bar, CartesianGrid, XAxis, YAxis } from "recharts";
 
-
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
 import GraphCheck from "./GraphCheck";
 
 const Root = styled.div`
@@ -58,18 +57,15 @@ const ErrorMessage = styled.div`
   margin-bottom: 20px;
 `;
 
-
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
 const boldTextCss = {
-  fontWeight: 700
-}
+  fontWeight: 700,
+};
 
 const VendorList = () => {
-
-
   const [data, setData] = useState([]);
   const [responseData, setResponseData] = useState([]);
   const [adminResponseData, setAdminResponseData] = useState([]);
@@ -84,7 +80,7 @@ const VendorList = () => {
   const [vendorValue, setVendorValue] = useState("");
   const [adminValue, setAdminValue] = useState("");
   const [error, setError] = useState("");
-  const [showModal,setShowModel] = useState(false);
+  const [showModal, setShowModel] = useState(false);
 
   const getAllListData = async () => {
     await axios
@@ -98,21 +94,28 @@ const VendorList = () => {
         console.log("error", err);
       });
   };
+  const getSummaryData = () => {
+    axios
+      .get(`${environmentVariables?.apiUrl}/admin/getSummaryData`)
+      .then((res) => setSummaryData(res.data.data))
+      .catch((err) => console.log(err));
+  };
   useEffect(() => {
     getAllListData();
+    getSummaryData();
   }, []);
 
   const getAnotherComponent = (item) => {
     navigate("/gethotelsbyvendorid", { state: item });
   };
   const [open, setOpen] = useState(false);
+  const [summaryData, setSummaryData] = useState(null);
 
   const handleClickOpen = () => {
     setOpen(true);
   };
 
   const handleClose = () => {
-    
     if (adminValue === "vendor") {
       axios({
         method: "post",
@@ -190,7 +193,6 @@ const VendorList = () => {
   };
 
   const deleteVendor = (item) => {
-    
     axios
       .delete(`${environmentVariables.apiUrl}/auth/deletevendor/${item._id}`, {
         headers: { _token: authData.data.token },
@@ -200,7 +202,6 @@ const VendorList = () => {
         getAllListData();
         setShowModel(false);
         navigate("/");
-
       })
       .catch((error) => {
         console.log("err", error);
@@ -284,69 +285,91 @@ const VendorList = () => {
       },
     });
 
-  function deleteConfirmation()
-  {
+  function deleteConfirmation() {
     setShowModel(true);
   }
 
-  function hideModal()
-  {
+  function hideModal() {
     setShowModel(false);
   }
 
   return (
     <>
-      <div class="row row-cols-4 g-4" style={{width: '70rem'}}>
-  <div class="col">
-    <div class="card shadow p-3 mb-5 bg-body-tertiary rounded" >
-      <div  class="card-body">
-        <h6 style={{textAlign: 'center'}} class="card-title">EARNINGS</h6>
-        <h1 style={{textAlign: 'center', color: '#008080'}} class="card-text">
-        $80
-        </h1>
-        <p style={{textAlign: 'center'}} class="card-title">Total earnings</p>
+      <div class="row row-cols-4 g-4" style={{ width: "70rem" }}>
+        <div class="col">
+          <div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
+            <div class="card-body">
+              <h6 style={{ textAlign: "center" }} class="card-title">
+                EARNINGS
+              </h6>
+              <h1
+                style={{ textAlign: "center", color: "#008080" }}
+                class="card-text"
+              >
+                {summaryData?.totalEarnings}
+              </h1>
+              {/* <p style={{textAlign: 'center'}} class="card-title">Total earnings</p> */}
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
+            <div class="card-body">
+              <h6 style={{ textAlign: "center" }} class="card-title">
+                TOTAL HOTELS
+              </h6>
+              <h1
+                style={{ textAlign: "center", color: "#008080" }}
+                class="card-text"
+              >
+                {summaryData?.totalHotels}
+              </h1>
+              {/* <p style={{ textAlign: "center" }} class="card-title">
+                Total hotels
+              </p> */}
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
+            <div class="card-body">
+              <h6 style={{ textAlign: "center" }} class="card-title">
+                TOTAL BOOKINGS
+              </h6>
+              <h1
+                style={{ textAlign: "center", color: "#008080" }}
+                class="card-text"
+              >
+                {summaryData?.totalBookings}
+              </h1>
+              {/* <p style={{ textAlign: "center" }} class="card-title">
+                Total bookings
+              </p> */}
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
+            <div class="card-body">
+              <h6 style={{ textAlign: "center" }} class="card-title">
+                PENDING BOOKINGS
+              </h6>
+              <h1
+                style={{ textAlign: "center", color: "#008080" }}
+                class="card-text"
+              >
+                {summaryData?.pendingBookings}
+              </h1>
+              {/* <p style={{ textAlign: "center" }} class="card-title">
+                Pending bookings
+              </p> */}
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-  <div class="col">
-    <div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
-      <div class="card-body">
-        <h6 style={{textAlign: 'center'}} class="card-title">HOTELS</h6>
-        <h1 style={{textAlign: 'center', color: '#008080'}} class="card-text">
-        $50
-        </h1>
-        <p style={{textAlign: 'center'}} class="card-title">Total hotels</p>
-      </div>
-    </div>
-  </div>
-  <div class="col">
-    <div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
-      <div class="card-body">
-        <h6 style={{textAlign: 'center'}} class="card-title">BOOKINGS</h6>
-        <h1 style={{textAlign: 'center', color: '#008080'}} class="card-text">
-        68
-        </h1>
-        <p style={{textAlign: 'center'}} class="card-title">Total bookings</p>
-      </div>
-    </div>
-  </div>
-  <div class="col">
-    <div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
-      <div class="card-body">
-        <h6 style={{textAlign: 'center'}} class="card-title">PENDING</h6>
-        <h1 style={{textAlign: 'center', color: '#008080'}} class="card-text">
-        25
-        </h1>
-        <p style={{textAlign: 'center'}} class="card-title">Pending bookings</p>
-      </div>
-    </div>
-  </div>
-</div>
 
-     <GraphCheck/> 
-
-</>    
-
+      <GraphCheck />
+    </>
   );
 };
 
