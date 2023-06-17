@@ -9,7 +9,8 @@ import MultiSelect from "react-multiple-select-dropdown-lite";
 import "react-multiple-select-dropdown-lite/dist/index.css";
 import { environmentVariables } from "../../../config/config";
 import Swal from "sweetalert2";
-import Checkbox from "../Checkbox";
+import { FaTimes } from 'react-icons/fa'; 
+import { useRef } from "react";
 
 const Root = styled.div`
   /* width: 967px; */
@@ -133,10 +134,45 @@ const FormSelectTheme = styled.select`
 `;
 const Image = styled.img``;
 
+const ImageSection = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+`;
+const ImageWrapper = styled.div`
+  position: relative;
+`;
+const Image1 = styled.img`
+   width: 100px; 
+  height: 100px;
+  object-fit: cover;
+`;
+const CirleCross = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 32px;
+  height: 32px;
+  background-color: green; /* Adjust the background color as needed */
+  border-radius: 50%;
+  z-index: -1;
+`;
+const RemoveButton = styled.button`
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  // background: transparent;
+  border: none;
+  color: red;
+  cursor: pointer;
+`;
+
 const AddHotels = () => {
   const navigation = useNavigate();
   const { authData } = useContext(AuthContext);
   const { id } = useParams();
+  const fileInputRef = useRef(null);
   const [hotelData, setHotelData] = useState("");
   const [allCountries, setAllCountries] = useState([]);
   const [countryCode, setCountryCode] = useState("");
@@ -166,7 +202,6 @@ const AddHotels = () => {
   const [images, setImages] = useState([]);
   const [list, setList] = useState([]);
   const [arr, setArr] = useState([]);
-  const [isCheck, setIsCheck] = useState([]);
   const [updatedHotelData, setUpdatedHotelData] = useState([]);
 
   const navigate = useNavigate();
@@ -198,7 +233,6 @@ const AddHotels = () => {
       const response = await axios.get(url, {
         headers: { _token: authData.data.token },
       });
-      console.log("mmmmmmmmmmmm", response.data.data);
       setHotelData(response.data.data);
       setName(response.data.data.hotelname);
 
@@ -229,7 +263,7 @@ const AddHotels = () => {
         setAllCountries(response.data.data);
       })
       .catch((err) => {
-        console.log(err);
+        // console.log(err);
       });
   }, []);
 
@@ -246,7 +280,7 @@ const AddHotels = () => {
         setAllStates(response.data.data);
       })
       .catch((err) => {
-        console.log(err);
+        // console.log(err);
       });
   }, [countryCode]);
 
@@ -266,7 +300,7 @@ const AddHotels = () => {
         setAllCities(response.data.data);
       })
       .catch((err) => {
-        console.log(err);
+        // console.log(err);
       });
   }, [countryCode, stateCode]);
 
@@ -358,7 +392,6 @@ const AddHotels = () => {
   };
 
   const handleUpdate = async(e)=>{
-    console.log("update",name,theme,category,totalRooms,general,services,internet,parking,overview,hotelData)
     axios({
       method: "put",
       url: `${environmentVariables.apiUrl}/admin/updatehotel/admin/${hotelData._id}`,
@@ -400,15 +433,7 @@ const AddHotels = () => {
       });
   }
 
-  const handleClick = (e, index, image) => {
-    const { checked } = e.target;
-    // console.log("list uper wala", checked,id);
-    setIsCheck([...isCheck, image]);
-    // console.log("list niche wala", checked,isCheck);
-    if (!checked) {
-      setIsCheck(isCheck.filter((item) => item !== image));
-    }
-  };
+
 
   const getHotelLatLong = (e) => {
     e.preventDefault();
@@ -426,7 +451,6 @@ const AddHotels = () => {
         console.log("Geo location error", error);
       });
   };
-  // console.log("dshksjdhjksad",hotelData)
   useEffect(() => {
     for (let i of images) {
       setArr((oldItems) => [
@@ -438,23 +462,42 @@ const AddHotels = () => {
   useEffect(() => {
     setList(arr);
   }, [list,arr]);
-  const catalog = list.map(({ image }, index) => {
     
-    return (
-      <>
-        <Checkbox
-          key={index}
-          type="checkbox"
-          name={image}
-          id={index}
-          handleClick={(e) => handleClick(e, index, image)}
-          isChecked={isCheck.includes(image)}
-        />
-        <Image src={image} alt="image" height={150} width={150} />
-      </>
-    );
-    });
-    
+    const removeImage = async(imageName) => {
+      try {
+        // Send the DELETE request using Axios
+        await axios.delete(`${environmentVariables.apiUrl}/admin/deletehotelimages/${hotelData._id}/${imageName}`,{headers:{_token:authData.data.token}});
+        getHotelDetailById();
+      } catch (error) {
+        console.error('Error removing image:', error);
+      }
+    };
+    const MultipleFileChange1=(e)=>{
+      const formdata = new FormData();
+      for (let i = 0; i < e.target.files.length; i++) {
+        formdata.append("myFiles", e.target.files[i]);
+      }
+      axios({
+        method: "post",
+        url: `${environmentVariables.apiUrl}/admin/addhotelimages/${hotelData._id}`,
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        data: formdata,
+        headers: { _token: authData.data.token },
+      })
+        .then((response) => {
+          
+          getHotelDetailById();
+          fileInputRef.current.value = null;
+          Swal.fire("Added", "Images inserted successfully", "success");
+        })
+        .catch((error) => {
+          console.log("///////////////", error);
+          Swal.fire("Error", "Something went wrong", "error");
+        });
+    }
   return (
     <Root>
       <HeadingWrapper>
@@ -673,17 +716,36 @@ const AddHotels = () => {
                 type="file"
                 multiple
                 name="myFiles"
-                onChange={(e) => MultipleFileChange(e)}
+                onChange={(e) => MultipleFileChange1(e)}
+                ref={fileInputRef}
               />
             </>
           )
         }
-        <div style={{display:"flex",flexDirection:'column'}}>
+        {/* <div style={{display:"flex",flexDirection:'column'}}>
           <div style={{ display: "flex", overflow: "scroll" }}>
               {catalog}
           </div>
           <Button>Submit</Button>
-        </div>
+        </div> */}
+        {/* <div>
+          {images.map((image) => (
+            <div key={image}>
+              <img src={`${environmentVariables.apiUrl}/uploads/${image}`} alt="Image" />
+            </div>
+          ))}
+        </div> */}
+        <ImageSection >
+          {images.map((image) => (
+            <ImageWrapper key={image}>
+              <CirleCross ></CirleCross>
+              <Image1 src={`${environmentVariables.apiUrl}/uploads/${image}`} alt="Image" />
+              <RemoveButton onClick={() => removeImage(image)}>
+                <FaTimes />
+              </RemoveButton>
+            </ImageWrapper>
+          ))}
+        </ImageSection>
         
       </MainContainer>
     </Root>
