@@ -13,6 +13,54 @@ import Swal from "sweetalert2";
 
 import { Button } from "@mui/material";
 import TablePagination from "@mui/material/TablePagination";
+import PropTypes from "prop-types";
+import { styled as newStyle } from "@mui/material/styles";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
+import Typography from "@mui/material/Typography";
+
+const BootstrapDialog = newStyle(Dialog)(({ theme }) => ({
+  "& .MuiDialogContent-root": {
+    padding: theme.spacing(2),
+  },
+  "& .MuiDialogActions-root": {
+    padding: theme.spacing(1),
+  },
+}));
+
+function BootstrapDialogTitle(props) {
+  const { children, onClose, ...other } = props;
+
+  return (
+    <DialogTitle sx={{ m: 0, p: 2 }} {...other}>
+      {children}
+      {onClose ? (
+        <IconButton
+          aria-label="close"
+          onClick={onClose}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+      ) : null}
+    </DialogTitle>
+  );
+}
+
+BootstrapDialogTitle.propTypes = {
+  children: PropTypes.node,
+  onClose: PropTypes.func.isRequired,
+};
+
 const HeadingWrapper = styled.div`
   position: relative;
   display: flex;
@@ -231,6 +279,9 @@ const ManageAdmin = () => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [response, setResponse] = useState();
   const [vendorlist, setVendorList] = useState(null);
+  const [open, setOpen] = useState(false); 
+  const [hotelDetails, setHotelDetails] = useState(); 
+
   const navigate = useNavigate();
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -273,11 +324,11 @@ const ManageAdmin = () => {
   };
   const getVendorList = async()=>{
     await axios
-      .get(`${environmentVariables.apiUrl}/auth/getvendorlist`, {
+      .get(`${environmentVariables.apiUrl}/admin/getvendorlist`, {
         headers: { _token: authData.data.token },
       })
       .then((response) => {
-        setVendorList(response.data.data.Records);
+        setVendorList(response.data.data.records);
         setIsLoading(false);
       })
       .catch((err) => {
@@ -295,12 +346,14 @@ const ManageAdmin = () => {
     setIsLoading(true);
     if (e.target.value === "all") {
       getAllListData();
+    }else{
+      getHotelByVendorId(e.target.value)
     }
   };
-  const DeleteHotel = (id) => {
+  const DeleteHotel = (item) => {
     const config = {
       method: "delete",
-      url: `${environmentVariables.apiUrl}/admin/deletehotel/${id}`,
+      url: `${environmentVariables.apiUrl}/admin/deletehotel/${item._id}`,
       headers: {
         _token: authData.data.token,
       },
@@ -309,10 +362,21 @@ const ManageAdmin = () => {
     axios(config)
       .then(function (response) {
         Swal.fire("Deleted", "Hotel Deleted Successfully", "success");
+        setOpen(false)
       })
       .catch(function (error) {
         Swal.fire("Error", "Something went wrong", "error");
       });
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const handleClickOpen = (item) => {
+    setHotelDetails(item)
+    setOpen(true);
+  };
+  const deleteRecord = (item) => {
+    DeleteHotel(item);
   };
   const getComponents = () => {
     if (data === null || data === undefined) {
@@ -375,12 +439,37 @@ const ManageAdmin = () => {
                   </HotelIconWrapper>
                 </HotelInfoWrapper>
                 <HotelButtonWrapper>
-                  <HotelActionButtons>Edit</HotelActionButtons>
-                  <HotelActionButtons onClick={() => DeleteHotel(row._id)}>
+                  <HotelActionButtons onClick={()=>navigate(`/addhotels/${row._id}`)}>Edit</HotelActionButtons>
+                  <HotelActionButtons onClick={() => handleClickOpen(row)}>
                     Delete
                   </HotelActionButtons>
                   <HotelActionButtons>Hide</HotelActionButtons>
                 </HotelButtonWrapper>
+                <BootstrapDialog
+                  onClose={handleClose}
+                  aria-labelledby="customized-dialog-title"
+                  open={open}
+                >
+                  <BootstrapDialogTitle
+                    id="customized-dialog-title"
+                    onClose={handleClose}
+                  >
+                    Delete
+                  </BootstrapDialogTitle>
+                  <DialogContent dividers>
+                    <Typography gutterBottom>
+                      Are you sure you want to delete the Hotel?
+                    </Typography>
+                  </DialogContent>
+                  <DialogActions>
+                    <Button variant="contained" color="success" onClick={handleClose}>
+                      Cancel
+                    </Button>
+                    <Button variant="contained" color="error" onClick={()=>deleteRecord(hotelDetails)}>
+                      Delete
+                    </Button>
+                  </DialogActions>
+                </BootstrapDialog>
               </HotelCard>
             );
           });
@@ -388,7 +477,6 @@ const ManageAdmin = () => {
       }
     }
   };
-  console.log("data", data);
   return (
     <>
       <TextMainWrapper>

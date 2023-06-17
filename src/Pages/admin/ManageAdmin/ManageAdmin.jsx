@@ -280,7 +280,7 @@ const ManageAdmin = () => {
 
   const getAllListData = async () => {
     await axios
-      .get(`${environmentVariables.apiUrl}/auth/getvendorlist`, {
+      .get(`${environmentVariables.apiUrl}/admin/getvendorlist?page=${page}&limit=${rowsPerPage}`, {
         headers: { _token: authData.data.token },
       })
       .then((response) => {
@@ -304,8 +304,12 @@ const ManageAdmin = () => {
       .then((response) => {
         setIsLoading(true);
         getAllListData();
-        setOpen(false);
-        Swal.fire("Deleted", "Hotel Deleted Successfully", "success");
+        setOpen(false)
+        Swal.fire(
+          "Deleted",
+          "Vendor Deleted Successfully",
+          "success"
+        );
       })
       .catch((err) => {
         console.log("error", err);
