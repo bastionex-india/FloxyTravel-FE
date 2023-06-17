@@ -303,7 +303,7 @@ const GenerateInvoice = () => {
                 </Grid>
               </Grid>
               {
-                state.status != 'approved' ?
+                state.status != 'approved'  ?
                   <Grid container>
                     <Grid xs={8}></Grid>
                     <Grid xs={4} className="pull-right">
