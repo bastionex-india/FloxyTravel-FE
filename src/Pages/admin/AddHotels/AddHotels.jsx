@@ -194,7 +194,7 @@ const AddHotels = () => {
 
   const getHotelDetailById = async () => {
     try {
-      const url = `http://localhost:4000/admin/gethoteldetailbyid/${id}`;
+      const url = `${environmentVariables.apiUrl}/admin/gethoteldetailbyid/${id}`;
       const response = await axios.get(url, {
         headers: { _token: authData.data.token },
       });
@@ -323,7 +323,7 @@ const AddHotels = () => {
     formdata.append("hotelVendorId", vendorId);
     axios({
       method: "post",
-      url: `http://localhost:4000/admin/addhotel`,
+      url: `${environmentVariables.apiUrl}/admin/addhotel`,
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
@@ -358,10 +358,10 @@ const AddHotels = () => {
   };
 
   const handleUpdate = async(e)=>{
-    // console.log("update",name,theme,category,totalRooms,general,services,internet,parking,overview,hotelData)
+    console.log("update",name,theme,category,totalRooms,general,services,internet,parking,overview,hotelData)
     axios({
       method: "put",
-      url: `http://localhost:4000/admin/updatehotel/admin/${hotelData._id}`,
+      url: `${environmentVariables.apiUrl}/admin/updatehotel/admin/${hotelData._id}`,
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
@@ -370,7 +370,7 @@ const AddHotels = () => {
         hotelName: name,
         overview: overview,
         hotelCategory: category,
-        theme: theme,
+        theme: theme.toString(),
         noOfRooms: totalRooms,
         general: general,
         services: services,
@@ -382,6 +382,7 @@ const AddHotels = () => {
       .then((response) => {
         console.log(response.data.message)
         setUpdatedHotelData(response.data.message);
+        Swal.fire("Updated", "Hotel updated successfully", "success");
         // setName("");
         // setOverview("");
         // setGeneral("");
@@ -394,6 +395,7 @@ const AddHotels = () => {
       })
       .catch((error) => {
         console.log("///////////////", error);
+        Swal.fire("Error", "Something went wrong", "error");
         // setError('Details are not valid');
       });
   }
