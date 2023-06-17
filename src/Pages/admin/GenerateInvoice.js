@@ -81,7 +81,7 @@ const GenerateInvoice = () => {
   const [amount,setAmount] = useState(0);
   const [discount,setDiscount] =  useState(0);
   const [totalAmount,setTotalAmount] = useState(0);
-  const [payData,setPayData] = useState({}); 
+  const [payMethod,setPayMethod] = useState('online'); 
 
   
   const sendInvoice = () => {
@@ -169,6 +169,7 @@ const GenerateInvoice = () => {
           setAmount( +responsedata.payAmount + +responsedata.discount)
           setDiscount(+responsedata.discount)
           setTotalAmount(+responsedata.payAmount)
+          setPayMethod(responsedata.paymentStatus[0].method)
         }
         else {
           Swal.fire({
@@ -192,7 +193,6 @@ const GenerateInvoice = () => {
       getPaymentdetail()
     }
   })
-  console.log('payData',payData)
   return (
     <>
       <TextMainWrapper>
@@ -256,7 +256,7 @@ const GenerateInvoice = () => {
                 <Grid xs={6} className="pull-right">
                   <p>{state._id}</p>
                   <p>{state.status}</p>
-                  <p>Online</p>
+                  <p>{payMethod}</p>
                   <p>{state.checkIn}</p>
                   <p>{state.checkOut}</p>
                   <p>
