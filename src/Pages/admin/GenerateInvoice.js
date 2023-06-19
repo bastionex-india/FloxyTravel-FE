@@ -81,10 +81,12 @@ const GenerateInvoice = () => {
   const [amount,setAmount] = useState(0);
   const [discount,setDiscount] =  useState(0);
   const [totalAmount,setTotalAmount] = useState(0);
+  const [payMethod,setPayMethod] = useState('online'); 
 
-  console.log(state);
+  
   const sendInvoice = () => {
-    let amount = Number(hotelPrice) - Number(discountAmount)
+    if(hotelPrice && (Number(hotelPrice) - Number(discountAmount)) > 0){
+      let amount = Number(hotelPrice) - Number(discountAmount)
     let data = {
       bookingID: state._id,
       amount: amount.toString(),
@@ -126,14 +128,65 @@ const GenerateInvoice = () => {
           timer: "800",
         });
       });
+    }
+    else{
+      Swal.fire({
+        icon: "error",
+        title: 'Invalid amount',
+        timer: "800",
+      });
+    }
+    
   }
   const sendInvoiceHandler = () => {
     sendInvoice()
   }
   const getPaymentdetail = ()=>{
-    setAmount(20)
-    setDiscount(2)
-    setTotalAmount(18)
+
+    // setAmount(20)
+    // setDiscount(2)
+    // setTotalAmount(18)
+
+    let requestBody = {
+      bookingID : state._id
+    }
+    let config = {
+      method: "post",
+      url: `${environmentVariables.apiUrl}/admin/getPaymentdetail`,
+      headers: {
+        _token: authData.data.token,
+        "Content-Type": "application/json",
+      },
+      data: requestBody,
+    };
+
+    axios
+      .request(config)
+      .then((response) => {
+        // console.log("Payment Details ", response)
+        if (response.data.status) {
+          let  responsedata = response.data.data; 
+          setAmount( +responsedata.payAmount + +responsedata.discount)
+          setDiscount(+responsedata.discount)
+          setTotalAmount(+responsedata.payAmount)
+          setPayMethod(responsedata.paymentStatus[0].method)
+        }
+        else {
+          Swal.fire({
+            icon: "error",
+            title: response.data.message,
+            timer: "800",
+          });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        Swal.fire({
+          icon: "error",
+          title: err.response.data.message,
+          timer: "800",
+        });
+      });
   }
   useEffect(()=>{
     if(state.status=='approved'){
@@ -203,7 +256,7 @@ const GenerateInvoice = () => {
                 <Grid xs={6} className="pull-right">
                   <p>{state._id}</p>
                   <p>{state.status}</p>
-                  <p>Online</p>
+                  <p>{payMethod}</p>
                   <p>{state.checkIn}</p>
                   <p>{state.checkOut}</p>
                   <p>
@@ -303,7 +356,7 @@ const GenerateInvoice = () => {
                 </Grid>
               </Grid>
               {
-                state.status != 'approved' ?
+                state.status != 'approved'  ?
                   <Grid container>
                     <Grid xs={8}></Grid>
                     <Grid xs={4} className="pull-right">
