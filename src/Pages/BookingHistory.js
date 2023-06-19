@@ -197,14 +197,14 @@ const BookingHistory = () => {
   };
 
   const getAllUsers = async () => {
-    console.log("aaa", select1,select,fromDate,toDate,searchByName);
+    // console.log("aaa", select1,select,fromDate,toDate,searchByName);
     let data={
       // status:select,
       // startDate:new Date(),
       // endDate:select1,
       calenderStartDate:fromDate,
       calenderEndDate:toDate,
-      // id:searchByName
+      id:searchByName
     }
     // if (select1 !== "") {
     //   data = {
@@ -227,6 +227,7 @@ const BookingHistory = () => {
       .request(config)
       .then((response) => {
         // setData(response.data.sort((a, b) => b.createdAt - a.createdAt));
+        // console.log("res",response.data.data)
         setData(response?.data?.data);
         setIsLoading(false);
       })
@@ -256,6 +257,7 @@ const BookingHistory = () => {
     getAllHotels()
   }, []);
   
+  console.log(":data",data)
   return (
     <>
       <TextMainWrapper>
@@ -272,7 +274,7 @@ const BookingHistory = () => {
             </div>
 
             <TextWrapper>
-              {
+              {/* {
                 select!=="upcoming" && (
                   <TextSelectField>
                     <Select
@@ -310,7 +312,7 @@ const BookingHistory = () => {
                     </Select>
                   </TextSelectField>
                 )
-              }
+              } */}
 
                 {/* <IconSearch>
                   <img src={SearchIcon} />
@@ -385,7 +387,7 @@ const BookingHistory = () => {
                 </FilterComponent>
               </FilterWrapper>
 
-              <TextSelectField>
+              {/* <TextSelectField>
                 <Select
                   onChange={(e) => {
                     setSelect(e.target.value);
@@ -406,7 +408,7 @@ const BookingHistory = () => {
                     Upcoming Booking
                   </option>
                 </Select>
-              </TextSelectField>
+              </TextSelectField> */}
             </TextWrapper>
           </Root>
           {isLoading === true ? (
@@ -443,7 +445,7 @@ const BookingHistory = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {data &&
+                  {data && data.length!==0?
                     data.map((item, index) => {
                       const bookingDate = new Date(item.createdAt);
                       return (
@@ -474,7 +476,7 @@ const BookingHistory = () => {
                           </TableCell>
                         </TableRow>
                       );
-                    })}
+                    }):<h3>Data Not Found</h3>}
                 </TableBody>
               </Table>
             </TableContainer>
