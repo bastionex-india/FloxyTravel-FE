@@ -277,7 +277,7 @@ const GenerateInvoice = () => {
                       <Input
                         id="standard-adornment-amount"
                         startAdornment={
-                          <InputAdornment position="start">$</InputAdornment>
+                          <InputAdornment position="start">INR</InputAdornment>
                         }
                         size="small"
                         onChange={(e) => setHotelPrice(e.target.value)}
@@ -299,7 +299,7 @@ const GenerateInvoice = () => {
                       <Input
                         id="standard-adornment-amount"
                         startAdornment={
-                          <InputAdornment position="start">$</InputAdornment>
+                          <InputAdornment position="start">INR</InputAdornment>
                         }
                         size="small"
                         onChange={(e) => setDiscountAmount(e.target.value)}
@@ -327,7 +327,7 @@ const GenerateInvoice = () => {
                 </Grid>
                 <Grid xs={6} className="pull-right">
                   <p>
-                    $
+                  INR
                     {
                       state.status !='approved' ?
                       (Number(hotelPrice) - Number(discountAmount))
@@ -336,7 +336,7 @@ const GenerateInvoice = () => {
                     }
                   </p>
                   <p>
-                    $
+                  INR
                     {
                       state.status !='approved' ? 
                       '0.00':
@@ -344,7 +344,7 @@ const GenerateInvoice = () => {
                     }
                   </p>
                   <p>
-                    $
+                    INR
                     {
                       state.status !='approved' ?
                       (Number(hotelPrice) -
