@@ -22,9 +22,9 @@ import BookingHistorybyOrderid from "./Pages/admin/BookingHistorybyOrderid";
 import ManageAdmin from "./Pages/admin/ManageAdmin/ManageAdmin";
 import ManageHotels from "./Pages/admin/ManageHotels/ManageHotels";
 import AddHotels from "./Pages/admin/AddHotels/AddHotels";
-import VendorManageHotels from './Pages/VendorManageHotels';
+import VendorManageHotels from "./Pages/VendorManageHotels";
 import GenerateInvoice from "./Pages/admin/GenerateInvoice";
-
+import VendorDetails from "./Pages/admin/VendorDetails/VendorDetails";
 
 const Root = styled.div``;
 const LeftWrapper = styled.div`
@@ -33,6 +33,7 @@ const LeftWrapper = styled.div`
 const RightWrapper = styled.div`
   width: calc(100% - 300px);
   background-color: #f1f7fc;
+  
 `;
 const Container = styled.div`
   display: flex;
@@ -72,7 +73,10 @@ function App() {
                       path="/bookinghistoryofadmin"
                       element={<BookingHistoryofAdmin />}
                     />
-                    <Route  path="/generateInvoice" element={<GenerateInvoice/>}/>
+                    <Route
+                      path="/generateInvoice"
+                      element={<GenerateInvoice />}
+                    />
                     <Route
                       path="/bookinghistorybyorderid"
                       element={<BookingHistorybyOrderid />}
@@ -90,6 +94,10 @@ function App() {
                     {/* <Route path="/bookinghistory" element={<BookingHistory />} />
                     <Route path="/hoteldetails" element={<HotelDetails />} />
                     <Route path="/profile" element={<Profile />} /> */}
+                    <Route
+                      path="vendordetails/:id"
+                      element={<VendorDetails />}
+                    />
                   </>
                 ) : (
                   <>
