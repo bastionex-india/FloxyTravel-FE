@@ -266,8 +266,8 @@ const TextMainWrapper = styled.div`
   }
 `;
 const TextCenter = styled.div`
-  color: red; 
-  text-align:center;
+  color: red;
+  text-align: center;
 `;
 
 const ManageAdmin = () => {
@@ -279,8 +279,9 @@ const ManageAdmin = () => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [response, setResponse] = useState();
   const [vendorlist, setVendorList] = useState(null);
-  const [open, setOpen] = useState(false); 
-  const [hotelDetails, setHotelDetails] = useState(); 
+  const [open, setOpen] = useState(false);
+  const [hotelDetails, setHotelDetails] = useState();
+  const [vendorId, setVendorId] = useState(null);
 
   const navigate = useNavigate();
   const handleChangePage = (event, newPage) => {
@@ -308,12 +309,16 @@ const ManageAdmin = () => {
         setIsLoading(false);
       });
   };
-  const getHotelByVendorId = async (vendorID) => {
+  const getHotelByVendorId = async () => {
     await axios
-      .get(`${environmentVariables.apiUrl}/admin/gethoteldetailbyvendorid/${vendorID}`, {
-        headers: { _token: authData.data.token },
-      })
+      .get(
+        `${environmentVariables.apiUrl}/admin/gethoteldetailbyvendorid/${vendorId}?page=${page}&limit=${rowsPerPage}`,
+        {
+          headers: { _token: authData.data.token },
+        }
+      )
       .then((response) => {
+        setResponse(response.data.data);
         setData(response.data.data.hotels);
         setIsLoading(false);
       })
@@ -322,7 +327,7 @@ const ManageAdmin = () => {
         setIsLoading(false);
       });
   };
-  const getVendorList = async()=>{
+  const getVendorList = async () => {
     await axios
       .get(`${environmentVariables.apiUrl}/admin/getvendorlist`, {
         headers: { _token: authData.data.token },
@@ -335,19 +340,25 @@ const ManageAdmin = () => {
         console.log("error", err);
         setIsLoading(false);
       });
-  }
+  };
   useEffect(() => {
     setIsLoading(true);
-    getAllListData();
+    if (vendorId !== null) {
+      getHotelByVendorId();
+    } else {
+      getAllListData();
+    }
     getVendorList();
-  }, [page, rowsPerPage]);
+  }, [page, rowsPerPage, vendorId, open]);
 
   const vendorHandler = (e) => {
     setIsLoading(true);
+    setPage(0);
+    setRowsPerPage(10);
     if (e.target.value === "all") {
-      getAllListData();
-    }else{
-      getHotelByVendorId(e.target.value)
+      setVendorId(null);
+    } else {
+      setVendorId(e.target.value);
     }
   };
   const DeleteHotel = (item) => {
@@ -362,7 +373,7 @@ const ManageAdmin = () => {
     axios(config)
       .then(function (response) {
         Swal.fire("Deleted", "Hotel Deleted Successfully", "success");
-        setOpen(false)
+        setOpen(false);
       })
       .catch(function (error) {
         Swal.fire("Error", "Something went wrong", "error");
@@ -372,7 +383,7 @@ const ManageAdmin = () => {
     setOpen(false);
   };
   const handleClickOpen = (item) => {
-    setHotelDetails(item)
+    setHotelDetails(item);
     setOpen(true);
   };
   const deleteRecord = (item) => {
@@ -439,11 +450,15 @@ const ManageAdmin = () => {
                   </HotelIconWrapper>
                 </HotelInfoWrapper>
                 <HotelButtonWrapper>
-                  <HotelActionButtons onClick={()=>navigate(`/addhotels/${row._id}`)}>Edit</HotelActionButtons>
+                  <HotelActionButtons
+                    onClick={() => navigate(`/addhotels/${row._id}`)}
+                  >
+                    Edit
+                  </HotelActionButtons>
                   <HotelActionButtons onClick={() => handleClickOpen(row)}>
                     Delete
                   </HotelActionButtons>
-                  <HotelActionButtons>Hide</HotelActionButtons>
+                  {/* <HotelActionButtons>Hide</HotelActionButtons> */}
                 </HotelButtonWrapper>
                 <BootstrapDialog
                   onClose={handleClose}
@@ -462,10 +477,18 @@ const ManageAdmin = () => {
                     </Typography>
                   </DialogContent>
                   <DialogActions>
-                    <Button variant="contained" color="success" onClick={handleClose}>
+                    <Button
+                      variant="contained"
+                      color="success"
+                      onClick={handleClose}
+                    >
                       Cancel
                     </Button>
-                    <Button variant="contained" color="error" onClick={()=>deleteRecord(hotelDetails)}>
+                    <Button
+                      variant="contained"
+                      color="error"
+                      onClick={() => deleteRecord(hotelDetails)}
+                    >
                       Delete
                     </Button>
                   </DialogActions>
@@ -480,7 +503,6 @@ const ManageAdmin = () => {
   return (
     <>
       <TextMainWrapper>
-
         <TextRoot>
           <Root>
             <HeadingWrapper>
@@ -495,16 +517,16 @@ const ManageAdmin = () => {
 
             <TextWrapper>
               <SelectVendor onChange={vendorHandler}>
-                <SelectOption value={'all'}>Select Vendor*</SelectOption>
-                <SelectOption value={'all'}>All</SelectOption>
-                {
-                  vendorlist && vendorlist.map((row,index)=>{
-                    
-                    return(
-                      <SelectOption key={index} value={row.vendorId}>{row.name}</SelectOption>
-                    )
-                  })
-                }
+                <SelectOption value={"all"}>Select Vendor*</SelectOption>
+                <SelectOption value={"all"}>All</SelectOption>
+                {vendorlist &&
+                  vendorlist.map((row, index) => {
+                    return (
+                      <SelectOption key={index} value={row.vendorId}>
+                        {row.name}
+                      </SelectOption>
+                    );
+                  })}
               </SelectVendor>
               <AddButton onClick={() => navigate("/addhotels")}>
                 Add Hotel
@@ -521,7 +543,6 @@ const ManageAdmin = () => {
             onRowsPerPageChange={handleChangeRowsPerPage}
           />
         </TextRoot>
-        
       </TextMainWrapper>
     </>
   );
