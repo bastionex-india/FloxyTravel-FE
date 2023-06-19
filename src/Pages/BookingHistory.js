@@ -11,6 +11,10 @@ import styled from "styled-components";
 
 // import { DocName } from '../Dashboard/Dashboard.styles';
 // import { DocInfo } from '../Dashboard/Dashboard.styles';
+import { BsCalendarDay } from "react-icons/bs";
+import "react-datepicker/dist/react-datepicker.css";
+import DatePicker from "react-datepicker";
+import SearchIcon from ".././Images/SearchIconNavbar.png";
 
 import {
   Button,
@@ -69,9 +73,22 @@ const Select = styled.select`
 const TextWrapper = styled.div`
   display: flex;
   justify-content: space-between;
+  align-item: center;
+
   @media (max-width: 768px) {
     justify-content: flex-end;
   }
+`;
+
+const InputIconWrapper = styled.div`
+  position: relative;
+  border-radius: 5px;
+  outline: none;
+  background: white;
+  // color:black;
+  border: none;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px,
+    rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
 `;
 
 const TextMainWrapper = styled.div`
@@ -82,17 +99,70 @@ const TextMainWrapper = styled.div`
   }
 `;
 
+const IconSearch = styled.div`
+  width: 5%;
+  top: -3px;
+  left: 15px;
+  font-size: 26px;
+  /* background-color: #0cb09b; */
+  display: inline-block;
+  position: absolute;
+  height: 59px;
+  line-height: 55px;
+  text-align: center;
+  @media (max-width: 768px) {
+    width: 59px;
+  }
+`;
+const Input = styled.input`
+  width: 95%;
+  height: 55px;
+  /* font-size: 20px; */
+  // color: #fff;
+  outline: none;
+  background-color: transparent;
+  padding: 0 10px 0 50px;
+  /* opacity: 1; */
+  font-size: 16px;
+  /* border: 1px solid rgba(75, 233, 245, 0.541); */
+  border: none;
+  @media (max-width: 768px) {
+    width: 80%;
+  }
+`;
+
+const FilterWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0px 50px;
+`;
+const FilterComponent = styled.div`
+  margin-left: 10px;
+  position: relative;
+`;
+const DateIcon = styled.div`
+  position: absolute;
+  right: 5%;
+  z-index: 1;
+`;
+
 const BookingHistory = () => {
   const { authData, setAuthData } = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState("");
   const navigate = useNavigate();
   const [select, setSelect] = useState("");
+  const [search, setSearch] = useState();
   const [data1, setData1] = useState([]);
   const [confirm, setConfirm] = useState();
   const [completed, setCompleted] = useState();
   const [cancelled, setCancelled] = useState();
   const [select1, setSelect1] = useState("");
+  const [fromDate, setFromDate] = useState(null);
+  const [toDate, setToDate] = useState(null);
+  const [searchByName, setSearchByName] = useState("");
+  const [allHotels, setAllHotels] = useState([]);
 
   useEffect(() => {
     if (window !== "undefined") {
@@ -103,17 +173,17 @@ const BookingHistory = () => {
     const socket = io.connect(environmentVariables?.apiUrl);
 
     socket.on("admin_notification", (data) => {
-      console.log(data, "sr");
+      // console.log(data, "sr");
       getAllUsers();
     });
 
     socket.on("admin_cancellation_notification", (data) => {
-      console.log(data, "sr");
+      // console.log(data, "sr");
       getAllUsers();
     });
 
     socket.on("admin_booking_notification", (data) => {
-      console.log(data, "sr");
+      // console.log(data, "sr");
       getAllUsers();
     });
 
@@ -127,22 +197,29 @@ const BookingHistory = () => {
   };
 
   const getAllUsers = async () => {
-    // console.log("aaa", select1,select);
-    let data;
-    if (select1 !== "") {
-      data = {
-        status: select,
-        startDate: new Date(),
-        endDate: select1,
-      };
-    } else {
-      data = {
-        status: select,
-      };
+    console.log("aaa", select1,select,fromDate,toDate,searchByName);
+    let data={
+      // status:select,
+      // startDate:new Date(),
+      // endDate:select1,
+      calenderStartDate:fromDate,
+      calenderEndDate:toDate,
+      // id:searchByName
     }
+    // if (select1 !== "") {
+    //   data = {
+    //     status: select,
+    //     startDate: new Date(),
+    //     endDate: select1,
+    //   };
+    // } else {
+    //   data = {
+    //     status: select,
+    //   };
+    // }
     const config = {
       method: "post",
-      url: `${environmentVariables.apiUrl}/vendor/getallbooking/${authData.data.vendorId}`,
+      url: `http://localhost:4000/vendor/getallbooking/${authData.data.vendorId}`,
       headers: { _token: authData.data.token },
       data: data,
     };
@@ -150,7 +227,7 @@ const BookingHistory = () => {
       .request(config)
       .then((response) => {
         // setData(response.data.sort((a, b) => b.createdAt - a.createdAt));
-        setData(response?.data?.data?.records);
+        setData(response?.data?.data);
         setIsLoading(false);
       })
       .catch((error) => {
@@ -158,13 +235,27 @@ const BookingHistory = () => {
         setIsLoading(false);
       });
   };
+  const getAllHotels=async()=>{
+    try {
+      const response = await axios.get(`http://localhost:4000/vendor/getallhotelsbyvendorid/${authData.data.vendorId}`, {
+        headers:  { _token: authData.data.token }
+      });
+      setAllHotels(response.data.data)
+    } catch (error) {
+      // Handle the error here
+      console.error(error);
+    }
+  }
   useEffect(() => {
     setIsLoading(true);
     getAllUsers();
-  }, [select, select1]);
-  const ApprovedData = () => {};
-  const PendingData = () => {};
+  }, [select, select1, searchByName, fromDate, toDate]);
 
+
+  useEffect(() => {
+    getAllHotels()
+  }, []);
+  
   return (
     <>
       <TextMainWrapper>
@@ -179,80 +270,121 @@ const BookingHistory = () => {
               ></i>
               <Heading> Booking History</Heading>
             </div>
-            
-            <TextWrapper style={{marginTop: '1rem'}}>
-            <div class="dropdown">
-  <button class="btn dropdown-toggle shadow p-3 mb-5 bg-body-tertiary rounded" style={{width: '10rem'}} type="button" data-bs-toggle="dropdown" aria-expanded="false">
-  Select Range
-  </button>
-  <ul class="dropdown-menu" >
-    <li><a class="dropdown-item" href="#">All</a>
-    </li>
-    <li><a class="dropdown-item" href="#">Past Two days</a>
-    </li>
-    <li><a class="dropdown-item" href="#">Past one week</a>
-    </li>
-    <li><a class="dropdown-item" href="#">Past one month</a>
-    </li>
-  </ul>
-</div>
 
-<div class="dropdown">
-  <button class="btn dropdown-toggle shadow p-3 mb-5 bg-body-tertiary rounded" style={{width: '10rem'}} type="button" data-bs-toggle="dropdown" aria-expanded="false">
-  Select Type
-  </button>
-  <ul class="dropdown-menu" >
-    <li><a class="dropdown-item" href="#">All</a>
-    </li>
-    <li><a class="dropdown-item" href="#">Approved Booking</a>
-    </li>
-    <li><a class="dropdown-item" href="#">Pending Booking</a>
-    </li>
-  </ul>
-</div>
-</TextWrapper>
+            <TextWrapper>
+              {
+                select!=="upcoming" && (
+                  <TextSelectField>
+                    <Select
+                      onChange={(e) => {
+                        setSelect1(e.target.value);
+                      }}
+                      //   value={select1}
+                      required
+                    >
+                      <option value="" hidden>
+                        Select Range
+                      </option>
+                      <option value="">All</option>
+                      <option
+                        value={
+                          new Date(new Date().getTime() - 2 * 24 * 60 * 60 * 1000)
+                        }
+                      >
+                        Past Two days
+                      </option>
+                      <option
+                        value={
+                          new Date(new Date().getTime() - 7 * 24 * 60 * 60 * 1000)
+                        }
+                      >
+                        Past one week
+                      </option>
+                      <option
+                        value={
+                          new Date(new Date().getTime() - 30 * 24 * 60 * 60 * 1000)
+                        }
+                      >
+                        Past one month
+                      </option>
+                    </Select>
+                  </TextSelectField>
+                )
+              }
 
-            {/* <TextWrapper>
-              <TextSelectField>
+                {/* <IconSearch>
+                  <img src={SearchIcon} />
+                </IconSearch>
+                <Input
+                  type="search"
+                  placeholder={"Search by City"}
+                  value={search}
+                  onChange={(e) => {
+                    setSearchByName(e.target.value);
+                  }}
+                  // onKeyDown={(e) => KeyDown(e)}
+                  autoComplete="false"
+                /> */}
+                 <TextSelectField>
                 <Select
                   onChange={(e) => {
-                    setSelect1(e.target.value);
+                    setSearchByName(e.target.value);
                   }}
                   //   value={select1}
                   required
                 >
-                  <option value="">Select Range</option>
-                  <option
-                    value={
-                      new Date(new Date().getTime() - 2 * 24 * 60 * 60 * 1000)
-                    }
-                  >
-                    All
+                  <option value="" hidden>
+                    Select Hotel
                   </option>
-                  <option
-                    value={
-                      new Date(new Date().getTime() - 2 * 24 * 60 * 60 * 1000)
-                    }
-                  >
-                    Past Two days
-                  </option>
-                  <option
-                    value={
-                      new Date(new Date().getTime() - 7 * 24 * 60 * 60 * 1000)
-                    }
-                  >
-                    Past one week
-                  </option>
-                  <option
-                    value={
-                      new Date(new Date().getTime() - 30 * 24 * 60 * 60 * 1000)
-                    }
-                  >
-                    Past one month
-                  </option>
+                  {
+                    allHotels.map((item,index)=>{
+                      return(
+                        <option key={index} value={item._id}>{item.hotelname}</option>
+                      )
+                    })
+                  }
                 </Select>
               </TextSelectField>
-              
+
+
+              <FilterWrapper>
+                <FilterComponent>
+                  {/* <FilterLabel>From</FilterLabel> */}
+                  <DateIcon>
+                    <BsCalendarDay size="1.5rem" />
+                  </DateIcon>
+                  <DatePicker
+                    placeholderText="Start Date"
+                    selected={fromDate}
+                    onChange={(date) => {
+                      setFromDate(date);
+                      // setPageNo(1);
+                    }}
+                    selectsStart
+                    startDate={fromDate}
+                    endDate={toDate}
+                  />
+                </FilterComponent>
+                <FilterComponent>
+                  {/* <FilterLabel>To</FilterLabel> */}
+                  <DateIcon>
+                    <BsCalendarDay size="1.5rem" />
+                  </DateIcon>
+
+                  <DatePicker
+                    placeholderText="End Date"
+                    selected={toDate}
+                    onChange={(date) => setToDate(date)}
+                    selectsStart
+                    startDate={fromDate}
+                    endDate={toDate}
+                    disabled={fromDate ? false : true}
+                    minDate={fromDate}
+                    style={{ padding: "10px" }}
+                  />
+                </FilterComponent>
+              </FilterWrapper>
+
               <TextSelectField>
                 <Select
                   onChange={(e) => {
@@ -261,21 +393,21 @@ const BookingHistory = () => {
                   value={select}
                   required
                 >
-                  <option value="all" onClick={ApprovedData}>
+                  <option value="" hidden>
                     Select Type
                   </option>
-                  <option value="all" onClick={ApprovedData}>
+                  <option value="">
                     All
                   </option>
-                  <option value="approved" onClick={ApprovedData}>
-                    Approved Booking
+                  <option value="completed">
+                    Completed Booking
                   </option>
-                  <option value="pending" onClick={PendingData}>
-                    Pending Booking
+                  <option value="upcoming">
+                    Upcoming Booking
                   </option>
                 </Select>
               </TextSelectField>
-            </TextWrapper> */}
+            </TextWrapper>
           </Root>
           {isLoading === true ? (
             <div
@@ -325,7 +457,7 @@ const BookingHistory = () => {
                             {item.hotelname}
                           </TableCell>
                           <TableCell align="right">{item.checkIn}</TableCell>
-                          <TableCell align="right">{item.checkIn}</TableCell>
+                          <TableCell align="right">{item.checkOut}</TableCell>
                           <TableCell align="right">
                             {bookingDate.toLocaleDateString()}
                           </TableCell>
