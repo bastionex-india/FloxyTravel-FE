@@ -16,18 +16,18 @@ import { environmentVariables } from "../../config/config";
 import { MDBCard, MDBCardBody } from "mdb-react-ui-kit";
 
 const monthdata = [
-  { Name: "Jan", Bookings: 0, Hotels: 0 },
-  { Name: "Feb", Bookings: 0, Hotels: 0 },
-  { Name: "March", Bookings: 0, Hotels: 0 },
-  { Name: "April", Bookings: 0, Hotels: 0 },
-  { Name: "May", Bookings: 0, Hotels: 9 },
-  { Name: "June", Bookings: 31, Hotels: 817 },
-  { Name: "July", Bookings: 0, Hotels: 0 },
-  { Name: "Aug", Bookings: 0, Hotels: 0 },
-  { Name: "Sep", Bookings: 0, Hotels: 0 },
-  { Name: "Oct", Bookings: 0, Hotels: 0 },
-  { Name: "Nov", Bookings: 0, Hotels: 0 },
-  { Name: "Dec", Bookings: 0, Hotels: 0 },
+  { Name: "Jan", Bookings: 0, Hotels: 0, Earnings: 0 },
+  { Name: "Feb", Bookings: 0, Hotels: 0, Earnings: 0 },
+  { Name: "March", Bookings: 0, Hotels: 0, Earnings: 0 },
+  { Name: "April", Bookings: 0, Hotels: 0, Earnings: 0 },
+  { Name: "May", Bookings: 0, Hotels: 9, Earnings: 0 },
+  { Name: "June", Bookings: 31, Hotels: 817, Earnings: 3 },
+  { Name: "July", Bookings: 0, Hotels: 0, Earnings: 0 },
+  { Name: "Aug", Bookings: 0, Hotels: 0, Earnings: 0 },
+  { Name: "Sep", Bookings: 0, Hotels: 0, Earnings: 0 },
+  { Name: "Oct", Bookings: 0, Hotels: 0, Earnings: 0 },
+  { Name: "Nov", Bookings: 0, Hotels: 0, Earnings: 0 },
+  { Name: "Dec", Bookings: 0, Hotels: 0, Earnings: 0 },
 ];
 
 export default function GraphCheck() {
@@ -100,23 +100,23 @@ export default function GraphCheck() {
     })
       .then((response) => {
         const mergedata = [
-          { Name: 1, Bookings: 0, Hotels: 0 },
-          { Name: 2, Bookings: 0, Hotels: 0 },
-          { Name: 3, Bookings: 0, Hotels: 0 },
-          { Name: 4, Bookings: 0, Hotels: 0 },
-          { Name: 5, Bookings: 0, Hotels: 0 },
-          { Name: 6, Bookings: 0, Hotels: 0 },
-          { Name: 7, Bookings: 0, Hotels: 0 },
-          { Name: 8, Bookings: 0, Hotels: 0 },
-          { Name: 9, Bookings: 0, Hotels: 0 },
-          { Name: 10, Bookings: 0, Hotels: 0 },
-          { Name: 11, Bookings: 0, Hotels: 0 },
-          { Name: 12, Bookings: 0, Hotels: 0 },
+          { Name: 1, Bookings: 0, Hotels: 0, Earnings: 0 },
+          { Name: 2, Bookings: 0, Hotels: 0, Earnings: 0 },
+          { Name: 3, Bookings: 0, Hotels: 0, Earnings: 0 },
+          { Name: 4, Bookings: 0, Hotels: 0, Earnings: 0 },
+          { Name: 5, Bookings: 0, Hotels: 0, Earnings: 0 },
+          { Name: 6, Bookings: 0, Hotels: 0, Earnings: 0 },
+          { Name: 7, Bookings: 0, Hotels: 0, Earnings: 0 },
+          { Name: 8, Bookings: 0, Hotels: 0, Earnings: 0 },
+          { Name: 9, Bookings: 0, Hotels: 0, Earnings: 0 },
+          { Name: 10, Bookings: 0, Hotels: 0, Earnings: 0 },
+          { Name: 11, Bookings: 0, Hotels: 0, Earnings: 0 },
+          { Name: 12, Bookings: 0, Hotels: 0, Earnings: 0 },
         ];
 
         const bookingdata = response.data.data[0].bookingCount;
         const hoteldata = response.data.data[0].hotelCount;
-
+        const earnings = response.data.data[0].earnings;
         for (let i = 0; i < mergedata.length; i++) {
           for (let j = 0; j < bookingdata.length; j++) {
             if (mergedata[i].Name === bookingdata[j].month) {
@@ -132,7 +132,13 @@ export default function GraphCheck() {
             }
           }
         }
-
+        for (let i = 0; i < mergedata.length; i++) {
+          for (let j = 0; j < bookingdata.length; j++) {
+            if (mergedata[i].Name === bookingdata[j].month) {
+              mergedata[i].Earnings = bookingdata[j].count;
+            }
+          }
+        }
         for (let i = 0; i < mergedata.length; i++) {
           if (mergedata[i].Name === 1) {
             mergedata[i].Name = "Jan";
@@ -318,6 +324,7 @@ export default function GraphCheck() {
             <Legend />
             <Bar dataKey="Bookings" fill="#8884d8" />
             <Bar dataKey="Hotels" fill="#82ca9d" />
+            <Bar dataKey="Earnings" fill="red" />
           </BarChart>
         </MDBCardBody>
       </MDBCard>
