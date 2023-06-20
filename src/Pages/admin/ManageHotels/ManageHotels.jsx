@@ -373,7 +373,9 @@ const ManageAdmin = () => {
     axios(config)
       .then(function (response) {
         Swal.fire("Deleted", "Hotel Deleted Successfully", "success");
-        setOpen(false);
+        setOpen(false)
+        getHotelByVendorId()
+        getAllListData()
       })
       .catch(function (error) {
         Swal.fire("Error", "Something went wrong", "error");
