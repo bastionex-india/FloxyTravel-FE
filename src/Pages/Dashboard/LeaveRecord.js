@@ -61,7 +61,7 @@ const CardText = styled.div`
   }
 `;
 
-export default function LeaveRecord() {
+export default function LeaveRecord({ vendorId }) {
   const { authData } = useContext(AuthContext);
   const navigate = useNavigate();
   const [data, setData] = useState([]);
@@ -70,10 +70,10 @@ export default function LeaveRecord() {
     navigate("/hoteldetails", { state: item });
   };
   const getSummaryData = () => {
+    const vendorid = authData.data.vendorId || vendorId;
+
     axios
-      .get(
-        `${environmentVariables.apiUrl}/vendor/getVendorSummary/${authData.data.vendorId}`
-      )
+      .get(`${environmentVariables.apiUrl}/admin/getVendorSummary/${vendorid}`)
       .then((res) => setSummaryData(res.data.data))
       .catch((err) => console.log(err));
   };
@@ -93,7 +93,7 @@ export default function LeaveRecord() {
   useEffect(() => {
     getVendorData();
     getSummaryData();
-  }, []);
+  }, [vendorId]);
 
   const [showModal, setShowModel] = useState(false);
 

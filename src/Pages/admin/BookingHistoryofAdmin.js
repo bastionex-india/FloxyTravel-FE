@@ -176,7 +176,7 @@ const BookingHistoryofAdmin = () => {
   useEffect(() => {
     setIsLoading(true);
     getAllUsers();
-  }, [select, select1, page]);
+  }, [select, select1, page, rowsPerPage]);
 
   const ApprovedData = () => {};
   const PendingData = () => {};
@@ -310,7 +310,7 @@ const BookingHistoryofAdmin = () => {
                             {item.hotelname}
                           </TableCell>
                           <TableCell align="right">{item.checkIn}</TableCell>
-                          <TableCell align="right">{item.checkIn}</TableCell>
+                          <TableCell align="right">{item.checkOut}</TableCell>
                           <TableCell align="right">
                             {bookingDate.toLocaleDateString()}
                           </TableCell>

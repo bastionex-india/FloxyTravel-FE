@@ -280,9 +280,12 @@ const ManageAdmin = () => {
 
   const getAllListData = async () => {
     await axios
-      .get(`${environmentVariables.apiUrl}/admin/getvendorlist?page=${page}&limit=${rowsPerPage}`, {
-        headers: { _token: authData.data.token },
-      })
+      .get(
+        `${environmentVariables.apiUrl}/admin/getvendorlist?page=${page}&limit=${rowsPerPage}`,
+        {
+          headers: { _token: authData.data.token },
+        }
+      )
       .then((response) => {
         setData(response.data.data.records);
         setResponse(response?.data?.data);
@@ -304,12 +307,8 @@ const ManageAdmin = () => {
       .then((response) => {
         setIsLoading(true);
         getAllListData();
-        setOpen(false)
-        Swal.fire(
-          "Deleted",
-          "Vendor Deleted Successfully",
-          "success"
-        );
+        setOpen(false);
+        Swal.fire("Deleted", "Vendor Deleted Successfully", "success");
       })
       .catch((err) => {
         console.log("error", err);
@@ -424,6 +423,13 @@ const ManageAdmin = () => {
                               aria-label="outlined button group"
                             >
                               {/* <Button>View</Button> */}
+                              <Button
+                                onClick={() => {
+                                  navigate(`/vendordetails/${item?.vendorId}`);
+                                }}
+                              >
+                                View details
+                              </Button>
                               <Button
                                 onClick={() => {
                                   setEditVendorPopUp(true);
