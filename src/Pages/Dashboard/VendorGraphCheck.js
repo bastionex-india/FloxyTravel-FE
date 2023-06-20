@@ -158,10 +158,10 @@ export default function VendorGraphCheck() {
 
 <div class="col">
 
-<div class="input-group mb-3" style={{marginLeft: '15rem', width: '15rem', marginTop: '1rem'}}>
-<label class="input-group-text" for="inputGroupSelect01">Select Plan</label>
+<div class="input-group mb-3" style={{marginLeft: '15rem', width: '8rem', marginTop: '1rem'}}>
+{/* <label class="input-group-text" for="inputGroupSelect01">Select Plan</label> */}
 <select class="form-select" id="inputGroupSelect01" onChange={(e) => planUpdate(e)}>
-<option selected>Choose...</option>
+<option selected>Sort...</option>
 <option value={`weekdata`}>Week</option>
 <option value={`monthdata`}>Month</option>
 <option value={`yeardata`}>Year</option>
