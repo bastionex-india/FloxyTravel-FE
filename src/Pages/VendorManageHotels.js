@@ -8,6 +8,57 @@ import { useContext } from "react";
 import { AuthContext } from "../ContextApi/ContextApi";
 import { Button } from "@mui/material";
 import CircularLoader from "../Component/CircularLoader/CircularLoader";
+import TablePagination from "@mui/material/TablePagination";
+import PropTypes from "prop-types";
+import { styled as newStyle } from "@mui/material/styles";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
+import Typography from "@mui/material/Typography";
+import Swal from "sweetalert2";
+
+
+const BootstrapDialog = newStyle(Dialog)(({ theme }) => ({
+  "& .MuiDialogContent-root": {
+    padding: theme.spacing(2),
+  },
+  "& .MuiDialogActions-root": {
+    padding: theme.spacing(1),
+  },
+}));
+
+function BootstrapDialogTitle(props) {
+  const { children, onClose, ...other } = props;
+
+  return (
+    <DialogTitle sx={{ m: 0, p: 2 }} {...other}>
+      {children}
+      {onClose ? (
+        <IconButton
+          aria-label="close"
+          onClick={onClose}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+      ) : null}
+    </DialogTitle>
+  );
+}
+
+BootstrapDialogTitle.propTypes = {
+  children: PropTypes.node,
+  onClose: PropTypes.func.isRequired,
+};
+
 const HotelCardsWrapper = styled.div``;
 const HotelCard = styled.div`
   display: flex;
@@ -217,11 +268,35 @@ const ManageAdmin = () => {
   const [addVendorPopUp, setAddVendorPopUp] = useState(false);
   const [data, setData] = useState(null);
   const [vendorlist, setVendorList] = useState(null);
+  const [mainResponse, setResponse] = useState("");
+  const [open, setOpen] = useState(false);
+  const [hotelDetails, setHotelDetails] = useState();
   const navigate = useNavigate();
 
   const handleClick = (item) => {
     console.log("hcjhcjhf", item);
     navigate("/bookinghistorybyorderid", { state: item });
+  };
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+    if (page === 0) {
+      getAllListData();
+    }
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const handleClickOpen = (item) => {
+    setHotelDetails(item);
+    setOpen(true);
   };
   const getComponents = () => {
     if (isLoading === true) {
@@ -270,9 +345,10 @@ const ManageAdmin = () => {
               </HotelInfoWrapper>
               <HotelButtonWrapper>
                 <HotelActionButtons>Edit</HotelActionButtons>
-                <HotelActionButtons>Delete</HotelActionButtons>
+                <HotelActionButtons onClick={() => handleClickOpen(row)}>Delete</HotelActionButtons>
                 {/* <HotelActionButtons>Hide</HotelActionButtons> */}
               </HotelButtonWrapper>
+              
             </HotelCard>
           );
         });
@@ -281,11 +357,12 @@ const ManageAdmin = () => {
   };
   const getAllListData = async () => {
     await axios
-      .get(`${environmentVariables.apiUrl}/vendor/vendorget`, {
+      .get(`http://localhost:4000/vendor/vendorget?page=${page + 1}&limit=${rowsPerPage}`, {
         headers: { _token: authData.data.token },
       })
       .then((response) => {
-        console.log(response.data.data.records);
+        console.log(response.data.data);
+        setResponse(response.data.data);
         setData(response.data.data.records);
         setIsLoading(false);
       })
@@ -312,17 +389,35 @@ const ManageAdmin = () => {
       });
   };
 
+  const DeleteHotel = (item) => {
+    const config = {
+      method: "delete",
+      url: `http://localhost:4000/vendor/deletehotel/${item._id}`,
+      headers: {
+        _token: authData.data.token,
+      },
+    };
+
+    axios(config)
+      .then(function (response) {
+        Swal.fire("Deleted", "Hotel Deleted Successfully", "success");
+        setOpen(false)
+        getAllListData()
+      })
+      .catch(function (error) {
+        Swal.fire("Error", "Something went wrong", "error");
+      });
+  };
+  const deleteRecord = (item) => {
+    DeleteHotel(item);
+  };
+
   useEffect(() => {
     setIsLoading(true);
-    // getVendorList();
     getVendor();
-    const lclstorage = JSON.parse(localStorage.getItem("authdata"));
     getAllListData();
-  }, []);
+  }, [page, rowsPerPage]);
 
-  const boldTextCss = {
-    fontWeight: 700,
-  };
 
   return (
     <>
@@ -343,6 +438,47 @@ const ManageAdmin = () => {
           <HotelCardsWrapper>{getComponents()}</HotelCardsWrapper>
           {/* )} */}
         </TextRoot>
+          <TablePagination
+            component="div"
+            count={mainResponse.totalrecords}
+            page={page}
+            onPageChange={handleChangePage}
+            rowsPerPage={rowsPerPage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+          <BootstrapDialog
+            onClose={handleClose}
+            aria-labelledby="customized-dialog-title"
+            open={open}
+          >
+            <BootstrapDialogTitle
+              id="customized-dialog-title"
+              onClose={handleClose}
+            >
+              Delete
+            </BootstrapDialogTitle>
+            <DialogContent dividers>
+              <Typography gutterBottom>
+                Are you sure you want to delete the Hotel?
+              </Typography>
+            </DialogContent>
+            <DialogActions>
+              <Button
+                variant="contained"
+                color="success"
+                onClick={handleClose}
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="contained"
+                color="error"
+                onClick={() => deleteRecord(hotelDetails)}
+              >
+                Delete
+              </Button>
+            </DialogActions>
+          </BootstrapDialog>
       </TextMainWrapper>
     </>
   );

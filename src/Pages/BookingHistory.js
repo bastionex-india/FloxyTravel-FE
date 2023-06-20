@@ -26,6 +26,7 @@ import {
   TableRow,
   Paper,
 } from "@mui/material";
+import TablePagination from "@mui/material/TablePagination";
 
 const boldTextCss = {
   fontWeight: 700,
@@ -163,6 +164,22 @@ const BookingHistory = () => {
   const [toDate, setToDate] = useState(null);
   const [searchByName, setSearchByName] = useState("");
   const [allHotels, setAllHotels] = useState([]);
+  const [response, setResponse] = useState({});
+
+  // paginationstart
+  const [page, setPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [totalItems, setTotalItems] = useState();
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+  // paginationend
 
   useEffect(() => {
     if (window !== "undefined") {
@@ -197,15 +214,17 @@ const BookingHistory = () => {
   };
 
   const getAllUsers = async () => {
-    // console.log("aaa", select1,select,fromDate,toDate,searchByName);
+    console.log("aaa", select1,select,fromDate,toDate,searchByName,page,rowsPerPage);
     let data={
-      // status:select,
+      status:select,
       // startDate:new Date(),
       // endDate:select1,
       calenderStartDate:fromDate,
       calenderEndDate:toDate,
-      id:searchByName
+      id:searchByName,
     }
+    data.page = page + 1;
+    data.pageSize = rowsPerPage;
     // if (select1 !== "") {
     //   data = {
     //     status: select,
@@ -219,7 +238,7 @@ const BookingHistory = () => {
     // }
     const config = {
       method: "post",
-      url: `${environmentVariables.apiUrl}/vendor/getallbooking/${authData.data.vendorId}`,
+      url: `http://localhost:4000/vendor/getallbooking/${authData.data.vendorId}`,
       headers: { _token: authData.data.token },
       data: data,
     };
@@ -227,9 +246,13 @@ const BookingHistory = () => {
       .request(config)
       .then((response) => {
         // setData(response.data.sort((a, b) => b.createdAt - a.createdAt));
-        // console.log("res",response.data.data)
-        setData(response?.data?.data);
-        setIsLoading(false);
+        const { totalItems, totalPages, currentPage, data } = response.data;
+        console.log("res",totalItems, totalPages, currentPage, data )
+        setData(data);
+        setTotalPages(totalPages);
+        setPage(currentPage - 1);
+        setIsLoading(false)
+        setTotalItems(totalItems)
       })
       .catch((error) => {
         console.log("error", error);
@@ -250,14 +273,18 @@ const BookingHistory = () => {
   useEffect(() => {
     setIsLoading(true);
     getAllUsers();
-  }, [select, select1, searchByName, fromDate, toDate]);
+  }, [select, select1, searchByName, fromDate, toDate,page,rowsPerPage]);
 
 
   useEffect(() => {
     getAllHotels()
   }, []);
   
-  console.log(":data",data)
+  // function convertToUnixTimestamp(dateString) {
+  //   const [day, month, year] = dateString.split('/');
+  //   const formattedDateString = `${month}/${day}/${year}`;
+  //   return new Date(formattedDateString).getTime();
+  // }
   return (
     <>
       <TextMainWrapper>
@@ -387,7 +414,7 @@ const BookingHistory = () => {
                 </FilterComponent>
               </FilterWrapper>
 
-              {/* <TextSelectField>
+              <TextSelectField>
                 <Select
                   onChange={(e) => {
                     setSelect(e.target.value);
@@ -408,7 +435,7 @@ const BookingHistory = () => {
                     Upcoming Booking
                   </option>
                 </Select>
-              </TextSelectField> */}
+              </TextSelectField>
             </TextWrapper>
           </Root>
           {isLoading === true ? (
@@ -447,7 +474,12 @@ const BookingHistory = () => {
                 <TableBody>
                   {data && data.length!==0?
                     data.map((item, index) => {
+                      
                       const bookingDate = new Date(item.createdAt);
+                      // const checkInTime = convertToUnixTimestamp(item.checkIn);
+                      // const checkOutTime = convertToUnixTimestamp(item.checkOut);
+                      const currentTime = new Date().getTime();
+                      console.log(item,item.checkoutTimestamp)
                       return (
                         <TableRow
                           key={index}
@@ -463,7 +495,9 @@ const BookingHistory = () => {
                           <TableCell align="right">
                             {bookingDate.toLocaleDateString()}
                           </TableCell>
-                          <TableCell align="right">{item.status}</TableCell>
+                          <TableCell align="right">
+                            {item.checkinTimestamp > currentTime ? "Upcoming" : item.checkoutTimestamp < currentTime ? "Completed" :"Completed" }
+                          </TableCell>
                           <TableCell align="right">
                             <Button
                               size="small"
@@ -479,6 +513,15 @@ const BookingHistory = () => {
                     }):<h3>Data Not Found</h3>}
                 </TableBody>
               </Table>
+              <TablePagination
+                rowsPerPageOptions={[1, 3, 10]}
+                component="div"
+                count={totalItems}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+              />
             </TableContainer>
           )}
         </TextRoot>

@@ -282,15 +282,15 @@ export default function GraphCheck() {
                     marginTop: "1rem",
                   }}
                 >
-                  <label class="input-group-text" for="inputGroupSelect01">
+                  {/* <label class="input-group-text" for="inputGroupSelect01">
                     Select
-                  </label>
+                  </label> */}
                   <select
                     class="form-select"
                     id="inputGroupSelect01"
                     onChange={(e) => planUpdate(e)}
                   >
-                    <option selected>Choose...</option>
+                    <option selected hidden>Choose...</option>
                     <option value={`weekdata`}>Week</option>
                     <option value={`monthdata`}>Month</option>
                     <option value={`yeardata`}>Year</option>
