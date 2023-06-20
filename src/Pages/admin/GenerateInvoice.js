@@ -90,8 +90,6 @@ const GenerateInvoice = () => {
         bookingID: state._id,
         amount: amount.toString(),
         discount: Number(discountAmount),
-        hotelId: state?.hotelRefId,
-        vendorId: state?.hotelVendorId,
       };
       let config = {
         method: "post",
