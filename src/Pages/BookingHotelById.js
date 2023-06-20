@@ -205,9 +205,9 @@ const BookingHotelById = () => {
                       </TableRow>
                     </TableBody>
                   </Table>
-                  <Button variant="contained" endIcon={<PictureAsPdfIcon />}>
+                  {/* <Button variant="contained" endIcon={<PictureAsPdfIcon />}>
                     Generate Invoice{" "}
-                  </Button>
+                  </Button> */}
                 </Grid>
                 <Grid xs={6}>
                   <h4>Booking Details</h4>

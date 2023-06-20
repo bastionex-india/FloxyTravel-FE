@@ -102,6 +102,10 @@ const HotelInfoWrapper = styled.div`
   width: 50%;
   margin: 10px 30px;
 `;
+const Lable = styled.div`
+  font-size: 16px;
+  margin-bottom: -10px;
+`;
 const HotelButtonWrapper = styled.div`
   width: 30%;
   display: flex;
@@ -516,10 +520,10 @@ const ManageAdmin = () => {
               ></i>
               <Heading> Manage Hotels</Heading>
             </HeadingWrapper>
-
+            <Lable>Select Vendor</Lable>
             <TextWrapper>
               <SelectVendor onChange={vendorHandler}>
-                <SelectOption value={"all"}>Select Vendor*</SelectOption>
+                {/* <SelectOption value={"all"}>Select Vendor*</SelectOption> */}
                 <SelectOption value={"all"}>All</SelectOption>
                 {vendorlist &&
                   vendorlist.map((row, index) => {
