@@ -219,7 +219,7 @@ const BookingHistory = () => {
     // }
     const config = {
       method: "post",
-      url: `http://localhost:4000/vendor/getallbooking/${authData.data.vendorId}`,
+      url: `${environmentVariables.apiUrl}/vendor/getallbooking/${authData.data.vendorId}`,
       headers: { _token: authData.data.token },
       data: data,
     };
@@ -238,7 +238,7 @@ const BookingHistory = () => {
   };
   const getAllHotels=async()=>{
     try {
-      const response = await axios.get(`http://localhost:4000/vendor/getallhotelsbyvendorid/${authData.data.vendorId}`, {
+      const response = await axios.get(`${environmentVariables.apiUrl}/vendor/getallhotelsbyvendorid/${authData.data.vendorId}`, {
         headers:  { _token: authData.data.token }
       });
       setAllHotels(response.data.data)
