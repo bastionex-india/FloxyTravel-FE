@@ -15,23 +15,8 @@ import { AuthContext } from "../../ContextApi/ContextApi";
 import { environmentVariables } from "../../config/config";
 import { MDBCard, MDBCardBody } from "mdb-react-ui-kit";
 
-const monthdata = [
-  { Name: "Jan", Bookings: 0, Hotels: 0, Earnings: 0 },
-  { Name: "Feb", Bookings: 0, Hotels: 0, Earnings: 0 },
-  { Name: "March", Bookings: 0, Hotels: 0, Earnings: 0 },
-  { Name: "April", Bookings: 0, Hotels: 0, Earnings: 0 },
-  { Name: "May", Bookings: 0, Hotels: 9, Earnings: 0 },
-  { Name: "June", Bookings: 31, Hotels: 817, Earnings: 3 },
-  { Name: "July", Bookings: 0, Hotels: 0, Earnings: 0 },
-  { Name: "Aug", Bookings: 0, Hotels: 0, Earnings: 0 },
-  { Name: "Sep", Bookings: 0, Hotels: 0, Earnings: 0 },
-  { Name: "Oct", Bookings: 0, Hotels: 0, Earnings: 0 },
-  { Name: "Nov", Bookings: 0, Hotels: 0, Earnings: 0 },
-  { Name: "Dec", Bookings: 0, Hotels: 0, Earnings: 0 },
-];
-
 export default function GraphCheck() {
-  const [graphdata, setGraphData] = useState(monthdata);
+  const [graphdata, setGraphData] = useState();
   const { authData, setAuthData } = useContext(AuthContext);
   const [alldata, setAlldata] = useState();
   const [yeardata, setYeardata] = useState();
@@ -135,7 +120,7 @@ export default function GraphCheck() {
         for (let i = 0; i < mergedata.length; i++) {
           for (let j = 0; j < bookingdata.length; j++) {
             if (mergedata[i].Name === bookingdata[j].month) {
-              mergedata[i].Earnings = bookingdata[j].count;
+              mergedata[i].Earnings = earnings[j].totalAmount;
             }
           }
         }

@@ -268,11 +268,11 @@ const ManageAdmin = () => {
                   <HotelInfoText>Category : {row.hotelCategory}</HotelInfoText>
                 </HotelIconWrapper>
               </HotelInfoWrapper>
-              {/* <HotelButtonWrapper> */}
-                {/* <HotelActionButtons>Edit</HotelActionButtons> */}
-                {/* <HotelActionButtons>Delete</HotelActionButtons> */}
-                {/* <HotelActionButtons>Hide</HotelActionButtons> */}
-              {/* </HotelButtonWrapper> */}
+              <HotelButtonWrapper>
+                <HotelActionButtons>Edit</HotelActionButtons>
+                <HotelActionButtons>Delete</HotelActionButtons>
+                <HotelActionButtons>Hide</HotelActionButtons>
+              </HotelButtonWrapper>
             </HotelCard>
           );
         });
