@@ -71,27 +71,15 @@ export default function LeaveRecord({ vendorId }) {
   };
   const getSummaryData = () => {
     const vendorid = authData.data.vendorId || vendorId;
-
+    
     axios
       .get(`${environmentVariables.apiUrl}/admin/getVendorSummary/${vendorid}`)
       .then((res) => setSummaryData(res.data.data))
       .catch((err) => console.log(err));
   };
-  const getVendorData = async () => {
-    await axios
-      .get(`${environmentVariables.apiUrl}/auth/vendorget`, {
-        headers: { _token: authData.data.token },
-      })
-      .then((response) => {
-        setData(response.data.data.hotels);
-      })
-      .catch((error) => {
-        console.log("error", error);
-      });
-  };
+  
 
   useEffect(() => {
-    getVendorData();
     getSummaryData();
   }, [vendorId]);
 
