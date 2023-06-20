@@ -271,7 +271,7 @@ const ManageAdmin = () => {
               <HotelButtonWrapper>
                 <HotelActionButtons>Edit</HotelActionButtons>
                 <HotelActionButtons>Delete</HotelActionButtons>
-                <HotelActionButtons>Hide</HotelActionButtons>
+                {/* <HotelActionButtons>Hide</HotelActionButtons> */}
               </HotelButtonWrapper>
             </HotelCard>
           );
