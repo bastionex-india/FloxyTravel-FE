@@ -4,10 +4,10 @@ import React, { useContext, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect } from "react";
 import axios from "axios";
-import { AuthContext } from "../../../ContextApi/ContextApi";
+import { AuthContext } from "../ContextApi/ContextApi";
 import MultiSelect from "react-multiple-select-dropdown-lite";
 import "react-multiple-select-dropdown-lite/dist/index.css";
-import { environmentVariables } from "../../../config/config";
+import { environmentVariables } from "../config/config";
 import Swal from "sweetalert2";
 import { FaTimes } from 'react-icons/fa'; 
 import { useRef } from "react";
@@ -168,36 +168,22 @@ const RemoveButton = styled.button`
   cursor: pointer;
 `;
 
-const AddHotels = () => {
+const VendorEditHotel = () => {
   const navigation = useNavigate();
   const { authData } = useContext(AuthContext);
   const { id } = useParams();
   const fileInputRef = useRef(null);
   const [hotelData, setHotelData] = useState("");
-  const [allCountries, setAllCountries] = useState([]);
-  const [countryCode, setCountryCode] = useState("");
-  const [countryName, setCountryName] = useState("");
-  const [allStates, setAllStates] = useState([]);
-  const [allCities, setAllCities] = useState([]);
-  const [stateCode, setStateCode] = useState("");
-  const [stateName, setStateName] = useState("");
-  const [cityCode, setCityCode] = useState("");
-  const [cityName, setCityName] = useState("");
   const [vendorlist, setVendorList] = useState(null);
   const [vendorId, setVendorId] = useState("");
   const [name, setName] = useState("");
-  const [area, setArea] = useState("");
-  const [address, setAddress] = useState("");
   const [category, setCategory] = useState("");
   const [theme, setTheme] = useState([]);
-  const [lat, setLat] = useState("");
-  const [long, setLong] = useState("");
   const [general, setGeneral] = useState("");
   const [services, setServices] = useState("");
   const [internet, setInternet] = useState("");
   const [parking, setParking] = useState("");
   const [overview, setOverview] = useState("");
-  const [multipleFiles, setMultipleFiles] = useState("");
   const [totalRooms, setTotalRooms] = useState("");
   const [images, setImages] = useState([]);
   const [list, setList] = useState([]);
@@ -229,7 +215,7 @@ const AddHotels = () => {
 
   const getHotelDetailById = async () => {
     try {
-      const url = `${environmentVariables.apiUrl}/admin/gethoteldetailbyid/${id}`;
+      const url = `${environmentVariables.apiUrl}/vendor/gethoteldetailbyid/${id}`;
       const response = await axios.get(url, {
         headers: { _token: authData.data.token },
       });
@@ -252,145 +238,18 @@ const AddHotels = () => {
   useEffect(() => {
     getVendorList();
     getHotelDetailById();
-    let config = {
-      method: "get",
-      url: `${environmentVariables.apiUrl}/admin/getallcountries`,
-      headers: { _token: authData?.data?.token },
-    };
-    axios
-      .request(config)
-      .then((response) => {
-        setAllCountries(response.data.data);
-      })
-      .catch((err) => {
-        // console.log(err);
-      });
   }, []);
 
-  useEffect(() => {
-    let config = {
-      method: "post",
-      url: `${environmentVariables.apiUrl}/admin/getstatesofcountry`,
-      headers: { _token: authData?.data?.token },
-      data: { countryCode: countryCode },
-    };
-    axios
-      .request(config)
-      .then((response) => {
-        setAllStates(response.data.data);
-      })
-      .catch((err) => {
-        // console.log(err);
-      });
-  }, [countryCode]);
-
-  useEffect(() => {
-    let config = {
-      method: "post",
-      url: `${environmentVariables.apiUrl}/admin/getcitiesofcountry`,
-      headers: { _token: authData?.data?.token },
-      data: {
-        countryCode: countryCode,
-        stateCode: stateCode,
-      },
-    };
-    axios
-      .request(config)
-      .then((response) => {
-        setAllCities(response.data.data);
-      })
-      .catch((err) => {
-        // console.log(err);
-      });
-  }, [countryCode, stateCode]);
-
-  const handleCountryChange = (e) => {
-    setCountryCode(e.target.value);
-    const selectedOption = e.target.selectedOptions[0];
-    setCountryName(selectedOption.getAttribute("data-value"));
-  };
-  const handleStateChange = (e) => {
-    setStateCode(e.target.value);
-    const selectedOption = e.target.selectedOptions[0];
-    setStateName(selectedOption.getAttribute("data-value"));
-  };
-
-  const handleCityChange = (e) => {
-    setCityCode(e.target.value);
-    const selectedOption = e.target.selectedOptions[0];
-    setCityName(selectedOption.getAttribute("data-value"));
-  };
   const handleOnchangeTheme = (val) => {
     setTheme(val);
     console.log(val);
   };
-  const MultipleFileChange = (e) => {
-    setMultipleFiles(e.target.files);
-  };
-  const handleClose = async (e) => {
-    e.preventDefault();
-    // console.log("aaaaaa",name,theme,category,totalRooms,general,services,internet,parking,overview)
-    const formdata = new FormData();
-    for (let i = 0; i < multipleFiles.length; i++) {
-      // console.log("aaaaaaaaaaaaaaaaaaaaaaaa",multipleFiles[i])
-      formdata.append("myFiles", multipleFiles[i]);
-    }
-    formdata.append("hotelName", name);
-    formdata.append("area", area);
-    formdata.append("address", address);
-    formdata.append("country", countryName);
-    formdata.append("state", stateName);
-    formdata.append("city", cityName);
-    formdata.append("hotelCategory", category);
-    formdata.append("noOfRooms", totalRooms);
-    formdata.append("general", general);
-    formdata.append("services", services);
-    formdata.append("internet", internet);
-    formdata.append("parking", parking);
-    formdata.append("overview", overview);
-    // for (let i = 0; i < theme.length; i++) {
-    //   formdata.append(`theme[${i}]`, theme[i]);
-    // }
-    formdata.append(`theme`, theme);
-    formdata.append("lat", lat);
-    formdata.append("long", long);
-    formdata.append("hotelVendorId", vendorId);
-    axios({
-      method: "post",
-      url: `${environmentVariables.apiUrl}/admin/addhotel`,
-      data: formdata,
-      headers: { _token: authData.data.token },
-    })
-      .then((response) => {
-        setName("");
-        setArea("");
-        setAddress("");
-        setStateName("");
-        setCityName("");
-        setCategory("");
-        setTotalRooms("");
-        setGeneral("");
-        setServices("");
-        setInternet("");
-        setParking("");
-        setOverview("");
-        setTheme([]);
-        setLat("");
-        setLong("");
-        setMultipleFiles("");
-        Swal.fire("Added", "New Hotel added successfully", "success");
-        navigation("/managehotels");
-      })
-      .catch((error) => {
-        console.log("///////////////", error);
-        Swal.fire("Error", "Something went wrong", "error");
-      });
-  };
+
 
   const handleUpdate = async(e)=>{
     axios({
       method: "put",
-      url: `${environmentVariables.apiUrl}/admin/updatehotel/admin/${hotelData._id}`,
+      url: `${environmentVariables.apiUrl}/vendor/updatehotel/vendor/${hotelData._id}`,
       data: {
         hotelName: name,
         overview: overview,
@@ -424,25 +283,6 @@ const AddHotels = () => {
         // setError('Details are not valid');
       });
   }
-
-
-
-  const getHotelLatLong = (e) => {
-    e.preventDefault();
-    // console.log("fdgfdgfdgdf",lat,long)
-    axios({
-      method: "get",
-      url: "https://geolocation-db.com/json/",
-    })
-      .then((response) => {
-        // console.log(response.data)
-        setLat(response.data.latitude);
-        setLong(response.data.longitude);
-      })
-      .catch((error) => {
-        console.log("Geo location error", error);
-      });
-  };
   useEffect(() => {
     for (let i of images) {
       setArr((oldItems) => [
@@ -457,8 +297,8 @@ const AddHotels = () => {
     
     const removeImage = async(imageName) => {
       try {
-        // Send the DELETE request using Axios
-        await axios.delete(`${environmentVariables.apiUrl}/admin/deletehotelimages/${hotelData._id}/${imageName}`,{headers:{_token:authData.data.token}});
+        // console.log(imageName)
+        await axios.delete(`${environmentVariables.apiUrl}/vendor/deletehotelimages/${hotelData._id}/${imageName}`,{headers:{_token:authData.data.token}});
         getHotelDetailById();
       } catch (error) {
         console.error('Error removing image:', error);
@@ -471,11 +311,7 @@ const AddHotels = () => {
       }
       axios({
         method: "post",
-        url: `${environmentVariables.apiUrl}/admin/addhotelimages/${hotelData._id}`,
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
+        url: `${environmentVariables.apiUrl}/vendor/addhotelimages/${hotelData._id}`,
         data: formdata,
         headers: { _token: authData.data.token },
       })
@@ -500,7 +336,7 @@ const AddHotels = () => {
           class="fa-solid fa-chevron-left fa-2x"
         ></i>
         <MainHeading>
-          {id === undefined ? "Add New Hotel" : "Edit Hotel"}
+          {"Edit Hotel"}
         </MainHeading>
       </HeadingWrapper>
       <MainContainer>
@@ -512,74 +348,6 @@ const AddHotels = () => {
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
-            {id === undefined && (
-              <LocationWrapper>
-                <div>
-                  <FormLabel>Country*</FormLabel>
-                  <FormSelect onChange={handleCountryChange}>
-                    <FormOptions>Select Country</FormOptions>
-                    {allCountries.map((country, index) => (
-                      <option
-                        key={index}
-                        value={country.isoCode}
-                        data-value={country.name}
-                      >
-                        {country.name}
-                      </option>
-                    ))}
-                  </FormSelect>
-                </div>
-                <div>
-                  <FormLabel>State*</FormLabel>
-                  <FormSelect onChange={handleStateChange}>
-                    <FormOptions>Select State</FormOptions>
-                    {allStates.map((val, index) => {
-                      return (
-                        <FormOptions
-                          key={index}
-                          value={val.isoCode}
-                          data-value={val.name}
-                        >
-                          {val.name}
-                        </FormOptions>
-                      );
-                    })}
-                  </FormSelect>
-                </div>
-                <div>
-                  <FormLabel>City*</FormLabel>
-                  <FormSelect onChange={handleCityChange}>
-                    {allCities.map((val, index) => {
-                      return (
-                        <FormOptions
-                          key={index}
-                          value={val.isoCode}
-                          data-value={val.name}
-                        >
-                          {val.name}
-                        </FormOptions>
-                      );
-                    })}
-                  </FormSelect>
-                </div>
-                <div style={{ marginLeft: "1.8rem" }}>
-                  <FormLabel>Area*</FormLabel>
-                  <FormInput
-                    type="text"
-                    value={area}
-                    onChange={(e) => setArea(e.target.value)}
-                  />
-                </div>
-                <div style={{ marginLeft: "1.8rem" }}>
-                  <FormLabel>Address*</FormLabel>
-                  <FormInput
-                    type="text"
-                    value={id === undefined ? address : hotelData.address}
-                    onChange={(e) => setAddress(e.target.value)}
-                  />
-                </div>
-              </LocationWrapper>
-            )}
             <ThemeWrapper>
               <div>
                 <FormLabel>Theme*</FormLabel>
@@ -599,41 +367,6 @@ const AddHotels = () => {
                   <FormOptions value={"luxury"}>Luxury</FormOptions>
                 </FormSelect>
               </div>
-              {id === undefined && (
-                <>
-                  <div>
-                    <FormLabel>Latitude*</FormLabel>
-                    <FormInput
-                      type="text"
-                      value={lat}
-                      onChange={(e) => setLat(e.target.value)}
-                    />
-                  </div>
-                  <div>
-                    <FormLabel>Longitude*</FormLabel>
-                    <FormInput
-                      type="text"
-                      value={long}
-                      onChange={(e) => setLong(e.target.value)}
-                    />
-                  </div>
-                  <GetLocationText onClick={getHotelLatLong}>
-                    Get Coordinates
-                  </GetLocationText>
-
-                  <SelectVendor onChange={(e) => setVendorId(e.target.value)}>
-                    <SelectOption>Select Vendor*</SelectOption>
-                    {vendorlist &&
-                      vendorlist.map((row, index) => {
-                        return (
-                          <SelectOption key={index} value={row.vendorId}>
-                            {row.name}
-                          </SelectOption>
-                        );
-                      })}
-                  </SelectVendor>
-                </>
-              )}
             </ThemeWrapper>
             <div>
               <FormLabel>Total Rooms*</FormLabel>
@@ -684,49 +417,18 @@ const AddHotels = () => {
               value={overview}
               onChange={(e) => setOverview(e.target.value)}
             />
-            {
-              id===undefined && (
-                <>
-                  <FormLabel>Images*</FormLabel>
-                  <FormFileInput
-                    type="file"
-                    multiple
-                    name="myFiles"
-                    onChange={(e) => MultipleFileChange(e)}
-                  />
-                </>
-              )
-            }
           </FormWrapper>
-          {id===undefined ? <Button onClick={(e) => handleClose(e)}>Save</Button> :<Button onClick={(e) => handleUpdate(e)}>Update</Button>}
+          <Button onClick={(e) => handleUpdate(e)}>Update</Button>
         </HotelAddForm>
-        {
-          id!==undefined && (
-            <>
-              <FormLabel>Images*</FormLabel>
-              <FormFileInput
-                type="file"
-                multiple
-                name="myFiles"
-                onChange={(e) => MultipleFileChange1(e)}
-                ref={fileInputRef}
-              />
-            </>
-          )
-        }
-        {/* <div style={{display:"flex",flexDirection:'column'}}>
-          <div style={{ display: "flex", overflow: "scroll" }}>
-              {catalog}
-          </div>
-          <Button>Submit</Button>
-        </div> */}
-        {/* <div>
-          {images.map((image) => (
-            <div key={image}>
-              <img src={`${environmentVariables.apiUrl}/uploads/${image}`} alt="Image" />
-            </div>
-          ))}
-        </div> */}
+        <FormLabel>Images*</FormLabel>
+        <FormFileInput
+        type="file"
+        multiple
+        name="myFiles"
+        onChange={(e) => MultipleFileChange1(e)}
+        ref={fileInputRef}
+        />
+
         <ImageSection >
           {images.map((image) => (
             <ImageWrapper key={image}>
@@ -744,4 +446,4 @@ const AddHotels = () => {
   );
 };
 
-export default AddHotels;
+export default VendorEditHotel;

@@ -238,7 +238,7 @@ const BookingHistory = () => {
     // }
     const config = {
       method: "post",
-      url: `http://localhost:4000/vendor/getallbooking/${authData.data.vendorId}`,
+      url: `${environmentVariables.apiUrl}/vendor/getallbooking/${authData.data.vendorId}`,
       headers: { _token: authData.data.token },
       data: data,
     };

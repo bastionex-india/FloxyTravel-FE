@@ -344,7 +344,7 @@ const ManageAdmin = () => {
                 </HotelIconWrapper>
               </HotelInfoWrapper>
               <HotelButtonWrapper>
-                <HotelActionButtons>Edit</HotelActionButtons>
+                <HotelActionButtons onClick={() => navigate(`/edithotels/${row._id}`)}>Edit</HotelActionButtons>
                 <HotelActionButtons onClick={() => handleClickOpen(row)}>Delete</HotelActionButtons>
                 {/* <HotelActionButtons>Hide</HotelActionButtons> */}
               </HotelButtonWrapper>
@@ -357,7 +357,7 @@ const ManageAdmin = () => {
   };
   const getAllListData = async () => {
     await axios
-      .get(`http://localhost:4000/vendor/vendorget?page=${page + 1}&limit=${rowsPerPage}`, {
+      .get(`${environmentVariables.apiUrl}/vendor/vendorget?page=${page + 1}&limit=${rowsPerPage}`, {
         headers: { _token: authData.data.token },
       })
       .then((response) => {
@@ -392,7 +392,7 @@ const ManageAdmin = () => {
   const DeleteHotel = (item) => {
     const config = {
       method: "delete",
-      url: `http://localhost:4000/vendor/deletehotel/${item._id}`,
+      url: `${environmentVariables.apiUrl}/vendor/deletehotel/${item._id}`,
       headers: {
         _token: authData.data.token,
       },
