@@ -167,6 +167,7 @@ const Payouts = ()=>{
   const [mainResponse, setResponse] = useState("");
   const [open, setOpen] = useState(false);
   const [hotelDetails, setHotelDetails] = useState();
+  const [buttonStatus,setButtonStatus] = useState('Request')
   const navigate = useNavigate();
 
   const handleClick = (item) => {
@@ -197,14 +198,34 @@ const Payouts = ()=>{
   const payoutRequestHandler = (totalEarnings,adminFee,payouts)=>{
         // console.log({totalEarnings,adminFee,payouts})
         handleClickOpen({totalEarnings,adminFee,payouts})
+
   }
-  const makePayOutRequest = ()=>{
-    handleClose()
-    Swal.fire({
-        icon: "success",
-        title: "Request send Successfully.",
-        timer: "800",
+  const savePayout = async ()=>{
+    await axios
+      .get(`${environmentVariables.apiUrl}/vendor/savePayout`, {
+        headers: { _token: authData.data.token },
+      })
+      .then((response) => {
+        setButtonStatus('Request');
+        handleClose()
+        Swal.fire({
+            icon: "success",
+            title: "Request send Successfully.",
+            timer: "800",
+        });
+        // setResponse(response.data.data);
+        // setData(response.data.data.records);
+        // setIsLoading(false);
+      })
+      .catch((err) => {
+        console.log("error", err);
+        // setIsLoading(false);
       });
+  }
+//   
+  const makePayOutRequest = ()=>{
+    setButtonStatus('Wait...')
+    savePayout();
   }
   const getComponents = () => {
     if (isLoading === true) {
@@ -256,7 +277,7 @@ const Payouts = ()=>{
                 <p><b>TotalPaid amount : </b>{row.totalEarnings} INR</p>
                 <p><b>Fee amount : </b>{ (row.totalEarnings*row.hotelsData.adminFee)/100 } ({row.hotelsData.adminFee}%) INR</p>
                 <p><b>Payout amount : </b>{row.totalEarnings - ((row.totalEarnings*row.hotelsData.adminFee)/100) } INR</p>
-                <Button variant="contained" onClick={()=> payoutRequestHandler(row.totalEarnings,((row.totalEarnings*row.hotelsData.adminFee)/100),(row.totalEarnings - ((row.totalEarnings*row.hotelsData.adminFee)/100)))}>Payout</Button>
+                <Button variant="contained" loading={true} onClick={()=> payoutRequestHandler(row.totalEarnings,((row.totalEarnings*row.hotelsData.adminFee)/100),(row.totalEarnings - ((row.totalEarnings*row.hotelsData.adminFee)/100)))}>Payout</Button>
               </PayOutInfoWrapper>
               
             </HotelCard>
@@ -344,7 +365,7 @@ const Payouts = ()=>{
               color="success"
               onClick={makePayOutRequest}
             >
-              Request
+              {buttonStatus}
             </Button>
           </DialogActions>
         </BootstrapDialog>
