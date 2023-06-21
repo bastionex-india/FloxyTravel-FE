@@ -214,7 +214,7 @@ const BookingHistory = () => {
   };
 
   const getAllUsers = async () => {
-    console.log("aaa", select1,select,fromDate,toDate,searchByName,page,rowsPerPage);
+    // console.log("aaa", select1,select,fromDate,toDate,searchByName,page,rowsPerPage);
     let data={
       status:select,
       // startDate:new Date(),
@@ -428,10 +428,10 @@ const BookingHistory = () => {
                   <option value="">
                     All
                   </option>
-                  <option value="completed">
+                  <option value="Completed">
                     Completed Booking
                   </option>
-                  <option value="upcoming">
+                  <option value="Upcoming">
                     Upcoming Booking
                   </option>
                 </Select>
@@ -496,7 +496,7 @@ const BookingHistory = () => {
                             {bookingDate.toLocaleDateString()}
                           </TableCell>
                           <TableCell align="right">
-                            {item.checkinTimestamp > currentTime ? "Upcoming" : item.checkoutTimestamp < currentTime ? "Completed" :"Completed" }
+                            {item.status}
                           </TableCell>
                           <TableCell align="right">
                             <Button
