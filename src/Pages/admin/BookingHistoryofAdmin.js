@@ -18,6 +18,9 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import TablePagination from "@mui/material/TablePagination";
+import { BsCalendarDay } from "react-icons/bs";
+import "react-datepicker/dist/react-datepicker.css";
+import DatePicker from 'react-datepicker';
 const HeadingWrapper = styled.div`
   position: relative;
   display: flex;
@@ -49,7 +52,7 @@ const Heading = styled.div`
 `;
 
 const TextSelectField = styled.div`
-  margin: 10px 0px 0px 10px;
+  // margin: 10px 0px 0px 10px;
   @media (max-width: 768px) {
     margin: 0;
   }
@@ -65,7 +68,10 @@ const Select = styled.select`
 `;
 const TextWrapper = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
+  align-items: center;
+  text-align: center;
+  
   @media (max-width: 768px) {
     justify-content: flex-end;
   }
@@ -78,6 +84,54 @@ const TextMainWrapper = styled.div`
     display: flex;
   }
 `;
+const DatePickerContainer = styled.div`
+display:flex;
+justify-content:center;
+align-items:center;
+text-align:Center;
+`;
+const CheckInDateWrapper = styled.input`
+padding: 10px;
+    border-radius: 5px;
+    outline: none;
+    border: none;
+    box-shadow: rgba(50,50,93,0.25) 0px 6px 12px -2px, rgba(0,0,0,0.3) 0px 3px 7px -3px;
+    margin:0 10px;
+`;
+const CheckOutDateWrapper = styled(CheckInDateWrapper)`
+
+`;
+const SearchContainerWrapper = styled.div`
+
+`;
+const SearchFilterContainer = styled.div`
+position:relative;
+`;
+const SearchFilterInput = styled.input`
+width:50%;
+margin:10px 0 20px 0;
+padding: 10px;
+    border-radius: 5px;
+    outline: none;
+    border: none;
+    // box-shadow: rgba(50,50,93,0.25) 0px 6px 12px -2px, rgba(0,0,0,0.3) 0px 3px 7px -3px;
+   
+`;
+
+const Span = styled.span`
+position:absolute;
+bottom: 39%;
+left: 47%;
+`;
+const DateIcon = styled.div`
+  position: absolute;
+  left: 37%;
+  z-index: 1;
+`;
+
+
+
+
 const BookingHistoryofAdmin = () => {
   const [select, setSelect] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -86,11 +140,27 @@ const BookingHistoryofAdmin = () => {
   const { authData, setAuthData } = useContext(AuthContext);
   const [data, setData] = useState("");
   const navigation = useNavigate();
+  const [fromDate, setFromDate] = useState(null);
+  const [toDate, setToDate] = useState(null);
+  const [search, setSearch] = useState();
+  const [allVendors, setAllVendors] = useState([]);
+  const handleChange = (event) => {
+    const data = event.target.value;
+    // console.log("Sdsdsd",data.length)
+    if(data.length>=3){
+      setSearch(data);
+    }else{
+      setSearch();
+    }
+    
+    // console.log("------------[[[[[[[[[[[[[[[[[[",data)
+  };
 
-  //  pagination
+  // paginationstart
   const [page, setPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-
+  const [totalItems, setTotalItems] = useState();
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -98,11 +168,8 @@ const BookingHistoryofAdmin = () => {
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
-    if (page === 0) {
-      getAllUsers();
-    }
   };
-  // //  pagination  End
+  // paginationend
 
   const handleClick = (item) => {
     navigation("/bookinghistorybyorderid", { state: item });
@@ -131,24 +198,21 @@ const BookingHistoryofAdmin = () => {
   }, []);
 
   const getAllUsers = async () => {
-    let data;
-    if (select1 !== "") {
-      data = {
-        status: select,
-        startDate: new Date(),
-        endDate: select1,
-      };
-    } else {
-      data = {
-        status: select,
-      };
+    console.log(select1,fromDate,toDate,select)
+    let data={
+      search:search,
+      status:select,
+      id:select1,
+      calenderStartDate:fromDate,
+      calenderEndDate:toDate,
     }
+    
     data.page = page + 1;
-    data.limit = rowsPerPage;
+    data.pageSize = rowsPerPage;
 
     let config = {
       method: "post",
-      url: `${environmentVariables.apiUrl}/admin/getallbooking`,
+      url: `http://localhost:4000/admin/getallbooking`,
       headers: {
         _token: authData.data.token,
         "Content-Type": "application/json",
@@ -159,14 +223,13 @@ const BookingHistoryofAdmin = () => {
     axios
       .request(config)
       .then((response) => {
-        let records = response?.data?.data.records.sort(
-          (a, b) => b.createdAt - a.createdAt
-        );
-        setResponse(response.data.data);
-        setData(
-          response?.data?.data.records.sort((a, b) => b.createdAt - a.createdAt)
-        );
-        setIsLoading(false);
+        const { totalItems, totalPages, currentPage, data } = response.data;
+        // console.log("res",totalItems, totalPages, currentPage, data )
+        setData(data);
+        setTotalPages(totalPages);
+        setPage(currentPage - 1);
+        setIsLoading(false)
+        setTotalItems(totalItems)
       })
       .catch((err) => {
         console.log(err);
@@ -176,13 +239,30 @@ const BookingHistoryofAdmin = () => {
   useEffect(() => {
     setIsLoading(true);
     getAllUsers();
-  }, [select, select1, page, rowsPerPage]);
+  }, [select, select1, page, rowsPerPage, search,fromDate, toDate]);
 
   const ApprovedData = () => {};
   const PendingData = () => {};
   const boldTextCss = {
     fontWeight: 700,
   };
+
+  const getAllVendors=async()=>{
+    try {
+      const response = await axios.get(`http://localhost:4000/admin/getallvendor`, {
+        headers:  { _token: authData.data.token }
+      });
+      setAllVendors(response.data.data)
+    } catch (error) {
+      // Handle the error here
+      console.error(error);
+    }
+  }
+  useEffect(() => {
+    getAllVendors();
+  }, []);
+
+  // console.log(".............",allVendors)
   return (
     <>
       <TextMainWrapper>
@@ -196,64 +276,92 @@ const BookingHistoryofAdmin = () => {
               ></i>
               <Heading> Booking History</Heading>
             </HeadingWrapper>
-            <TextWrapper>
-              {/* <Heading> Booking History</Heading> */}
+           <SearchContainerWrapper>
+            <SearchFilterContainer>
+              <SearchFilterInput  
+                placeholder={"Search by Hotelname"}
+                value={search}
+                onChange={handleChange}
+              />
+              <Span> <i class="fa-solid fa-magnifying-glass"></i></Span>
+            </SearchFilterContainer>
+           <TextWrapper>
               <TextSelectField>
                 <Select
                   onChange={(e) => {
                     setSelect1(e.target.value);
-                    setPage(0);
                   }}
                   //   value={select1}
                   required
                 >
-                  <option value="">Select Range</option>
-                  <option
-                    value={
-                      new Date(new Date().getTime() - 2 * 24 * 60 * 60 * 1000)
-                    }
-                  >
-                    Past Two days
-                  </option>
-                  <option
-                    value={
-                      new Date(new Date().getTime() - 7 * 24 * 60 * 60 * 1000)
-                    }
-                  >
-                    Past one week
-                  </option>
-                  <option
-                    value={
-                      new Date(new Date().getTime() - 30 * 24 * 60 * 60 * 1000)
-                    }
-                  >
-                    Past one month
-                  </option>
-                  {/* <option value="2" onClick={CompletedData}>
-                    Completed Booking
-                  </option>
-                  <option value="3" onClick={CancelledData}>
-                    Cancelled Booking
-                  </option> */}
+                  <option value="" hidden>Select Vendor</option>
+                  {
+                    allVendors.map((item,index)=>{
+                      return(
+                        <option key={index} value={item._id}>{item.name}</option>
+                      )
+                    })
+                  }
                 </Select>
               </TextSelectField>
+              <DatePickerContainer>
+                <DateIcon>
+                  <BsCalendarDay size="1.5rem" />
+                </DateIcon>
+                <DatePicker
+                  placeholderText="Start Date"
+                  selected={fromDate}
+                  onChange={(date) => {
+                    setFromDate(date);
+                    // setPageNo(1);
+                  }}
+                  selectsStart
+                  startDate={fromDate}
+                  endDate={toDate}
+                />
+              </DatePickerContainer>
+              <DatePickerContainer>
+                <DateIcon>
+                  <BsCalendarDay size="1.5rem" />
+                </DateIcon>
+
+                <DatePicker
+                  placeholderText="End Date"
+                  selected={toDate}
+                  onChange={(date) => setToDate(date)}
+                  selectsStart
+                  startDate={fromDate}
+                  endDate={toDate}
+                  disabled={fromDate ? false : true}
+                  minDate={fromDate}
+                  style={{ padding: "10px" }}
+                />
+              </DatePickerContainer>
               <TextSelectField>
                 <Select
                   onChange={(e) => {
                     setSelect(e.target.value);
-                    setPage(0);
                   }}
                   value={select}
                   required
                 >
-                  <option value="all" onClick={ApprovedData}>
+                  <option value="" hidden>
+                    Select Status
+                  </option>
+                  {/* <option value="all" onClick={ApprovedData}>
                     All
-                  </option>
-                  <option value="approved" onClick={ApprovedData}>
-                    Approved Booking
-                  </option>
-                  <option value="pending" onClick={PendingData}>
+                  </option> */}
+                  <option value="pending">
                     Pending Booking
+                  </option>
+                  <option value="approved">
+                    Confirmed Booking
+                  </option>
+                  <option value="cancelled">
+                    Cancelled Booking
+                  </option>
+                  <option value="completed">
+                    Completed Booking
                   </option>
                   {/* <option value="cancelled" onClick={CancelledData}>
                     Cancelled Booking
@@ -261,6 +369,7 @@ const BookingHistoryofAdmin = () => {
                 </Select>
               </TextSelectField>
             </TextWrapper>
+           </SearchContainerWrapper>
           </Root>
           {isLoading === true ? (
             <div
@@ -278,6 +387,7 @@ const BookingHistoryofAdmin = () => {
                 <TableHead>
                   <TableRow>
                     <TableCell style={boldTextCss}>Hotel Name</TableCell>
+                    <TableCell style={boldTextCss}>Vendor Name</TableCell>
                     <TableCell style={boldTextCss} align="right">
                       CheckIn Date
                     </TableCell>
@@ -309,6 +419,7 @@ const BookingHistoryofAdmin = () => {
                           <TableCell component="th" scope="row">
                             {item.hotelname}
                           </TableCell>
+                          <TableCell align="left">{item.vendorData.name}</TableCell>
                           <TableCell align="right">{item.checkIn}</TableCell>
                           <TableCell align="right">{item.checkOut}</TableCell>
                           <TableCell align="right">
@@ -331,11 +442,12 @@ const BookingHistoryofAdmin = () => {
                 </TableBody>
               </Table>
               <TablePagination
+                rowsPerPageOptions={[1, 3, 10]}
                 component="div"
-                count={response.totalrecords}
+                count={totalItems}
+                rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}
-                rowsPerPage={rowsPerPage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
               />
             </TableContainer>
