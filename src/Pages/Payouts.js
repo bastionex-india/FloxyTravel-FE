@@ -8,6 +8,59 @@ import { useContext } from "react";
 import { AuthContext } from "../ContextApi/ContextApi";
 import { Button } from "@mui/material";
 import CircularLoader from "../Component/CircularLoader/CircularLoader";
+import TablePagination from "@mui/material/TablePagination";
+import Swal from "sweetalert2";
+
+import PropTypes from "prop-types";
+import { styled as newStyle } from "@mui/material/styles";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
+import Typography from "@mui/material/Typography";
+
+
+
+const BootstrapDialog = newStyle(Dialog)(({ theme }) => ({
+    "& .MuiDialogContent-root": {
+      padding: theme.spacing(2),
+    },
+    "& .MuiDialogActions-root": {
+      padding: theme.spacing(1),
+    },
+  }));
+  
+  function BootstrapDialogTitle(props) {
+    const { children, onClose, ...other } = props;
+  
+    return (
+      <DialogTitle sx={{ m: 0, p: 2 }} {...other}>
+        {children}
+        {onClose ? (
+          <IconButton
+            aria-label="close"
+            onClick={onClose}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+        ) : null}
+      </DialogTitle>
+    );
+  }
+  
+  BootstrapDialogTitle.propTypes = {
+    children: PropTypes.node,
+    onClose: PropTypes.func.isRequired,
+  };
+
 const HotelCardsWrapper = styled.div``;
 const HotelCard = styled.div`
   display: flex;
@@ -42,6 +95,11 @@ const HotelActionButtons = styled.div`
 const HotelInfoWrapper = styled.div`
   width: 50%;
   margin: 10px 30px;
+`;
+
+const PayOutInfoWrapper = styled.div`
+width: 50%;
+margin: 10px 30px;
 `;
 const HotelButtonWrapper = styled.div`
   width: 30%;
@@ -98,143 +156,201 @@ const TextMainWrapper = styled.div`
 
 const Payouts = ()=>{
 
-    const [select, setSelect] = useState("");
-    const [select1, setSelect1] = useState("");
-    const [isLoading, setIsLoading] = useState(false);
-    const { authData, setAuthData } = useContext(AuthContext);
-    const [addVendorPopUp, setAddVendorPopUp] = useState(false);
-    const [data, setData] = useState(null);
-    const [vendorlist, setVendorList] = useState(null);
-    const navigate = useNavigate();
+    
+  const [select, setSelect] = useState("");
+  const [select1, setSelect1] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const { authData, setAuthData } = useContext(AuthContext);
+  const [addVendorPopUp, setAddVendorPopUp] = useState(false);
+  const [data, setData] = useState(null);
+  const [vendorlist, setVendorList] = useState(null);
+  const [mainResponse, setResponse] = useState("");
+  const [open, setOpen] = useState(false);
+  const [hotelDetails, setHotelDetails] = useState();
+  const navigate = useNavigate();
 
-    const handleClick = (item) => {
-        console.log("hcjhcjhf", item);
-        navigate("/bookinghistorybyorderid", { state: item });
-    };
-    const getComponents = () => {
-        if (isLoading === true) {
-            return (
-                <div
-                    style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        marginTop: "30px",
-                    }}
-                >
-                    <CircularLoader></CircularLoader>
-                </div>
-            );
-        } else if (data) {
-            if (data && data.length === 0) {
-                return (
-                    <TextCenter>
-                        <span>No hotels found.</span>
-                    </TextCenter>
-                );
-            } else {
-                return data.map((row, index) => {
-                    let imageSrc = row.image.length
-                        ? row.image[0]
-                        : "1675936089112-teanest1.jpg";
-                    return (
-                        <HotelCard>
-                            <HotelImageWrapper>
-                                <HotelImage
-                                    src={`https://uat-travel-api.floxypay.com/uploads/${imageSrc}`}
-                                />
-                            </HotelImageWrapper>
-                            <HotelInfoWrapper>
-                                <HotelBigText>{row.hotelname}</HotelBigText>
+  const handleClick = (item) => {
+    console.log("hcjhcjhf", item);
+    navigate("/bookinghistorybyorderid", { state: item });
+  };
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
-                                <HotelIconWrapper>
-                                    {" "}
-                                    {row._id}
-                                    <HotelIcon></HotelIcon>
-                                    <HotelInfoText>City : {row.city}</HotelInfoText>
-                                    <HotelInfoText>State : {row.state}</HotelInfoText>
-                                    <HotelInfoText>Country : {row.country}</HotelInfoText>
-                                    <HotelInfoText>Theme : {row.theme}</HotelInfoText>
-                                    <HotelInfoText>Category : {row.hotelCategory}</HotelInfoText>
-                                </HotelIconWrapper>
-                            </HotelInfoWrapper>
-                            {/* <HotelButtonWrapper>
-                                <HotelActionButtons>Edit</HotelActionButtons>
-                                <HotelActionButtons>Delete</HotelActionButtons>
-                                <HotelActionButtons>Hide</HotelActionButtons>
-                            </HotelButtonWrapper> */}
-                        </HotelCard>
-                    );
-                });
-            }
-        }
-    };
-    const getAllListData = async () => {
-        await axios
-            .get(`${environmentVariables.apiUrl}/vendor/vendorget`, {
-                headers: { _token: authData.data.token },
-            })
-            .then((response) => {
-                console.log(response.data.data.records);
-                setData(response.data.data.records);
-                setIsLoading(false);
-            })
-            .catch((err) => {
-                console.log("error", err);
-                setIsLoading(false);
-            });
-    };
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
 
-    const [vendor, setVendor] = useState();
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+    if (page === 0) {
+      getAllListData();
+    }
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const handleClickOpen = (item) => {
+    // setHotelDetails(item);
+    setOpen(true);
+  };
+  const payoutRequestHandler = (totalEarnings,adminFee,payouts)=>{
+        // console.log({totalEarnings,adminFee,payouts})
+        handleClickOpen({totalEarnings,adminFee,payouts})
+  }
+  const makePayOutRequest = ()=>{
+    handleClose()
+    Swal.fire({
+        icon: "success",
+        title: "Request send Successfully.",
+        timer: "800",
+      });
+  }
+  const getComponents = () => {
+    if (isLoading === true) {
+      return (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            marginTop: "30px",
+          }}
+        >
+          <CircularLoader></CircularLoader>
+        </div>
+      );
+    } else if (data) {
+      if (data && data.length === 0) {
+        return (
+          <TextCenter>
+            <span>No hotels found.</span>
+          </TextCenter>
+        );
+      } else {
+        return data.map((row, index) => {
+          let imageSrc = row.hotelsData.image.length
+            ? row.hotelsData.image[0]
+            : "1675936089112-teanest1.jpg";
+          return (
+            <HotelCard>
+              <HotelImageWrapper>
+                <HotelImage
+                  src={`https://uat-travel-api.floxypay.com/uploads/${imageSrc}`}
+                />
+              </HotelImageWrapper>
+              <HotelInfoWrapper>
+                <HotelBigText>{row.hotelsData.hotelname}</HotelBigText>
 
-    const getVendor = async () => {
-        await axios
-            .get(`https://travel-api.floxypay.com/auth/vendorget`, {
-                headers: { _token: authData.data.token },
-            })
-            .then((response) => {
-                setVendor(response.data.data.hotels);
-                setIsLoading(false);
-            })
-            .catch((err) => {
-                console.log("error", err);
-                setIsLoading(false);
-            });
-    };
+                <HotelIconWrapper>
+                  {" "}
+                  <HotelIcon></HotelIcon>
+                  <HotelInfoText>City : {row.hotelsData.city}</HotelInfoText>
+                  <HotelInfoText>State : {row.hotelsData.state}</HotelInfoText>
+                  <HotelInfoText>Country : {row.hotelsData.country}</HotelInfoText>
+                  <HotelInfoText>Theme : {row.hotelsData.theme}</HotelInfoText>
+                  <HotelInfoText>Category : {row.hotelsData.hotelCategory}</HotelInfoText>
+                </HotelIconWrapper>
+                
+              </HotelInfoWrapper>
+              <PayOutInfoWrapper>
+                <p><b>TotalPaid amount : </b>{row.totalEarnings} INR</p>
+                <p><b>Fee amount : </b>{ (row.totalEarnings*row.hotelsData.adminFee)/100 } ({row.hotelsData.adminFee}%) INR</p>
+                <p><b>Payout amount : </b>{row.totalEarnings - ((row.totalEarnings*row.hotelsData.adminFee)/100) } INR</p>
+                <Button variant="contained" onClick={()=> payoutRequestHandler(row.totalEarnings,((row.totalEarnings*row.hotelsData.adminFee)/100),(row.totalEarnings - ((row.totalEarnings*row.hotelsData.adminFee)/100)))}>Payout</Button>
+              </PayOutInfoWrapper>
+              
+            </HotelCard>
+          );
+        });
+      }
+    }
+  };
+  const getAllListData = async () => {
+    await axios
+      .get(`${environmentVariables.apiUrl}/vendor/getPayoutList?page=${page + 1}&limit=${rowsPerPage}`, {
+        headers: { _token: authData.data.token },
+      })
+      .then((response) => {
+        // console.log(response.data.data);
+        setResponse(response.data.data);
+        setData(response.data.data.records);
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        console.log("error", err);
+        setIsLoading(false);
+      });
+  };
 
-    useEffect(() => {
-        setIsLoading(true);
-        // getVendorList();
-        getVendor();
-        const lclstorage = JSON.parse(localStorage.getItem("authdata"));
-        getAllListData();
-    }, []);
+  
 
-    const boldTextCss = {
-        fontWeight: 700,
-    };
 
-    return (
-        <>
-            <TextMainWrapper>
-                <TextRoot>
-                    <Root>
-                        <div style={{ display: "flex", alignItems: "center" }}>
-                            {" "}
-                            <i
-                                style={{ cursor: "pointer", marginRight: "50px" }}
-                                onClick={() => navigate(-1)}
-                                class="fa-solid fa-chevron-left fa-2x"
-                            ></i>
-                            <Heading> Hotel`s Payout</Heading>
-                        </div>
-                        <TextWrapper></TextWrapper>
-                    </Root>
-                    <HotelCardsWrapper>{getComponents()}</HotelCardsWrapper>
-                    {/* )} */}
-                </TextRoot>
-            </TextMainWrapper>
-        </>
-    );
+
+  useEffect(() => {
+    setIsLoading(true);
+    getAllListData();
+  }, [page, rowsPerPage]);
+
+
+  return (
+    <>
+      <TextMainWrapper>
+        <TextRoot>
+          <Root>
+            <div style={{ display: "flex", alignItems: "center" }}>
+              {" "}
+              <i
+                style={{ cursor: "pointer", marginRight: "50px" }}
+                onClick={() => navigate(-1)}
+                class="fa-solid fa-chevron-left fa-2x"
+              ></i>
+              <Heading>Hotel`s Payout</Heading>
+            </div>
+            <TextWrapper></TextWrapper>
+          </Root>
+          <HotelCardsWrapper>{getComponents()}</HotelCardsWrapper>
+          {/* )} */}
+        </TextRoot>
+          <TablePagination
+            component="div"
+            count={mainResponse.totalrecords}
+            page={page}
+            onPageChange={handleChangePage}
+            rowsPerPage={rowsPerPage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+          <BootstrapDialog
+          onClose={handleClose}
+          aria-labelledby="customized-dialog-title"
+          open={open}
+        >
+          <BootstrapDialogTitle
+            id="customized-dialog-title"
+            onClose={handleClose}
+          >
+            Payout Request
+          </BootstrapDialogTitle>
+          <DialogContent dividers>
+            <Typography gutterBottom>
+              Are you sure you want to Payout Request?
+            </Typography>
+          </DialogContent>
+          <DialogActions>
+            <Button variant="contained" color="error" onClick={handleClose}>
+              Cancel
+            </Button>
+            <Button
+              variant="contained"
+              color="success"
+              onClick={makePayOutRequest}
+            >
+              Request
+            </Button>
+          </DialogActions>
+        </BootstrapDialog>
+      </TextMainWrapper>
+    </>
+  );
 }
 
 export default Payouts;

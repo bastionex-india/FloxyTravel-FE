@@ -6,8 +6,54 @@ import { environmentVariables } from "../config/config";
 import { useEffect } from "react";
 import { useContext } from "react";
 import { AuthContext } from "../ContextApi/ContextApi";
-import { Button } from "@mui/material";
 import CircularLoader from "../Component/CircularLoader/CircularLoader";
+import TablePagination from "@mui/material/TablePagination";
+import PropTypes from "prop-types";
+import { styled as newStyle } from "@mui/material/styles";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
+
+
+const BootstrapDialog = newStyle(Dialog)(({ theme }) => ({
+  "& .MuiDialogContent-root": {
+    padding: theme.spacing(2),
+  },
+  "& .MuiDialogActions-root": {
+    padding: theme.spacing(1),
+  },
+}));
+
+function BootstrapDialogTitle(props) {
+  const { children, onClose, ...other } = props;
+
+  return (
+    <DialogTitle sx={{ m: 0, p: 2 }} {...other}>
+      {children}
+      {onClose ? (
+        <IconButton
+          aria-label="close"
+          onClick={onClose}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+      ) : null}
+    </DialogTitle>
+  );
+}
+
+BootstrapDialogTitle.propTypes = {
+  children: PropTypes.node,
+  onClose: PropTypes.func.isRequired,
+};
+
 const HotelCardsWrapper = styled.div``;
 const HotelCard = styled.div`
   display: flex;
@@ -217,11 +263,35 @@ const ManageAdmin = () => {
   const [addVendorPopUp, setAddVendorPopUp] = useState(false);
   const [data, setData] = useState(null);
   const [vendorlist, setVendorList] = useState(null);
+  const [mainResponse, setResponse] = useState("");
+  const [open, setOpen] = useState(false);
+  const [hotelDetails, setHotelDetails] = useState();
   const navigate = useNavigate();
 
   const handleClick = (item) => {
     console.log("hcjhcjhf", item);
     navigate("/bookinghistorybyorderid", { state: item });
+  };
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+    if (page === 0) {
+      getAllListData();
+    }
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const handleClickOpen = (item) => {
+    setHotelDetails(item);
+    setOpen(true);
   };
   const getComponents = () => {
     if (isLoading === true) {
@@ -268,11 +338,12 @@ const ManageAdmin = () => {
                   <HotelInfoText>Category : {row.hotelCategory}</HotelInfoText>
                 </HotelIconWrapper>
               </HotelInfoWrapper>
-              {/* <HotelButtonWrapper>
-                <HotelActionButtons>Edit</HotelActionButtons>
-                <HotelActionButtons>Delete</HotelActionButtons>
-                <HotelActionButtons>Hide</HotelActionButtons>
-              </HotelButtonWrapper> */}
+              <HotelButtonWrapper>
+                <HotelActionButtons onClick={() => navigate(`/edithotels/${row._id}`)}>Edit</HotelActionButtons>
+                <HotelActionButtons onClick={() => handleClickOpen(row)}>Delete</HotelActionButtons>
+                {/* <HotelActionButtons>Hide</HotelActionButtons> */}
+              </HotelButtonWrapper>
+              
             </HotelCard>
           );
         });
@@ -281,11 +352,12 @@ const ManageAdmin = () => {
   };
   const getAllListData = async () => {
     await axios
-      .get(`${environmentVariables.apiUrl}/vendor/vendorget`, {
+      .get(`${environmentVariables.apiUrl}/vendor/vendorget?page=${page + 1}&limit=${rowsPerPage}`, {
         headers: { _token: authData.data.token },
       })
       .then((response) => {
-        console.log(response.data.data.records);
+        console.log(response.data.data);
+        setResponse(response.data.data);
         setData(response.data.data.records);
         setIsLoading(false);
       })
@@ -295,34 +367,16 @@ const ManageAdmin = () => {
       });
   };
 
-  const [vendor, setVendor] = useState();
 
-  const getVendor = async () => {
-    await axios
-      .get(`https://travel-api.floxypay.com/auth/vendorget`, {
-        headers: { _token: authData.data.token },
-      })
-      .then((response) => {
-        setVendor(response.data.data.hotels);
-        setIsLoading(false);
-      })
-      .catch((err) => {
-        console.log("error", err);
-        setIsLoading(false);
-      });
-  };
+
+
+  
 
   useEffect(() => {
     setIsLoading(true);
-    // getVendorList();
-    getVendor();
-    const lclstorage = JSON.parse(localStorage.getItem("authdata"));
     getAllListData();
-  }, []);
+  }, [page, rowsPerPage]);
 
-  const boldTextCss = {
-    fontWeight: 700,
-  };
 
   return (
     <>
@@ -343,6 +397,14 @@ const ManageAdmin = () => {
           <HotelCardsWrapper>{getComponents()}</HotelCardsWrapper>
           {/* )} */}
         </TextRoot>
+          <TablePagination
+            component="div"
+            count={mainResponse.totalrecords}
+            page={page}
+            onPageChange={handleChangePage}
+            rowsPerPage={rowsPerPage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
       </TextMainWrapper>
     </>
   );

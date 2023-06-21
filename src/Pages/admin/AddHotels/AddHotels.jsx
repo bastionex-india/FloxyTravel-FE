@@ -366,10 +366,6 @@ const AddHotels = () => {
     axios({
       method: "post",
       url: `${environmentVariables.apiUrl}/admin/addhotel`,
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
       data: formdata,
       headers: { _token: authData.data.token },
     })
@@ -405,10 +401,6 @@ const AddHotels = () => {
     axios({
       method: "put",
       url: `${environmentVariables.apiUrl}/admin/updatehotel/admin/${hotelData._id}`,
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
       data: {
         hotelName: name,
         overview: overview,

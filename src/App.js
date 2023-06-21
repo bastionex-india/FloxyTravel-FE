@@ -26,6 +26,7 @@ import VendorManageHotels from "./Pages/VendorManageHotels";
 import GenerateInvoice from "./Pages/admin/GenerateInvoice";
 import VendorDetails from "./Pages/admin/VendorDetails/VendorDetails";
 import Payouts from "./Pages/Payouts";
+import VendorEditHotel from "./Pages/VendorEditHotel";
 
 const Root = styled.div``;
 const LeftWrapper = styled.div`
@@ -120,6 +121,7 @@ function App() {
                     <Route path="/hoteldetails" element={<HotelDetails />} />
 
                     <Route path="/profile" element={<Profile />} />
+                    <Route path="/edithotels/:id" element={<VendorEditHotel />} />
                   </>
                 )}
               </Routes>
