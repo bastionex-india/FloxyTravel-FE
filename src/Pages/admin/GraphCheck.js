@@ -21,29 +21,33 @@ export default function GraphCheck() {
   const { authData, setAuthData } = useContext(AuthContext);
   const [alldata, setAlldata] = useState();
   const [yeardata, setYeardata] = useState();
-  const [weekdata, setWeekdata] = useState();
   const [tab, setTab] = useState("Hotels");
+  const ButtonGroup = styled.div`
+    display: flex;
+  `;
   const TabButton = styled.div`
     background-color: ${(props) =>
-      props.active === true ? "#000" : "#01575c"};
+      props.active === true ? "#01575c" : "#fff"};
     height: 40px;
     font-size: 14px;
-    color: #fff;
+    color: ${(props) => (props.active === true ? "#fff" : "#000")};
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 200px;
+    width: 150px;
     padding: 0px 20px;
-    border-radius: 5px;
+    /* border-radius: 5px; */
     // font-weight: 700;
     cursor: pointer;
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
   `;
   function planUpdate(e) {
     const value = e.target.value;
     console.log(value);
     if (value === "yeardata") setGraphData(yeardata);
     else if (value === "monthdata") setGraphData(alldata);
-    else setGraphData(weekdata);
+    
   }
 
   const getYearData = async () => {
@@ -60,26 +64,33 @@ export default function GraphCheck() {
     })
       .then((response) => {
         const data = response.data.data;
-
+        console.log(response.data.data, "rehman");
         const mergedata = [
-          { Name: 2018, Bookings: 0, Hotels: 0 },
-          { Name: 2019, Bookings: 0, Hotels: 0 },
-          { Name: 2020, Bookings: 0, Hotels: 0 },
-          { Name: 2021, Bookings: 0, Hotels: 0 },
-          { Name: 2022, Bookings: 0, Hotels: 0 },
-          { Name: 2023, Bookings: 0, Hotels: 0 },
+          { Name: 2018, Bookings: 0, Hotels: 0, Earnings: 0 },
+          { Name: 2019, Bookings: 0, Hotels: 0, Earnings: 0 },
+          { Name: 2020, Bookings: 0, Hotels: 0, Earnings: 0 },
+          { Name: 2021, Bookings: 0, Hotels: 0, Earnings: 0 },
+          { Name: 2022, Bookings: 0, Hotels: 0, Earnings: 0 },
+          { Name: 2023, Bookings: 0, Hotels: 0, Earnings: 0 },
         ];
 
+        // for (let i = 0; i < mergedata.length; i++) {
+        //   for (let j = 0; j < data.length; j++) {
+        //     if (mergedata[i].Name === 2023) {
+        //       mergedata[i].Bookings = data[j].bookingCount;
+        //     }
+        //   }
+        // }
+        mergedata[5].Bookings = data[1].bookingCount;
+        mergedata[5].Hotels = data[0].hotelCount;
         for (let i = 0; i < mergedata.length; i++) {
           for (let j = 0; j < data.length; j++) {
             if (mergedata[i].Name === 2023) {
-              mergedata[i].Bookings = data[j].bookingCount;
+              mergedata[i].Earnings = data[j].earnings;
             }
           }
         }
-
-        mergedata[5].Hotels = data[0].hotelCount;
-
+        setGraphData(mergedata);
         setYeardata(mergedata);
       })
       .catch((err) => {
@@ -187,87 +198,11 @@ export default function GraphCheck() {
       });
   };
 
-  const getWeekData = async () => {
-    const allData = {
-      query: "week",
-      year: 2023,
-    };
-
-    await axios({
-      method: "post",
-      url: `${environmentVariables.apiUrl}/admin/getgraphhotels`,
-      data: allData,
-      headers: { _token: authData.data.token },
-    })
-      .then((response) => {
-        const bookingdata = response.data.data[0].bookingCount;
-        const hoteldata = response.data.data[0].hotelCount;
-        const earnings = response.data.data[0].earnings;
-        const mergedata = [
-          { Name: 21, Bookings: 0, Hotels: 0 },
-          { Name: 22, Bookings: 0, Hotels: 0 },
-          { Name: 23, Bookings: 0, Hotels: 0 },
-          { Name: 24, Bookings: 0, Hotels: 0 },
-          { Name: 25, Bookings: 0, Hotels: 0 },
-          { Name: 26, Bookings: 0, Hotels: 0 },
-        ];
-
-        for (let i = 0; i < mergedata.length; i++) {
-          for (let j = 0; j < bookingdata.length; j++) {
-            if (mergedata[i].Name === bookingdata[j].week) {
-              mergedata[i].Bookings = bookingdata[j].count;
-            }
-          }
-        }
-
-        for (let i = 0; i < mergedata.length; i++) {
-          for (let j = 0; j < hoteldata.length; j++) {
-            if (mergedata[i].Name === hoteldata[j].week) {
-              mergedata[i].Hotels = hoteldata[j].count;
-            }
-          }
-        }
-        for (let i = 0; i < mergedata.length; i++) {
-          for (let j = 0; j < earnings.length; j++) {
-            if (mergedata[i].Name === earnings[j].week) {
-              mergedata[i].Earnings = earnings[j].totalAmount;
-            }
-          }
-        }
-
-        for (let i = 0; i < mergedata.length; i++) {
-          if (mergedata[i].Name === 21) {
-            mergedata[i].Name = "Week 21";
-          }
-          if (mergedata[i].Name === 22) {
-            mergedata[i].Name = "Week 22";
-          }
-          if (mergedata[i].Name === 23) {
-            mergedata[i].Name = "Week 23";
-          }
-          if (mergedata[i].Name === 24) {
-            mergedata[i].Name = "Week 24";
-          }
-          if (mergedata[i].Name === 25) {
-            mergedata[i].Name = "Week 25";
-          }
-          if (mergedata[i].Name === 26) {
-            mergedata[i].Name = "Week 26";
-          }
-        }
-
-        setWeekdata(mergedata);
-        console.log(mergedata);
-      })
-      .catch((err) => {
-        console.log(err.message);
-      });
-  };
+  
 
   useEffect(() => {
     getMonthData();
     getYearData();
-    getWeekData();
   }, []);
 
   return (
@@ -280,21 +215,38 @@ export default function GraphCheck() {
             marginTop: "20px",
           }}
         >
-          <TabButton onClick={() => setTab("Hotels")} active={tab === "Hotels"}>
-            Hotels
-          </TabButton>
-          <TabButton
-            onClick={() => setTab("Bookings")}
-            active={tab === "Bookings"}
-          >
-            Bookings
-          </TabButton>
-          <TabButton
-            onClick={() => setTab("Earnings")}
-            active={tab === "Earnings"}
-          >
-            Earnings
-          </TabButton>
+          <ButtonGroup>
+            <TabButton
+              style={{
+                borderTopLeftRadius: "10px",
+                borderBottomLeftRadius: "10px",
+                borderRight: "1px dashed black",
+                borderLeft: "1px solid black",
+              }}
+              onClick={() => setTab("Hotels")}
+              active={tab === "Hotels"}
+            >
+              Hotels
+            </TabButton>
+            <TabButton
+              onClick={() => setTab("Bookings")}
+              active={tab === "Bookings"}
+            >
+              Bookings
+            </TabButton>
+            <TabButton
+              onClick={() => setTab("Earnings")}
+              active={tab === "Earnings"}
+              style={{
+                borderTopRightRadius: "10px",
+                borderBottomRightRadius: "10px",
+                borderLeft: "1px dashed black",
+                borderRight: "1px solid black",
+              }}
+            >
+              Earnings
+            </TabButton>
+          </ButtonGroup>
           <select
             style={{ width: "200px" }}
             class="form-select"
@@ -302,9 +254,9 @@ export default function GraphCheck() {
             onChange={(e) => planUpdate(e)}
           >
             <option selected>Sort...</option>
-            <option value={`weekdata`}>Week</option>
             <option value={`monthdata`}>Month</option>
             <option value={`yeardata`}>Year</option>
+            <option value={`custom`}>Custom</option>
           </select>
         </div>
         <MDBCardBody>

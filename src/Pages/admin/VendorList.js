@@ -306,9 +306,27 @@ const VendorList = () => {
                 style={{ textAlign: "center", color: "#008080" }}
                 class="card-text"
               >
-                {summaryData?.totalEarnings}
+                ₹ {summaryData?.totalEarnings}
               </h1>
               {/* <p style={{textAlign: 'center'}} class="card-title">Total earnings</p> */}
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
+            <div class="card-body">
+              <h6 style={{ textAlign: "center" }} class="card-title">
+                TOTAL VENDORS
+              </h6>
+              <h1
+                style={{ textAlign: "center", color: "#008080" }}
+                class="card-text"
+              >
+                {summaryData?.totalVendors}
+              </h1>
+              {/* <p style={{ textAlign: "center" }} class="card-title">
+                Total hotels
+              </p> */}
             </div>
           </div>
         </div>

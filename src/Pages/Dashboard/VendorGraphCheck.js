@@ -1,4 +1,5 @@
 import React from "react";
+import styled from "styled-components";
 import {
   BarChart,
   Bar,
@@ -7,6 +8,7 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
+  LabelList,
 } from "recharts";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -14,29 +16,71 @@ import { useContext } from "react";
 import { AuthContext } from "../../ContextApi/ContextApi";
 import { environmentVariables } from "../../config/config";
 import { MDBCard, MDBCardBody } from "mdb-react-ui-kit";
+import { BsCalendarDay } from "react-icons/bs";
+import "react-datepicker/dist/react-datepicker.css";
+import DatePicker from "react-datepicker";
+const CustomBar = (props) => {
+  const { x, y, width, height, value } = props;
 
-const monthdata1 = [
-  { Name: "jan", Hotels: 0, Bookings: 0 },
-  { Name: "feb", Hotels: 0, Bookings: 0 },
-  { Name: "mar", Hotels: 0, Bookings: 0 },
-  { Name: "apr", Hotels: 0, Bookings: 0 },
-  { Name: "may", Hotels: 0, Bookings: 0 },
-  { Name: "jun", Hotels: 0, Bookings: 0 },
-  { Name: "jul", Hotels: 3, Bookings: 2 },
-  { Name: "aug", Hotels: 0, Bookings: 0 },
-  { Name: "sep", Hotels: 0, Bookings: 0 },
-  { Name: "oct", Hotels: 0, Bookings: 0 },
-  { Name: "nov", Hotels: 0, Bookings: 0 },
-  { Name: "dec", Hotels: 0, Bookings: 0 },
-];
-
+  return (
+    <g>
+      <rect x={x} y={y} width={width} height={height} fill="#8884d8" />
+      <text
+        x={x + width / 2}
+        y={y + height / 2}
+        fill="#fff"
+        textAnchor="middle"
+        dominantBaseline="middle"
+      >
+        {value}
+      </text>
+    </g>
+  );
+};
 export default function VendorGraphCheck() {
-  const [graphdata, setGraphData] = useState(monthdata1);
+  const [graphdata, setGraphData] = useState();
   const { authData, setAuthData } = useContext(AuthContext);
   const [monthdata, setMonthdata] = useState();
   const [yeardata, setYeardata] = useState();
-  const [weekdata, setWeekdata] = useState();
-
+  const [fromDate, setFromDate] = useState(null);
+  const [toDate, setToDate] = useState(null);
+  const [tab, setTab] = useState("Hotels");
+  const [vendorId, setVendorId] = useState(authData?.data?.vendorId);
+  const ButtonGroup = styled.div`
+    display: flex;
+  `;
+  const FilterWrapper = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0px 50px;
+  `;
+  const FilterComponent = styled.div`
+    margin-left: 10px;
+    position: relative;
+  `;
+  const DateIcon = styled.div`
+    position: absolute;
+    right: 5%;
+    z-index: 1;
+  `;
+  const TabButton = styled.div`
+    background-color: ${(props) =>
+      props.active === true ? "#01575c" : "#fff"};
+    height: 40px;
+    font-size: 14px;
+    color: ${(props) => (props.active === true ? "#fff" : "#000")};
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 150px;
+    padding: 0px 20px;
+    /* border-radius: 5px; */
+    // font-weight: 700;
+    cursor: pointer;
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+  `;
   const getYearData = async () => {
     const allData = {
       query: "year",
@@ -46,7 +90,7 @@ export default function VendorGraphCheck() {
 
     await axios({
       method: "post",
-      url: `${environmentVariables.apiUrl}/vendor/getgraphhotels/a8c99f2a-9622-417a-b72e-aef09da04ba6`,
+      url: `${environmentVariables.apiUrl}/vendor/getgraphhotels/${vendorId}`,
       data: allData,
       headers: { _token: authData.data.token },
     })
@@ -62,7 +106,7 @@ export default function VendorGraphCheck() {
         ];
 
         const mergedata = [...leftdata, ...data];
-
+        setGraphData(mergedata);
         setYeardata(mergedata);
       })
       .catch((err) => {
@@ -79,7 +123,7 @@ export default function VendorGraphCheck() {
 
     await axios({
       method: "post",
-      url: `${environmentVariables.apiUrl}/vendor/getgraphhotels/a8c99f2a-9622-417a-b72e-aef09da04ba6`,
+      url: `${environmentVariables.apiUrl}/vendor/getgraphhotels/${vendorId}`,
       data: allData,
       headers: { _token: authData.data.token },
     })
@@ -91,40 +135,23 @@ export default function VendorGraphCheck() {
         console.log(err.message);
       });
   };
-
-  const getWeekData = async () => {
+  const getCustomData = async () => {
     const allData = {
-      query: "week",
+      query: "custom",
       year: 2023,
+      fromdate: fromDate,
+      todate: toDate,
     };
     //https://uat-travel-api.floxypay.com/vendor/getgraphhotels/a8c99f2a-9622-417a-b72e-aef09da04ba6
 
     await axios({
       method: "post",
-      url: `${environmentVariables.apiUrl}/vendor/getgraphhotels/a8c99f2a-9622-417a-b72e-aef09da04ba6`,
+      url: `${environmentVariables.apiUrl}/vendor/getgraphhotels/${vendorId}`,
       data: allData,
       headers: { _token: authData.data.token },
     })
       .then((response) => {
-        const data = response.data.data;
-        console.log(data[21]);
-        const mergedata = [
-          { Name: "Week 1", Hotels: 0, Bookings: 0 },
-          { Name: "Week 2", Hotels: 0, Bookings: 0 },
-          { Name: "Week 3", Hotels: 0, Bookings: 0 },
-          { Name: "Week 4", Hotels: 0, Bookings: 0 },
-          { Name: "Week 5", Hotels: 0, Bookings: 0 },
-          { Name: "Week 6", Hotels: 0, Bookings: 0 },
-        ];
-
-        for (let i = 0; i < 6; i++) {
-          mergedata[i].Hotels = data[i].Hotels;
-          mergedata[i].Bookings = data[i].Bookings;
-        }
-
-        console.log(mergedata);
-
-        setWeekdata(mergedata);
+        console.log(response);
       })
       .catch((err) => {
         console.log(err.message);
@@ -132,57 +159,117 @@ export default function VendorGraphCheck() {
   };
 
   useEffect(() => {
+    if (fromDate !== null && toDate !== null) {
+      getCustomData();
+    }
+  }, [fromDate, toDate]);
+  useEffect(() => {
+    if (window !== undefined) {
+      const param = window.location.href.split("/").pop();
+      const vendorid = authData.data.vendorId || param;
+      setVendorId(vendorid);
+    }
     getMonthData();
     getYearData();
-    getWeekData();
   }, []);
 
   function planUpdate(e) {
     const value = e.target.value;
-    console.log(value);
     if (value === "yeardata") setGraphData(yeardata);
     else if (value === "monthdata") setGraphData(monthdata);
-    else setGraphData(weekdata);
   }
 
   return (
     <>
       <MDBCard style={{ width: "70rem" }}>
         <MDBCardBody>
-          <div class="container text-center">
-            <div class="row">
-              <div
-                class="col"
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-around",
+              margin: "20px 0",
+            }}
+          >
+            <ButtonGroup>
+              <TabButton
                 style={{
-                  textAlign: "left",
-                  marginLeft: "1rem",
-                  marginTop: "1rem",
+                  borderTopLeftRadius: "10px",
+                  borderBottomLeftRadius: "10px",
+                  borderRight: "1px dashed black",
+                  borderLeft: "1px solid black",
                 }}
-              ></div>
-
-              <div class="col">
-                <div
-                  class="input-group mb-3"
-                  style={{
-                    marginLeft: "15rem",
-                    width: "8rem",
-                    marginTop: "1rem",
+                onClick={() => setTab("Hotels")}
+                active={tab === "Hotels"}
+              >
+                Hotels
+              </TabButton>
+              <TabButton
+                onClick={() => setTab("Bookings")}
+                active={tab === "Bookings"}
+              >
+                Bookings
+              </TabButton>
+              <TabButton
+                onClick={() => setTab("Earnings")}
+                active={tab === "Earnings"}
+                style={{
+                  borderTopRightRadius: "10px",
+                  borderBottomRightRadius: "10px",
+                  borderLeft: "1px dashed black",
+                  borderRight: "1px solid black",
+                }}
+              >
+                Earnings
+              </TabButton>
+            </ButtonGroup>
+            <FilterWrapper>
+              <FilterComponent>
+                {/* <FilterLabel>From</FilterLabel> */}
+                <DateIcon>
+                  <BsCalendarDay size="1.5rem" />
+                </DateIcon>
+                <DatePicker
+                  placeholderText="Start Date"
+                  selected={fromDate}
+                  onChange={(date) => {
+                    setFromDate(date);
+                    // setPageNo(1);
                   }}
-                >
-                  {/* <label class="input-group-text" for="inputGroupSelect01">Select Plan</label> */}
-                  <select
-                    class="form-select"
-                    id="inputGroupSelect01"
-                    onChange={(e) => planUpdate(e)}
-                  >
-                    <option selected>Sort...</option>
-                    <option value={`weekdata`}>Week</option>
-                    <option value={`monthdata`}>Month</option>
-                    <option value={`yeardata`}>Year</option>
-                  </select>
-                </div>
-              </div>
-            </div>
+                  selectsStart
+                  startDate={fromDate}
+                  endDate={toDate}
+                />
+              </FilterComponent>
+              <FilterComponent>
+                {/* <FilterLabel>To</FilterLabel> */}
+                <DateIcon>
+                  <BsCalendarDay size="1.5rem" />
+                </DateIcon>
+
+                <DatePicker
+                  placeholderText="End Date"
+                  selected={toDate}
+                  onChange={(date) => setToDate(date)}
+                  selectsStart
+                  startDate={fromDate}
+                  endDate={toDate}
+                  disabled={fromDate ? false : true}
+                  minDate={fromDate}
+                  style={{ padding: "10px" }}
+                />
+              </FilterComponent>
+            </FilterWrapper>
+            <select
+              style={{ width: "200px" }}
+              class="form-select"
+              id="inputGroupSelect01"
+              onChange={(e) => planUpdate(e)}
+            >
+              <option selected>Sort...</option>
+              <option value={`monthdata`}>Month</option>
+              <option value={`yeardata`}>Year</option>
+              <option value={`custom`}>Custom</option>
+            </select>
           </div>
 
           <BarChart
@@ -201,8 +288,8 @@ export default function VendorGraphCheck() {
             <YAxis />
             <Tooltip />
             <Legend />
-            <Bar dataKey="Bookings" fill="#8884d8" />
-            <Bar dataKey="Hotels" fill="#82ca9d" />
+
+            <Bar dataKey={tab} shape={<CustomBar />} />
           </BarChart>
         </MDBCardBody>
       </MDBCard>

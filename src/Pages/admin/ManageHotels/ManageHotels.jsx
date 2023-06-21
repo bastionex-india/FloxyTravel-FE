@@ -377,9 +377,9 @@ const ManageAdmin = () => {
     axios(config)
       .then(function (response) {
         Swal.fire("Deleted", "Hotel Deleted Successfully", "success");
-        setOpen(false)
-        getHotelByVendorId()
-        getAllListData()
+        setOpen(false);
+        getHotelByVendorId();
+        getAllListData();
       })
       .catch(function (error) {
         Swal.fire("Error", "Something went wrong", "error");
@@ -446,9 +446,11 @@ const ManageAdmin = () => {
                   <HotelIconWrapper>
                     {" "}
                     <HotelIcon></HotelIcon>
-                    <HotelInfoText>City : {row.city}</HotelInfoText>
+                    {/* <HotelInfoText>City : {row.city}</HotelInfoText>
                     <HotelInfoText>State : {row.state}</HotelInfoText>
-                    <HotelInfoText>Country : {row.country}</HotelInfoText>
+                    <HotelInfoText>Country : {row.country}</HotelInfoText> */}
+                    <HotelInfoText>{`Address : ${row?.city}, ${row?.state} - ${row?.country}
+                  `}</HotelInfoText>
                     <HotelInfoText>Theme : {row.theme}</HotelInfoText>
                     <HotelInfoText>
                       Category : {row.hotelCategory}

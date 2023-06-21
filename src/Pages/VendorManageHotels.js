@@ -20,7 +20,6 @@ import CloseIcon from "@mui/icons-material/Close";
 import Typography from "@mui/material/Typography";
 import Swal from "sweetalert2";
 
-
 const BootstrapDialog = newStyle(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
     padding: theme.spacing(2),
@@ -336,19 +335,25 @@ const ManageAdmin = () => {
                 <HotelIconWrapper>
                   {" "}
                   <HotelIcon></HotelIcon>
-                  <HotelInfoText>City : {row.city}</HotelInfoText>
+                  {/* <HotelInfoText>City : {row.city}</HotelInfoText>
                   <HotelInfoText>State : {row.state}</HotelInfoText>
-                  <HotelInfoText>Country : {row.country}</HotelInfoText>
+                  <HotelInfoText>Country : {row.country}</HotelInfoText> */}
+                  <HotelInfoText>{`Address : ${row.city}, ${row.state} - ${row.country}`}</HotelInfoText>
                   <HotelInfoText>Theme : {row.theme}</HotelInfoText>
                   <HotelInfoText>Category : {row.hotelCategory}</HotelInfoText>
                 </HotelIconWrapper>
               </HotelInfoWrapper>
               <HotelButtonWrapper>
-                <HotelActionButtons onClick={() => navigate(`/edithotels/${row._id}`)}>Edit</HotelActionButtons>
-                <HotelActionButtons onClick={() => handleClickOpen(row)}>Delete</HotelActionButtons>
+                <HotelActionButtons
+                  onClick={() => navigate(`/edithotels/${row._id}`)}
+                >
+                  Edit
+                </HotelActionButtons>
+                <HotelActionButtons onClick={() => handleClickOpen(row)}>
+                  Delete
+                </HotelActionButtons>
                 {/* <HotelActionButtons>Hide</HotelActionButtons> */}
               </HotelButtonWrapper>
-              
             </HotelCard>
           );
         });
@@ -357,9 +362,14 @@ const ManageAdmin = () => {
   };
   const getAllListData = async () => {
     await axios
-      .get(`${environmentVariables.apiUrl}/vendor/vendorget?page=${page + 1}&limit=${rowsPerPage}`, {
-        headers: { _token: authData.data.token },
-      })
+      .get(
+        `${environmentVariables.apiUrl}/vendor/vendorget?page=${
+          page + 1
+        }&limit=${rowsPerPage}`,
+        {
+          headers: { _token: authData.data.token },
+        }
+      )
       .then((response) => {
         console.log(response.data.data);
         setResponse(response.data.data);
@@ -401,8 +411,8 @@ const ManageAdmin = () => {
     axios(config)
       .then(function (response) {
         Swal.fire("Deleted", "Hotel Deleted Successfully", "success");
-        setOpen(false)
-        getAllListData()
+        setOpen(false);
+        getAllListData();
       })
       .catch(function (error) {
         Swal.fire("Error", "Something went wrong", "error");
@@ -417,7 +427,6 @@ const ManageAdmin = () => {
     getVendor();
     getAllListData();
   }, [page, rowsPerPage]);
-
 
   return (
     <>
@@ -438,47 +447,43 @@ const ManageAdmin = () => {
           <HotelCardsWrapper>{getComponents()}</HotelCardsWrapper>
           {/* )} */}
         </TextRoot>
-          <TablePagination
-            component="div"
-            count={mainResponse.totalrecords}
-            page={page}
-            onPageChange={handleChangePage}
-            rowsPerPage={rowsPerPage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
-          <BootstrapDialog
+        <TablePagination
+          component="div"
+          count={mainResponse.totalrecords}
+          page={page}
+          onPageChange={handleChangePage}
+          rowsPerPage={rowsPerPage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+        <BootstrapDialog
+          onClose={handleClose}
+          aria-labelledby="customized-dialog-title"
+          open={open}
+        >
+          <BootstrapDialogTitle
+            id="customized-dialog-title"
             onClose={handleClose}
-            aria-labelledby="customized-dialog-title"
-            open={open}
           >
-            <BootstrapDialogTitle
-              id="customized-dialog-title"
-              onClose={handleClose}
+            Delete
+          </BootstrapDialogTitle>
+          <DialogContent dividers>
+            <Typography gutterBottom>
+              Are you sure you want to delete the Hotel?
+            </Typography>
+          </DialogContent>
+          <DialogActions>
+            <Button variant="contained" color="success" onClick={handleClose}>
+              Cancel
+            </Button>
+            <Button
+              variant="contained"
+              color="error"
+              onClick={() => deleteRecord(hotelDetails)}
             >
               Delete
-            </BootstrapDialogTitle>
-            <DialogContent dividers>
-              <Typography gutterBottom>
-                Are you sure you want to delete the Hotel?
-              </Typography>
-            </DialogContent>
-            <DialogActions>
-              <Button
-                variant="contained"
-                color="success"
-                onClick={handleClose}
-              >
-                Cancel
-              </Button>
-              <Button
-                variant="contained"
-                color="error"
-                onClick={() => deleteRecord(hotelDetails)}
-              >
-                Delete
-              </Button>
-            </DialogActions>
-          </BootstrapDialog>
+            </Button>
+          </DialogActions>
+        </BootstrapDialog>
       </TextMainWrapper>
     </>
   );
