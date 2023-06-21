@@ -371,7 +371,6 @@ const UserLandingPage = () => {
       },
     })
       .then((response) => {
-        console.log(response.data.data[0].cityName, "subhan");
         setAllStates(response.data.data);
         setStateSelected(response?.data?.data[0].cityName);
         setStateId(response.data.data[0]._id);

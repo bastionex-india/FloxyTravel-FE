@@ -76,80 +76,75 @@ const GenerateInvoice = () => {
   const [data, setData] = useState("");
   const navigate = useNavigate();
   const [discountAmount, setDiscountAmount] = useState(0);
-  const [hotelPrice, setHotelPrice] = useState('');
-  // api data 
-  const [amount,setAmount] = useState(0);
-  const [discount,setDiscount] =  useState(0);
-  const [totalAmount,setTotalAmount] = useState(0);
-  const [payMethod,setPayMethod] = useState('online'); 
+  const [hotelPrice, setHotelPrice] = useState("");
+  // api data
+  const [amount, setAmount] = useState(0);
+  const [discount, setDiscount] = useState(0);
+  const [totalAmount, setTotalAmount] = useState(0);
+  const [payMethod, setPayMethod] = useState("online");
 
-  
   const sendInvoice = () => {
-    if(hotelPrice && (Number(hotelPrice) - Number(discountAmount)) > 0){
-      let amount = Number(hotelPrice) - Number(discountAmount)
-    let data = {
-      bookingID: state._id,
-      amount: amount.toString(),
-      discount: Number(discountAmount)
-    }
-    let config = {
-      method: "post",
-      url: `${environmentVariables.apiUrl}/admin/sendInvoice`,
-      headers: {
-        _token: authData.data.token,
-        "Content-Type": "application/json",
-      },
-      data: data,
-    };
+    if (hotelPrice && Number(hotelPrice) - Number(discountAmount) > 0) {
+      let amount = Number(hotelPrice) - Number(discountAmount);
+      let data = {
+        bookingID: state._id,
+        amount: amount.toString(),
+        discount: Number(discountAmount),
+      };
+      let config = {
+        method: "post",
+        url: `${environmentVariables.apiUrl}/admin/sendInvoice`,
+        headers: {
+          _token: authData.data.token,
+          "Content-Type": "application/json",
+        },
+        data: data,
+      };
 
-    axios
-      .request(config)
-      .then((response) => {
-        if (response.data.status) {
-          Swal.fire({
-            icon: "success",
-            title: "Invoice sent successfully",
-            timer: "800",
-          });
-        }
-        else {
+      axios
+        .request(config)
+        .then((response) => {
+          if (response.data.status) {
+            Swal.fire({
+              icon: "success",
+              title: "Invoice sent successfully",
+              timer: "800",
+            });
+          } else {
+            Swal.fire({
+              icon: "error",
+              title: response.data.message,
+              timer: "800",
+            });
+          }
+        })
+        .catch((err) => {
+          console.log(err);
           Swal.fire({
             icon: "error",
-            title: response.data.message,
+            title: err.response.data.message,
             timer: "800",
           });
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-        Swal.fire({
-          icon: "error",
-          title: err.response.data.message,
-          timer: "800",
         });
-      });
-    }
-    else{
+    } else {
       Swal.fire({
         icon: "error",
-        title: 'Invalid amount',
+        title: "Invalid amount",
         timer: "800",
       });
     }
-    
-  }
+  };
   const sendInvoiceHandler = () => {
-    sendInvoice()
-  }
-  const getPaymentdetail = ()=>{
-
+    sendInvoice();
+  };
+  const getPaymentdetail = () => {
     // setAmount(20)
     // setDiscount(2)
     // setTotalAmount(18)
 
     let requestBody = {
-      bookingID : state._id
-    }
+      bookingID: state._id,
+    };
     let config = {
       method: "post",
       url: `${environmentVariables.apiUrl}/admin/getPaymentdetail`,
@@ -165,13 +160,12 @@ const GenerateInvoice = () => {
       .then((response) => {
         // console.log("Payment Details ", response)
         if (response.data.status) {
-          let  responsedata = response.data.data; 
-          setAmount( +responsedata.payAmount + +responsedata.discount)
-          setDiscount(+responsedata.discount)
-          setTotalAmount(+responsedata.payAmount)
-          setPayMethod(responsedata.paymentStatus[0].method)
-        }
-        else {
+          let responsedata = response.data.data;
+          setAmount(+responsedata.payAmount + +responsedata.discount);
+          setDiscount(+responsedata.discount);
+          setTotalAmount(+responsedata.payAmount);
+          setPayMethod(responsedata.paymentStatus[0].method);
+        } else {
           Swal.fire({
             icon: "error",
             title: response.data.message,
@@ -187,12 +181,14 @@ const GenerateInvoice = () => {
           timer: "800",
         });
       });
-  }
-  useEffect(()=>{
-    if(state.status=='approved'){
-      getPaymentdetail()
+  };
+  useEffect(() => {
+    console.log(state, "subhan");
+    if (state.status == "approved") {
+      getPaymentdetail();
     }
-  })
+  });
+
   return (
     <>
       <TextMainWrapper>
@@ -266,51 +262,48 @@ const GenerateInvoice = () => {
                     )}
                   </p>
                   <p>
-                    {
-                      state.status !='approved' ?
+                    {state.status != "approved" ? (
                       <FormControl
-                      sx={{ width: "80px" }}
-                      variant="standard"
-                      className="pull-right"
-                    >
-                      {/* <InputLabel htmlFor="standard-adornment-amount">Discount Amount</InputLabel> */}
-                      <Input
-                        id="standard-adornment-amount"
-                        startAdornment={
-                          <InputAdornment position="start">$</InputAdornment>
-                        }
-                        size="small"
-                        onChange={(e) => setHotelPrice(e.target.value)}
-                      />
-                    </FormControl>
-                      : amount
-                    }
-                    
+                        sx={{ width: "80px" }}
+                        variant="standard"
+                        className="pull-right"
+                      >
+                        {/* <InputLabel htmlFor="standard-adornment-amount">Discount Amount</InputLabel> */}
+                        <Input
+                          id="standard-adornment-amount"
+                          startAdornment={
+                            <InputAdornment position="start">$</InputAdornment>
+                          }
+                          size="small"
+                          onChange={(e) => setHotelPrice(e.target.value)}
+                        />
+                      </FormControl>
+                    ) : (
+                      amount
+                    )}
                   </p>
                   <p>
-                    {
-                      state.status !='approved' ?
+                    {state.status != "approved" ? (
                       <FormControl
-                      sx={{ width: "80px" }}
-                      variant="standard"
-                      className="pull-right"
-                    >
-                      {/* <InputLabel htmlFor="standard-adornment-amount">Discount Amount</InputLabel> */}
-                      <Input
-                        id="standard-adornment-amount"
-                        startAdornment={
-                          <InputAdornment position="start">$</InputAdornment>
-                        }
-                        size="small"
-                        onChange={(e) => setDiscountAmount(e.target.value)}
-                      />
-                    </FormControl>
-                      : discount
-                    }
-                    
+                        sx={{ width: "80px" }}
+                        variant="standard"
+                        className="pull-right"
+                      >
+                        {/* <InputLabel htmlFor="standard-adornment-amount">Discount Amount</InputLabel> */}
+                        <Input
+                          id="standard-adornment-amount"
+                          startAdornment={
+                            <InputAdornment position="start">$</InputAdornment>
+                          }
+                          size="small"
+                          onChange={(e) => setDiscountAmount(e.target.value)}
+                        />
+                      </FormControl>
+                    ) : (
+                      discount
+                    )}
                   </p>
                 </Grid>
-
               </Grid>
               <hr />
               <Grid container>
@@ -328,44 +321,33 @@ const GenerateInvoice = () => {
                 <Grid xs={6} className="pull-right">
                   <p>
                     $
-                    {
-                      state.status !='approved' ?
-                      (Number(hotelPrice) - Number(discountAmount))
-                      :
-                      totalAmount
-                    }
+                    {state.status != "approved"
+                      ? Number(hotelPrice) - Number(discountAmount)
+                      : totalAmount}
                   </p>
+                  <p>${state.status != "approved" ? "0.00" : totalAmount}</p>
                   <p>
                     $
-                    {
-                      state.status !='approved' ? 
-                      '0.00':
-                      totalAmount
-                    }
-                  </p>
-                  <p>
-                    $
-                    {
-                      state.status !='approved' ?
-                      (Number(hotelPrice) -
-                      Number(discountAmount))
-                      :
-                      '0.00'
-                    }
+                    {state.status != "approved"
+                      ? Number(hotelPrice) - Number(discountAmount)
+                      : "0.00"}
                   </p>
                 </Grid>
               </Grid>
-              {
-                state.status != 'approved'  ?
-                  <Grid container>
-                    <Grid xs={8}></Grid>
-                    <Grid xs={4} className="pull-right">
-                      <Button disabled={hotelPrice.length ? false : true} variant="contained" onClick={sendInvoiceHandler}>Send Invoice</Button>
-                    </Grid>
+              {state.status != "approved" ? (
+                <Grid container>
+                  <Grid xs={8}></Grid>
+                  <Grid xs={4} className="pull-right">
+                    <Button
+                      disabled={hotelPrice.length ? false : true}
+                      variant="contained"
+                      onClick={sendInvoiceHandler}
+                    >
+                      Send Invoice
+                    </Button>
                   </Grid>
-                  : null
-              }
-
+                </Grid>
+              ) : null}
             </Item>
           </Grid>
         </Grid>

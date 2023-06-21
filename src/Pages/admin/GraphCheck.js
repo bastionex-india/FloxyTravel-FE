@@ -8,6 +8,7 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
+import styled from "styled-components";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useContext } from "react";
@@ -15,28 +16,28 @@ import { AuthContext } from "../../ContextApi/ContextApi";
 import { environmentVariables } from "../../config/config";
 import { MDBCard, MDBCardBody } from "mdb-react-ui-kit";
 
-const monthdata = [
-  { Name: "Jan", Bookings: 0, Hotels: 0 },
-  { Name: "Feb", Bookings: 0, Hotels: 0 },
-  { Name: "March", Bookings: 0, Hotels: 0 },
-  { Name: "April", Bookings: 0, Hotels: 0 },
-  { Name: "May", Bookings: 0, Hotels: 9 },
-  { Name: "June", Bookings: 31, Hotels: 817 },
-  { Name: "July", Bookings: 0, Hotels: 0 },
-  { Name: "Aug", Bookings: 0, Hotels: 0 },
-  { Name: "Sep", Bookings: 0, Hotels: 0 },
-  { Name: "Oct", Bookings: 0, Hotels: 0 },
-  { Name: "Nov", Bookings: 0, Hotels: 0 },
-  { Name: "Dec", Bookings: 0, Hotels: 0 },
-];
-
 export default function GraphCheck() {
-  const [graphdata, setGraphData] = useState(monthdata);
+  const [graphdata, setGraphData] = useState();
   const { authData, setAuthData } = useContext(AuthContext);
   const [alldata, setAlldata] = useState();
   const [yeardata, setYeardata] = useState();
   const [weekdata, setWeekdata] = useState();
-
+  const [tab, setTab] = useState("Hotels");
+  const TabButton = styled.div`
+    background-color: ${(props) =>
+      props.active === true ? "#000" : "#01575c"};
+    height: 40px;
+    font-size: 14px;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 200px;
+    padding: 0px 20px;
+    border-radius: 5px;
+    // font-weight: 700;
+    cursor: pointer;
+  `;
   function planUpdate(e) {
     const value = e.target.value;
     console.log(value);
@@ -100,23 +101,23 @@ export default function GraphCheck() {
     })
       .then((response) => {
         const mergedata = [
-          { Name: 1, Bookings: 0, Hotels: 0 },
-          { Name: 2, Bookings: 0, Hotels: 0 },
-          { Name: 3, Bookings: 0, Hotels: 0 },
-          { Name: 4, Bookings: 0, Hotels: 0 },
-          { Name: 5, Bookings: 0, Hotels: 0 },
-          { Name: 6, Bookings: 0, Hotels: 0 },
-          { Name: 7, Bookings: 0, Hotels: 0 },
-          { Name: 8, Bookings: 0, Hotels: 0 },
-          { Name: 9, Bookings: 0, Hotels: 0 },
-          { Name: 10, Bookings: 0, Hotels: 0 },
-          { Name: 11, Bookings: 0, Hotels: 0 },
-          { Name: 12, Bookings: 0, Hotels: 0 },
+          { Name: 1, Bookings: 0, Hotels: 0, Earnings: 0 },
+          { Name: 2, Bookings: 0, Hotels: 0, Earnings: 0 },
+          { Name: 3, Bookings: 0, Hotels: 0, Earnings: 0 },
+          { Name: 4, Bookings: 0, Hotels: 0, Earnings: 0 },
+          { Name: 5, Bookings: 0, Hotels: 0, Earnings: 0 },
+          { Name: 6, Bookings: 0, Hotels: 0, Earnings: 0 },
+          { Name: 7, Bookings: 0, Hotels: 0, Earnings: 0 },
+          { Name: 8, Bookings: 0, Hotels: 0, Earnings: 0 },
+          { Name: 9, Bookings: 0, Hotels: 0, Earnings: 0 },
+          { Name: 10, Bookings: 0, Hotels: 0, Earnings: 0 },
+          { Name: 11, Bookings: 0, Hotels: 0, Earnings: 0 },
+          { Name: 12, Bookings: 0, Hotels: 0, Earnings: 0 },
         ];
 
         const bookingdata = response.data.data[0].bookingCount;
         const hoteldata = response.data.data[0].hotelCount;
-
+        const earnings = response.data.data[0].earnings;
         for (let i = 0; i < mergedata.length; i++) {
           for (let j = 0; j < bookingdata.length; j++) {
             if (mergedata[i].Name === bookingdata[j].month) {
@@ -132,7 +133,13 @@ export default function GraphCheck() {
             }
           }
         }
-
+        for (let i = 0; i < mergedata.length; i++) {
+          for (let j = 0; j < bookingdata.length; j++) {
+            if (mergedata[i].Name === bookingdata[j].month) {
+              mergedata[i].Earnings = earnings[j].totalAmount;
+            }
+          }
+        }
         for (let i = 0; i < mergedata.length; i++) {
           if (mergedata[i].Name === 1) {
             mergedata[i].Name = "Jan";
@@ -195,7 +202,7 @@ export default function GraphCheck() {
       .then((response) => {
         const bookingdata = response.data.data[0].bookingCount;
         const hoteldata = response.data.data[0].hotelCount;
-
+        const earnings = response.data.data[0].earnings;
         const mergedata = [
           { Name: 21, Bookings: 0, Hotels: 0 },
           { Name: 22, Bookings: 0, Hotels: 0 },
@@ -217,6 +224,13 @@ export default function GraphCheck() {
           for (let j = 0; j < hoteldata.length; j++) {
             if (mergedata[i].Name === hoteldata[j].week) {
               mergedata[i].Hotels = hoteldata[j].count;
+            }
+          }
+        }
+        for (let i = 0; i < mergedata.length; i++) {
+          for (let j = 0; j < earnings.length; j++) {
+            if (mergedata[i].Name === earnings[j].week) {
+              mergedata[i].Earnings = earnings[j].totalAmount;
             }
           }
         }
@@ -259,47 +273,41 @@ export default function GraphCheck() {
   return (
     <>
       <MDBCard style={{ width: "70rem" }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-around",
+            marginTop: "20px",
+          }}
+        >
+          <TabButton onClick={() => setTab("Hotels")} active={tab === "Hotels"}>
+            Hotels
+          </TabButton>
+          <TabButton
+            onClick={() => setTab("Bookings")}
+            active={tab === "Bookings"}
+          >
+            Bookings
+          </TabButton>
+          <TabButton
+            onClick={() => setTab("Earnings")}
+            active={tab === "Earnings"}
+          >
+            Earnings
+          </TabButton>
+          <select
+            style={{ width: "200px" }}
+            class="form-select"
+            id="inputGroupSelect01"
+            onChange={(e) => planUpdate(e)}
+          >
+            <option selected>Sort...</option>
+            <option value={`weekdata`}>Week</option>
+            <option value={`monthdata`}>Month</option>
+            <option value={`yeardata`}>Year</option>
+          </select>
+        </div>
         <MDBCardBody>
-          <div class="container text-center">
-            <div class="row">
-              <div
-                class="col"
-                style={{
-                  textAlign: "left",
-                  marginLeft: "1rem",
-                  marginTop: "1rem",
-                }}
-              >
-                <h4>Manage bookings with graph plan.</h4>
-              </div>
-
-              <div class="col">
-                <div
-                  class="input-group mb-3"
-                  style={{
-                    marginLeft: "15rem",
-                    width: "15rem",
-                    marginTop: "1rem",
-                  }}
-                >
-                  {/* <label class="input-group-text" for="inputGroupSelect01">
-                    Select
-                  </label> */}
-                  <select
-                    class="form-select"
-                    id="inputGroupSelect01"
-                    onChange={(e) => planUpdate(e)}
-                  >
-                    <option selected hidden>Choose...</option>
-                    <option value={`weekdata`}>Week</option>
-                    <option value={`monthdata`}>Month</option>
-                    <option value={`yeardata`}>Year</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-          </div>
-
           <BarChart
             width={800}
             height={300}
@@ -316,8 +324,9 @@ export default function GraphCheck() {
             <YAxis />
             <Tooltip />
             <Legend />
-            <Bar dataKey="Bookings" fill="#8884d8" />
-            <Bar dataKey="Hotels" fill="#82ca9d" />
+            {/* <Bar dataKey="Bookings" fill="#8884d8" /> */}
+            <Bar dataKey={tab} fill="#82ca9d" />
+            {/* <Bar dataKey="Earnings" fill="red" /> */}
           </BarChart>
         </MDBCardBody>
       </MDBCard>
