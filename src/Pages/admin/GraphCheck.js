@@ -8,6 +8,7 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
+import styled from "styled-components";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useContext } from "react";
@@ -21,7 +22,22 @@ export default function GraphCheck() {
   const [alldata, setAlldata] = useState();
   const [yeardata, setYeardata] = useState();
   const [weekdata, setWeekdata] = useState();
-
+  const [tab, setTab] = useState("Hotels");
+  const TabButton = styled.div`
+    background-color: ${(props) =>
+      props.active === true ? "#000" : "#01575c"};
+    height: 40px;
+    font-size: 14px;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 200px;
+    padding: 0px 20px;
+    border-radius: 5px;
+    // font-weight: 700;
+    cursor: pointer;
+  `;
   function planUpdate(e) {
     const value = e.target.value;
     console.log(value);
@@ -186,7 +202,7 @@ export default function GraphCheck() {
       .then((response) => {
         const bookingdata = response.data.data[0].bookingCount;
         const hoteldata = response.data.data[0].hotelCount;
-
+        const earnings = response.data.data[0].earnings;
         const mergedata = [
           { Name: 21, Bookings: 0, Hotels: 0 },
           { Name: 22, Bookings: 0, Hotels: 0 },
@@ -208,6 +224,13 @@ export default function GraphCheck() {
           for (let j = 0; j < hoteldata.length; j++) {
             if (mergedata[i].Name === hoteldata[j].week) {
               mergedata[i].Hotels = hoteldata[j].count;
+            }
+          }
+        }
+        for (let i = 0; i < mergedata.length; i++) {
+          for (let j = 0; j < earnings.length; j++) {
+            if (mergedata[i].Name === earnings[j].week) {
+              mergedata[i].Earnings = earnings[j].totalAmount;
             }
           }
         }
@@ -250,47 +273,41 @@ export default function GraphCheck() {
   return (
     <>
       <MDBCard style={{ width: "70rem" }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-around",
+            marginTop: "20px",
+          }}
+        >
+          <TabButton onClick={() => setTab("Hotels")} active={tab === "Hotels"}>
+            Hotels
+          </TabButton>
+          <TabButton
+            onClick={() => setTab("Bookings")}
+            active={tab === "Bookings"}
+          >
+            Bookings
+          </TabButton>
+          <TabButton
+            onClick={() => setTab("Earnings")}
+            active={tab === "Earnings"}
+          >
+            Earnings
+          </TabButton>
+          <select
+            style={{ width: "200px" }}
+            class="form-select"
+            id="inputGroupSelect01"
+            onChange={(e) => planUpdate(e)}
+          >
+            <option selected>Sort...</option>
+            <option value={`weekdata`}>Week</option>
+            <option value={`monthdata`}>Month</option>
+            <option value={`yeardata`}>Year</option>
+          </select>
+        </div>
         <MDBCardBody>
-          <div class="container text-center">
-            <div class="row">
-              <div
-                class="col"
-                style={{
-                  textAlign: "left",
-                  marginLeft: "1rem",
-                  marginTop: "1rem",
-                }}
-              >
-                <h4>Manage bookings with graph plan.</h4>
-              </div>
-
-              <div class="col">
-                <div
-                  class="input-group mb-3"
-                  style={{
-                    marginLeft: "15rem",
-                    width: "8rem",
-                    marginTop: "1rem",
-                  }}
-                >
-                  {/* <label class="input-group-text" for="inputGroupSelect01">
-                    Select
-                  </label> */}
-                  <select
-                    class="form-select"
-                    id="inputGroupSelect01"
-                    onChange={(e) => planUpdate(e)}
-                  >
-                    <option selected>Sort...</option>
-                    <option value={`weekdata`}>Week</option>
-                    <option value={`monthdata`}>Month</option>
-                    <option value={`yeardata`}>Year</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-          </div>
-
           <BarChart
             width={800}
             height={300}
@@ -307,9 +324,9 @@ export default function GraphCheck() {
             <YAxis />
             <Tooltip />
             <Legend />
-            <Bar dataKey="Bookings" fill="#8884d8" />
-            <Bar dataKey="Hotels" fill="#82ca9d" />
-            <Bar dataKey="Earnings" fill="red" />
+            {/* <Bar dataKey="Bookings" fill="#8884d8" /> */}
+            <Bar dataKey={tab} fill="#82ca9d" />
+            {/* <Bar dataKey="Earnings" fill="red" /> */}
           </BarChart>
         </MDBCardBody>
       </MDBCard>
