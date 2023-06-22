@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { AuthContext } from "../../../ContextApi/ContextApi";
 import axios from "axios";
 import { environmentVariables } from "../../../config/config";
+import CardDetails from "../../Dashboard/Card";
 const Root = styled.div`
   margin: 20px;
 `;
@@ -28,7 +29,6 @@ const VendorDetails = () => {
         headers: { _token: authData.data.token },
       })
       .then((response) => {
-        // console.log("response vendor data ",response)
         setVendorData(response.data.data);
       })
       .catch((error) => {
@@ -46,7 +46,12 @@ const VendorDetails = () => {
   
   return (
     <Root>
-      <P>{vendorData ? vendorData.name : null}</P>
+      {/* <P>{vendorData ? vendorData.name : null}</P> */}
+      <div> 
+      <CardDetails 
+        data={vendorData}
+      /> 
+      </div> 
       <LeaveRecord vendorId={vendorId} />
     </Root>
   );
