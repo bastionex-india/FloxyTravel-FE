@@ -138,23 +138,12 @@ const BookingHistoryofAdmin = () => {
   const [select1, setSelect1] = useState("");
   const [response, setResponse] = useState({});
   const { authData, setAuthData } = useContext(AuthContext);
-  const [data, setData] = useState("");
+  const [data, setData] = useState([]);
   const navigation = useNavigate();
   const [fromDate, setFromDate] = useState(null);
   const [toDate, setToDate] = useState(null);
   const [search, setSearch] = useState();
   const [allVendors, setAllVendors] = useState([]);
-  const handleChange = (event) => {
-    const data = event.target.value;
-    // console.log("Sdsdsd",data.length)
-    if(data.length>=3){
-      setSearch(data);
-    }else{
-      setSearch();
-    }
-    
-    // console.log("------------[[[[[[[[[[[[[[[[[[",data)
-  };
 
   // paginationstart
   const [page, setPage] = useState(0);
@@ -171,6 +160,19 @@ const BookingHistoryofAdmin = () => {
   };
   // paginationend
 
+  const handleChange = (event) => {
+    const data = event.target.value;
+    if(data.length>=3){
+      setSearch(data);
+      setSelect("")
+      setSelect1("");
+      setFromDate(null);
+      setToDate(null);
+      
+    }else{
+      setSearch();
+    }
+  };
   const handleClick = (item) => {
     navigation("/bookinghistorybyorderid", { state: item });
   };
@@ -178,17 +180,14 @@ const BookingHistoryofAdmin = () => {
     const socket = io.connect(environmentVariables?.apiUrl);
 
     socket.on("admin_notification", (data) => {
-      console.log(data, "sr");
       getAllUsers();
     });
 
     socket.on("admin_cancellation_notification", (data) => {
-      console.log(data, "sr");
       getAllUsers();
     });
 
     socket.on("admin_booking_notification", (data) => {
-      console.log(data, "sr");
       getAllUsers();
     });
 
@@ -198,7 +197,6 @@ const BookingHistoryofAdmin = () => {
   }, []);
 
   const getAllUsers = async () => {
-    console.log(select1,fromDate,toDate,select)
     let data={
       search:search,
       status:select,
@@ -212,7 +210,7 @@ const BookingHistoryofAdmin = () => {
 
     let config = {
       method: "post",
-      url: `http://localhost:4000/admin/getallbooking`,
+      url: `${environmentVariables.apiUrl}/admin/getallbooking`,
       headers: {
         _token: authData.data.token,
         "Content-Type": "application/json",
@@ -224,7 +222,6 @@ const BookingHistoryofAdmin = () => {
       .request(config)
       .then((response) => {
         const { totalItems, totalPages, currentPage, data } = response.data;
-        // console.log("res",totalItems, totalPages, currentPage, data )
         setData(data);
         setTotalPages(totalPages);
         setPage(currentPage - 1);
@@ -232,7 +229,6 @@ const BookingHistoryofAdmin = () => {
         setTotalItems(totalItems)
       })
       .catch((err) => {
-        console.log(err);
         setIsLoading(false);
       });
   };
@@ -249,7 +245,7 @@ const BookingHistoryofAdmin = () => {
 
   const getAllVendors=async()=>{
     try {
-      const response = await axios.get(`http://localhost:4000/admin/getallvendor`, {
+      const response = await axios.get(`${environmentVariables.apiUrl}/admin/getallvendor`, {
         headers:  { _token: authData.data.token }
       });
       setAllVendors(response.data.data)
@@ -262,7 +258,6 @@ const BookingHistoryofAdmin = () => {
     getAllVendors();
   }, []);
 
-  // console.log(".............",allVendors)
   return (
     <>
       <TextMainWrapper>
@@ -291,7 +286,7 @@ const BookingHistoryofAdmin = () => {
                   onChange={(e) => {
                     setSelect1(e.target.value);
                   }}
-                  //   value={select1}
+                  value={select1}
                   required
                 >
                   <option value="" hidden>Select Vendor</option>
@@ -406,7 +401,7 @@ const BookingHistoryofAdmin = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {data &&
+                  {data && data.length!==0 ?
                     data.map((item, index) => {
                       const bookingDate = new Date(item.createdAt);
                       return (
@@ -425,7 +420,7 @@ const BookingHistoryofAdmin = () => {
                           <TableCell align="right">
                             {bookingDate.toLocaleDateString()}
                           </TableCell>
-                          <TableCell align="right">{item.status}</TableCell>
+                          <TableCell align="right">{item.status==="pending"? "Pending":item.status==="cancelled"?"Cancelled":item.status==="completed"?"Completed":item.status==="approved" && "Confirmed"}</TableCell>
                           <TableCell align="right">
                             <Button
                               size="small"
@@ -438,7 +433,8 @@ const BookingHistoryofAdmin = () => {
                           </TableCell>
                         </TableRow>
                       );
-                    })}
+                    }):<h3>Data Not Found</h3>
+                    }
                 </TableBody>
               </Table>
               <TablePagination

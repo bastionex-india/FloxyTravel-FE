@@ -190,17 +190,14 @@ const BookingHistory = () => {
     const socket = io.connect(environmentVariables?.apiUrl);
 
     socket.on("admin_notification", (data) => {
-      // console.log(data, "sr");
       getAllUsers();
     });
 
     socket.on("admin_cancellation_notification", (data) => {
-      // console.log(data, "sr");
       getAllUsers();
     });
 
     socket.on("admin_booking_notification", (data) => {
-      // console.log(data, "sr");
       getAllUsers();
     });
 
@@ -209,12 +206,10 @@ const BookingHistory = () => {
     };
   }, []);
   const handleClick = (item) => {
-    // console.log("hcjhcjhf",item)
     navigate("/bookinghotelbyid", { state: item });
   };
 
   const getAllUsers = async () => {
-    // console.log("aaa", select1,select,fromDate,toDate,searchByName,page,rowsPerPage);
     let data={
       status:select,
       // startDate:new Date(),
@@ -247,7 +242,6 @@ const BookingHistory = () => {
       .then((response) => {
         // setData(response.data.sort((a, b) => b.createdAt - a.createdAt));
         const { totalItems, totalPages, currentPage, data } = response.data;
-        console.log("res",totalItems, totalPages, currentPage, data )
         setData(data);
         setTotalPages(totalPages);
         setPage(currentPage - 1);
@@ -473,13 +467,8 @@ const BookingHistory = () => {
                 </TableHead>
                 <TableBody>
                   {data && data.length!==0?
-                    data.map((item, index) => {
-                      
+                    data.map((item, index) => {                      
                       const bookingDate = new Date(item.createdAt);
-                      // const checkInTime = convertToUnixTimestamp(item.checkIn);
-                      // const checkOutTime = convertToUnixTimestamp(item.checkOut);
-                      const currentTime = new Date().getTime();
-                      console.log(item,item.checkoutTimestamp)
                       return (
                         <TableRow
                           key={index}
