@@ -71,13 +71,12 @@ export default function LeaveRecord({ vendorId }) {
   };
   const getSummaryData = () => {
     const vendorid = authData.data.vendorId || vendorId;
-    
+
     axios
       .get(`${environmentVariables.apiUrl}/admin/getVendorSummary/${vendorid}`)
       .then((res) => setSummaryData(res.data.data))
       .catch((err) => console.log(err));
   };
-  
 
   useEffect(() => {
     getSummaryData();
@@ -110,7 +109,22 @@ export default function LeaveRecord({ vendorId }) {
                 style={{ textAlign: "center", color: "#008080" }}
                 class="card-text"
               >
-                {summaryData?.totalEarnings}
+                ₹ {summaryData?.totalEarnings}
+              </h1>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
+            <div class="card-body">
+              <h6 style={{ textAlign: "center" }} class="card-title">
+                PAYOUT
+              </h6>
+              <h1
+                style={{ textAlign: "center", color: "#008080" }}
+                class="card-text"
+              >
+                0
               </h1>
             </div>
           </div>
@@ -141,21 +155,6 @@ export default function LeaveRecord({ vendorId }) {
                 class="card-text"
               >
                 {summaryData?.totalBookings}
-              </h1>
-            </div>
-          </div>
-        </div>
-        <div class="col">
-          <div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
-            <div class="card-body">
-              <h6 style={{ textAlign: "center" }} class="card-title">
-                PENDING
-              </h6>
-              <h1
-                style={{ textAlign: "center", color: "#008080" }}
-                class="card-text"
-              >
-                {summaryData?.pendingBookings}
               </h1>
             </div>
           </div>
