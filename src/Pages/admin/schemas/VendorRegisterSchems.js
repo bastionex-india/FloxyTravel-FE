@@ -11,5 +11,15 @@ export const VendorRegisterSchema = Yup.object({
     confirmPassword: Yup.string()
       .required()
       .oneOf([Yup.ref("password"), null], "Password must match"),
+    bankName: Yup.string().required("Please enter bank Name"),
+    accountNumber:Yup.number()
+    .typeError('Please enter a valid number')
+    .positive('Please enter a positive number')
+    .integer('Please enter an integer')
+    .required("Please enter Account Number"),
+    accountHolderName:Yup.string().required("Please enter holder Name"),
+    ifsc: Yup.string()
+    .required('IFSC code is required')
+    .matches(/^[A-Z]{4}[0-9]{7}$/, 'Invalid IFSC code')
     // option: Yup.boolean().oneOf([true], 'Please select an option')
 });
