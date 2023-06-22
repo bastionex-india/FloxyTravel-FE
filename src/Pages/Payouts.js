@@ -10,6 +10,7 @@ import { Button } from "@mui/material";
 import CircularLoader from "../Component/CircularLoader/CircularLoader";
 import TablePagination from "@mui/material/TablePagination";
 import Swal from "sweetalert2";
+import LoadingButton from '@mui/lab/LoadingButton';
 
 import PropTypes from "prop-types";
 import { styled as newStyle } from "@mui/material/styles";
@@ -22,46 +23,65 @@ import CloseIcon from "@mui/icons-material/Close";
 import Typography from "@mui/material/Typography";
 
 
+import Box from '@mui/material/Box';
+import Paper from '@mui/material/Paper';
+import Grid from '@mui/material/Grid';
+
+import InputLabel from '@mui/material/InputLabel';
+import FormControl from '@mui/material/FormControl';
+import NativeSelect from '@mui/material/NativeSelect';
+
+
+
+const Item = newStyle(Paper)(({ theme }) => ({
+  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+  ...theme.typography.body2,
+  padding: theme.spacing(1),
+  textAlign: 'center',
+  color: theme.palette.text.secondary,
+}));
+
 
 const BootstrapDialog = newStyle(Dialog)(({ theme }) => ({
-    "& .MuiDialogContent-root": {
-      padding: theme.spacing(2),
-    },
-    "& .MuiDialogActions-root": {
-      padding: theme.spacing(1),
-    },
-  }));
-  
-  function BootstrapDialogTitle(props) {
-    const { children, onClose, ...other } = props;
-  
-    return (
-      <DialogTitle sx={{ m: 0, p: 2 }} {...other}>
-        {children}
-        {onClose ? (
-          <IconButton
-            aria-label="close"
-            onClick={onClose}
-            sx={{
-              position: "absolute",
-              right: 8,
-              top: 8,
-              color: (theme) => theme.palette.grey[500],
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
-        ) : null}
-      </DialogTitle>
-    );
-  }
-  
-  BootstrapDialogTitle.propTypes = {
-    children: PropTypes.node,
-    onClose: PropTypes.func.isRequired,
-  };
+  "& .MuiDialogContent-root": {
+    padding: theme.spacing(2),
+  },
+  "& .MuiDialogActions-root": {
+    padding: theme.spacing(1),
+  },
+}));
+
+function BootstrapDialogTitle(props) {
+  const { children, onClose, ...other } = props;
+
+  return (
+    <DialogTitle sx={{ m: 0, p: 2 }} {...other}>
+      {children}
+      {onClose ? (
+        <IconButton
+          aria-label="close"
+          onClick={onClose}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+      ) : null}
+    </DialogTitle>
+  );
+}
+
+BootstrapDialogTitle.propTypes = {
+  children: PropTypes.node,
+  onClose: PropTypes.func.isRequired,
+};
 
 const HotelCardsWrapper = styled.div``;
+
 const HotelCard = styled.div`
   display: flex;
   margin-bottom: 20px;
@@ -153,10 +173,12 @@ const TextMainWrapper = styled.div`
     display: flex;
   }
 `;
+const NewRow = styled.div`
+  width: 100%;
+`;
+const Payouts = () => {
 
-const Payouts = ()=>{
 
-    
   const [select, setSelect] = useState("");
   const [select1, setSelect1] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -166,12 +188,16 @@ const Payouts = ()=>{
   const [vendorlist, setVendorList] = useState(null);
   const [mainResponse, setResponse] = useState("");
   const [open, setOpen] = useState(false);
-  const [hotelDetails, setHotelDetails] = useState();
-  const [buttonStatus,setButtonStatus] = useState('Request')
+  const [payoutRequestData, setPayoutRequestData] = useState(null);
+  const [isButtonLoading, setIsButtonLoading] = useState(false);
+  const [cityList,setCityList] = useState([])
+  const [hotelList,setHotelList] = useState([])
+  const [selectHotel, setSelectHotel] = useState('all');
+  const [selectCity,setSelectCity] = useState('all');
+
   const navigate = useNavigate();
 
   const handleClick = (item) => {
-    console.log("hcjhcjhf", item);
     navigate("/bookinghistorybyorderid", { state: item });
   };
   const [page, setPage] = useState(0);
@@ -192,39 +218,58 @@ const Payouts = ()=>{
     setOpen(false);
   };
   const handleClickOpen = (item) => {
-    // setHotelDetails(item);
     setOpen(true);
   };
-  const payoutRequestHandler = (totalEarnings,adminFee,payouts)=>{
-        // console.log({totalEarnings,adminFee,payouts})
-        handleClickOpen({totalEarnings,adminFee,payouts})
-
+  const payoutRequestHandler = (payLinkObjectIds, hotelIds, payOutAmount) => {
+    handleClickOpen()
+    setPayoutRequestData({ payLinkObjectIds, hotelIds, payOutAmount })
   }
-  const savePayout = async ()=>{
-    await axios
-      .get(`${environmentVariables.apiUrl}/vendor/savePayout`, {
-        headers: { _token: authData.data.token },
-      })
+  const savePayout = async () => {
+    let data = {
+      payLinkId: payoutRequestData.payLinkObjectIds, hotelId: payoutRequestData.hotelIds,
+      payoutAmount: payoutRequestData.payOutAmount
+    };
+    let config = {
+      method: "post",
+      url: `${environmentVariables.apiUrl}/vendor/savePayout`,
+      headers: {
+        _token: authData.data.token,
+        "Content-Type": "application/json",
+      },
+      data: data,
+    };
+
+    axios
+      .request(config)
       .then((response) => {
-        setButtonStatus('Request');
+        setIsButtonLoading(false)
         handleClose()
-        Swal.fire({
+        if (response.data.status) {
+          Swal.fire({
             icon: "success",
             title: "Request send Successfully.",
             timer: "800",
-        });
-        // setResponse(response.data.data);
-        // setData(response.data.data.records);
-        // setIsLoading(false);
+          });
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: response.data.message,
+            timer: "800",
+          });
+        }
       })
       .catch((err) => {
-        console.log("error", err);
-        // setIsLoading(false);
+        console.log(err);
+        Swal.fire({
+          icon: "error",
+          title: err.response.data.message,
+          timer: "800",
+        });
       });
   }
-//   
-  const makePayOutRequest = ()=>{
-    setButtonStatus('Wait...')
+  //   
+  const makePayOutRequest = () => {
+    setIsButtonLoading(true)
     savePayout();
   }
   const getComponents = () => {
@@ -249,6 +294,17 @@ const Payouts = ()=>{
         );
       } else {
         return data.map((row, index) => {
+          let totalEarnings = Number(row.totalEarnings);
+          let feeAmount = 0;
+          let adminFee = row.hotelsData.adminFee != undefined ? row.hotelsData.adminFee : 0;
+          if (adminFee) {
+            feeAmount = (Number(row.totalEarnings) * Number(row.hotelsData.adminFee)) / 100;
+          }
+          let payOutAmount = Number(row.totalEarnings) - feeAmount;
+
+          let payLinkObjectIds = row.objectIds;
+          let hotelIds = [row.hotelId];
+
           let imageSrc = row.hotelsData.image.length
             ? row.hotelsData.image[0]
             : "1675936089112-teanest1.jpg";
@@ -271,15 +327,15 @@ const Payouts = ()=>{
                   <HotelInfoText>Theme : {row.hotelsData.theme}</HotelInfoText>
                   <HotelInfoText>Category : {row.hotelsData.hotelCategory}</HotelInfoText>
                 </HotelIconWrapper>
-                
+
               </HotelInfoWrapper>
               <PayOutInfoWrapper>
-                <p><b>TotalPaid amount : </b>{row.totalEarnings} INR</p>
-                <p><b>Fee amount : </b>{ (row.totalEarnings*row.hotelsData.adminFee)/100 } ({row.hotelsData.adminFee}%) INR</p>
-                <p><b>Payout amount : </b>{row.totalEarnings - ((row.totalEarnings*row.hotelsData.adminFee)/100) } INR</p>
-                <Button variant="contained" loading={true} onClick={()=> payoutRequestHandler(row.totalEarnings,((row.totalEarnings*row.hotelsData.adminFee)/100),(row.totalEarnings - ((row.totalEarnings*row.hotelsData.adminFee)/100)))}>Payout</Button>
+                <p><b>TotalPaid amount : </b>{totalEarnings} INR</p>
+                <p><b>Fee amount : </b>{feeAmount} ({adminFee}%) INR</p>
+                <p><b>Payout amount : </b>{payOutAmount} INR</p>
+                <Button variant="contained" size="small" loading={true} onClick={() => payoutRequestHandler(payLinkObjectIds, hotelIds, payOutAmount)}>Payout</Button>
               </PayOutInfoWrapper>
-              
+
             </HotelCard>
           );
         });
@@ -288,8 +344,9 @@ const Payouts = ()=>{
   };
   const getAllListData = async () => {
     await axios
-      .get(`${environmentVariables.apiUrl}/vendor/getPayoutList?page=${page + 1}&limit=${rowsPerPage}`, {
+      .get(`${environmentVariables.apiUrl}/vendor/getPayoutList`, {
         headers: { _token: authData.data.token },
+        params: { hotelname: selectHotel ,cityname: selectCity, page: page + 1 ,limit: rowsPerPage  }
       })
       .then((response) => {
         // console.log(response.data.data);
@@ -302,17 +359,49 @@ const Payouts = ()=>{
         setIsLoading(false);
       });
   };
-
-  
-
-
-
+  const getAllCities = async ()=>{
+    await axios
+      .get(`${environmentVariables.apiUrl}/vendor/getVendorCities`, {
+        headers: { _token: authData.data.token },
+      })
+      .then((response) => {
+        setCityList(response.data.data)
+      })
+      .catch((err) => {
+        console.log("error", err)
+      });
+  }
+  const getHotelListData = async () => {
+    await axios
+      .get(
+        `${environmentVariables.apiUrl}/vendor/vendorget?page=1&limit=3000`,
+        {
+          headers: { _token: authData.data.token },
+        }
+      )
+      .then((response) => {
+        setHotelList(response.data.data.records)
+      })
+      .catch((err) => {
+        console.log("error", err);
+      });
+  };
+  const handleCityChange = (city)=>{
+    setSelectCity(city)
+  }
+  const handleHotelChange = (hotel)=>{
+    setSelectHotel(hotel)
+  }
   useEffect(() => {
     setIsLoading(true);
     getAllListData();
-  }, [page, rowsPerPage]);
+  }, [page, rowsPerPage,selectCity,selectHotel]);
 
-
+  useEffect(()=>{
+    getHotelListData()
+    getAllCities()
+  },[])
+  // console.log({selectCity,selectHotel});
   return (
     <>
       <TextMainWrapper>
@@ -329,18 +418,88 @@ const Payouts = ()=>{
             </div>
             <TextWrapper></TextWrapper>
           </Root>
-          <HotelCardsWrapper>{getComponents()}</HotelCardsWrapper>
-          {/* )} */}
+          {/* <NewRow>
+            <PayoutSection2>
+              <b>Total Payout amount : {mainResponse.allHotelPayoutAmount}</b>
+              <Button variant="contained" onClick={() => { alert("hi") }}>Payout</Button>
+            </PayoutSection2>
+            <PayoutSection>
+              <input type="text" />
+              <Button variant="contained" onClick={() => { alert("hi") }}>Payout</Button>
+            </PayoutSection>
+          </NewRow> */}
+          <Box sx={{ flexGrow: 1 }}>
+            <Grid container spacing={2} p={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }} >
+              <Grid item xs={4}>
+                <FormControl fullWidth>
+                  <InputLabel variant="standard" htmlFor="uncontrolled-native">
+                    Hotels
+                  </InputLabel>
+                  <NativeSelect
+                    defaultValue={'all'}
+                    inputProps={{
+                      name: 'age',
+                      id: 'uncontrolled-native',
+                    }}
+                    onChange={(event)=> handleHotelChange(event.target.value)}
+                  >
+                    <option value={'all'}>All</option>
+                    {
+                      hotelList.map((row,index)=>{
+                        return (
+                          <option key={index} value={row.hotelname}>{row.hotelname}</option>
+                        )
+                      })
+                    }
+                  </NativeSelect>
+                </FormControl>
+              </Grid>
+              <Grid item xs={4}>
+                <FormControl fullWidth>
+                  <InputLabel variant="standard" htmlFor="uncontrolled-native">
+                    City
+                  </InputLabel>
+                  <NativeSelect
+                    defaultValue={'all'}
+                    inputProps={{
+                      name: 'age',
+                      id: 'uncontrolled-native',
+                    }}
+                    onChange={(event)=> handleCityChange(event.target.value) }
+                  >
+                    <option value={'all'}>All</option>
+                    {
+                      cityList.map((row,index)=>{
+                        return (
+                          <option key={index} value={row.city}>{row.city}</option>
+                        )
+                      })
+                    }
+                  </NativeSelect>
+                </FormControl>
+              </Grid>
+              <Grid item xs={4} mt={3}>
+                <b>Total Payout amount :</b><span>{mainResponse.allHotelPayoutAmount} INR</span>{' '}
+                {/* <Button variant="contained" size="small" onClick={() => payoutRequestHandler(mainResponse.payLinkIds, mainResponse.hotelIds, mainResponse.allHotelPayoutAmount)}>Payout</Button> */}
+
+              </Grid>
+            </Grid>
+          </Box>
+          <HotelCardsWrapper>
+
+            {getComponents()}
+          </HotelCardsWrapper>
+
         </TextRoot>
-          <TablePagination
-            component="div"
-            count={mainResponse.totalrecords}
-            page={page}
-            onPageChange={handleChangePage}
-            rowsPerPage={rowsPerPage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
-          <BootstrapDialog
+        <TablePagination
+          component="div"
+          count={mainResponse.totalrecords}
+          page={page}
+          onPageChange={handleChangePage}
+          rowsPerPage={rowsPerPage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+        <BootstrapDialog
           onClose={handleClose}
           aria-labelledby="customized-dialog-title"
           open={open}
@@ -360,13 +519,10 @@ const Payouts = ()=>{
             <Button variant="contained" color="error" onClick={handleClose}>
               Cancel
             </Button>
-            <Button
-              variant="contained"
-              color="success"
-              onClick={makePayOutRequest}
-            >
-              {buttonStatus}
-            </Button>
+            <LoadingButton loading={isButtonLoading} disabled={isButtonLoading} onClick={makePayOutRequest} variant="contained" color="success">
+              Request
+            </LoadingButton>
+
           </DialogActions>
         </BootstrapDialog>
       </TextMainWrapper>
