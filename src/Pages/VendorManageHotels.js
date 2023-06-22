@@ -6,14 +6,20 @@ import { environmentVariables } from "../config/config";
 import { useEffect } from "react";
 import { useContext } from "react";
 import { AuthContext } from "../ContextApi/ContextApi";
+import { Button } from "@mui/material";
 import CircularLoader from "../Component/CircularLoader/CircularLoader";
 import TablePagination from "@mui/material/TablePagination";
 import PropTypes from "prop-types";
 import { styled as newStyle } from "@mui/material/styles";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
+import Typography from "@mui/material/Typography";
+import Swal from "sweetalert2";
+
 
 const BootstrapDialog = newStyle(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -330,25 +336,19 @@ const ManageAdmin = () => {
                 <HotelIconWrapper>
                   {" "}
                   <HotelIcon></HotelIcon>
-                  {/* <HotelInfoText>City : {row.city}</HotelInfoText>
+                  <HotelInfoText>City : {row.city}</HotelInfoText>
                   <HotelInfoText>State : {row.state}</HotelInfoText>
-                  <HotelInfoText>Country : {row.country}</HotelInfoText> */}
-                  <HotelInfoText>{`Address : ${row.city}, ${row.state} - ${row.country}`}</HotelInfoText>
+                  <HotelInfoText>Country : {row.country}</HotelInfoText>
                   <HotelInfoText>Theme : {row.theme}</HotelInfoText>
                   <HotelInfoText>Category : {row.hotelCategory}</HotelInfoText>
                 </HotelIconWrapper>
               </HotelInfoWrapper>
               <HotelButtonWrapper>
-                <HotelActionButtons
-                  onClick={() => navigate(`/edithotels/${row._id}`)}
-                >
-                  Edit
-                </HotelActionButtons>
-                <HotelActionButtons onClick={() => handleClickOpen(row)}>
-                  Delete
-                </HotelActionButtons>
+                <HotelActionButtons onClick={() => navigate(`/edithotels/${row._id}`)}>Edit</HotelActionButtons>
+                <HotelActionButtons onClick={() => handleClickOpen(row)}>Delete</HotelActionButtons>
                 {/* <HotelActionButtons>Hide</HotelActionButtons> */}
               </HotelButtonWrapper>
+              
             </HotelCard>
           );
         });
@@ -357,14 +357,9 @@ const ManageAdmin = () => {
   };
   const getAllListData = async () => {
     await axios
-      .get(
-        `${environmentVariables.apiUrl}/vendor/vendorget?page=${
-          page + 1
-        }&limit=${rowsPerPage}`,
-        {
-          headers: { _token: authData.data.token },
-        }
-      )
+      .get(`${environmentVariables.apiUrl}/vendor/vendorget?page=${page + 1}&limit=${rowsPerPage}`, {
+        headers: { _token: authData.data.token },
+      })
       .then((response) => {
         console.log(response.data.data);
         setResponse(response.data.data);
@@ -377,15 +372,52 @@ const ManageAdmin = () => {
       });
   };
 
+  const [vendor, setVendor] = useState();
 
+  const getVendor = async () => {
+    await axios
+      .get(`https://travel-api.floxypay.com/auth/vendorget`, {
+        headers: { _token: authData.data.token },
+      })
+      .then((response) => {
+        setVendor(response.data.data.hotels);
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        console.log("error", err);
+        setIsLoading(false);
+      });
+  };
 
+  const DeleteHotel = (item) => {
+    const config = {
+      method: "delete",
+      url: `${environmentVariables.apiUrl}/vendor/deletehotel/${item._id}`,
+      headers: {
+        _token: authData.data.token,
+      },
+    };
 
-  
+    axios(config)
+      .then(function (response) {
+        Swal.fire("Deleted", "Hotel Deleted Successfully", "success");
+        setOpen(false)
+        getAllListData()
+      })
+      .catch(function (error) {
+        Swal.fire("Error", "Something went wrong", "error");
+      });
+  };
+  const deleteRecord = (item) => {
+    DeleteHotel(item);
+  };
 
   useEffect(() => {
     setIsLoading(true);
+    getVendor();
     getAllListData();
   }, [page, rowsPerPage]);
+
 
   return (
     <>
@@ -414,6 +446,39 @@ const ManageAdmin = () => {
             rowsPerPage={rowsPerPage}
             onRowsPerPageChange={handleChangeRowsPerPage}
           />
+          <BootstrapDialog
+            onClose={handleClose}
+            aria-labelledby="customized-dialog-title"
+            open={open}
+          >
+            <BootstrapDialogTitle
+              id="customized-dialog-title"
+              onClose={handleClose}
+            >
+              Delete
+            </BootstrapDialogTitle>
+            <DialogContent dividers>
+              <Typography gutterBottom>
+                Are you sure you want to delete the Hotel?
+              </Typography>
+            </DialogContent>
+            <DialogActions>
+              <Button
+                variant="contained"
+                color="success"
+                onClick={handleClose}
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="contained"
+                color="error"
+                onClick={() => deleteRecord(hotelDetails)}
+              >
+                Delete
+              </Button>
+            </DialogActions>
+          </BootstrapDialog>
       </TextMainWrapper>
     </>
   );
