@@ -22,6 +22,7 @@ import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import Typography from "@mui/material/Typography";
 
+import moment from "moment";
 
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
@@ -308,6 +309,17 @@ const Payouts = () => {
           let imageSrc = row.hotelsData.image.length
             ? row.hotelsData.image[0]
             : "1675936089112-teanest1.jpg";
+            // lastPayoutDate
+            // payoutInterval
+            let dayCount = row.payoutInterval!=undefined ? row.payoutInterval : 0; 
+            let payoutInterval = row.payoutInterval!=undefined ? row.payoutInterval : 0; 
+            let lastPayoutDate = row.lastPayoutDate!=undefined ? row.lastPayoutDate : 0; 
+            if(lastPayoutDate){
+              let a = moment(new Date(lastPayoutDate)); 
+              var b = moment(new Date());
+              dayCount =  Number(a.diff(b, 'days')) // 1
+            }
+
           return (
             <HotelCard>
               <HotelImageWrapper>
@@ -333,7 +345,11 @@ const Payouts = () => {
                 <p><b>TotalPaid amount : </b>{totalEarnings} INR</p>
                 <p><b>Fee amount : </b>{feeAmount} ({adminFee}%) INR</p>
                 <p><b>Payout amount : </b>{payOutAmount} INR</p>
-                <Button variant="contained" size="small" loading={true} onClick={() => payoutRequestHandler(payLinkObjectIds, hotelIds, payOutAmount)}>Payout</Button>
+                {
+                  dayCount >= payoutInterval ?
+                  <Button variant="contained" size="small" loading={true} onClick={() => payoutRequestHandler(payLinkObjectIds, hotelIds, payOutAmount)}>Payout</Button>
+                  : null
+                }
               </PayOutInfoWrapper>
 
             </HotelCard>
