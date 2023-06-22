@@ -133,7 +133,7 @@ const CreateAdminVendor = ({ open, setOpen }) => {
           if (adminValue === "vendor") {
             axios({
               method: "post",
-              url: `http://localhost:4000/admin/addvendor`,
+              url: `${environmentVariables.apiUrl}/admin/addvendor`,
               data: {
                 name: values.name,
                 email: values.email,
