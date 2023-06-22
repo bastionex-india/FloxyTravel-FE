@@ -47,7 +47,6 @@ export default function GraphCheck() {
     console.log(value);
     if (value === "yeardata") setGraphData(yeardata);
     else if (value === "monthdata") setGraphData(alldata);
-    
   }
 
   const getYearData = async () => {
@@ -198,8 +197,6 @@ export default function GraphCheck() {
       });
   };
 
-  
-
   useEffect(() => {
     getMonthData();
     getYearData();
@@ -207,7 +204,7 @@ export default function GraphCheck() {
 
   return (
     <>
-      <MDBCard style={{ width: "70rem" }}>
+      <MDBCard style={{ width: "63rem" }}>
         <div
           style={{
             display: "flex",
