@@ -10,6 +10,7 @@ import {
   Legend,
   LabelList,
 } from "recharts";
+import CircularLoader from "../../Component/CircularLoader/CircularLoader";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useContext } from "react";
@@ -39,6 +40,7 @@ const CustomBar = (props) => {
 };
 export default function VendorGraphCheck() {
   const [graphdata, setGraphData] = useState();
+
   const { authData, setAuthData } = useContext(AuthContext);
   const [monthdata, setMonthdata] = useState();
   const [yeardata, setYeardata] = useState();
@@ -46,15 +48,19 @@ export default function VendorGraphCheck() {
   const [isCustom, setIsCustom] = useState(false);
   const [toDate, setToDate] = useState(null);
   const [tab, setTab] = useState("Hotels");
-  const [vendorId, setVendorId] = useState(authData?.data?.vendorId);
+  const [vendorId, setVendorId] = useState(null);
+  const [isLoadingGraph, setIsLoadingGraph] = useState(false);
   const ButtonGroup = styled.div`
     display: flex;
   `;
   const FilterWrapper = styled.div`
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
-    padding: 0px 50px;
+    padding: 20px 50px;
+    position: absolute;
+    top: 60px;
+    left: 30px;
   `;
   const FilterComponent = styled.div`
     margin-left: 10px;
@@ -97,7 +103,6 @@ export default function VendorGraphCheck() {
     })
       .then((response) => {
         const data = response.data.data;
-
         const leftdata = [
           { Name: 2018, Bookings: 0, Hotels: 0 },
           { Name: 2019, Bookings: 0, Hotels: 0 },
@@ -109,9 +114,11 @@ export default function VendorGraphCheck() {
         const mergedata = [...leftdata, ...data];
         setGraphData(mergedata);
         setYeardata(mergedata);
+        setIsLoadingGraph(false);
       })
       .catch((err) => {
         console.log(err.message);
+        setIsLoadingGraph(false);
       });
   };
 
@@ -165,30 +172,45 @@ export default function VendorGraphCheck() {
     }
   }, [fromDate, toDate]);
   useEffect(() => {
+    setIsLoadingGraph(true);
     if (window !== undefined) {
       const param = window.location.href.split("/").pop();
-      const vendorid = authData.data.vendorId || param;
+      const vendorid = authData.data.vendorId ? authData.data.vendorId : param;
+      console.log(vendorid, "floxy");
       setVendorId(vendorid);
     }
+
     getMonthData();
     getYearData();
-  }, []);
+  }, [vendorId]);
 
   function planUpdate(e) {
     const value = e.target.value;
-    if (value === "yeardata") setGraphData(yeardata);
-    else if (value === "monthdata") setGraphData(monthdata);
+    if (value === "yeardata") {setGraphData(yeardata);setIsCustom(false)}
+    else if (value === "monthdata") {setGraphData(monthdata);setIsCustom(false)}
+    else if (value === "custom") setIsCustom(true);
+    else setIsCustom(false);
   }
 
   return (
     <>
-      <MDBCard style={{ width: "70rem" }}>
-        <MDBCardBody>
+      {isLoadingGraph === true ? (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            marginTop: "100px",
+          }}
+        >
+          <CircularLoader></CircularLoader>
+        </div>
+      ) : (
+        <MDBCard style={{ width: "63rem", position: "relative" }}>
           <div
             style={{
               display: "flex",
               justifyContent: "space-around",
-              margin: "20px 0",
+              margin: "20px 0 65px 0",
             }}
           >
             <ButtonGroup>
@@ -223,6 +245,20 @@ export default function VendorGraphCheck() {
                 Earnings
               </TabButton>
             </ButtonGroup>
+
+            <select
+              style={{ width: "200px" }}
+              class="form-select"
+              id="inputGroupSelect01"
+              onChange={(e) => planUpdate(e)}
+            >
+              <option selected>Sort...</option>
+              <option value={`monthdata`}>Month</option>
+              <option value={`yeardata`}>Year</option>
+              <option value={`custom`}>Custom</option>
+            </select>
+          </div>
+          {isCustom === true ? (
             <FilterWrapper>
               <FilterComponent>
                 {/* <FilterLabel>From</FilterLabel> */}
@@ -261,19 +297,9 @@ export default function VendorGraphCheck() {
                 />
               </FilterComponent>
             </FilterWrapper>
-            <select
-              style={{ width: "200px" }}
-              class="form-select"
-              id="inputGroupSelect01"
-              onChange={(e) => planUpdate(e)}
-            >
-              <option selected>Sort...</option>
-              <option value={`monthdata`}>Month</option>
-              <option value={`yeardata`}>Year</option>
-              <option value={`custom`}>Custom</option>
-            </select>
-          </div>
-
+          ) : (
+            <></>
+          )}
           <BarChart
             width={800}
             height={300}
@@ -286,15 +312,19 @@ export default function VendorGraphCheck() {
             }}
           >
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="Name" />
-            <YAxis />
+            <XAxis
+              dataKey="Name"
+              label={{ value: tab, position: "insideBottom" }}
+            />
+            <YAxis
+              label={{ value: "Numbers", angle: -90, position: "insideLeft" }}
+            />
             <Tooltip />
             <Legend />
-
             <Bar dataKey={tab} shape={<CustomBar />} />
           </BarChart>
-        </MDBCardBody>
-      </MDBCard>
+        </MDBCard>
+      )}
     </>
   );
 }

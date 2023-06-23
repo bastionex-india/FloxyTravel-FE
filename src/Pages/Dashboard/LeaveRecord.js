@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { environmentVariables } from "../../config/config";
 import { Modal, Button } from "react-bootstrap";
 import VendorGraphCheck from "./VendorGraphCheck.js";
-
+import Card from "@material-ui/core/Card";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -17,6 +17,7 @@ import Paper from "@mui/material/Paper";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 import axios from "axios";
+import CircularLoader from "../../Component/CircularLoader/CircularLoader";
 
 const LeftCardWrapper = styled.div`
   width: calc(60% - 10px);
@@ -33,23 +34,15 @@ const TextWrapper = styled.div`
   text-align: center;
   flex-direction: column;
 `;
-const Card = styled.div`
+
+const CardWrapper = styled.div`
+  width: 25%;
+`;
+
+const CardsWrapper = styled.div`
   display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  ${(p) =>
-    p.bgImage &&
-    `
-    background-image:url(${p.bgImage});
-  `};
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: 100% 100%;
-  width: 100%;
-  height: 300px;
-  position: relative;
-  cursor: pointer;
+  justify-content: space-between;
+  margin-bottom: 20px;
 `;
 const CardText = styled.div`
   color: #fff;
@@ -66,6 +59,7 @@ export default function LeaveRecord({ vendorId }) {
   const navigate = useNavigate();
   const [data, setData] = useState([]);
   const [summaryData, setSummaryData] = useState(null);
+  const [isLoadingCards, setIsLoadingCards] = useState(false);
   const componentClicked = (item) => {
     navigate("/hoteldetails", { state: item });
   };
@@ -74,11 +68,15 @@ export default function LeaveRecord({ vendorId }) {
 
     axios
       .get(`${environmentVariables.apiUrl}/admin/getVendorSummary/${vendorid}`)
-      .then((res) => setSummaryData(res.data.data))
+      .then((res) => {
+        setSummaryData(res.data.data);
+        setIsLoadingCards(false);
+      })
       .catch((err) => console.log(err));
   };
 
   useEffect(() => {
+    setIsLoadingCards(true);
     getSummaryData();
   }, [vendorId]);
 
@@ -98,10 +96,14 @@ export default function LeaveRecord({ vendorId }) {
 
   return (
     <>
-      <div class="row row-cols-4 g-4" style={{ width: "70rem" }}>
-        <div class="col">
-          <div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
-            <div class="card-body">
+      <CardsWrapper>
+        <CardWrapper>
+          {isLoadingCards === true ? (
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              <CircularLoader></CircularLoader>
+            </div>
+          ) : (
+            <Card style={{ padding: "50px 0px", marginRight: "20px" }}>
               <h6 style={{ textAlign: "center" }} class="card-title">
                 EARNINGS
               </h6>
@@ -111,12 +113,16 @@ export default function LeaveRecord({ vendorId }) {
               >
                 ₹ {summaryData?.totalEarnings}
               </h1>
+            </Card>
+          )}
+        </CardWrapper>
+        <CardWrapper>
+          {isLoadingCards === true ? (
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              <CircularLoader></CircularLoader>
             </div>
-          </div>
-        </div>
-        <div class="col">
-          <div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
-            <div class="card-body">
+          ) : (
+            <Card style={{ padding: "50px 0px", marginRight: "20px" }}>
               <h6 style={{ textAlign: "center" }} class="card-title">
                 PAYOUT
               </h6>
@@ -126,12 +132,16 @@ export default function LeaveRecord({ vendorId }) {
               >
                 ₹ {summaryData?.allPayoutAmount}
               </h1>
+            </Card>
+          )}
+        </CardWrapper>
+        <CardWrapper>
+          {isLoadingCards === true ? (
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              <CircularLoader></CircularLoader>
             </div>
-          </div>
-        </div>
-        <div class="col">
-          <div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
-            <div class="card-body">
+          ) : (
+            <Card style={{ padding: "50px 0px", marginRight: "20px" }}>
               <h6 style={{ textAlign: "center" }} class="card-title">
                 HOTELS
               </h6>
@@ -141,12 +151,16 @@ export default function LeaveRecord({ vendorId }) {
               >
                 {summaryData?.totalHotels}
               </h1>
+            </Card>
+          )}
+        </CardWrapper>
+        <CardWrapper>
+          {isLoadingCards === true ? (
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              <CircularLoader></CircularLoader>
             </div>
-          </div>
-        </div>
-        <div class="col">
-          <div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
-            <div class="card-body">
+          ) : (
+            <Card style={{ padding: "50px 0px" }}>
               <h6 style={{ textAlign: "center" }} class="card-title">
                 BOOKINGS
               </h6>
@@ -156,11 +170,10 @@ export default function LeaveRecord({ vendorId }) {
               >
                 {summaryData?.totalBookings}
               </h1>
-            </div>
-          </div>
-        </div>
-      </div>
-
+            </Card>
+          )}
+        </CardWrapper>
+      </CardsWrapper>
       <VendorGraphCheck />
     </>
   );
