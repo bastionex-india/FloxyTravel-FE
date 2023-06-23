@@ -6,7 +6,7 @@ import { environmentVariables } from "../../config/config";
 import CircularLoader from "../../Component/CircularLoader/CircularLoader";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
-import { Button } from "@mui/material";
+import { Button, Link } from "@mui/material";
 import { Modal } from "react-bootstrap";
 import Typography from "@mui/material/Typography";
 import { styled as newStyle } from "@mui/material/styles";
@@ -17,6 +17,24 @@ import DialogActions from "@mui/material/DialogActions";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import PropTypes from "prop-types";
+import { style } from "@mui/system";
+import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
+import Paper from '@mui/material/Paper';
+import WallpaperIcon from '@mui/icons-material/Wallpaper';
+
+
+
+const Item = newStyle(Paper)(({ theme }) => ({
+  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+  ...theme.typography.body2,
+  padding: theme.spacing(1),
+  textAlign: 'center',
+  height: "120px",
+  color: theme.palette.text.secondary,
+}));
+
+
 
 const BootstrapDialog = newStyle(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -77,6 +95,8 @@ const UserLandingPage = () => {
   const [dragId, setDragId] = useState();
   const [priority, setPriority] = useState(null);
   const [file, setFile] = useState(null);
+  const [selectNewBackground, setSelectNewBackground] = useState(null);
+  const [selectedCityData,setSelectedCityData] = useState(null); 
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
 
@@ -109,7 +129,7 @@ const UserLandingPage = () => {
         Swal.fire("Deleted", "Hotel Deleted Successfully", "success");
       })
       .catch((err) => {
-        console.log("error", err);
+        // console.log("error", err);
         setIsLoading(false);
         Swal.fire("Error", "Something went wrong", "error");
       });
@@ -275,7 +295,7 @@ const UserLandingPage = () => {
     });
     setThemeData(newBoxState);
   };
-  console.log(isPriorityChanged);
+  // console.log(isPriorityChanged);
   const handlePriority = () => {
     if (isPriorityChanged === true) {
       axios({
@@ -285,7 +305,7 @@ const UserLandingPage = () => {
         headers: { _token: authData.data.token },
       })
         .then((response) => {
-          console.log(response);
+          // console.log(response);
           Swal.fire(
             "Priorities changed",
             "Successfully changed priorities of theme data",
@@ -293,7 +313,7 @@ const UserLandingPage = () => {
           );
         })
         .catch((err) => {
-          console.log(err.message);
+          // console.log(err.message);
           Swal.fire("Error", "Something went wrong", "error");
         });
     }
@@ -345,16 +365,17 @@ const UserLandingPage = () => {
               );
               setChosenState(null);
               setFile(null);
+              ;
             }
           })
           .catch((err) => {
-            console.log(err.message);
-            Swal.fire("Error", "Something went wrong", "error");
+            let errorMsg = (err.response && err.response.data.message) ? err.response.data.message : "Something went wrong";
+            Swal.fire("Error", errorMsg, "error");
             setChosenState(null);
             setFile(null);
           });
         setAllStates([...allStates, chosenState]);
-        setAddStatePopUp(false);
+        setAddStatePopUp(false)
       } else {
         Swal.fire("Error", "Please add background image to continue", "error");
         setAddStatePopUp(false);
@@ -387,7 +408,7 @@ const UserLandingPage = () => {
         setThemeData(newthemedata[0]?.theme);
       })
       .catch((err) => {
-        console.log(err.message);
+        // console.log(err.message);
         setIsLoading(false);
       });
   };
@@ -400,15 +421,21 @@ const UserLandingPage = () => {
         _token: authData?.data?.token,
       },
     })
-      .then((response) => setBackgroundImage(response.data.data.image))
+      .then((response) => {
+        setSelectedCityData(response.data.data);
+        setBackgroundImage(response.data.data.image)
+      })
       .catch((err) => console.log(err.message));
   };
   const addImage = (e) => {
     setFile(e.target.files);
   };
+  const setNewChangeImage = (e) => {
+    setSelectNewBackground(e.target.files);
+  }
 
   const getThemes = () => {
-    console.log(stateId);
+    // console.log(stateId);
     axios({
       method: "get",
       url: `${environmentVariables.apiUrl}/admin/getthemebystate/${stateId}`,
@@ -419,10 +446,10 @@ const UserLandingPage = () => {
       .then((response) => {
         setThemeData(response.data.data);
         setIsLoading(false);
-        console.log(response.data.data, "sr");
+        // console.log(response.data.data, "sr");
       })
       .catch((err) => {
-        console.log(err.message);
+        // console.log(err.message);
         setIsLoading(false);
       });
   };
@@ -442,7 +469,7 @@ const UserLandingPage = () => {
   };
 
   const handleAddThemeSubmit = () => {
-    if (!theme || !title || !description || !priority) {
+    if (!theme || !title || !description) {
       Swal.fire("Warning", "Please Fill all the data to continue", "warning");
       setAddThemePopUp(false);
     } else {
@@ -453,14 +480,14 @@ const UserLandingPage = () => {
           name: theme,
           heading: title,
           description: description,
-          priority: priority,
+          // priority: priority,
         },
         headers: {
           _token: authData?.data?.token,
         },
       })
         .then((response) => {
-          console.log(response);
+          // console.log(response);
           if (response.data.status === true) {
             setAddThemePopUp(false);
             setTheme(null);
@@ -524,7 +551,7 @@ const UserLandingPage = () => {
   };
   const handleEditTheme = (e) => {
     const editTheme = themeData.filter((val) => val._id === e.target.id);
-    console.log(editTheme[0], "edit");
+    // console.log(editTheme[0], "edit");
     setTheme(editTheme[0].name);
     setTitle(editTheme[0].heading);
     setDescription(editTheme[0].description);
@@ -541,6 +568,56 @@ const UserLandingPage = () => {
   useEffect(() => {
     getBackgroundImage();
   }, [chosenState, stateSelected]);
+  const updateNewImage = async()=>{
+    if (selectNewBackground) {
+      const formData = new FormData();
+      for (let i = 0; i < selectNewBackground.length; i++) {
+        formData.append("myFile", selectNewBackground[i]);
+      }
+      axios({
+        method: "post",
+        url: `${environmentVariables.apiUrl}/admin/updateCityBackground/${selectedCityData._id}`,
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        data: formData,
+        headers: { _token: authData.data.token },
+      })
+        .then((response) => {
+          if (response?.data?.status) {
+            // setBackgroundImage(response.data.data.image)
+            getBackgroundImage();
+            setSelectNewBackground(null)
+            Swal.fire({
+              icon: "success",
+              title: "Background updated.",
+              timer: "800",
+            });
+          } else {
+            Swal.fire(
+              "Error",
+              "Please check again the Image you are inserting!",
+              "error"
+            );
+            // setFile(null);
+            
+          }
+        })
+        .catch((err) => {
+          let errorMsg = (err.response && err.response.data.message) ? err.response.data.message : "Something went wrong";
+          Swal.fire("Error", errorMsg, "error");
+          // setChosenState(null);
+          // setFile(null);
+        });
+    } else {
+      Swal.fire("Error", "Please add background image to continue", "error");
+    }
+  }
+  const updateImageHandler = () => {
+    updateNewImage()
+    
+  }
   return (
     <Root>
       <HeadingWrapper>
@@ -568,7 +645,7 @@ const UserLandingPage = () => {
             <div class="modal-content">
               <div class="modal-header">
                 <h1 class="modal-title fs-5" id="staticBackdropLabel">
-                  Add State
+                  Add City
                 </h1>
                 <button
                   type="button"
@@ -580,14 +657,14 @@ const UserLandingPage = () => {
               <div class="modal-body">
                 <div class="input-group mb-3">
                   <label class="input-group-text" for="inputGroupSelect01">
-                    State*:{" "}
+                    City*:{" "}
                   </label>
                   <select
                     class="form-select"
                     onChange={(e) => setChosenState(e.target.value)}
                     id="inputGroupSelect01"
                   >
-                    <option>Select State</option>
+                    <option>Select City</option>
                     {stateData.map((val) => (
                       <option value={val.name}>{val.name}</option>
                     ))}
@@ -697,7 +774,7 @@ const UserLandingPage = () => {
                   ></textarea>
                 </div>
 
-                <br></br>
+                {/* <br></br>
 
                 <div class="input-group mb-3">
                   <span class="input-group-text" id="basic-addon1">
@@ -713,7 +790,7 @@ const UserLandingPage = () => {
                     min="1"
                     max="5"
                   />
-                </div>
+                </div> */}
               </div>
               <div class="modal-footer">
                 <button
@@ -757,19 +834,17 @@ const UserLandingPage = () => {
                 ></button>
               </div>
               <div class="modal-body">
-                {/* <StateHeading>Background Image : </StateHeading> */}
                 <BackgroundImage
                   style={{ width: "45rem" }}
                   src={`${environmentVariables.apiUrl}/uploadscitiesimages/${backgroundImage}`}
                 />
               </div>
               <div class="modal-footer">
-                {/* <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Understood</button> */}
               </div>
             </div>
           </div>
         </div>
+
 
         <StatesWrapper>
           <SelectState
@@ -778,7 +853,7 @@ const UserLandingPage = () => {
               setStateId(e.target.value.split("-")[1]);
             }}
           >
-            <SelectOption>Select State</SelectOption>
+            {/* <SelectOption>Select City</SelectOption> */}
             {allStates &&
               allStates.map((val) => (
                 <SelectOption value={`${val.cityName}-${val._id}`}>
@@ -796,7 +871,7 @@ const UserLandingPage = () => {
             data-bs-toggle="modal"
             data-bs-target="#staticBackdrop"
           >
-            Add State
+            Add City
           </button>
           <button
             type="button"
@@ -807,17 +882,62 @@ const UserLandingPage = () => {
           >
             Add Theme
           </button>
-          <button
+          {/* <button
             type="button"
             class="btn btn-primary"
             data-bs-toggle="modal"
             data-bs-target="#staticBackdrop2"
           >
             View Background Image
-          </button>
+          </button> */}
         </div>
       </StatesContainer>
       <div style={{ backgroundColor: "#fff", marginBottom: "10px" }}>
+        <BacgroundContainer>
+          <Grid container spacing={2}>
+            <Grid item xs={5}>
+              <Item style={{ paddingTop: "35px" }}>
+                <h3>{stateSelected ? stateSelected.charAt(0).toUpperCase() + stateSelected.slice(1) : ''}</h3>
+              </Item>
+
+            </Grid>
+            <Grid item xs={4}>
+              <Item>
+                <img height={100} width={250} src={`${environmentVariables.apiUrl}/uploadscitiesimages/${backgroundImage}`} type="" />
+              </Item>
+
+            </Grid>
+            <Grid item xs={3} >
+              <Item style={{ paddingTop: "35px" }}>
+
+                <Button
+                  variant="contained"
+                  component="label"
+                  size="small"
+                  startIcon={<WallpaperIcon />}
+
+                >
+                  Change
+                  <input
+                    type="file"
+                    hidden
+                    onChange={(e) => setNewChangeImage(e)}
+                  />
+                </Button>
+                {
+                  selectNewBackground ?
+                  <>
+                  <div>image selected </div>
+                  <Button color="secondary" type="button" variant="contained" size="small" onClick={() => updateImageHandler()}>update image</Button>
+                  </>
+                  : null
+                }
+
+                
+              </Item>
+            </Grid>
+          </Grid>
+        </BacgroundContainer>
         <ThemeContainer>
           <StateHeading>Themes :</StateHeading>
         </ThemeContainer>
@@ -1021,6 +1141,10 @@ const ThemeContainer = styled.div`
   padding: 20px 0;
   margin: 0 5%;
   padding-bottom: 0;
+`;
+const BacgroundContainer = styled.div`
+// padding: 20px 0;
+margin: 0 5%;
 `;
 
 const ThemeCardWrapper = styled.div`
@@ -1289,7 +1413,7 @@ export const RecentlyDocumentHeader = styled.div`
   display: flex;
   margin: 5px 5%;
   justify-content: space-between;
-  padding: 14px 15px;
+  padding: 0px 15px;
   @media (max-width: 768px) {
     display: none;
   }
@@ -1305,8 +1429,8 @@ export const RecentlyDocumentHeaderElem = styled.div`
   color: rgb(22 22 22);
   width: 300px;
   /* padding-right: 150px; */
-  font-weight: 600;
-  font-size: 18px;
+  font-weight: 500;
+  font-size: 16px;
 `;
 
 export const RecentlyDocumentUploaded = styled.div`
