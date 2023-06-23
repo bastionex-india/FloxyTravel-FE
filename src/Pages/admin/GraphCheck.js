@@ -15,15 +15,35 @@ import { useContext } from "react";
 import { AuthContext } from "../../ContextApi/ContextApi";
 import { environmentVariables } from "../../config/config";
 import { MDBCard, MDBCardBody } from "mdb-react-ui-kit";
-
+import { BsCalendarDay } from "react-icons/bs";
+import "react-datepicker/dist/react-datepicker.css";
+import DatePicker from "react-datepicker";
 export default function GraphCheck() {
   const [graphdata, setGraphData] = useState();
   const { authData, setAuthData } = useContext(AuthContext);
   const [alldata, setAlldata] = useState();
   const [yeardata, setYeardata] = useState();
   const [tab, setTab] = useState("Hotels");
+  const [fromDate, setFromDate] = useState(null);
+  const [isCustom, setIsCustom] = useState(false);
+  const [toDate, setToDate] = useState(null);
   const ButtonGroup = styled.div`
     display: flex;
+  `;
+  const FilterWrapper = styled.div`
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 20px 50px;
+  `;
+  const FilterComponent = styled.div`
+    margin-left: 10px;
+    position: relative;
+  `;
+  const DateIcon = styled.div`
+    position: absolute;
+    right: 5%;
+    z-index: 1;
   `;
   const TabButton = styled.div`
     background-color: ${(props) =>
@@ -244,6 +264,7 @@ export default function GraphCheck() {
               Earnings
             </TabButton>
           </ButtonGroup>
+
           <select
             style={{ width: "200px" }}
             class="form-select"
@@ -256,6 +277,44 @@ export default function GraphCheck() {
             <option value={`custom`}>Custom</option>
           </select>
         </div>
+        <FilterWrapper>
+          <FilterComponent>
+            {/* <FilterLabel>From</FilterLabel> */}
+            <DateIcon>
+              <BsCalendarDay size="1.5rem" />
+            </DateIcon>
+            <DatePicker
+              placeholderText="Start Date"
+              selected={fromDate}
+              disabled={isCustom === false}
+              onChange={(date) => {
+                setFromDate(date);
+                // setPageNo(1);
+              }}
+              selectsStart
+              startDate={fromDate}
+              endDate={toDate}
+            />
+          </FilterComponent>
+          <FilterComponent>
+            {/* <FilterLabel>To</FilterLabel> */}
+            <DateIcon>
+              <BsCalendarDay size="1.5rem" />
+            </DateIcon>
+
+            <DatePicker
+              placeholderText="End Date"
+              selected={toDate}
+              onChange={(date) => setToDate(date)}
+              selectsStart
+              startDate={fromDate}
+              endDate={toDate}
+              disabled={fromDate ? false : true}
+              minDate={fromDate}
+              style={{ padding: "10px" }}
+            />
+          </FilterComponent>
+        </FilterWrapper>
         <MDBCardBody>
           <BarChart
             width={800}
