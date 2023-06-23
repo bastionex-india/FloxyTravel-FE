@@ -18,6 +18,24 @@ import { MDBCard, MDBCardBody } from "mdb-react-ui-kit";
 import { BsCalendarDay } from "react-icons/bs";
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
+const CustomBar = (props) => {
+  const { x, y, width, height, value } = props;
+
+  return (
+    <g>
+      <rect x={x} y={y} width={width} height={height} fill="#8884d8" />
+      <text
+        x={x + width / 2}
+        y={y + height / 2}
+        fill="#fff"
+        textAnchor="middle"
+        dominantBaseline="middle"
+      >
+        {value}
+      </text>
+    </g>
+  );
+};
 export default function GraphCheck() {
   const [graphdata, setGraphData] = useState();
   const { authData, setAuthData } = useContext(AuthContext);
@@ -27,13 +45,17 @@ export default function GraphCheck() {
   const [fromDate, setFromDate] = useState(null);
   const [isCustom, setIsCustom] = useState(false);
   const [toDate, setToDate] = useState(null);
+  const [xLabel, setXLabel] = useState("Year");
   const ButtonGroup = styled.div`
     display: flex;
   `;
   const FilterWrapper = styled.div`
     display: flex;
+    position: absolute;
     justify-content: flex-start;
     align-items: center;
+    top: 60px;
+    left: 30px;
     padding: 20px 50px;
   `;
   const FilterComponent = styled.div`
@@ -62,13 +84,54 @@ export default function GraphCheck() {
     border-top: 1px solid black;
     border-bottom: 1px solid black;
   `;
+
   function planUpdate(e) {
     const value = e.target.value;
     console.log(value);
-    if (value === "yeardata") setGraphData(yeardata);
-    else if (value === "monthdata") setGraphData(alldata);
+    if (value === "yeardata") {
+      setGraphData(yeardata);
+      setXLabel("Year");
+      setIsCustom(false);
+    } else if (value === "monthdata") {
+      setGraphData(alldata);
+      setXLabel("Month");
+      setIsCustom(false);
+    } else if (value === "custom") {
+      setIsCustom(true);
+      setXLabel("Date");
+    } else setIsCustom(false);
   }
+  const getCustomData = async () => {
+    const allData = {
+      query: "custom",
+      year: 2023,
+      fromDate: fromDate,
+      toDate: toDate,
+    };
+    //https://uat-travel-api.floxypay.com/vendor/getgraphhotels/a8c99f2a-9622-417a-b72e-aef09da04ba6
 
+    await axios({
+      method: "post",
+      url: `${environmentVariables.apiUrl}/admin/getgraphhotels`,
+      data: allData,
+      headers: { _token: authData.data.token },
+    })
+      .then((response) => {
+        console.log("api hit");
+        const hotelData = response.data.data.hotelCount;
+        let mergedatas = [];
+        hotelData.forEach((val) => {
+          let mergedata = {};
+          mergedata.Name = hotelData._id;
+          mergedata.Hotels = hotelData.count;
+          mergedatas.push(mergedata);
+        });
+        setGraphData(mergedatas);
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
+  };
   const getYearData = async () => {
     const allData = {
       query: "year",
@@ -216,6 +279,11 @@ export default function GraphCheck() {
         console.log(err.message);
       });
   };
+  useEffect(() => {
+    if (fromDate !== null && toDate !== null) {
+      getCustomData();
+    }
+  }, [fromDate, toDate]);
 
   useEffect(() => {
     getMonthData();
@@ -224,12 +292,12 @@ export default function GraphCheck() {
 
   return (
     <>
-      <MDBCard style={{ width: "63rem" }}>
+      <MDBCard style={{ width: "63rem", position: "relative" }}>
         <div
           style={{
             display: "flex",
             justifyContent: "space-around",
-            marginTop: "20px",
+            margin: "20px 0  65px 0",
           }}
         >
           <ButtonGroup>
@@ -277,66 +345,74 @@ export default function GraphCheck() {
             <option value={`custom`}>Custom</option>
           </select>
         </div>
-        <FilterWrapper>
-          <FilterComponent>
-            {/* <FilterLabel>From</FilterLabel> */}
-            <DateIcon>
-              <BsCalendarDay size="1.5rem" />
-            </DateIcon>
-            <DatePicker
-              placeholderText="Start Date"
-              selected={fromDate}
-              disabled={isCustom === false}
-              onChange={(date) => {
-                setFromDate(date);
-                // setPageNo(1);
-              }}
-              selectsStart
-              startDate={fromDate}
-              endDate={toDate}
-            />
-          </FilterComponent>
-          <FilterComponent>
-            {/* <FilterLabel>To</FilterLabel> */}
-            <DateIcon>
-              <BsCalendarDay size="1.5rem" />
-            </DateIcon>
+        {isCustom === true ? (
+          <FilterWrapper>
+            <FilterComponent>
+              {/* <FilterLabel>From</FilterLabel> */}
+              <DateIcon>
+                <BsCalendarDay size="1.5rem" />
+              </DateIcon>
+              <DatePicker
+                placeholderText="Start Date"
+                selected={fromDate}
+                disabled={isCustom === false}
+                onChange={(date) => {
+                  setFromDate(date);
+                  // setPageNo(1);
+                }}
+                selectsStart
+                startDate={fromDate}
+                endDate={toDate}
+              />
+            </FilterComponent>
+            <FilterComponent>
+              {/* <FilterLabel>To</FilterLabel> */}
+              <DateIcon>
+                <BsCalendarDay size="1.5rem" />
+              </DateIcon>
 
-            <DatePicker
-              placeholderText="End Date"
-              selected={toDate}
-              onChange={(date) => setToDate(date)}
-              selectsStart
-              startDate={fromDate}
-              endDate={toDate}
-              disabled={fromDate ? false : true}
-              minDate={fromDate}
-              style={{ padding: "10px" }}
-            />
-          </FilterComponent>
-        </FilterWrapper>
-        <MDBCardBody>
-          <BarChart
-            width={800}
-            height={300}
-            data={graphdata}
-            margin={{
-              top: 5,
-              right: 30,
-              left: 20,
-              bottom: 5,
-            }}
-          >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="Name" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            {/* <Bar dataKey="Bookings" fill="#8884d8" /> */}
-            <Bar dataKey={tab} fill="#82ca9d" />
-            {/* <Bar dataKey="Earnings" fill="red" /> */}
-          </BarChart>
-        </MDBCardBody>
+              <DatePicker
+                placeholderText="End Date"
+                selected={toDate}
+                onChange={(date) => setToDate(date)}
+                selectsStart
+                startDate={fromDate}
+                endDate={toDate}
+                disabled={fromDate ? false : true}
+                minDate={fromDate}
+                style={{ padding: "10px" }}
+              />
+            </FilterComponent>
+          </FilterWrapper>
+        ) : (
+          <></>
+        )}
+
+        <BarChart
+          width={800}
+          height={300}
+          data={graphdata}
+          margin={{
+            top: 5,
+            right: 30,
+            left: 20,
+            bottom: 5,
+          }}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis
+            dataKey="Name"
+            label={{ value: xLabel, position: "outsideBottom", dy: 10 }}
+          />
+          <YAxis
+            label={{ value: "Numbers", angle: -90, position: "insideLeft" }}
+          />
+          <Tooltip />
+          <Legend />
+          {/* <Bar dataKey="Bookings" fill="#8884d8" /> */}
+          <Bar dataKey={tab} shape={<CustomBar />} />
+          {/* <Bar dataKey="Earnings" fill="red" /> */}
+        </BarChart>
       </MDBCard>
     </>
   );
