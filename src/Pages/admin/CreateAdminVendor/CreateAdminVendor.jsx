@@ -117,6 +117,10 @@ const CreateAdminVendor = ({ open, setOpen }) => {
     contact: "",
     password: "",
     confirmPassword: "",
+    bankName:"",
+    accountNumber:"",
+    accountHolderName:"",
+    ifsc:""
   };
   const { values, errors, touched, handleBlur, handleChange, handleSubmit } =
     useFormik({
@@ -130,10 +134,6 @@ const CreateAdminVendor = ({ open, setOpen }) => {
             axios({
               method: "post",
               url: `${environmentVariables.apiUrl}/admin/addvendor`,
-              headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
-              },
               data: {
                 name: values.name,
                 email: values.email,
@@ -141,6 +141,10 @@ const CreateAdminVendor = ({ open, setOpen }) => {
                 password: values.password,
                 cpassword: values.confirmPassword,
                 adminType: adminValue,
+                bankName:values.bankName,
+                accountNumber:values.accountNumber,
+                accountHolderName:values.accountHolderName,
+                ifsc:values.ifsc
               },
               headers: { _token: authData.data.token },
             })
@@ -292,6 +296,58 @@ const CreateAdminVendor = ({ open, setOpen }) => {
             />
             {errors.confirmPassword && touched.confirmPassword ? (
               <ErrorText>{errors.confirmPassword}</ErrorText>
+             ) : null}
+          </AddThemeInputWrapper>{" "}
+          <AddThemeInputWrapper>
+            <AddThemeLabel>Bank name* : </AddThemeLabel>
+            <AddThemePopUpInput
+              name="bankName"
+              value={values.bankName}
+              type="text"
+              onChange={handleChange}
+              onBlur={handleBlur}
+            />
+            {errors.bankName && touched.bankName ? (
+              <ErrorText>{errors.bankName}</ErrorText>
+             ) : null}
+          </AddThemeInputWrapper>{" "}
+          <AddThemeInputWrapper>
+            <AddThemeLabel>Account Number* : </AddThemeLabel>
+            <AddThemePopUpInput
+              name="accountNumber"
+              value={values.accountNumber}
+              type="number"
+              onChange={handleChange}
+              onBlur={handleBlur}
+            />
+            {errors.accountNumber && touched.accountNumber ? (
+              <ErrorText>{errors.accountNumber}</ErrorText>
+             ) : null}
+          </AddThemeInputWrapper>{" "}
+          <AddThemeInputWrapper>
+            <AddThemeLabel>Account Holder Name* : </AddThemeLabel>
+            <AddThemePopUpInput
+              name="accountHolderName"
+              value={values.accountHolderName}
+              type="text"
+              onChange={handleChange}
+              onBlur={handleBlur}
+            />
+            {errors.accountHolderName && touched.accountHolderName ? (
+              <ErrorText>{errors.accountHolderName}</ErrorText>
+             ) : null}
+          </AddThemeInputWrapper>{" "}
+          <AddThemeInputWrapper>
+            <AddThemeLabel>IFSC Code* : </AddThemeLabel>
+            <AddThemePopUpInput
+              name="ifsc"
+              value={values.ifsc}
+              type="text"
+              onChange={handleChange}
+              onBlur={handleBlur}
+            />
+            {errors.ifsc && touched.ifsc ? (
+              <ErrorText>{errors.ifsc}</ErrorText>
              ) : null}
           </AddThemeInputWrapper>
           {/* <AddThemeInputWrapper style={{ marginRight: "240px" }}>

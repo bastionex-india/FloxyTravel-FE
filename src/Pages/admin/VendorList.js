@@ -1,9 +1,9 @@
 import React from "react";
 import styled from "styled-components";
-import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
+import Card from "@material-ui/core/Card";
 import Button from "@mui/material/Button";
 import { environmentVariables } from "../../config/config";
 import Typography from "@mui/material/Typography";
@@ -47,10 +47,15 @@ const Root = styled.div`
   padding-left: 50px;
 `;
 const CardWrapper = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  grid-gap: 10%;
+  width: 25%;
 `;
+
+const CardsWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+`;
+// const Card = styled.div``;
 const ErrorMessage = styled.div`
   color: red;
   font-size: 12px;
@@ -295,112 +300,74 @@ const VendorList = () => {
 
   return (
     <>
-      <div class="row row-cols-4 g-4" style={{ width: "70rem" }}>
-        <div class="col">
-          <div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
-            <div class="card-body">
-              <h6 style={{ textAlign: "center" }} class="card-title">
-                EARNINGS
-              </h6>
-              <h1
-                style={{ textAlign: "center", color: "#008080" }}
-                class="card-text"
-              >
-                ₹ {summaryData?.totalEarnings}
-              </h1>
-              {/* <p style={{textAlign: 'center'}} class="card-title">Total earnings</p> */}
-            </div>
-          </div>
-        </div>
-        <div class="col">
-          <div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
-            <div class="card-body">
-              <h6 style={{ textAlign: "center" }} class="card-title">
-                Payout
-              </h6>
-              <h1
-                style={{ textAlign: "center", color: "#008080" }}
-                class="card-text"
-              >
-                ₹ {summaryData?.allPayoutAmount.toFixed(2)}
-              </h1>
-              {/* <p style={{textAlign: 'center'}} class="card-title">Total earnings</p> */}
-            </div>
-          </div>
-        </div>
-        <div class="col">
-          <div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
-            <div class="card-body">
-              <h6 style={{ textAlign: "center" }} class="card-title">
-                TOTAL VENDORS
-              </h6>
-              <h1
-                style={{ textAlign: "center", color: "#008080" }}
-                class="card-text"
-              >
-                {summaryData?.totalVendors}
-              </h1>
-              {/* <p style={{ textAlign: "center" }} class="card-title">
-                Total hotels
-              </p> */}
-            </div>
-          </div>
-        </div>
-        <div class="col">
-          <div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
-            <div class="card-body">
-              <h6 style={{ textAlign: "center" }} class="card-title">
-                TOTAL HOTELS
-              </h6>
-              <h1
-                style={{ textAlign: "center", color: "#008080" }}
-                class="card-text"
-              >
-                {summaryData?.totalHotels}
-              </h1>
-              {/* <p style={{ textAlign: "center" }} class="card-title">
-                Total hotels
-              </p> */}
-            </div>
-          </div>
-        </div>
-        <div class="col">
-          <div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
-            <div class="card-body">
-              <h6 style={{ textAlign: "center" }} class="card-title">
-                TOTAL BOOKINGS
-              </h6>
-              <h1
-                style={{ textAlign: "center", color: "#008080" }}
-                class="card-text"
-              >
-                {summaryData?.totalBookings}
-              </h1>
-              {/* <p style={{ textAlign: "center" }} class="card-title">
-                Total bookings
-              </p> */}
-            </div>
-          </div>
-        </div>
-        <div class="col">
-          <div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
-            <div class="card-body">
-              <h6 style={{ textAlign: "center" }} class="card-title">
-                PENDING BOOKINGS
-              </h6>
-              <h1
-                style={{ textAlign: "center", color: "#008080" }}
-                class="card-text"
-              >
-                {summaryData?.pendingBookings}
-              </h1>
-              {/* <p style={{ textAlign: "center" }} class="card-title">
-                Pending bookings
-              </p> */}
-            </div>
-          </div>
-        </div>
-      </div>
+      <CardsWrapper>
+        <CardWrapper>
+          <Card style={{ padding: "50px 0px", marginRight: "20px" }}>
+            <h6 style={{ textAlign: "center" }} class="card-title">
+              EARNINGS
+            </h6>
+            <h1
+              style={{ textAlign: "center", color: "#008080" }}
+              class="card-text"
+            >
+              ₹ {summaryData?.totalEarnings}
+            </h1>
+            {/* <p style={{textAlign: 'center'}} class="card-title">Total earnings</p> */}
+          </Card>
+        </CardWrapper>
+        <CardWrapper>
+          <Card style={{ padding: "50px 0px", marginRight: "20px" }}>
+            <h6 style={{ textAlign: "center" }} class="card-title">
+              TOTAL VENDORS
+            </h6>
+            <h1
+              style={{ textAlign: "center", color: "#008080" }}
+              class="card-text"
+            >
+              {summaryData?.totalVendors}
+            </h1>
+          </Card>
+        </CardWrapper>
+        <CardWrapper>
+          <Card style={{ padding: "50px 0px", marginRight: "20px" }}>
+            <h6 style={{ textAlign: "center" }} class="card-title">
+              TOTAL HOTELS
+            </h6>
+            <h1
+              style={{ textAlign: "center", color: "#008080" }}
+              class="card-text"
+            >
+              {summaryData?.totalHotels}
+            </h1>
+          </Card>
+        </CardWrapper>
+        <CardWrapper>
+          <Card style={{ padding: "50px 0px", marginRight: "20px" }}>
+            <h6 style={{ textAlign: "center" }} class="card-title">
+              TOTAL BOOKINGS
+            </h6>
+            <h1
+              style={{ textAlign: "center", color: "#008080" }}
+              class="card-text"
+            >
+              {summaryData?.totalBookings}
+            </h1>
+          </Card>
+        </CardWrapper>
+        <CardWrapper>
+          <Card style={{ padding: "50px 0px" }}>
+            <h6 style={{ textAlign: "center" }} class="card-title">
+              PENDING BOOKINGS
+            </h6>
+            <h1
+              style={{ textAlign: "center", color: "#008080" }}
+              class="card-text"
+            >
+              {summaryData?.pendingBookings}
+            </h1>
+          </Card>
+        </CardWrapper>
+      </CardsWrapper>
 
       <GraphCheck />
     </>

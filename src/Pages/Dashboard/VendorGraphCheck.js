@@ -43,6 +43,7 @@ export default function VendorGraphCheck() {
   const [monthdata, setMonthdata] = useState();
   const [yeardata, setYeardata] = useState();
   const [fromDate, setFromDate] = useState(null);
+  const [isCustom, setIsCustom] = useState(false);
   const [toDate, setToDate] = useState(null);
   const [tab, setTab] = useState("Hotels");
   const [vendorId, setVendorId] = useState(authData?.data?.vendorId);
@@ -231,6 +232,7 @@ export default function VendorGraphCheck() {
                 <DatePicker
                   placeholderText="Start Date"
                   selected={fromDate}
+                  disabled={isCustom === false}
                   onChange={(date) => {
                     setFromDate(date);
                     // setPageNo(1);
