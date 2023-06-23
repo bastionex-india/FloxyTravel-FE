@@ -64,6 +64,25 @@ const Heading = styled.div`
     display: none;
   }
 `;
+const Container2 = styled.div`
+  display: flex;
+  justify-content: start;
+  margin-top: 10px;
+`;
+const CheckinoutButton = styled.div`
+  padding: 10px 20px;
+  background-color: #17a2b8;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+
+  outline: none;
+  :hover {
+    background-color: #0056b3;
+  }
+`;
 
 const BookingHotelById = () => {
   const { state } = useLocation();
@@ -71,8 +90,6 @@ const BookingHotelById = () => {
 
   const [data, setData] = useState("");
   const [arr, setArr] = useState([]);
-  const [checkInToggle, setCheckInToggle] = useState(true);
-  const [checkOutToggle, setCheckOutToggle] = useState(false);
   const [btnState, setBtnState] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
@@ -93,41 +110,35 @@ const BookingHotelById = () => {
   useEffect(() => {
     getAllUsers();
   }, [data.checkInStatus, data.checkOutStatus]);
-  // console.log("iyyyyyyyyyyy",data)
   const checkIn = () => {
-    // setCheckInToggle(true)
-    axios({
-      method: "post",
-      url: `${environmentVariables.apiUrl}/auth/checkinpermissionbyvendor/${state._id}`,
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      headers: { _token: authData.data.token },
-    })
-      .then((response) => {
-        getAllUsers();
+    if (data !== "" && !data.checkInStatus) {
+      axios({
+        method: "post",
+        url: `${environmentVariables.apiUrl}/vendor/checkinpermissionbyvendor/${state._id}`,
+        headers: { _token: authData.data.token },
       })
-      .catch((error) => {
-        console.log("Error ", error);
-      });
+        .then((response) => {
+          getAllUsers();
+        })
+        .catch((error) => {
+          console.log("Error ", error);
+        });
+    }
   };
   const checkOut = () => {
-    axios({
-      method: "post",
-      url: `${environmentVariables.apiUrl}/auth/checkoutpermissionbyvendor/${state._id}`,
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      headers: { _token: authData.data.token },
-    })
-      .then((response) => {
-        getAllUsers();
+    if (data !== "" && !data.checkOutStatus) {
+      axios({
+        method: "post",
+        url: `${environmentVariables.apiUrl}/vendor/checkoutpermissionbyvendor/${state._id}`,
+        headers: { _token: authData.data.token },
       })
-      .catch((error) => {
-        console.log("Error", error);
-      });
+        .then((response) => {
+          getAllUsers();
+        })
+        .catch((error) => {
+          console.log("Error", error);
+        });
+    }
   };
 
   return (
@@ -270,6 +281,29 @@ const BookingHotelById = () => {
             </Item>
           </Grid>
         </Grid>
+        <Container2>
+          <CheckinoutButton
+            onClick={() => checkIn()}
+            style={{
+              opacity: data !== "" && data.checkInStatus ? 0.5 : 1,
+              cursor:
+                data !== "" && data.checkInStatus ? "not-allowed" : "pointer",
+            }}
+          >
+            CheckIn
+          </CheckinoutButton>
+          <CheckinoutButton
+            style={{
+              margin: "0 10px",
+              opacity: data !== "" && data.checkOutStatus ? 0.5 : 1,
+              cursor:
+                data !== "" && data.checkOutStatus ? "not-allowed" : "pointer",
+            }}
+            onClick={() => checkOut()}
+          >
+            CheckOut
+          </CheckinoutButton>
+        </Container2>
       </Container>
     </>
   );

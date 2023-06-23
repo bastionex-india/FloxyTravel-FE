@@ -241,6 +241,7 @@ const BookingHistory = () => {
       .request(config)
       .then((response) => {
         // setData(response.data.sort((a, b) => b.createdAt - a.createdAt));
+        console.log(response.data)
         const { totalItems, totalPages, currentPage, data } = response.data;
         setData(data);
         setTotalPages(totalPages);
@@ -422,10 +423,10 @@ const BookingHistory = () => {
                   <option value="">
                     All
                   </option>
-                  <option value="Completed">
+                  <option value="completed">
                     Completed Booking
                   </option>
-                  <option value="Upcoming">
+                  <option value="approved">
                     Upcoming Booking
                   </option>
                 </Select>
@@ -485,7 +486,7 @@ const BookingHistory = () => {
                             {bookingDate.toLocaleDateString()}
                           </TableCell>
                           <TableCell align="right">
-                            {item.status}
+                            {item.status==="completed"?"Completed":item.status==="approved" && "Upcoming"}
                           </TableCell>
                           <TableCell align="right">
                             <Button
