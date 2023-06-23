@@ -124,7 +124,7 @@ export default function LeaveRecord({ vendorId }) {
                 style={{ textAlign: "center", color: "#008080" }}
                 class="card-text"
               >
-                0
+                ₹ {summaryData?.allPayoutAmount}
               </h1>
             </div>
           </div>

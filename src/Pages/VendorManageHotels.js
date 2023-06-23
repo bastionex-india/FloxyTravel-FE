@@ -320,6 +320,7 @@ const ManageAdmin = () => {
         );
       } else {
         return data.map((row, index) => {
+          // console.log("row",row);
           let imageSrc = row.image.length
             ? row.image[0]
             : "1675936089112-teanest1.jpg";
