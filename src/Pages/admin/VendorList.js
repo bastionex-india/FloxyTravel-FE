@@ -312,13 +312,25 @@ const VendorList = () => {
             >
               ₹ {summaryData?.totalEarnings}
             </h1>
-            {/* <p style={{textAlign: 'center'}} class="card-title">Total earnings</p> */}
           </Card>
         </CardWrapper>
         <CardWrapper>
           <Card style={{ padding: "50px 0px", marginRight: "20px" }}>
             <h6 style={{ textAlign: "center" }} class="card-title">
-              TOTAL VENDORS
+              Payout
+            </h6>
+            <h1
+              style={{ textAlign: "center", color: "#008080" }}
+              class="card-text"
+            >
+              ₹ {summaryData?.allPayoutAmount.toFixed(2)}
+            </h1>
+          </Card>
+        </CardWrapper>
+        <CardWrapper>
+          <Card style={{ padding: "50px 0px", marginRight: "20px" }}>
+            <h6 style={{ textAlign: "center" }} class="card-title">
+              TOTAL VENDORS   
             </h6>
             <h1
               style={{ textAlign: "center", color: "#008080" }}
@@ -354,19 +366,7 @@ const VendorList = () => {
             </h1>
           </Card>
         </CardWrapper>
-        <CardWrapper>
-          <Card style={{ padding: "50px 0px" }}>
-            <h6 style={{ textAlign: "center" }} class="card-title">
-              PENDING BOOKINGS
-            </h6>
-            <h1
-              style={{ textAlign: "center", color: "#008080" }}
-              class="card-text"
-            >
-              {summaryData?.pendingBookings}
-            </h1>
-          </Card>
-        </CardWrapper>
+        
       </CardsWrapper>
 
       <GraphCheck />
