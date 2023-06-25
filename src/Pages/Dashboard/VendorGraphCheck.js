@@ -186,9 +186,13 @@ export default function VendorGraphCheck() {
 
   function planUpdate(e) {
     const value = e.target.value;
-    if (value === "yeardata") {setGraphData(yeardata);setIsCustom(false)}
-    else if (value === "monthdata") {setGraphData(monthdata);setIsCustom(false)}
-    else if (value === "custom") setIsCustom(true);
+    if (value === "yeardata") {
+      setGraphData(yeardata);
+      setIsCustom(false);
+    } else if (value === "monthdata") {
+      setGraphData(monthdata);
+      setIsCustom(false);
+    } else if (value === "custom") setIsCustom(true);
     else setIsCustom(false);
   }
 
@@ -221,17 +225,12 @@ export default function VendorGraphCheck() {
                   borderRight: "1px dashed black",
                   borderLeft: "1px solid black",
                 }}
-                onClick={() => setTab("Hotels")}
-                active={tab === "Hotels"}
-              >
-                Hotels
-              </TabButton>
-              <TabButton
                 onClick={() => setTab("Bookings")}
                 active={tab === "Bookings"}
               >
                 Bookings
               </TabButton>
+
               <TabButton
                 onClick={() => setTab("Earnings")}
                 active={tab === "Earnings"}

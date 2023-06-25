@@ -46,6 +46,7 @@ export default function GraphCheck() {
   const [isCustom, setIsCustom] = useState(false);
   const [toDate, setToDate] = useState(null);
   const [xLabel, setXLabel] = useState("Year");
+  const [customData, setCustomData] = useState(null);
   const ButtonGroup = styled.div`
     display: flex;
   `;
@@ -117,16 +118,36 @@ export default function GraphCheck() {
       headers: { _token: authData.data.token },
     })
       .then((response) => {
-        console.log("api hit");
-        const hotelData = response.data.data.hotelCount;
+        setCustomData(response.data.data[0]);
         let mergedatas = [];
-        hotelData.forEach((val) => {
-          let mergedata = {};
-          mergedata.Name = hotelData._id;
-          mergedata.Hotels = hotelData.count;
-          mergedatas.push(mergedata);
-        });
-        setGraphData(mergedatas);
+        if (tab === "Hotels") {
+          const hotelData = response.data.data[0]?.hotelCount;
+          hotelData.forEach((val) => {
+            let mergedata = {};
+            mergedata.Name = val._id;
+            mergedata.Hotels = val.count;
+            mergedatas.push(mergedata);
+          });
+          setGraphData(mergedatas);
+        } else if (tab === "Bookings") {
+          const bookingData = response.data.data[0]?.bookingCount;
+          bookingData.forEach((val) => {
+            let mergedata = {};
+            mergedata.Name = val._id;
+            mergedata.Bookings = val.count;
+            mergedatas.push(mergedata);
+          });
+          setGraphData(mergedatas);
+        } else if (tab === "Earnings") {
+          const earningData = response.data.data[0]?.earnings;
+          earningData.forEach((val) => {
+            let mergedata = {};
+            mergedata.Name = val._id;
+            mergedata.Earnings = val.totalPayAmount;
+            mergedatas.push(mergedata);
+          });
+          setGraphData(mergedatas);
+        }
       })
       .catch((err) => {
         console.log(err.message);
@@ -146,7 +167,6 @@ export default function GraphCheck() {
     })
       .then((response) => {
         const data = response.data.data;
-        console.log(response.data.data, "rehman");
         const mergedata = [
           { Name: 2018, Bookings: 0, Hotels: 0, Earnings: 0 },
           { Name: 2019, Bookings: 0, Hotels: 0, Earnings: 0 },
@@ -280,10 +300,10 @@ export default function GraphCheck() {
       });
   };
   useEffect(() => {
-    if (fromDate !== null && toDate !== null) {
+    if (fromDate !== null && toDate !== null && isCustom === true) {
       getCustomData();
     }
-  }, [fromDate, toDate]);
+  }, [fromDate, toDate, tab]);
 
   useEffect(() => {
     getMonthData();
