@@ -530,6 +530,11 @@ const UserLandingPage = () => {
     setDescription(editTheme[0].description);
     setPriority(editTheme[0].priority);
   };
+  const handleDescriptionChange = (e) => {
+    const inputValue = e.target.value;
+    const sanitizedValue = inputValue.replace(/[^A-Za-z]+/g, '');  
+    setDescription(sanitizedValue);
+  };
   useEffect(() => {
     setIsLoading(true);
     getStatesData();
@@ -691,7 +696,7 @@ const UserLandingPage = () => {
                     class="form-control"
                     aria-label="With textarea"
                     value={description}
-                    onChange={(e) => setDescription(e.target.value)}
+                    onChange={handleDescriptionChange}
                     rows="4"
                     cols="50"
                   ></textarea>
