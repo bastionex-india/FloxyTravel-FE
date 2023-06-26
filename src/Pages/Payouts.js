@@ -290,7 +290,7 @@ const Payouts = () => {
       if (data && data.length === 0) {
         return (
           <TextCenter>
-            <span>No hotels found.</span>
+            <span>No data found.</span>
           </TextCenter>
         );
       } else {
