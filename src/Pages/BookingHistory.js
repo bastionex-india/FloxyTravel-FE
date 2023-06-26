@@ -210,14 +210,14 @@ const BookingHistory = () => {
   };
 
   const getAllUsers = async () => {
-    let data={
-      status:select,
+    let data = {
+      status: select,
       // startDate:new Date(),
       // endDate:select1,
-      calenderStartDate:fromDate,
-      calenderEndDate:toDate,
-      id:searchByName,
-    }
+      calenderStartDate: fromDate,
+      calenderEndDate: toDate,
+      id: searchByName,
+    };
     data.page = page + 1;
     data.pageSize = rowsPerPage;
     // if (select1 !== "") {
@@ -241,40 +241,42 @@ const BookingHistory = () => {
       .request(config)
       .then((response) => {
         // setData(response.data.sort((a, b) => b.createdAt - a.createdAt));
-        console.log(response.data)
+        console.log(response.data);
         const { totalItems, totalPages, currentPage, data } = response.data;
         setData(data);
         setTotalPages(totalPages);
         setPage(currentPage - 1);
-        setIsLoading(false)
-        setTotalItems(totalItems)
+        setIsLoading(false);
+        setTotalItems(totalItems);
       })
       .catch((error) => {
         console.log("error", error);
         setIsLoading(false);
       });
   };
-  const getAllHotels=async()=>{
+  const getAllHotels = async () => {
     try {
-      const response = await axios.get(`${environmentVariables.apiUrl}/vendor/getallhotelsbyvendorid/${authData.data.vendorId}`, {
-        headers:  { _token: authData.data.token }
-      });
-      setAllHotels(response.data.data)
+      const response = await axios.get(
+        `${environmentVariables.apiUrl}/vendor/getallhotelsbyvendorid/${authData.data.vendorId}`,
+        {
+          headers: { _token: authData.data.token },
+        }
+      );
+      setAllHotels(response.data.data);
     } catch (error) {
       // Handle the error here
       console.error(error);
     }
-  }
+  };
   useEffect(() => {
     setIsLoading(true);
     getAllUsers();
-  }, [select, select1, searchByName, fromDate, toDate,page,rowsPerPage]);
-
+  }, [select, select1, searchByName, fromDate, toDate, page, rowsPerPage]);
 
   useEffect(() => {
-    getAllHotels()
+    getAllHotels();
   }, []);
-  
+
   // function convertToUnixTimestamp(dateString) {
   //   const [day, month, year] = dateString.split('/');
   //   const formattedDateString = `${month}/${day}/${year}`;
@@ -336,7 +338,7 @@ const BookingHistory = () => {
                 )
               } */}
 
-                {/* <IconSearch>
+              {/* <IconSearch>
                   <img src={SearchIcon} />
                 </IconSearch>
                 <Input
@@ -349,7 +351,7 @@ const BookingHistory = () => {
                   // onKeyDown={(e) => KeyDown(e)}
                   autoComplete="false"
                 /> */}
-                 <TextSelectField>
+              <TextSelectField>
                 <Select
                   onChange={(e) => {
                     setSearchByName(e.target.value);
@@ -360,16 +362,15 @@ const BookingHistory = () => {
                   <option value="" hidden>
                     Select Hotel
                   </option>
-                  {
-                    allHotels.map((item,index)=>{
-                      return(
-                        <option key={index} value={item._id}>{item.hotelname}</option>
-                      )
-                    })
-                  }
+                  {allHotels.map((item, index) => {
+                    return (
+                      <option key={index} value={item._id}>
+                        {item.hotelname}
+                      </option>
+                    );
+                  })}
                 </Select>
               </TextSelectField>
-
 
               <FilterWrapper>
                 <FilterComponent>
@@ -418,17 +419,11 @@ const BookingHistory = () => {
                   required
                 >
                   <option value="" hidden>
-                    Select Type
+                    Select Status
                   </option>
-                  <option value="">
-                    All
-                  </option>
-                  <option value="completed">
-                    Completed Booking
-                  </option>
-                  <option value="approved">
-                    Upcoming Booking
-                  </option>
+                  <option value="">All</option>
+                  <option value="completed">Completed Booking</option>
+                  <option value="approved">Upcoming Booking</option>
                 </Select>
               </TextSelectField>
             </TextWrapper>
@@ -467,8 +462,8 @@ const BookingHistory = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {data && data.length!==0?
-                    data.map((item, index) => {                      
+                  {data && data.length !== 0 ? (
+                    data.map((item, index) => {
                       const bookingDate = new Date(item.createdAt);
                       return (
                         <TableRow
@@ -486,7 +481,9 @@ const BookingHistory = () => {
                             {bookingDate.toLocaleDateString()}
                           </TableCell>
                           <TableCell align="right">
-                            {item.status==="completed"?"Completed":item.status==="approved" && "Upcoming"}
+                            {item.status === "completed"
+                              ? "Completed"
+                              : item.status === "approved" && "Upcoming"}
                           </TableCell>
                           <TableCell align="right">
                             <Button
@@ -500,7 +497,10 @@ const BookingHistory = () => {
                           </TableCell>
                         </TableRow>
                       );
-                    }):<h3>Data Not Found</h3>}
+                    })
+                  ) : (
+                    <h3>Data Not Found</h3>
+                  )}
                 </TableBody>
               </Table>
               <TablePagination

@@ -47,7 +47,7 @@ export default function VendorGraphCheck() {
   const [fromDate, setFromDate] = useState(null);
   const [isCustom, setIsCustom] = useState(false);
   const [toDate, setToDate] = useState(null);
-  const [tab, setTab] = useState("Hotels");
+  const [tab, setTab] = useState("Bookings");
   const [vendorId, setVendorId] = useState(null);
   const [isLoadingGraph, setIsLoadingGraph] = useState(false);
   const ButtonGroup = styled.div`
@@ -159,7 +159,37 @@ export default function VendorGraphCheck() {
       headers: { _token: authData.data.token },
     })
       .then((response) => {
-        console.log(response);
+        console.log(response.data.data[0]);
+        const responseData = response.data.data[0];
+        let mergedatas = [];
+        if (tab === "Hotels") {
+          const hotelData = response.data.data[0]?.hotelCount;
+          hotelData.forEach((val) => {
+            let mergedata = {};
+            mergedata.Name = val._id;
+            mergedata.Hotels = val.count;
+            mergedatas.push(mergedata);
+          });
+          setGraphData(mergedatas);
+        } else if (tab === "Bookings") {
+          const bookingData = response.data.data[0]?.bookingCount;
+          bookingData.forEach((val) => {
+            let mergedata = {};
+            mergedata.Name = val._id;
+            mergedata.Bookings = val.count;
+            mergedatas.push(mergedata);
+          });
+          setGraphData(mergedatas);
+        } else if (tab === "Earnings") {
+          const earningData = response.data.data[0]?.earnings;
+          earningData.forEach((val) => {
+            let mergedata = {};
+            mergedata.Name = val._id;
+            mergedata.Earnings = val.totalPayAmount;
+            mergedatas.push(mergedata);
+          });
+          setGraphData(mergedatas);
+        }
       })
       .catch((err) => {
         console.log(err.message);
@@ -167,10 +197,10 @@ export default function VendorGraphCheck() {
   };
 
   useEffect(() => {
-    if (fromDate !== null && toDate !== null) {
+    if (fromDate !== null && toDate !== null && isCustom === true) {
       getCustomData();
     }
-  }, [fromDate, toDate]);
+  }, [fromDate, toDate, tab]);
   useEffect(() => {
     setIsLoadingGraph(true);
     if (window !== undefined) {
@@ -185,6 +215,8 @@ export default function VendorGraphCheck() {
   }, [vendorId]);
 
   function planUpdate(e) {
+    setToDate(null);
+    setFromDate(null);
     const value = e.target.value;
     if (value === "yeardata") {
       setGraphData(yeardata);
