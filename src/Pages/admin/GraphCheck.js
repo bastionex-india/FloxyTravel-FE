@@ -416,7 +416,7 @@ export default function GraphCheck() {
             top: 5,
             right: 30,
             left: 20,
-            bottom: 5,
+            bottom: 20,
           }}
         >
           <CartesianGrid strokeDasharray="3 3" />
