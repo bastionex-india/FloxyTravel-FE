@@ -348,10 +348,14 @@ export default function VendorGraphCheck() {
               label={{ value: tab, position: "insideBottom" }}
             />
             <YAxis
-              label={{ value: "Numbers", angle: -90, position: "insideLeft" }}
+              label={{
+                value: `Number of ${tab}`,
+                angle: -90,
+                position: "insideLeft",
+              }}
             />
             <Tooltip />
-            <Legend />
+            {/* <Legend /> */}
             <Bar dataKey={tab} shape={<CustomBar />} />
           </BarChart>
         </MDBCard>

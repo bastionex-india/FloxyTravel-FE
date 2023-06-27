@@ -64,9 +64,7 @@ function SideBar(props) {
         window.location.href.split("/").pop() === "vendormanagehotels"
       ) {
         setselected("vendormanagehotels");
-      }else if (
-        window.location.href.split("/").pop() === "payouts"
-      ) {
+      } else if (window.location.href.split("/").pop() === "payouts") {
         setselected("payouts");
       } else {
         setselected("Dashboard");
@@ -121,7 +119,7 @@ function SideBar(props) {
               navigate("/userselectedcity");
             }}
           >
-            <Link>Manage City Landing Page</Link>
+            <Link>Manage Hotel Landing Page</Link>
           </LinkWrapper>
           <LinkWrapper
             select={selected === "Booking history"}
@@ -182,7 +180,6 @@ function SideBar(props) {
           >
             <Link>Payouts</Link>
           </LinkWrapper>
-          
         </>
       )}
     </Root>

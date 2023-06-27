@@ -420,6 +420,7 @@ const AddHotels = () => {
         console.log(response.data.message)
         setUpdatedHotelData(response.data.message);
         Swal.fire("Updated", "Hotel updated successfully", "success");
+        navigate('/managehotels')
         // setName("");
         // setOverview("");
         // setGeneral("");

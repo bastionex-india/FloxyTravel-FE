@@ -480,7 +480,6 @@ const UserLandingPage = () => {
           name: theme,
           heading: title,
           description: description,
-          // priority: priority,
         },
         headers: {
           _token: authData?.data?.token,
@@ -519,7 +518,7 @@ const UserLandingPage = () => {
         });
     }
   };
-
+  
   const handleDeleteThemePopUp = (e) => {
     setDeletePopUp(true);
     setThemeId(e.target.id);
@@ -632,7 +631,7 @@ const UserLandingPage = () => {
           onClick={() => navigate(-1)}
           class="fa-solid fa-chevron-left fa-2x"
         ></i>
-        <MainHeading>Manage City Landing Page</MainHeading>
+        <MainHeading>Manage Hotel Landing Page</MainHeading>
       </HeadingWrapper>
       <StatesContainer>
         {/* <StateHeading>States : </StateHeading> */}
@@ -650,7 +649,7 @@ const UserLandingPage = () => {
             <div class="modal-content">
               <div class="modal-header">
                 <h1 class="modal-title fs-5" id="staticBackdropLabel">
-                  Add City
+                  Add State
                 </h1>
                 <button
                   type="button"
@@ -662,14 +661,14 @@ const UserLandingPage = () => {
               <div class="modal-body">
                 <div class="input-group mb-3">
                   <label class="input-group-text" for="inputGroupSelect01">
-                    City*:{" "}
+                    State*:{" "}
                   </label>
                   <select
                     class="form-select"
                     onChange={(e) => setChosenState(e.target.value)}
                     id="inputGroupSelect01"
                   >
-                    <option>Select City</option>
+                    <option>Select State</option>
                     {stateData.map((val) => (
                       <option value={val.name}>{val.name}</option>
                     ))}
@@ -799,6 +798,8 @@ const UserLandingPage = () => {
               </div>
               <div class="modal-footer">
                 <button
+                onClick={()=>{setTheme(null);
+              setDescription(null);setTitle(null)}}
                   type="button"
                   class="btn btn-secondary"
                   data-bs-dismiss="modal"
@@ -876,7 +877,7 @@ const UserLandingPage = () => {
             data-bs-toggle="modal"
             data-bs-target="#staticBackdrop"
           >
-            Add City
+            Add State
           </button>
           <button
             type="button"

@@ -429,12 +429,12 @@ const ManageAdmin = () => {
             </TextCenter>
           );
         } else {
-          return data.map((row, index) => {
+          return (<>{data.map((row, index) => {
             let imageSrc = row.image.length
               ? row.image[0]
               : "1675936089112-teanest1.jpg";
             return (
-              <HotelCard key={index}>
+             <> <HotelCardsWrapper><HotelCard key={index}>
                 <HotelImageWrapper>
                   <HotelImage
                     src={`https://uat-travel-api.floxypay.com/uploads/${imageSrc}`}
@@ -502,8 +502,18 @@ const ManageAdmin = () => {
                   </DialogActions>
                 </BootstrapDialog>
               </HotelCard>
+              </HotelCardsWrapper>
+          </>
             );
-          });
+          })} <TablePagination
+            component="div"
+            count={response?.totalrecords}
+            page={page}
+            onPageChange={handleChangePage}
+            rowsPerPage={rowsPerPage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          /></>)
+         
         }
       }
     }
@@ -541,15 +551,7 @@ const ManageAdmin = () => {
               </AddButton>
             </TextWrapper>
           </Root>
-          <HotelCardsWrapper>{getComponents()}</HotelCardsWrapper>
-          <TablePagination
-            component="div"
-            count={response?.totalrecords}
-            page={page}
-            onPageChange={handleChangePage}
-            rowsPerPage={rowsPerPage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
+          <>{getComponents()}</>
         </TextRoot>
       </TextMainWrapper>
     </>

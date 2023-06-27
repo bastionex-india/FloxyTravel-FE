@@ -149,6 +149,7 @@ const UserLandingPageHome = () => {
       .then((response) => {
         if (response.status) {
           Swal.fire("Deleted", "Successfully Deleted the City Data", "success");
+          setDeletePopUp(false)
           getAllData();
         } else {
           Swal.fire("Error", "Something went wrong!", "error");

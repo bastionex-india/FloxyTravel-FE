@@ -425,10 +425,15 @@ export default function GraphCheck() {
             label={{ value: xLabel, position: "outsideBottom", dy: 10 }}
           />
           <YAxis
-            label={{ value: "Numbers", angle: -90, position: "insideLeft" }}
+            label={{
+              value: `Number of ${tab}`,
+              angle: -90,
+              dy: 50,
+              position: "insideLeft",
+            }}
           />
           <Tooltip />
-          <Legend />
+          {/* <Legend /> */}
           {/* <Bar dataKey="Bookings" fill="#8884d8" /> */}
           <Bar dataKey={tab} shape={<CustomBar />} />
           {/* <Bar dataKey="Earnings" fill="red" /> */}
