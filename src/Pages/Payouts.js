@@ -403,6 +403,7 @@ const Payouts = () => {
       });
   };
   const handleCityChange = (city)=>{
+    console.log(city);
     setSelectCity(city)
   }
   const handleHotelChange = (hotel)=>{
