@@ -58,14 +58,15 @@ const Heading = styled.div`
 `;
 
 const TextSelectField = styled.div`
-  margin: 10px 0px 0px 10px;
+  // margin: 10px 0px 0px 10px;
   @media (max-width: 768px) {
     margin: 0;
   }
 `;
 
 const Select = styled.select`
-  padding: 10px;
+  height: 30px;
+  padding: 0px 10px;
   border-radius: 5px;
   outline: none;
   border: none;
