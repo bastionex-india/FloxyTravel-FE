@@ -404,7 +404,7 @@ const BookingHistory = () => {
                   onChange={(e) => {
                     setSearchByName(e.target.value);
                   }}
-                  value={select1}
+                  value={searchByName}
                   required
                   style={{width:"100%"}}
                 >
