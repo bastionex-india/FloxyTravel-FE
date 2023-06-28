@@ -73,7 +73,11 @@ const UserLandingPageHome = () => {
   const [showModal, setShowModal] = useState(false);
 
   const navigate = useNavigate();
-
+  const resetForm = () => {
+    setCity("");
+    setTheme("");
+    setTitle("");
+  };
   const handleClose = () => {
     setDeletePopUp(false);
   };
@@ -149,7 +153,7 @@ const UserLandingPageHome = () => {
       .then((response) => {
         if (response.status) {
           Swal.fire("Deleted", "Successfully Deleted the City Data", "success");
-          setDeletePopUp(false)
+          setDeletePopUp(false);
           getAllData();
         } else {
           Swal.fire("Error", "Something went wrong!", "error");
@@ -188,6 +192,8 @@ const UserLandingPageHome = () => {
         .then((response) => {
           if (response?.data?.status) {
             getAllData();
+            resetForm();
+
             Swal.fire(
               `City ${themeId === null ? "Inserted" : "Updated"}`,
               `Successfully ${
@@ -196,6 +202,7 @@ const UserLandingPageHome = () => {
               "success"
             );
           } else {
+            resetForm();
             Swal.fire(
               "Error",
               "Please check again the values you are inserting!",
@@ -206,6 +213,7 @@ const UserLandingPageHome = () => {
         .catch((err) => {
           console.log(err.message);
           Swal.fire("Error", "Something went wrong", "error");
+          resetForm();
         });
     } else {
       Swal.fire("Warning", "Please enter all the data!", "warning");
@@ -432,6 +440,7 @@ const UserLandingPageHome = () => {
                 class="btn-close"
                 data-bs-dismiss="modal"
                 aria-label="Close"
+                onClick={resetForm}
               ></button>
             </div>
             <div class="modal-body">

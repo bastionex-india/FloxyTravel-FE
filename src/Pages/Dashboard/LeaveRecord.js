@@ -43,6 +43,7 @@ const CardsWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   margin-bottom: 20px;
+  width: 74vw;
 `;
 const CardText = styled.div`
   color: #fff;

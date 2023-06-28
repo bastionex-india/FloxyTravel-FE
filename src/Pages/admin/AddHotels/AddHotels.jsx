@@ -9,8 +9,9 @@ import MultiSelect from "react-multiple-select-dropdown-lite";
 import "react-multiple-select-dropdown-lite/dist/index.css";
 import { environmentVariables } from "../../../config/config";
 import Swal from "sweetalert2";
-import { FaTimes } from 'react-icons/fa';
+import { FaTimes } from "react-icons/fa";
 import { useRef } from "react";
+import CircularLoader from "../../../Component/CircularLoader/CircularLoader";
 
 const Root = styled.div`
   /* width: 967px; */
@@ -143,7 +144,7 @@ const ImageWrapper = styled.div`
   position: relative;
 `;
 const Image1 = styled.img`
-   width: 100px; 
+  width: 100px;
   height: 100px;
   object-fit: cover;
 `;
@@ -174,6 +175,7 @@ const AddHotels = () => {
   const { id } = useParams();
   const fileInputRef = useRef(null);
   const [hotelData, setHotelData] = useState("");
+  const [buttonLoading, setButtonLoading] = useState(false);
   const [allCountries, setAllCountries] = useState([]);
   const [countryCode, setCountryCode] = useState("");
   const [countryName, setCountryName] = useState("");
@@ -199,8 +201,8 @@ const AddHotels = () => {
   const [overview, setOverview] = useState("");
   const [multipleFiles, setMultipleFiles] = useState("");
   const [totalRooms, setTotalRooms] = useState("");
-  const [payoutInterval,setPayoutInterval] =  useState('');
-  const [hotelFee,setHotelFee] =  useState('');
+  const [payoutInterval, setPayoutInterval] = useState("");
+  const [hotelFee, setHotelFee] = useState("");
   const [images, setImages] = useState([]);
   const [list, setList] = useState([]);
   const [arr, setArr] = useState([]);
@@ -235,7 +237,7 @@ const AddHotels = () => {
       const response = await axios.get(url, {
         headers: { _token: authData.data.token },
       });
-      console.log("noOfRooms",response.data.data.payoutInterval)
+      console.log("noOfRooms", response.data.data.payoutInterval);
       setHotelData(response.data.data);
       setName(response.data.data.hotelname);
 
@@ -334,6 +336,7 @@ const AddHotels = () => {
     setMultipleFiles(e.target.files);
   };
   const handleClose = async (e) => {
+    setButtonLoading(true);
     e.preventDefault();
     // console.log("aaaaaa",name,theme,category,totalRooms,general,services,internet,parking,overview)
     const formdata = new FormData();
@@ -385,19 +388,23 @@ const AddHotels = () => {
         setTheme([]);
         setLat("");
         setLong("");
-        setHotelFee('');
-        setPayoutInterval('')
+        setHotelFee("");
+        setPayoutInterval("");
         setMultipleFiles("");
         Swal.fire("Added", "New Hotel added successfully", "success");
+        setButtonLoading(false);
         navigation("/managehotels");
       })
       .catch((error) => {
+        setButtonLoading(false);
         console.log("///////////////", error);
         Swal.fire("Error", "Something went wrong", "error");
       });
   };
 
   const handleUpdate = async (e) => {
+    setButtonLoading(true);
+
     axios({
       method: "put",
       url: `${environmentVariables.apiUrl}/admin/updatehotel/admin/${hotelData._id}`,
@@ -412,15 +419,17 @@ const AddHotels = () => {
         general: general,
         services: services,
         internet: internet,
-        parking: parking
+        parking: parking,
       },
       headers: { _token: authData.data.token },
     })
       .then((response) => {
-        console.log(response.data.message)
+        console.log(response.data.message);
         setUpdatedHotelData(response.data.message);
+        setButtonLoading(false);
+
         Swal.fire("Updated", "Hotel updated successfully", "success");
-        navigate('/managehotels')
+        navigate("/managehotels");
         // setName("");
         // setOverview("");
         // setGeneral("");
@@ -433,12 +442,12 @@ const AddHotels = () => {
       })
       .catch((error) => {
         console.log("///////////////", error);
+        setButtonLoading(false);
+
         Swal.fire("Error", "Something went wrong", "error");
         // setError('Details are not valid');
       });
-  }
-
-
+  };
 
   const getHotelLatLong = (e) => {
     e.preventDefault();
@@ -471,10 +480,13 @@ const AddHotels = () => {
   const removeImage = async (imageName) => {
     try {
       // Send the DELETE request using Axios
-      await axios.delete(`${environmentVariables.apiUrl}/admin/deletehotelimages/${hotelData._id}/${imageName}`, { headers: { _token: authData.data.token } });
+      await axios.delete(
+        `${environmentVariables.apiUrl}/admin/deletehotelimages/${hotelData._id}/${imageName}`,
+        { headers: { _token: authData.data.token } }
+      );
       getHotelDetailById();
     } catch (error) {
-      console.error('Error removing image:', error);
+      console.error("Error removing image:", error);
     }
   };
   const MultipleFileChange1 = (e) => {
@@ -493,7 +505,6 @@ const AddHotels = () => {
       headers: { _token: authData.data.token },
     })
       .then((response) => {
-
         getHotelDetailById();
         fileInputRef.current.value = null;
         Swal.fire("Added", "Images inserted successfully", "success");
@@ -502,7 +513,7 @@ const AddHotels = () => {
         console.log("///////////////", error);
         Swal.fire("Error", "Something went wrong", "error");
       });
-  }
+  };
   return (
     <Root>
       <HeadingWrapper>
@@ -594,7 +605,6 @@ const AddHotels = () => {
               </LocationWrapper>
             )}
             <LocationWrapper>
-
               <div>
                 <FormLabel>Fee* (in percentage)</FormLabel>
                 <FormInput
@@ -625,7 +635,10 @@ const AddHotels = () => {
               </div>
               <div style={{ marginLeft: "1.8rem" }}>
                 <FormLabel>Category*</FormLabel>
-                <FormSelect onChange={(e) => setCategory(e.target.value)} value={category}>
+                <FormSelect
+                  onChange={(e) => setCategory(e.target.value)}
+                  value={category}
+                >
                   <FormOptions>Select Category</FormOptions>
                   <FormOptions value={"economy"}>Economy</FormOptions>
                   <FormOptions value={"midrange"}>Mid Range</FormOptions>
@@ -717,36 +730,50 @@ const AddHotels = () => {
               value={overview}
               onChange={(e) => setOverview(e.target.value)}
             />
-            {
-              id === undefined && (
-                <>
-                  <FormLabel>Images*</FormLabel>
-                  <FormFileInput
-                    type="file"
-                    multiple
-                    name="myFiles"
-                    onChange={(e) => MultipleFileChange(e)}
-                  />
-                </>
-              )
-            }
+            {id === undefined && (
+              <>
+                <FormLabel>Images*</FormLabel>
+                <FormFileInput
+                  type="file"
+                  multiple
+                  name="myFiles"
+                  onChange={(e) => MultipleFileChange(e)}
+                />
+              </>
+            )}
           </FormWrapper>
-          {id === undefined ? <Button onClick={(e) => handleClose(e)}>Save</Button> : <Button onClick={(e) => handleUpdate(e)}>Update</Button>}
-        </HotelAddForm>
-        {
-          id !== undefined && (
+          {buttonLoading === true ? (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                marginTop: "30px",
+              }}
+            >
+              <CircularLoader></CircularLoader>
+            </div>
+          ) : (
             <>
-              <FormLabel>Images*</FormLabel>
-              <FormFileInput
-                type="file"
-                multiple
-                name="myFiles"
-                onChange={(e) => MultipleFileChange1(e)}
-                ref={fileInputRef}
-              />
+              {id === undefined ? (
+                <Button onClick={(e) => handleClose(e)}>Save</Button>
+              ) : (
+                <Button onClick={(e) => handleUpdate(e)}>Update</Button>
+              )}
             </>
-          )
-        }
+          )}
+        </HotelAddForm>
+        {id !== undefined && (
+          <>
+            <FormLabel>Images*</FormLabel>
+            <FormFileInput
+              type="file"
+              multiple
+              name="myFiles"
+              onChange={(e) => MultipleFileChange1(e)}
+              ref={fileInputRef}
+            />
+          </>
+        )}
         {/* <div style={{display:"flex",flexDirection:'column'}}>
           <div style={{ display: "flex", overflow: "scroll" }}>
               {catalog}
@@ -760,18 +787,20 @@ const AddHotels = () => {
             </div>
           ))}
         </div> */}
-        <ImageSection >
+        <ImageSection>
           {images.map((image) => (
             <ImageWrapper key={image}>
-              <CirleCross ></CirleCross>
-              <Image1 src={`${environmentVariables.apiUrl}/uploads/${image}`} alt="Image" />
+              <CirleCross></CirleCross>
+              <Image1
+                src={`${environmentVariables.apiUrl}/uploads/${image}`}
+                alt="Image"
+              />
               <RemoveButton onClick={() => removeImage(image)}>
                 <FaTimes />
               </RemoveButton>
             </ImageWrapper>
           ))}
         </ImageSection>
-
       </MainContainer>
     </Root>
   );

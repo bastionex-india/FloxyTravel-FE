@@ -11,6 +11,7 @@ import { environmentVariables } from "../config/config";
 import Swal from "sweetalert2";
 import { FaTimes } from "react-icons/fa";
 import { useRef } from "react";
+import CircularLoader from "../Component/CircularLoader/CircularLoader";
 
 const Root = styled.div`
   /* width: 967px; */
@@ -179,6 +180,7 @@ const VendorEditHotel = () => {
   const [name, setName] = useState("");
   const [category, setCategory] = useState("");
   const [theme, setTheme] = useState([]);
+  const [buttonLoading, setButtonLoading] = useState(false);
   const [general, setGeneral] = useState("");
   const [services, setServices] = useState("");
   const [internet, setInternet] = useState("");
@@ -246,6 +248,7 @@ const VendorEditHotel = () => {
   };
 
   const handleUpdate = async (e) => {
+    setButtonLoading(true);
     axios({
       method: "put",
       url: `${environmentVariables.apiUrl}/vendor/updatehotel/vendor/${hotelData._id}`,
@@ -266,6 +269,7 @@ const VendorEditHotel = () => {
         console.log(response.data.message);
         setUpdatedHotelData(response.data.message);
         Swal.fire("Updated", "Hotel updated successfully", "success");
+        setButtonLoading(false);
         navigate("/vendormanagehotels");
         // setName("");
         // setOverview("");
@@ -279,6 +283,7 @@ const VendorEditHotel = () => {
       })
       .catch((error) => {
         console.log("///////////////", error);
+        setButtonLoading(false);
         Swal.fire("Error", "Something went wrong", "error");
         // setError('Details are not valid');
       });
@@ -421,7 +426,19 @@ const VendorEditHotel = () => {
               onChange={(e) => setOverview(e.target.value)}
             />
           </FormWrapper>
-          <Button onClick={(e) => handleUpdate(e)}>Update</Button>
+          {buttonLoading === true ? (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                marginTop: "30px",
+              }}
+            >
+              <CircularLoader></CircularLoader>
+            </div>
+          ) : (
+            <Button onClick={(e) => handleUpdate(e)}>Update</Button>
+          )}
         </HotelAddForm>
         <FormLabel>Images*</FormLabel>
         <FormFileInput
