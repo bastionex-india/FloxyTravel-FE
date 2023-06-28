@@ -121,6 +121,10 @@ function App() {
                       element={<BookingHistory />}
                     />
                     <Route
+                      path="/generateInvoice"
+                      element={<GenerateInvoice />}
+                    />
+                    <Route
                       path="/bookinghotelbyid"
                       element={<BookingHotelById />}
                     />

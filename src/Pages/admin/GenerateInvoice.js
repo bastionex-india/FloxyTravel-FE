@@ -141,13 +141,16 @@ const GenerateInvoice = () => {
     // setAmount(20)
     // setDiscount(2)
     // setTotalAmount(18)
-
+    let url =
+      authData.data.isadmin === true
+        ? `${environmentVariables.apiUrl}/admin/getPaymentdetail`
+        : `${environmentVariables.apiUrl}/vendor/getPaymentdetail`;
     let requestBody = {
       bookingID: state._id,
     };
     let config = {
       method: "post",
-      url: `${environmentVariables.apiUrl}/admin/getPaymentdetail`,
+      url: url,
       headers: {
         _token: authData.data.token,
         "Content-Type": "application/json",

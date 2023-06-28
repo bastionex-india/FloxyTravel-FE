@@ -96,6 +96,8 @@ const BookingHotelById = () => {
   const generateInvoiceHandler = () => {
     navigate("/generateInvoice", { state: data });
   };
+
+  console.log(state, "vendor");
   const getAllUsers = async () => {
     await axios
       .get(

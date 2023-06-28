@@ -119,7 +119,7 @@ function SideBar(props) {
               navigate("/userselectedcity");
             }}
           >
-            <Link>Manage Hotel Landing Page</Link>
+            <Link>Manage State Landing Page</Link>
           </LinkWrapper>
           <LinkWrapper
             select={selected === "Booking history"}
