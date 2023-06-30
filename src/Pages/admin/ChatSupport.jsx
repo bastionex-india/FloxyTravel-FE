@@ -109,7 +109,7 @@ const ChatSupport = () => {
       const response = await getTwilioAuthToken();
       const token = response.data.token;
       const client = new Client(token);
-      console.log("Token created.....",client);
+      // console.log("Token created.....",client);
       setChatClient(client);
     } catch (error) {
       console.error("Error initializing Chat client:", error);
@@ -122,7 +122,7 @@ const ChatSupport = () => {
         let messageAttributes = null
         let response = await activeChannel.sendMessage(inputText, messageAttributes);
         setInputText('');
-        console.log("sent");
+        // console.log("sent");
       } catch (error) {
         console.error('Error sending message:', error);
       }
@@ -133,7 +133,7 @@ const ChatSupport = () => {
   };
   
   const handleNewMessage = (message) => {
-    console.log('New message received:', message);
+    // console.log('New message received:', message);
     // Handle the new message as desired
     setMessages(messages => [...messages, message]);
     messages.push(message)
@@ -147,30 +147,30 @@ const ChatSupport = () => {
   const selectChannel = (channel) => {
     setActiveChannel(channel);
     setActiveChannelSID(channel.sid)
-    console.log("channel selected...");
+    // console.log("channel selected...");
   }
   // Assuming you have a valid Twilio Chat client
   const getAllChannels = async (client) => {
     try {
       const channels = await client.getSubscribedChannels();
-      console.log('All channels:', channels);
+      // console.log('All channels:', channels);
       setAllChannel(channels.items)
     } catch (error) {
       console.error('Error retrieving channels:', error);
     }
   };
   const handleChannelAdded = (channel) => {
-    console.log('New channel created:', channel);
+    // console.log('New channel created:', channel);
     // Perform any desired actions when a new channel is created
     getAllChannels(chatClient)
   };
   const handleChannelDeleted = (channel) => {
-    console.log('Channel deleted:', channel);
+    // console.log('Channel deleted:', channel);
     // Perform any desired actions when a channel is deleted
     getAllChannels(chatClient)
   };
   const handleChannelRemoved = (channel) => {
-    console.log('Channel removed:', channel);
+    // console.log('Channel removed:', channel);
     // Perform any desired actions when a channel is removed
     getAllChannels(chatClient)
   };
@@ -196,7 +196,7 @@ const ChatSupport = () => {
 
   useEffect(() => {
     if (chatClient) {
-      console.log({ chatClient });
+      // console.log({ chatClient });
       getAllChannels(chatClient)
     }
     if (chatClient) {
