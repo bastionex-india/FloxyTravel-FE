@@ -64,10 +64,14 @@ function SideBar(props) {
         window.location.href.split("/").pop() === "vendormanagehotels"
       ) {
         setselected("vendormanagehotels");
-      }else if (
+      } else if (
         window.location.href.split("/").pop() === "payouts"
       ) {
         setselected("payouts");
+      } else if (
+        window.location.href.split("/").pop() === "chatSupport"
+      ) {
+        setselected("chatSupport");
       } else {
         setselected("Dashboard");
       }
@@ -141,6 +145,17 @@ function SideBar(props) {
           >
             <Link>Upcoming Bookings</Link>
           </LinkWrapper> */}
+
+          <LinkWrapper
+            select={selected === "chatSupport"}
+            onClick={() => {
+              setselected("chatSupport");
+              navigate("/chatSupport");
+            }}
+          >
+            <Link>Chat Support</Link>
+          </LinkWrapper>
+
         </>
       ) : (
         <>
@@ -182,7 +197,7 @@ function SideBar(props) {
           >
             <Link>Payouts</Link>
           </LinkWrapper>
-          
+
         </>
       )}
     </Root>
