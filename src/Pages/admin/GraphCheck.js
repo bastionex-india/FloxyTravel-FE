@@ -18,6 +18,7 @@ import { MDBCard, MDBCardBody } from "mdb-react-ui-kit";
 import { BsCalendarDay } from "react-icons/bs";
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
+import CircularLoader from "../../Component/CircularLoader/CircularLoader";
 const CustomBar = (props) => {
   const { x, y, width, height, value } = props;
 
@@ -38,6 +39,7 @@ const CustomBar = (props) => {
 };
 export default function GraphCheck() {
   const [graphdata, setGraphData] = useState();
+  const [isLoading, setIsLoading] = useState(false);
   const { authData, setAuthData } = useContext(AuthContext);
   const [alldata, setAlldata] = useState();
   const [yeardata, setYeardata] = useState();
@@ -194,6 +196,7 @@ export default function GraphCheck() {
         }
         setGraphData(mergedata);
         setYeardata(mergedata);
+        setIsLoading(false);
       })
       .catch((err) => {
         console.log(err.message);
@@ -306,6 +309,7 @@ export default function GraphCheck() {
   }, [fromDate, toDate, tab]);
 
   useEffect(() => {
+    setIsLoading(true);
     getMonthData();
     getYearData();
   }, []);
@@ -408,31 +412,48 @@ export default function GraphCheck() {
           <></>
         )}
 
-        <BarChart
-          width={800}
-          height={300}
-          data={graphdata}
-          margin={{
-            top: 5,
-            right: 30,
-            left: 20,
-            bottom: 5,
-          }}
-        >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis
-            dataKey="Name"
-            label={{ value: xLabel, position: "outsideBottom", dy: 10 }}
-          />
-          <YAxis
-            label={{ value: "Numbers", angle: -90, position: "insideLeft" }}
-          />
-          <Tooltip />
-          <Legend />
-          {/* <Bar dataKey="Bookings" fill="#8884d8" /> */}
-          <Bar dataKey={tab} shape={<CustomBar />} />
-          {/* <Bar dataKey="Earnings" fill="red" /> */}
-        </BarChart>
+        {isLoading === true ? (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              marginTop: "30px",
+            }}
+          >
+            <CircularLoader></CircularLoader>
+          </div>
+        ) : (
+          <BarChart
+            width={800}
+            height={300}
+            data={graphdata}
+            margin={{
+              top: 5,
+              right: 30,
+              left: 20,
+              bottom: 20,
+            }}
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis
+              dataKey="Name"
+              label={{ value: xLabel, position: "outsideBottom", dy: 10 }}
+            />
+            <YAxis
+              label={{
+                value: `Number of ${tab}`,
+                angle: -90,
+                dy: 50,
+                position: "insideLeft",
+              }}
+            />
+            <Tooltip />
+            {/* <Legend /> */}
+            {/* <Bar dataKey="Bookings" fill="#8884d8" /> */}
+            <Bar dataKey={tab} shape={<CustomBar />} />
+            {/* <Bar dataKey="Earnings" fill="red" /> */}
+          </BarChart>
+        )}
       </MDBCard>
     </>
   );

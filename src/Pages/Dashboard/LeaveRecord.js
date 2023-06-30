@@ -43,6 +43,7 @@ const CardsWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   margin-bottom: 20px;
+  width: 74vw;
 `;
 const CardText = styled.div`
   color: #fff;
@@ -96,13 +97,13 @@ export default function LeaveRecord({ vendorId }) {
 
   return (
     <>
-      <CardsWrapper>
-        <CardWrapper>
-          {isLoadingCards === true ? (
-            <div style={{ display: "flex", justifyContent: "center" }}>
-              <CircularLoader></CircularLoader>
-            </div>
-          ) : (
+      {isLoadingCards === true ? (
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <CircularLoader></CircularLoader>
+        </div>
+      ) : (
+        <CardsWrapper>
+          <CardWrapper>
             <Card style={{ padding: "50px 0px", marginRight: "20px" }}>
               <h6 style={{ textAlign: "center" }} class="card-title">
                 EARNINGS
@@ -114,14 +115,8 @@ export default function LeaveRecord({ vendorId }) {
                 ₹ {summaryData?.totalEarnings}
               </h1>
             </Card>
-          )}
-        </CardWrapper>
-        <CardWrapper>
-          {isLoadingCards === true ? (
-            <div style={{ display: "flex", justifyContent: "center" }}>
-              <CircularLoader></CircularLoader>
-            </div>
-          ) : (
+          </CardWrapper>
+          <CardWrapper>
             <Card style={{ padding: "50px 0px", marginRight: "20px" }}>
               <h6 style={{ textAlign: "center" }} class="card-title">
                 PAYOUT
@@ -133,14 +128,8 @@ export default function LeaveRecord({ vendorId }) {
                 ₹ {summaryData?.allPayoutAmount}
               </h1>
             </Card>
-          )}
-        </CardWrapper>
-        <CardWrapper>
-          {isLoadingCards === true ? (
-            <div style={{ display: "flex", justifyContent: "center" }}>
-              <CircularLoader></CircularLoader>
-            </div>
-          ) : (
+          </CardWrapper>
+          <CardWrapper>
             <Card style={{ padding: "50px 0px", marginRight: "20px" }}>
               <h6 style={{ textAlign: "center" }} class="card-title">
                 HOTELS
@@ -152,14 +141,8 @@ export default function LeaveRecord({ vendorId }) {
                 {summaryData?.totalHotels}
               </h1>
             </Card>
-          )}
-        </CardWrapper>
-        <CardWrapper>
-          {isLoadingCards === true ? (
-            <div style={{ display: "flex", justifyContent: "center" }}>
-              <CircularLoader></CircularLoader>
-            </div>
-          ) : (
+          </CardWrapper>
+          <CardWrapper>
             <Card style={{ padding: "50px 0px" }}>
               <h6 style={{ textAlign: "center" }} class="card-title">
                 BOOKINGS
@@ -171,9 +154,9 @@ export default function LeaveRecord({ vendorId }) {
                 {summaryData?.totalBookings}
               </h1>
             </Card>
-          )}
-        </CardWrapper>
-      </CardsWrapper>
+          </CardWrapper>
+        </CardsWrapper>
+      )}
       <VendorGraphCheck />
     </>
   );

@@ -93,6 +93,11 @@ const BookingHotelById = () => {
   const [btnState, setBtnState] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  const generateInvoiceHandler = () => {
+    navigate("/generateInvoice", { state: data });
+  };
+
+  console.log(state, "vendor");
   const getAllUsers = async () => {
     await axios
       .get(
@@ -216,9 +221,13 @@ const BookingHotelById = () => {
                       </TableRow>
                     </TableBody>
                   </Table>
-                  {/* <Button variant="contained" endIcon={<PictureAsPdfIcon />}>
-                    Generate Invoice{" "}
-                  </Button> */}
+                  <Button
+                    variant="contained"
+                    onClick={generateInvoiceHandler}
+                    endIcon={<PictureAsPdfIcon />}
+                  >
+                    View Invoice{" "}
+                  </Button>
                 </Grid>
                 <Grid xs={6}>
                   <h4>Booking Details</h4>

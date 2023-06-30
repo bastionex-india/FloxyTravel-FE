@@ -21,6 +21,7 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
+import CircularLoader from "../../Component/CircularLoader/CircularLoader";
 
 const Item = newStyled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -66,6 +67,7 @@ const BookingHistorybyOrderid = () => {
   const { state } = useLocation();
   const { authData } = useContext(AuthContext);
   const [data, setData] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const getAllUsers = async () => {
@@ -76,13 +78,17 @@ const BookingHistorybyOrderid = () => {
       )
       .then((response) => {
         // console.log("response.data", response.data.data);
+        setIsLoading(false);
         setData(response.data.data);
       })
       .catch((error) => {
+        setIsLoading(false);
         console.log("error", error);
       });
   };
+  console.log(state, "admin");
   useEffect(() => {
+    setIsLoading(true);
     getAllUsers();
   }, []);
 
@@ -108,131 +114,145 @@ const BookingHistorybyOrderid = () => {
         </TextRoot>
       </TextMainWrapper>
       <Container maxWidth="lg">
-        <Grid container>
-          <Grid xs={12}>
-            <Item>
-              <h4>Hotel Location</h4>
-              <h4>
-                <i>{data.hotelname}</i>
-              </h4>
-              <p>
-                {data.area} , {data.state}
-              </p>
-              <Grid container>
-                <Grid xs={6}>
-                  <h4>Customer Details</h4>
-                  <Table aria-label="simple table">
-                    <TableBody>
-                      <TableRow
-                        sx={{
-                          "&:last-child td, &:last-child th": { border: 0 },
-                        }}
-                      >
-                        <TableCell component="th" scope="row">
-                          Name
-                        </TableCell>
-                        <TableCell align="right">
-                          {" "}
-                          {data.customer && data.customer.name}{" "}
-                        </TableCell>
-                      </TableRow>
-                      <TableRow
-                        sx={{
-                          "&:last-child td, &:last-child th": { border: 0 },
-                        }}
-                      >
-                        <TableCell component="th" scope="row">
-                          Email
-                        </TableCell>
-                        <TableCell align="right">
-                          {" "}
-                          {data.customer && data.customer.email}
-                        </TableCell>
-                      </TableRow>
-                      <TableRow
-                        sx={{
-                          "&:last-child td, &:last-child th": { border: 0 },
-                        }}
-                      >
-                        <TableCell component="th" scope="row">
-                          Contact
-                        </TableCell>
-                        <TableCell align="right">
-                          {" "}
-                          {data.customer && data.customer.mobile}{" "}
-                        </TableCell>
-                      </TableRow>
-                    </TableBody>
-                  </Table>
-                  <Button
-                    variant="contained"
-                    onClick={generateInvoiceHandler}
-                    endIcon={<PictureAsPdfIcon />}
-                  >
-                    View Invoice{" "}
-                  </Button>
+        {isLoading === true ? (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              marginTop: "30px",
+            }}
+          >
+            <CircularLoader></CircularLoader>
+          </div>
+        ) : (
+          <Grid container>
+            <Grid xs={12}>
+              <Item>
+                <h4>Hotel Location</h4>
+                <h4>
+                  <i>{data.hotelname}</i>
+                </h4>
+                <p>
+                  {data.area} , {data.state}
+                </p>
+                <Grid container>
+                  <Grid xs={6}>
+                    <h4>Customer Details</h4>
+                    <Table aria-label="simple table">
+                      <TableBody>
+                        <TableRow
+                          sx={{
+                            "&:last-child td, &:last-child th": { border: 0 },
+                          }}
+                        >
+                          <TableCell component="th" scope="row">
+                            Name
+                          </TableCell>
+                          <TableCell align="right">
+                            {" "}
+                            {data.customer && data.customer.name}{" "}
+                          </TableCell>
+                        </TableRow>
+                        <TableRow
+                          sx={{
+                            "&:last-child td, &:last-child th": { border: 0 },
+                          }}
+                        >
+                          <TableCell component="th" scope="row">
+                            Email
+                          </TableCell>
+                          <TableCell align="right">
+                            {" "}
+                            {data.customer && data.customer.email}
+                          </TableCell>
+                        </TableRow>
+                        <TableRow
+                          sx={{
+                            "&:last-child td, &:last-child th": { border: 0 },
+                          }}
+                        >
+                          <TableCell component="th" scope="row">
+                            Contact
+                          </TableCell>
+                          <TableCell align="right">
+                            {" "}
+                            {data.customer && data.customer.mobile}{" "}
+                          </TableCell>
+                        </TableRow>
+                      </TableBody>
+                    </Table>
+                    <Button
+                      variant="contained"
+                      onClick={generateInvoiceHandler}
+                      endIcon={<PictureAsPdfIcon />}
+                    >
+                      {data.status === "pending"
+                        ? "Generate Invoice"
+                        : "View Invoice"}
+                    </Button>
+                  </Grid>
+                  <Grid xs={6}>
+                    <h4>Booking Details</h4>
+                    <Table aria-label="simple table">
+                      <TableBody>
+                        <TableRow
+                          sx={{
+                            "&:last-child td, &:last-child th": { border: 0 },
+                          }}
+                        >
+                          <TableCell component="th" scope="row">
+                            Adult
+                          </TableCell>
+                          <TableCell align="right">{data.adult}</TableCell>
+                        </TableRow>
+                        <TableRow
+                          sx={{
+                            "&:last-child td, &:last-child th": { border: 0 },
+                          }}
+                        >
+                          <TableCell component="th" scope="row">
+                            Children
+                          </TableCell>
+                          <TableCell align="right">{data.children}</TableCell>
+                        </TableRow>
+                        <TableRow
+                          sx={{
+                            "&:last-child td, &:last-child th": { border: 0 },
+                          }}
+                        >
+                          <TableCell component="th" scope="row">
+                            Rooms
+                          </TableCell>
+                          <TableCell align="right">{data.noOfRooms}</TableCell>
+                        </TableRow>
+                        <TableRow
+                          sx={{
+                            "&:last-child td, &:last-child th": { border: 0 },
+                          }}
+                        >
+                          <TableCell component="th" scope="row">
+                            CheckIn Date
+                          </TableCell>
+                          <TableCell align="right">{data.checkIn}</TableCell>
+                        </TableRow>
+                        <TableRow
+                          sx={{
+                            "&:last-child td, &:last-child th": { border: 0 },
+                          }}
+                        >
+                          <TableCell component="th" scope="row">
+                            CheckOut Date
+                          </TableCell>
+                          <TableCell align="right">{data.checkOut}</TableCell>
+                        </TableRow>
+                      </TableBody>
+                    </Table>
+                  </Grid>
                 </Grid>
-                <Grid xs={6}>
-                  <h4>Booking Details</h4>
-                  <Table aria-label="simple table">
-                    <TableBody>
-                      <TableRow
-                        sx={{
-                          "&:last-child td, &:last-child th": { border: 0 },
-                        }}
-                      >
-                        <TableCell component="th" scope="row">
-                          Adult
-                        </TableCell>
-                        <TableCell align="right">{data.adult}</TableCell>
-                      </TableRow>
-                      <TableRow
-                        sx={{
-                          "&:last-child td, &:last-child th": { border: 0 },
-                        }}
-                      >
-                        <TableCell component="th" scope="row">
-                          Children
-                        </TableCell>
-                        <TableCell align="right">{data.children}</TableCell>
-                      </TableRow>
-                      <TableRow
-                        sx={{
-                          "&:last-child td, &:last-child th": { border: 0 },
-                        }}
-                      >
-                        <TableCell component="th" scope="row">
-                          Rooms
-                        </TableCell>
-                        <TableCell align="right">{data.noOfRooms}</TableCell>
-                      </TableRow>
-                      <TableRow
-                        sx={{
-                          "&:last-child td, &:last-child th": { border: 0 },
-                        }}
-                      >
-                        <TableCell component="th" scope="row">
-                          CheckIn Date
-                        </TableCell>
-                        <TableCell align="right">{data.checkIn}</TableCell>
-                      </TableRow>
-                      <TableRow
-                        sx={{
-                          "&:last-child td, &:last-child th": { border: 0 },
-                        }}
-                      >
-                        <TableCell component="th" scope="row">
-                          CheckOut Date
-                        </TableCell>
-                        <TableCell align="right">{data.checkOut}</TableCell>
-                      </TableRow>
-                    </TableBody>
-                  </Table>
-                </Grid>
-              </Grid>
-            </Item>
+              </Item>
+            </Grid>
           </Grid>
-        </Grid>
+        )}
       </Container>
     </>
   );

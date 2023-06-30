@@ -10,7 +10,7 @@ import { Button } from "@mui/material";
 import CircularLoader from "../Component/CircularLoader/CircularLoader";
 import TablePagination from "@mui/material/TablePagination";
 import Swal from "sweetalert2";
-import LoadingButton from '@mui/lab/LoadingButton';
+import LoadingButton from "@mui/lab/LoadingButton";
 
 import PropTypes from "prop-types";
 import { styled as newStyle } from "@mui/material/styles";
@@ -24,24 +24,21 @@ import Typography from "@mui/material/Typography";
 
 import moment from "moment";
 
-import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
-import Grid from '@mui/material/Grid';
+import Box from "@mui/material/Box";
+import Paper from "@mui/material/Paper";
+import Grid from "@mui/material/Grid";
 
-import InputLabel from '@mui/material/InputLabel';
-import FormControl from '@mui/material/FormControl';
-import NativeSelect from '@mui/material/NativeSelect';
-
-
+import InputLabel from "@mui/material/InputLabel";
+import FormControl from "@mui/material/FormControl";
+import NativeSelect from "@mui/material/NativeSelect";
 
 const Item = newStyle(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+  backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
   ...theme.typography.body2,
   padding: theme.spacing(1),
-  textAlign: 'center',
+  textAlign: "center",
   color: theme.palette.text.secondary,
 }));
-
 
 const BootstrapDialog = newStyle(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -119,8 +116,8 @@ const HotelInfoWrapper = styled.div`
 `;
 
 const PayOutInfoWrapper = styled.div`
-width: 50%;
-margin: 10px 30px;
+  width: 50%;
+  margin: 10px 30px;
 `;
 const HotelButtonWrapper = styled.div`
   width: 30%;
@@ -178,8 +175,6 @@ const NewRow = styled.div`
   width: 100%;
 `;
 const Payouts = () => {
-
-
   const [select, setSelect] = useState("");
   const [select1, setSelect1] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -191,10 +186,10 @@ const Payouts = () => {
   const [open, setOpen] = useState(false);
   const [payoutRequestData, setPayoutRequestData] = useState(null);
   const [isButtonLoading, setIsButtonLoading] = useState(false);
-  const [cityList,setCityList] = useState([])
-  const [hotelList,setHotelList] = useState([])
-  const [selectHotel, setSelectHotel] = useState('all');
-  const [selectCity,setSelectCity] = useState('all');
+  const [cityList, setCityList] = useState([]);
+  const [hotelList, setHotelList] = useState([]);
+  const [selectHotel, setSelectHotel] = useState("all");
+  const [selectCity, setSelectCity] = useState("all");
 
   const navigate = useNavigate();
 
@@ -222,13 +217,14 @@ const Payouts = () => {
     setOpen(true);
   };
   const payoutRequestHandler = (payLinkObjectIds, hotelIds, payOutAmount) => {
-    handleClickOpen()
-    setPayoutRequestData({ payLinkObjectIds, hotelIds, payOutAmount })
-  }
+    handleClickOpen();
+    setPayoutRequestData({ payLinkObjectIds, hotelIds, payOutAmount });
+  };
   const savePayout = async () => {
     let data = {
-      payLinkId: payoutRequestData.payLinkObjectIds, hotelId: payoutRequestData.hotelIds,
-      payoutAmount: payoutRequestData.payOutAmount
+      payLinkId: payoutRequestData.payLinkObjectIds,
+      hotelId: payoutRequestData.hotelIds,
+      payoutAmount: payoutRequestData.payOutAmount,
     };
     let config = {
       method: "post",
@@ -243,8 +239,8 @@ const Payouts = () => {
     axios
       .request(config)
       .then((response) => {
-        setIsButtonLoading(false)
-        handleClose()
+        setIsButtonLoading(false);
+        handleClose();
         if (response.data.status) {
           Swal.fire({
             icon: "success",
@@ -267,12 +263,12 @@ const Payouts = () => {
           timer: "800",
         });
       });
-  }
-  //   
+  };
+  //
   const makePayOutRequest = () => {
-    setIsButtonLoading(true)
+    setIsButtonLoading(true);
     savePayout();
-  }
+  };
   const getComponents = () => {
     if (isLoading === true) {
       return (
@@ -297,9 +293,12 @@ const Payouts = () => {
         return data.map((row, index) => {
           let totalEarnings = Number(row.totalEarnings);
           let feeAmount = 0;
-          let adminFee = row.hotelsData.adminFee != undefined ? row.hotelsData.adminFee : 0;
+          let adminFee =
+            row.hotelsData.adminFee != undefined ? row.hotelsData.adminFee : 0;
           if (adminFee) {
-            feeAmount = (Number(row.totalEarnings) * Number(row.hotelsData.adminFee)) / 100;
+            feeAmount =
+              (Number(row.totalEarnings) * Number(row.hotelsData.adminFee)) /
+              100;
           }
           let payOutAmount = Number(row.totalEarnings) - feeAmount;
 
@@ -309,16 +308,19 @@ const Payouts = () => {
           let imageSrc = row.hotelsData.image.length
             ? row.hotelsData.image[0]
             : "1675936089112-teanest1.jpg";
-            // lastPayoutDate
-            // payoutInterval
-            let dayCount = row.payoutInterval!=undefined ? row.payoutInterval : 0; 
-            let payoutInterval = row.payoutInterval!=undefined ? row.payoutInterval : 0; 
-            let lastPayoutDate = row.lastPayoutDate!=undefined ? row.lastPayoutDate : 0; 
-            if(lastPayoutDate){
-              let a = moment(new Date(lastPayoutDate)); 
-              var b = moment(new Date());
-              dayCount =  Number(a.diff(b, 'days')) // 1
-            }
+          // lastPayoutDate
+          // payoutInterval
+          let dayCount =
+            row.payoutInterval != undefined ? row.payoutInterval : 0;
+          let payoutInterval =
+            row.payoutInterval != undefined ? row.payoutInterval : 0;
+          let lastPayoutDate =
+            row.lastPayoutDate != undefined ? row.lastPayoutDate : 0;
+          if (lastPayoutDate) {
+            let a = moment(new Date(lastPayoutDate));
+            var b = moment(new Date());
+            dayCount = Number(a.diff(b, "days")); // 1
+          }
 
           return (
             <HotelCard>
@@ -335,23 +337,45 @@ const Payouts = () => {
                   <HotelIcon></HotelIcon>
                   <HotelInfoText>City : {row.hotelsData.city}</HotelInfoText>
                   <HotelInfoText>State : {row.hotelsData.state}</HotelInfoText>
-                  <HotelInfoText>Country : {row.hotelsData.country}</HotelInfoText>
+                  <HotelInfoText>
+                    Country : {row.hotelsData.country}
+                  </HotelInfoText>
                   <HotelInfoText>Theme : {row.hotelsData.theme}</HotelInfoText>
-                  <HotelInfoText>Category : {row.hotelsData.hotelCategory}</HotelInfoText>
+                  <HotelInfoText>
+                    Category : {row.hotelsData.hotelCategory}
+                  </HotelInfoText>
                 </HotelIconWrapper>
-
               </HotelInfoWrapper>
               <PayOutInfoWrapper>
-                <p><b>TotalPaid amount : </b>{totalEarnings} INR</p>
-                <p><b>Fee amount : </b>{feeAmount} ({adminFee}%) INR</p>
-                <p><b>Payout amount : </b>{payOutAmount} INR</p>
-                {
-                  dayCount >= payoutInterval ?
-                  <Button variant="contained" size="small" loading={true} onClick={() => payoutRequestHandler(payLinkObjectIds, hotelIds, payOutAmount)}>Payout</Button>
-                  : null
-                }
+                <p>
+                  <b>TotalPaid amount : </b>
+                  {totalEarnings} INR
+                </p>
+                <p>
+                  <b>Fee amount : </b>
+                  {feeAmount} ({adminFee}%) INR
+                </p>
+                <p>
+                  <b>Payout amount : </b>
+                  {payOutAmount} INR
+                </p>
+                {dayCount >= payoutInterval ? (
+                  <Button
+                    variant="contained"
+                    size="small"
+                    loading={true}
+                    onClick={() =>
+                      payoutRequestHandler(
+                        payLinkObjectIds,
+                        hotelIds,
+                        payOutAmount
+                      )
+                    }
+                  >
+                    Payout
+                  </Button>
+                ) : null}
               </PayOutInfoWrapper>
-
             </HotelCard>
           );
         });
@@ -362,7 +386,12 @@ const Payouts = () => {
     await axios
       .get(`${environmentVariables.apiUrl}/vendor/getPayoutList`, {
         headers: { _token: authData.data.token },
-        params: { hotelname: selectHotel ,cityname: selectCity, page: page + 1 ,limit: rowsPerPage  }
+        params: {
+          hotelname: selectHotel,
+          cityname: selectCity,
+          page: page + 1,
+          limit: rowsPerPage,
+        },
       })
       .then((response) => {
         // console.log(response.data.data);
@@ -375,18 +404,18 @@ const Payouts = () => {
         setIsLoading(false);
       });
   };
-  const getAllCities = async ()=>{
+  const getAllCities = async () => {
     await axios
       .get(`${environmentVariables.apiUrl}/vendor/getVendorCities`, {
         headers: { _token: authData.data.token },
       })
       .then((response) => {
-        setCityList(response.data.data)
+        setCityList(response.data.data);
       })
       .catch((err) => {
-        console.log("error", err)
+        console.log("error", err);
       });
-  }
+  };
   const getHotelListData = async () => {
     await axios
       .get(
@@ -396,28 +425,28 @@ const Payouts = () => {
         }
       )
       .then((response) => {
-        setHotelList(response.data.data.records)
+        setHotelList(response.data.data.records);
       })
       .catch((err) => {
         console.log("error", err);
       });
   };
-  const handleCityChange = (city)=>{
+  const handleCityChange = (city) => {
     console.log(city);
-    setSelectCity(city)
-  }
-  const handleHotelChange = (hotel)=>{
-    setSelectHotel(hotel)
-  }
+    setSelectCity(city);
+  };
+  const handleHotelChange = (hotel) => {
+    setSelectHotel(hotel);
+  };
   useEffect(() => {
     setIsLoading(true);
     getAllListData();
-  }, [page, rowsPerPage,selectCity,selectHotel]);
+  }, [page, rowsPerPage, selectCity, selectHotel]);
 
-  useEffect(()=>{
-    getHotelListData()
-    getAllCities()
-  },[])
+  useEffect(() => {
+    getHotelListData();
+    getAllCities();
+  }, []);
   // console.log({selectCity,selectHotel});
   return (
     <>
@@ -431,7 +460,7 @@ const Payouts = () => {
                 onClick={() => navigate(-1)}
                 class="fa-solid fa-chevron-left fa-2x"
               ></i>
-              <Heading>Hotel`s Payout</Heading>
+              <Heading>Hotel's Payout</Heading>
             </div>
             <TextWrapper></TextWrapper>
           </Root>
@@ -446,28 +475,33 @@ const Payouts = () => {
             </PayoutSection>
           </NewRow> */}
           <Box sx={{ flexGrow: 1 }}>
-            <Grid container spacing={2} p={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }} >
+            <Grid
+              container
+              spacing={2}
+              p={1}
+              columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+            >
               <Grid item xs={4}>
                 <FormControl fullWidth>
                   <InputLabel variant="standard" htmlFor="uncontrolled-native">
                     Hotels
                   </InputLabel>
                   <NativeSelect
-                    defaultValue={'all'}
+                    defaultValue={"all"}
                     inputProps={{
-                      name: 'age',
-                      id: 'uncontrolled-native',
+                      name: "age",
+                      id: "uncontrolled-native",
                     }}
-                    onChange={(event)=> handleHotelChange(event.target.value)}
+                    onChange={(event) => handleHotelChange(event.target.value)}
                   >
-                    <option value={'all'}>All</option>
-                    {
-                      hotelList.map((row,index)=>{
-                        return (
-                          <option key={index} value={row.hotelname}>{row.hotelname}</option>
-                        )
-                      })
-                    }
+                    <option value={"all"}>All</option>
+                    {hotelList.map((row, index) => {
+                      return (
+                        <option key={index} value={row.hotelname}>
+                          {row.hotelname}
+                        </option>
+                      );
+                    })}
                   </NativeSelect>
                 </FormControl>
               </Grid>
@@ -477,45 +511,45 @@ const Payouts = () => {
                     City
                   </InputLabel>
                   <NativeSelect
-                    defaultValue={'all'}
+                    defaultValue={"all"}
                     inputProps={{
-                      name: 'age',
-                      id: 'uncontrolled-native',
+                      name: "age",
+                      id: "uncontrolled-native",
                     }}
-                    onChange={(event)=> handleCityChange(event.target.value) }
+                    onChange={(event) => handleCityChange(event.target.value)}
                   >
-                    <option value={'all'}>All</option>
-                    {
-                      cityList.map((row,index)=>{
-                        return (
-                          <option key={index} value={row.city}>{row.city}</option>
-                        )
-                      })
-                    }
+                    <option value={"all"}>All</option>
+                    {cityList.map((row, index) => {
+                      return (
+                        <option key={index} value={row.city}>
+                          {row.city}
+                        </option>
+                      );
+                    })}
                   </NativeSelect>
                 </FormControl>
               </Grid>
               <Grid item xs={4} mt={3}>
-                <b>Total Payout amount :</b><span>{mainResponse.allHotelPayoutAmount} INR</span>{' '}
+                <b>Total Payout amount :</b>
+                <span>{mainResponse.allHotelPayoutAmount} INR</span>{" "}
                 {/* <Button variant="contained" size="small" onClick={() => payoutRequestHandler(mainResponse.payLinkIds, mainResponse.hotelIds, mainResponse.allHotelPayoutAmount)}>Payout</Button> */}
-
               </Grid>
             </Grid>
           </Box>
-          <HotelCardsWrapper>
-
-            {getComponents()}
-          </HotelCardsWrapper>
-
+          <HotelCardsWrapper>{getComponents()}</HotelCardsWrapper>
         </TextRoot>
-        <TablePagination
-          component="div"
-          count={mainResponse.totalrecords}
-          page={page}
-          onPageChange={handleChangePage}
-          rowsPerPage={rowsPerPage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
+        {isLoading === true ? (
+          <></>
+        ) : (
+          <TablePagination
+            component="div"
+            count={mainResponse.totalrecords}
+            page={page}
+            onPageChange={handleChangePage}
+            rowsPerPage={rowsPerPage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+        )}
         <BootstrapDialog
           onClose={handleClose}
           aria-labelledby="customized-dialog-title"
@@ -536,15 +570,20 @@ const Payouts = () => {
             <Button variant="contained" color="error" onClick={handleClose}>
               Cancel
             </Button>
-            <LoadingButton loading={isButtonLoading} disabled={isButtonLoading} onClick={makePayOutRequest} variant="contained" color="success">
+            <LoadingButton
+              loading={isButtonLoading}
+              disabled={isButtonLoading}
+              onClick={makePayOutRequest}
+              variant="contained"
+              color="success"
+            >
               Request
             </LoadingButton>
-
           </DialogActions>
         </BootstrapDialog>
       </TextMainWrapper>
     </>
   );
-}
+};
 
 export default Payouts;

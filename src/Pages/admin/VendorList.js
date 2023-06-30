@@ -41,6 +41,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import GraphCheck from "./GraphCheck";
+import CircularLoader from "../../Component/CircularLoader/CircularLoader";
 
 const Root = styled.div`
   width: 90%;
@@ -86,6 +87,7 @@ const VendorList = () => {
   const [adminValue, setAdminValue] = useState("");
   const [error, setError] = useState("");
   const [showModal, setShowModel] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const getAllListData = async () => {
     await axios
@@ -102,10 +104,14 @@ const VendorList = () => {
   const getSummaryData = () => {
     axios
       .get(`${environmentVariables?.apiUrl}/admin/getSummaryData`)
-      .then((res) => setSummaryData(res.data.data))
+      .then((res) => {
+        setSummaryData(res.data.data);
+        setIsLoading(false);
+      })
       .catch((err) => console.log(err));
   };
   useEffect(() => {
+    setIsLoading(true);
     getAllListData();
     getSummaryData();
   }, []);
@@ -300,74 +306,85 @@ const VendorList = () => {
 
   return (
     <>
-      <CardsWrapper>
-        <CardWrapper>
-          <Card style={{ padding: "50px 0px", marginRight: "20px" }}>
-            <h6 style={{ textAlign: "center" }} class="card-title">
-              EARNINGS
-            </h6>
-            <h1
-              style={{ textAlign: "center", color: "#008080" }}
-              class="card-text"
-            >
-              ₹ {summaryData?.totalEarnings}
-            </h1>
-          </Card>
-        </CardWrapper>
-        <CardWrapper>
-          <Card style={{ padding: "50px 0px", marginRight: "20px" }}>
-            <h6 style={{ textAlign: "center" }} class="card-title">
-              Payout
-            </h6>
-            <h1
-              style={{ textAlign: "center", color: "#008080" }}
-              class="card-text"
-            >
-              ₹ {summaryData?.allPayoutAmount.toFixed(2)}
-            </h1>
-          </Card>
-        </CardWrapper>
-        <CardWrapper>
-          <Card style={{ padding: "50px 0px", marginRight: "20px" }}>
-            <h6 style={{ textAlign: "center" }} class="card-title">
-              TOTAL VENDORS   
-            </h6>
-            <h1
-              style={{ textAlign: "center", color: "#008080" }}
-              class="card-text"
-            >
-              {summaryData?.totalVendors}
-            </h1>
-          </Card>
-        </CardWrapper>
-        <CardWrapper>
-          <Card style={{ padding: "50px 0px", marginRight: "20px" }}>
-            <h6 style={{ textAlign: "center" }} class="card-title">
-              TOTAL HOTELS
-            </h6>
-            <h1
-              style={{ textAlign: "center", color: "#008080" }}
-              class="card-text"
-            >
-              {summaryData?.totalHotels}
-            </h1>
-          </Card>
-        </CardWrapper>
-        <CardWrapper>
-          <Card style={{ padding: "50px 0px", marginRight: "20px" }}>
-            <h6 style={{ textAlign: "center" }} class="card-title">
-              TOTAL BOOKINGS
-            </h6>
-            <h1
-              style={{ textAlign: "center", color: "#008080" }}
-              class="card-text"
-            >
-              {summaryData?.totalBookings}
-            </h1>
-          </Card>
-        </CardWrapper>
-        
-      </CardsWrapper>
+      {isLoading === true ? (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            marginTop: "30px",
+          }}
+        >
+          <CircularLoader></CircularLoader>
+        </div>
+      ) : (
+        <CardsWrapper>
+          <CardWrapper>
+            <Card style={{ padding: "50px 0px", marginRight: "20px" }}>
+              <h6 style={{ textAlign: "center" }} class="card-title">
+                EARNINGS
+              </h6>
+              <h1
+                style={{ textAlign: "center", color: "#008080" }}
+                class="card-text"
+              >
+                ₹ {summaryData?.totalEarnings}
+              </h1>
+            </Card>
+          </CardWrapper>
+          <CardWrapper>
+            <Card style={{ padding: "50px 0px", marginRight: "20px" }}>
+              <h6 style={{ textAlign: "center" }} class="card-title">
+                PAYOUT
+              </h6>
+              <h1
+                style={{ textAlign: "center", color: "#008080" }}
+                class="card-text"
+              >
+                ₹ {summaryData?.allPayoutAmount.toFixed(2)}
+              </h1>
+            </Card>
+          </CardWrapper>
+          <CardWrapper>
+            <Card style={{ padding: "50px 0px", marginRight: "20px" }}>
+              <h6 style={{ textAlign: "center" }} class="card-title">
+                TOTAL VENDORS
+              </h6>
+              <h1
+                style={{ textAlign: "center", color: "#008080" }}
+                class="card-text"
+              >
+                {summaryData?.totalVendors}
+              </h1>
+            </Card>
+          </CardWrapper>
+          <CardWrapper>
+            <Card style={{ padding: "50px 0px", marginRight: "20px" }}>
+              <h6 style={{ textAlign: "center" }} class="card-title">
+                TOTAL HOTELS
+              </h6>
+              <h1
+                style={{ textAlign: "center", color: "#008080" }}
+                class="card-text"
+              >
+                {summaryData?.totalHotels}
+              </h1>
+            </Card>
+          </CardWrapper>
+          <CardWrapper>
+            <Card style={{ padding: "50px 0px", marginRight: "20px" }}>
+              <h6 style={{ textAlign: "center" }} class="card-title">
+                TOTAL BOOKINGS
+              </h6>
+              <h1
+                style={{ textAlign: "center", color: "#008080" }}
+                class="card-text"
+              >
+                {summaryData?.totalBookings}
+              </h1>
+            </Card>
+          </CardWrapper>
+        </CardsWrapper>
+      )}
 
       <GraphCheck />
     </>

@@ -4,7 +4,7 @@ import Navigation from "./Component/Navigation";
 import SideBar from "./Component/SideBar";
 import Login from "./Pages/Login/Login";
 import { Route, Routes } from "react-router-dom";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { AuthContext } from "./ContextApi/ContextApi";
 import Dashboard from "./Pages/Dashboard/Dashboard";
 import BookingHistory from "./Pages/BookingHistory";
@@ -36,21 +36,33 @@ const LeftWrapper = styled.div`
 const RightWrapper = styled.div`
   width: calc(100% - 300px);
   background-color: #f1f7fc;
-  
 `;
 const Container = styled.div`
   display: flex;
 `;
 function App() {
   const { authData, setAuthData } = useContext(AuthContext);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [showDropDown, setShowDropDown] = useState(false);
+
   // console.log("authdata of app",authData.data)
   return (
-    <Root>
+    <Root
+      onClick={() => {
+        setShowNotifications(false);
+        setShowDropDown(false);
+      }}
+    >
       {!authData ? (
         <Login />
       ) : (
         <>
-          <Navigation />
+          <Navigation
+            showNotifications={showNotifications}
+            setShowNotifications={setShowNotifications}
+            showDropDown={showDropDown}
+            setShowDropDown={setShowDropDown}
+          />
           <Container>
             <LeftWrapper>
               <SideBar />
@@ -114,6 +126,10 @@ function App() {
                       element={<BookingHistory />}
                     />
                     <Route
+                      path="/generateInvoice"
+                      element={<GenerateInvoice />}
+                    />
+                    <Route
                       path="/bookinghotelbyid"
                       element={<BookingHotelById />}
                     />
@@ -126,7 +142,10 @@ function App() {
                     <Route path="/hoteldetails" element={<HotelDetails />} />
 
                     <Route path="/profile" element={<Profile />} />
-                    <Route path="/edithotels/:id" element={<VendorEditHotel />} />
+                    <Route
+                      path="/edithotels/:id"
+                      element={<VendorEditHotel />}
+                    />
                   </>
                 )}
               </Routes>

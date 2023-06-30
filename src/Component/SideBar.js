@@ -125,7 +125,7 @@ function SideBar(props) {
               navigate("/userselectedcity");
             }}
           >
-            <Link>Manage City Landing Page</Link>
+            <Link>Manage State Landing Page</Link>
           </LinkWrapper>
           <LinkWrapper
             select={selected === "Booking history"}
@@ -197,7 +197,6 @@ function SideBar(props) {
           >
             <Link>Payouts</Link>
           </LinkWrapper>
-
         </>
       )}
     </Root>

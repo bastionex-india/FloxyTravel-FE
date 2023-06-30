@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import styled from "styled-components";
@@ -19,8 +19,10 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import TablePagination from "@mui/material/TablePagination";
 import { BsCalendarDay } from "react-icons/bs";
+import DatePicker from "react-datepicker";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
 import "react-datepicker/dist/react-datepicker.css";
-import DatePicker from 'react-datepicker';
 const HeadingWrapper = styled.div`
   position: relative;
   display: flex;
@@ -59,7 +61,8 @@ const TextSelectField = styled.div`
 `;
 
 const Select = styled.select`
-  padding: 10px;
+  height: 30px;
+  padding: 0px 10px;
   border-radius: 5px;
   outline: none;
   border: none;
@@ -68,10 +71,10 @@ const Select = styled.select`
 `;
 const TextWrapper = styled.div`
   display: flex;
-  justify-content: flex-start;
+  justify-content: space-between;
   align-items: center;
   text-align: center;
-  
+
   @media (max-width: 768px) {
     justify-content: flex-end;
   }
@@ -85,52 +88,57 @@ const TextMainWrapper = styled.div`
   }
 `;
 const DatePickerContainer = styled.div`
-display:flex;
-justify-content:center;
-align-items:center;
-text-align:Center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: Center;
 `;
 const CheckInDateWrapper = styled.input`
-padding: 10px;
-    border-radius: 5px;
-    outline: none;
-    border: none;
-    box-shadow: rgba(50,50,93,0.25) 0px 6px 12px -2px, rgba(0,0,0,0.3) 0px 3px 7px -3px;
-    margin:0 10px;
+  padding: 10px;
+  border-radius: 5px;
+  outline: none;
+  border: none;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px,
+    rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+  margin: 0 10px;
 `;
-const CheckOutDateWrapper = styled(CheckInDateWrapper)`
-
-`;
-const SearchContainerWrapper = styled.div`
-
-`;
+const CheckOutDateWrapper = styled(CheckInDateWrapper)``;
+const SearchContainerWrapper = styled.div``;
 const SearchFilterContainer = styled.div`
-position:relative;
+  position: relative;
 `;
 const SearchFilterInput = styled.input`
-width:50%;
-margin:10px 0 20px 0;
-padding: 10px;
-    border-radius: 5px;
-    outline: none;
-    border: none;
-    // box-shadow: rgba(50,50,93,0.25) 0px 6px 12px -2px, rgba(0,0,0,0.3) 0px 3px 7px -3px;
-   
+  width: 50%;
+  margin: 10px 0 20px 0;
+  padding: 10px;
+  border-radius: 5px;
+  outline: none;
+  border: none;
+  // box-shadow: rgba(50,50,93,0.25) 0px 6px 12px -2px, rgba(0,0,0,0.3) 0px 3px 7px -3px;
 `;
 
 const Span = styled.span`
-position:absolute;
-bottom: 39%;
-left: 47%;
+  position: absolute;
+  bottom: 39%;
+  left: 47%;
+`;
+const FromDateInput = styled.div`
+  position: absolute;
+  top: -4%;
+  left: 82%;
+  font-size: 20px;
+  cursor: pointer;
+  @media (max-width: 768px) {
+    top: 14%;
+    left: 90%;
+    z-index: 1;
+  }
 `;
 const DateIcon = styled.div`
   position: absolute;
   left: 37%;
   z-index: 1;
 `;
-
-
-
 
 const BookingHistoryofAdmin = () => {
   const [select, setSelect] = useState("");
@@ -144,6 +152,10 @@ const BookingHistoryofAdmin = () => {
   const [toDate, setToDate] = useState(null);
   const [search, setSearch] = useState();
   const [allVendors, setAllVendors] = useState([]);
+  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
+  const [isDatePickerOpen1, setIsDatePickerOpen1] = useState(false);
+  const InputStartsDate = useRef(null);
+  const InputEndDate = useRef(null);
 
   // paginationstart
   const [page, setPage] = useState(0);
@@ -162,14 +174,13 @@ const BookingHistoryofAdmin = () => {
 
   const handleChange = (event) => {
     const data = event.target.value;
-    if(data.length>=3){
+    if (data.length >= 3) {
       setSearch(data);
-      setSelect("")
+      setSelect("");
       setSelect1("");
       setFromDate(null);
       setToDate(null);
-      
-    }else{
+    } else {
       setSearch();
     }
   };
@@ -197,14 +208,14 @@ const BookingHistoryofAdmin = () => {
   }, []);
 
   const getAllUsers = async () => {
-    let data={
-      search:search,
-      status:select,
-      id:select1,
-      calenderStartDate:fromDate,
-      calenderEndDate:toDate,
-    }
-    
+    let data = {
+      search: search,
+      status: select,
+      id: select1,
+      calenderStartDate: fromDate,
+      calenderEndDate: toDate,
+    };
+
     data.page = page + 1;
     data.pageSize = rowsPerPage;
 
@@ -225,8 +236,8 @@ const BookingHistoryofAdmin = () => {
         setData(data);
         setTotalPages(totalPages);
         setPage(currentPage - 1);
-        setIsLoading(false)
-        setTotalItems(totalItems)
+        setIsLoading(false);
+        setTotalItems(totalItems);
       })
       .catch((err) => {
         setIsLoading(false);
@@ -235,7 +246,7 @@ const BookingHistoryofAdmin = () => {
   useEffect(() => {
     setIsLoading(true);
     getAllUsers();
-  }, [select, select1, page, rowsPerPage, search,fromDate, toDate]);
+  }, [select, select1, page, rowsPerPage, search, fromDate, toDate]);
 
   const ApprovedData = () => {};
   const PendingData = () => {};
@@ -243,21 +254,46 @@ const BookingHistoryofAdmin = () => {
     fontWeight: 700,
   };
 
-  const getAllVendors=async()=>{
+  const getAllVendors = async () => {
     try {
-      const response = await axios.get(`${environmentVariables.apiUrl}/admin/getallvendor`, {
-        headers:  { _token: authData.data.token }
-      });
-      setAllVendors(response.data.data)
+      const response = await axios.get(
+        `${environmentVariables.apiUrl}/admin/getallvendor`,
+        {
+          headers: { _token: authData.data.token },
+        }
+      );
+      setAllVendors(response.data.data);
     } catch (error) {
       // Handle the error here
       console.error(error);
     }
-  }
+  };
   useEffect(() => {
     getAllVendors();
   }, []);
 
+  const handleStartDateChange = (date) => {
+    setFromDate(date);
+    if (toDate && date > toDate) {
+      setToDate(null);
+    }
+
+    if (!date) {
+      setToDate(null);
+    }
+  };
+  const handleToggleDatePicker = () => {
+    setIsDatePickerOpen(!isDatePickerOpen);
+  };
+  const handleToggleDatePicker2 = () => {
+    setIsDatePickerOpen1(!isDatePickerOpen1);
+  };
+  const refHandle = () => {
+    InputStartsDate.current.setOpen(true);
+  };
+  const refHandle1 = () => {
+    InputEndDate.current.setOpen(true);
+  };
   return (
     <>
       <TextMainWrapper>
@@ -271,100 +307,151 @@ const BookingHistoryofAdmin = () => {
               ></i>
               <Heading> Booking History</Heading>
             </HeadingWrapper>
-           <SearchContainerWrapper>
-            <SearchFilterContainer>
-              <SearchFilterInput  
-                placeholder={"Search by Hotelname"}
-                value={search}
-                onChange={handleChange}
-              />
-              <Span> <i class="fa-solid fa-magnifying-glass"></i></Span>
-            </SearchFilterContainer>
-           <TextWrapper>
-              <TextSelectField>
-                <Select
-                  onChange={(e) => {
-                    setSelect1(e.target.value);
-                  }}
-                  value={select1}
-                  required
-                >
-                  <option value="" hidden>Select Vendor</option>
-                  {
-                    allVendors.map((item,index)=>{
-                      return(
-                        <option key={index} value={item._id}>{item.name}</option>
-                      )
-                    })
-                  }
-                </Select>
-              </TextSelectField>
-              <DatePickerContainer>
-                <DateIcon>
-                  <BsCalendarDay size="1.5rem" />
-                </DateIcon>
-                <DatePicker
-                  placeholderText="Start Date"
-                  selected={fromDate}
-                  onChange={(date) => {
-                    setFromDate(date);
-                    // setPageNo(1);
-                  }}
-                  selectsStart
-                  startDate={fromDate}
-                  endDate={toDate}
+            <SearchContainerWrapper>
+              <SearchFilterContainer>
+                <SearchFilterInput
+                  placeholder={"Search by Hotelname"}
+                  value={search}
+                  onChange={handleChange}
                 />
-              </DatePickerContainer>
-              <DatePickerContainer>
-                <DateIcon>
-                  <BsCalendarDay size="1.5rem" />
-                </DateIcon>
+                <Span>
+                  {" "}
+                  <i class="fa-solid fa-magnifying-glass"></i>
+                </Span>
+              </SearchFilterContainer>
+              <TextWrapper>
+                <TextSelectField>
+                  <Select
+                    onChange={(e) => {
+                      setSelect1(e.target.value);
+                    }}
+                    value={select1}
+                    required
+                  >
+                    <option value="" hidden>
+                      Select Vendor
+                    </option>
+                    {allVendors.map((item, index) => {
+                      return (
+                        <option key={index} value={item._id}>
+                          {item.name}
+                        </option>
+                      );
+                    })}
+                  </Select>
+                </TextSelectField>
+                <div style={{display:'flex'}}>
+                <DatePickerContainer>
+                  {/* <DateIcon>
+                    <BsCalendarDay
+                      size="1.5rem"
+                      onClick={() => InputEndDate.current.setOpen(true)}
+                    />
+                  </DateIcon>
 
-                <DatePicker
-                  placeholderText="End Date"
-                  selected={toDate}
-                  onChange={(date) => setToDate(date)}
-                  selectsStart
-                  startDate={fromDate}
-                  endDate={toDate}
-                  disabled={fromDate ? false : true}
-                  minDate={fromDate}
-                  style={{ padding: "10px" }}
-                />
-              </DatePickerContainer>
-              <TextSelectField>
-                <Select
-                  onChange={(e) => {
-                    setSelect(e.target.value);
-                  }}
-                  value={select}
-                  required
-                >
-                  <option value="" hidden>
-                    Select Status
-                  </option>
-                  {/* <option value="all" onClick={ApprovedData}>
+                  <DatePicker
+                    placeholderText="End Date"
+                    selected={toDate}
+                    onChange={(date) => setToDate(date)}
+                    selectsStart
+                    startDate={fromDate}
+                    endDate={toDate}
+                    disabled={fromDate ? false : true}
+                    minDate={fromDate}
+                    style={{ padding: "10px" }}
+                    ref={InputEndDate}
+                  /> */}
+                  <div onClick={handleToggleDatePicker} style={{position:'relative'}}>
+                    <DatePicker
+                      open={isDatePickerOpen}
+                      onClickOutside={() => setIsDatePickerOpen(false)}
+                      onFocus={() => setIsDatePickerOpen(true)}
+                      // minDate={checkIn}
+                      
+
+                      placeholderText="Start Date"
+                      selected={fromDate}
+                      onChange={handleStartDateChange}
+                      selectsStart
+                      startDate={fromDate}
+                      endDate={toDate}
+                      ref={InputStartsDate}
+                    ></DatePicker>
+                    <FromDateInput onClick={refHandle}>
+                      <i class="fas fa-calendar-alt"></i>
+                    </FromDateInput>
+                  </div>
+                </DatePickerContainer>
+                <DatePickerContainer>
+                <div onClick={handleToggleDatePicker2} style={{position:'relative'}}>
+                    <DatePicker
+                      open={isDatePickerOpen1}
+                      onClickOutside={() => setIsDatePickerOpen1(false)}
+                      onFocus={() => setIsDatePickerOpen1(true)}
+                      // minDate={checkIn}
+                      
+
+                      placeholderText="End Date"
+                      selected={toDate}
+                      onChange={(date) => setToDate(date)}
+                      selectsStart
+                      startDate={fromDate}
+                      endDate={toDate}
+                      disabled={fromDate ? false : true}
+                      minDate={fromDate}
+                      ref={InputEndDate}
+                      style={{ padding: "10px" }}
+                    ></DatePicker>
+                    <FromDateInput onClick={refHandle1}>
+                      <i class="fas fa-calendar-alt"></i>
+                    </FromDateInput>
+                  </div>
+                   {/* <DateIcon>
+                    <BsCalendarDay
+                      size="1.5rem"
+                      onClick={() => InputEndDate.current.setOpen(true)}
+                    />
+                  </DateIcon>
+
+                  <DatePicker
+                    placeholderText="End Date"
+                    selected={toDate}
+                    onChange={(date) => setToDate(date)}
+                    selectsStart
+                    startDate={fromDate}
+                    endDate={toDate}
+                    disabled={fromDate ? false : true}
+                    minDate={fromDate}
+                    style={{ padding: "10px" }}
+                    ref={InputEndDate}
+                  /> */}
+                </DatePickerContainer>
+                </div>
+                <TextSelectField>
+                  <Select
+                    onChange={(e) => {
+                      setSelect(e.target.value);
+                    }}
+                    value={select}
+                    required
+                  >
+                    <option value="" hidden>
+                      Select Status
+                    </option>
+                    {/* <option value="all" onClick={ApprovedData}>
                     All
                   </option> */}
-                  <option value="pending">
-                    Pending Booking
-                  </option>
-                  <option value="approved">
-                    Confirmed Booking
-                  </option>
-                  <option value="cancelled">
-                    Cancelled Booking
-                  </option>
-                  <option value="completed">
-                    Completed Booking
-                  </option>
-                  {/* <option value="cancelled" onClick={CancelledData}>
+                    <option value="pending">Pending Booking</option>
+                    <option value="approved">Confirmed Booking</option>
+                    <option value="cancelled">Cancelled Booking</option>
+                    <option value="completed">Completed Booking</option>
+                    {/* <option value="cancelled" onClick={CancelledData}>
                     Cancelled Booking
                   </option> */}
-                </Select>
-              </TextSelectField>
-            </TextWrapper>
-           </SearchContainerWrapper>
+                  </Select>
+                </TextSelectField>
+              </TextWrapper>
+            </SearchContainerWrapper>
           </Root>
           {isLoading === true ? (
             <div
@@ -378,7 +465,7 @@ const BookingHistoryofAdmin = () => {
             </div>
           ) : (
             <TableContainer component={Paper}>
-              <Table sx={{ minWidth: 650 }} aria-label="simple table">
+              <Table aria-label="simple table">
                 <TableHead>
                   <TableRow>
                     <TableCell style={boldTextCss}>Hotel Name</TableCell>
@@ -400,8 +487,8 @@ const BookingHistoryofAdmin = () => {
                     </TableCell>
                   </TableRow>
                 </TableHead>
-                <TableBody>
-                  {data && data.length!==0 ?
+                <TableBody >
+                  {data && data.length !== 0 ? (
                     data.map((item, index) => {
                       const bookingDate = new Date(item.createdAt);
                       return (
@@ -414,13 +501,23 @@ const BookingHistoryofAdmin = () => {
                           <TableCell component="th" scope="row">
                             {item.hotelname}
                           </TableCell>
-                          <TableCell align="left">{item.vendorData.name}</TableCell>
+                          <TableCell align="left">
+                            {item.vendorData.name}
+                          </TableCell>
                           <TableCell align="right">{item.checkIn}</TableCell>
                           <TableCell align="right">{item.checkOut}</TableCell>
                           <TableCell align="right">
                             {bookingDate.toLocaleDateString()}
                           </TableCell>
-                          <TableCell align="right">{item.status==="pending"? "Pending":item.status==="cancelled"?"Cancelled":item.status==="completed"?"Completed":item.status==="approved" && "Confirmed"}</TableCell>
+                          <TableCell align="right">
+                            {item.status === "pending"
+                              ? "Pending"
+                              : item.status === "cancelled"
+                              ? "Cancelled"
+                              : item.status === "completed"
+                              ? "Completed"
+                              : item.status === "approved" && "Confirmed"}
+                          </TableCell>
                           <TableCell align="right">
                             <Button
                               size="small"
@@ -433,8 +530,16 @@ const BookingHistoryofAdmin = () => {
                           </TableCell>
                         </TableRow>
                       );
-                    }):<h3>Data Not Found</h3>
-                    }
+                    })
+                  ) : (
+                    <TableRow>
+                      <TableCell colSpan={7}>
+                        <div style={{ display: "flex", justifyContent: "center", alignItems: "center"}}>
+                          <Typography variant="body1">Data not found</Typography>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  )}
                 </TableBody>
               </Table>
               <TablePagination

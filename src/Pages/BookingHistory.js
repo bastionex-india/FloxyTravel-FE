@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import axios from "axios";
 import { AuthContext } from "../ContextApi/ContextApi";
 import { environmentVariables } from "../config/config";
@@ -15,6 +15,7 @@ import { BsCalendarDay } from "react-icons/bs";
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
 import SearchIcon from ".././Images/SearchIconNavbar.png";
+import Typography from "@mui/material/Typography";
 
 import {
   Button,
@@ -57,14 +58,15 @@ const Heading = styled.div`
 `;
 
 const TextSelectField = styled.div`
-  margin: 10px 0px 0px 10px;
+  // margin: 10px 0px 0px 10px;
   @media (max-width: 768px) {
     margin: 0;
   }
 `;
 
 const Select = styled.select`
-  padding: 10px;
+  height: 30px;
+  padding: 0px 10px;
   border-radius: 5px;
   outline: none;
   border: none;
@@ -147,11 +149,29 @@ const DateIcon = styled.div`
   right: 5%;
   z-index: 1;
 `;
+const DatePickerContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: Center;
+`;
+const FromDateInput = styled.div`
+  position: absolute;
+  top: -4%;
+  left: 82%;
+  font-size: 20px;
+  cursor: pointer;
+  @media (max-width: 768px) {
+    top: 14%;
+    left: 90%;
+    z-index: 1;
+  }
+`;
 
 const BookingHistory = () => {
   const { authData, setAuthData } = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState(false);
-  const [data, setData] = useState("");
+  const [data, setData] = useState([]);
   const navigate = useNavigate();
   const [select, setSelect] = useState("");
   const [search, setSearch] = useState();
@@ -164,7 +184,11 @@ const BookingHistory = () => {
   const [toDate, setToDate] = useState(null);
   const [searchByName, setSearchByName] = useState("");
   const [allHotels, setAllHotels] = useState([]);
+  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
+  const [isDatePickerOpen1, setIsDatePickerOpen1] = useState(false);
   const [response, setResponse] = useState({});
+  const InputStartsDate = useRef(null);
+  const InputEndDate = useRef(null);
 
   // paginationstart
   const [page, setPage] = useState(0);
@@ -277,6 +301,28 @@ const BookingHistory = () => {
     getAllHotels();
   }, []);
 
+  const handleStartDateChange = (date) => {
+    setFromDate(date);
+    if (toDate && date > toDate) {
+      setToDate(null);
+    }
+
+    if (!date) {
+      setToDate(null);
+    }
+  };
+  const handleToggleDatePicker = () => {
+    setIsDatePickerOpen(!isDatePickerOpen);
+  };
+  const handleToggleDatePicker2 = () => {
+    setIsDatePickerOpen1(!isDatePickerOpen1);
+  };
+  const refHandle = () => {
+    InputStartsDate.current.setOpen(true);
+  };
+  const refHandle1 = () => {
+    InputEndDate.current.setOpen(true);
+  };
   // function convertToUnixTimestamp(dateString) {
   //   const [day, month, year] = dateString.split('/');
   //   const formattedDateString = `${month}/${day}/${year}`;
@@ -351,13 +397,16 @@ const BookingHistory = () => {
                   // onKeyDown={(e) => KeyDown(e)}
                   autoComplete="false"
                 /> */}
-              <TextSelectField>
+              <TextSelectField 
+              style={{width:"20%"}}
+              >
                 <Select
                   onChange={(e) => {
                     setSearchByName(e.target.value);
                   }}
-                  //   value={select1}
+                  value={searchByName}
                   required
+                  style={{width:"100%"}}
                 >
                   <option value="" hidden>
                     Select Hotel
@@ -372,9 +421,8 @@ const BookingHistory = () => {
                 </Select>
               </TextSelectField>
 
-              <FilterWrapper>
+              {/* <FilterWrapper>
                 <FilterComponent>
-                  {/* <FilterLabel>From</FilterLabel> */}
                   <DateIcon>
                     <BsCalendarDay size="1.5rem" />
                   </DateIcon>
@@ -383,7 +431,6 @@ const BookingHistory = () => {
                     selected={fromDate}
                     onChange={(date) => {
                       setFromDate(date);
-                      // setPageNo(1);
                     }}
                     selectsStart
                     startDate={fromDate}
@@ -391,7 +438,6 @@ const BookingHistory = () => {
                   />
                 </FilterComponent>
                 <FilterComponent>
-                  {/* <FilterLabel>To</FilterLabel> */}
                   <DateIcon>
                     <BsCalendarDay size="1.5rem" />
                   </DateIcon>
@@ -408,8 +454,57 @@ const BookingHistory = () => {
                     style={{ padding: "10px" }}
                   />
                 </FilterComponent>
-              </FilterWrapper>
+              </FilterWrapper> */}
 
+              <div style={{display:'flex'}}>
+                <DatePickerContainer>
+                  <div onClick={handleToggleDatePicker} style={{position:'relative'}}>
+                    <DatePicker
+                      open={isDatePickerOpen}
+                      onClickOutside={() => setIsDatePickerOpen(false)}
+                      onFocus={() => setIsDatePickerOpen(true)}
+                      // minDate={checkIn}
+                      
+
+                      placeholderText="Start Date"
+                      selected={fromDate}
+                      onChange={handleStartDateChange}
+                      selectsStart
+                      startDate={fromDate}
+                      endDate={toDate}
+                      ref={InputStartsDate}
+                    ></DatePicker>
+                    <FromDateInput onClick={refHandle}>
+                      <i class="fas fa-calendar-alt"></i>
+                    </FromDateInput>
+                  </div>
+                </DatePickerContainer>
+                <DatePickerContainer>
+                <div onClick={handleToggleDatePicker2} style={{position:'relative'}}>
+                    <DatePicker
+                      open={isDatePickerOpen1}
+                      onClickOutside={() => setIsDatePickerOpen1(false)}
+                      onFocus={() => setIsDatePickerOpen1(true)}
+                      // minDate={checkIn}
+                      
+
+                      placeholderText="End Date"
+                      selected={toDate}
+                      onChange={(date) => setToDate(date)}
+                      selectsStart
+                      startDate={fromDate}
+                      endDate={toDate}
+                      disabled={fromDate ? false : true}
+                      minDate={fromDate}
+                      ref={InputEndDate}
+                      style={{ padding: "10px" }}
+                    ></DatePicker>
+                    <FromDateInput onClick={refHandle1}>
+                      <i class="fas fa-calendar-alt"></i>
+                    </FromDateInput>
+                  </div>
+                </DatePickerContainer>
+                </div>
               <TextSelectField>
                 <Select
                   onChange={(e) => {
@@ -499,7 +594,13 @@ const BookingHistory = () => {
                       );
                     })
                   ) : (
-                    <h3>Data Not Found</h3>
+                    <TableRow>
+                      <TableCell colSpan={7}>
+                        <div style={{ display: "flex", justifyContent: "center", alignItems: "center"}}>
+                          <Typography variant="body1">Data not found</Typography>
+                        </div>
+                      </TableCell>
+                    </TableRow>
                   )}
                 </TableBody>
               </Table>

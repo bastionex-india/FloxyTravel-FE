@@ -18,23 +18,19 @@ import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import PropTypes from "prop-types";
 import { style } from "@mui/system";
-import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
-import Paper from '@mui/material/Paper';
-import WallpaperIcon from '@mui/icons-material/Wallpaper';
-
-
+import Box from "@mui/material/Box";
+import Grid from "@mui/material/Grid";
+import Paper from "@mui/material/Paper";
+import WallpaperIcon from "@mui/icons-material/Wallpaper";
 
 const Item = newStyle(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+  backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
   ...theme.typography.body2,
   padding: theme.spacing(1),
-  textAlign: 'center',
+  textAlign: "center",
   height: "120px",
   color: theme.palette.text.secondary,
 }));
-
-
 
 const BootstrapDialog = newStyle(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -96,7 +92,7 @@ const UserLandingPage = () => {
   const [priority, setPriority] = useState(null);
   const [file, setFile] = useState(null);
   const [selectNewBackground, setSelectNewBackground] = useState(null);
-  const [selectedCityData,setSelectedCityData] = useState(null); 
+  const [selectedCityData, setSelectedCityData] = useState(null);
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
 
@@ -365,17 +361,19 @@ const UserLandingPage = () => {
               );
               setChosenState(null);
               setFile(null);
-              ;
             }
           })
           .catch((err) => {
-            let errorMsg = (err.response && err.response.data.message) ? err.response.data.message : "Something went wrong";
+            let errorMsg =
+              err.response && err.response.data.message
+                ? err.response.data.message
+                : "Something went wrong";
             Swal.fire("Error", errorMsg, "error");
             setChosenState(null);
             setFile(null);
           });
         setAllStates([...allStates, chosenState]);
-        setAddStatePopUp(false)
+        setAddStatePopUp(false);
       } else {
         Swal.fire("Error", "Please add background image to continue", "error");
         setAddStatePopUp(false);
@@ -423,7 +421,7 @@ const UserLandingPage = () => {
     })
       .then((response) => {
         setSelectedCityData(response.data.data);
-        setBackgroundImage(response.data.data.image)
+        setBackgroundImage(response.data.data.image);
       })
       .catch((err) => console.log(err.message));
   };
@@ -432,7 +430,7 @@ const UserLandingPage = () => {
   };
   const setNewChangeImage = (e) => {
     setSelectNewBackground(e.target.files);
-  }
+  };
 
   const getThemes = () => {
     // console.log(stateId);
@@ -480,7 +478,6 @@ const UserLandingPage = () => {
           name: theme,
           heading: title,
           description: description,
-          // priority: priority,
         },
         headers: {
           _token: authData?.data?.token,
@@ -506,6 +503,59 @@ const UserLandingPage = () => {
             setTitle(null);
             setDescription(null);
             setPriority(null);
+            Swal.fire("Error", "Something went wrong!", "error");
+          }
+        })
+        .catch((err) => {
+          setAddThemePopUp(false);
+          setTheme(null);
+          setTitle(null);
+          setDescription(null);
+          setPriority(null);
+          Swal.fire("Error", "Something went wrong!", "error");
+        });
+    }
+  };
+  const handleEditThemeSubmit = () => {
+    if (!theme || !title || !description) {
+      Swal.fire("Warning", "Please Fill all the data to continue", "warning");
+      setAddThemePopUp(false);
+      setThemeId(null);
+    } else {
+      axios({
+        method: "put",
+        url: `${environmentVariables.apiUrl}/admin/updatetheme/${themeId}/${stateId}`,
+        data: {
+          name: theme,
+          heading: title,
+          description: description,
+        },
+        headers: {
+          _token: authData?.data?.token,
+        },
+      })
+        .then((response) => {
+          // console.log(response);
+          if (response.data.status === true) {
+            setAddThemePopUp(false);
+            setTheme("");
+            setThemeId(null);
+            setTitle("");
+            setDescription("");
+            setPriority("");
+            Swal.fire(
+              "Theme Added",
+              "Successfully added the entered theme",
+              "success"
+            );
+            getThemes();
+          } else {
+            setAddThemePopUp(false);
+            setTheme("");
+            setTitle("");
+            setDescription("");
+            setPriority("");
+            setThemeId(null);
             Swal.fire("Error", "Something went wrong!", "error");
           }
         })
@@ -552,14 +602,14 @@ const UserLandingPage = () => {
   const handleEditTheme = (e) => {
     const editTheme = themeData.filter((val) => val._id === e.target.id);
     // console.log(editTheme[0], "edit");
+    setThemeId(e.target.id);
     setTheme(editTheme[0].name);
     setTitle(editTheme[0].heading);
     setDescription(editTheme[0].description);
-    setPriority(editTheme[0].priority);
   };
   const handleDescriptionChange = (e) => {
     const inputValue = e.target.value;
-    const sanitizedValue = inputValue.replace(/[^A-Za-z]+/g, '');  
+    const sanitizedValue = inputValue.replace(/[^A-Za-z]+/g, "");
     setDescription(sanitizedValue);
   };
   useEffect(() => {
@@ -573,7 +623,7 @@ const UserLandingPage = () => {
   useEffect(() => {
     getBackgroundImage();
   }, [chosenState, stateSelected]);
-  const updateNewImage = async()=>{
+  const updateNewImage = async () => {
     if (selectNewBackground) {
       const formData = new FormData();
       for (let i = 0; i < selectNewBackground.length; i++) {
@@ -593,7 +643,7 @@ const UserLandingPage = () => {
           if (response?.data?.status) {
             // setBackgroundImage(response.data.data.image)
             getBackgroundImage();
-            setSelectNewBackground(null)
+            setSelectNewBackground(null);
             Swal.fire({
               icon: "success",
               title: "Background updated.",
@@ -606,11 +656,13 @@ const UserLandingPage = () => {
               "error"
             );
             // setFile(null);
-            
           }
         })
         .catch((err) => {
-          let errorMsg = (err.response && err.response.data.message) ? err.response.data.message : "Something went wrong";
+          let errorMsg =
+            err.response && err.response.data.message
+              ? err.response.data.message
+              : "Something went wrong";
           Swal.fire("Error", errorMsg, "error");
           // setChosenState(null);
           // setFile(null);
@@ -618,11 +670,10 @@ const UserLandingPage = () => {
     } else {
       Swal.fire("Error", "Please add background image to continue", "error");
     }
-  }
+  };
   const updateImageHandler = () => {
-    updateNewImage()
-    
-  }
+    updateNewImage();
+  };
   return (
     <Root>
       <HeadingWrapper>
@@ -632,7 +683,7 @@ const UserLandingPage = () => {
           onClick={() => navigate(-1)}
           class="fa-solid fa-chevron-left fa-2x"
         ></i>
-        <MainHeading>Manage City Landing Page</MainHeading>
+        <MainHeading>Manage State Landing Page</MainHeading>
       </HeadingWrapper>
       <StatesContainer>
         {/* <StateHeading>States : </StateHeading> */}
@@ -650,7 +701,7 @@ const UserLandingPage = () => {
             <div class="modal-content">
               <div class="modal-header">
                 <h1 class="modal-title fs-5" id="staticBackdropLabel">
-                  Add City
+                  Add State
                 </h1>
                 <button
                   type="button"
@@ -662,14 +713,14 @@ const UserLandingPage = () => {
               <div class="modal-body">
                 <div class="input-group mb-3">
                   <label class="input-group-text" for="inputGroupSelect01">
-                    City*:{" "}
+                    State*:{" "}
                   </label>
                   <select
                     class="form-select"
                     onChange={(e) => setChosenState(e.target.value)}
                     id="inputGroupSelect01"
                   >
-                    <option>Select City</option>
+                    <option>Select State</option>
                     {stateData.map((val) => (
                       <option value={val.name}>{val.name}</option>
                     ))}
@@ -799,6 +850,11 @@ const UserLandingPage = () => {
               </div>
               <div class="modal-footer">
                 <button
+                  onClick={() => {
+                    setTheme("");
+                    setDescription("");
+                    setTitle("");
+                  }}
                   type="button"
                   class="btn btn-secondary"
                   data-bs-dismiss="modal"
@@ -810,6 +866,122 @@ const UserLandingPage = () => {
                   class="btn btn-primary"
                   data-bs-dismiss="modal"
                   onClick={handleAddThemeSubmit}
+                >
+                  Submit
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="modal fade"
+          id="staticBackdrop3"
+          data-bs-backdrop="static"
+          data-bs-keyboard="false"
+          tabindex="-1"
+          aria-labelledby="staticBackdropLabel2"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel2">
+                  Edit Theme
+                </h1>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                  onClick={() => {
+                    setTheme("");
+                    setDescription("");
+                    setTitle("");
+                  }}
+                ></button>
+              </div>
+              <div class="modal-body">
+                <div class="input-group mb-3">
+                  <label class="input-group-text" for="inputGroupSelect01">
+                    Name*:{" "}
+                  </label>
+                  <select
+                    class="form-select"
+                    id="inputGroupSelect01"
+                    value={theme}
+                    onChange={(e) => setTheme(e.target.value)}
+                  >
+                    <option>Select Theme Name</option>
+                    <option value={`beach`}>Beach</option>
+                    <option value={`wildlife`}>Wildlife</option>
+                    <option value={`romantic`}>Romantic</option>
+                    <option value={`hill`}>Hill</option>
+                    <option value={`heritage`}>Heritage</option>
+                  </select>
+                </div>
+
+                <div class="input-group mb-3">
+                  <span class="input-group-text" id="basic-addon1">
+                    Title*:{" "}
+                  </span>
+                  <input
+                    type="text"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    class="form-control"
+                    aria-label="Username"
+                    aria-describedby="basic-addon1"
+                  />
+                </div>
+
+                <div class="input-group">
+                  <span class="input-group-text">Description*: </span>
+                  <textarea
+                    class="form-control"
+                    aria-label="With textarea"
+                    value={description}
+                    onChange={handleDescriptionChange}
+                    rows="4"
+                    cols="50"
+                  ></textarea>
+                </div>
+
+                {/* <br></br>
+
+                <div class="input-group mb-3">
+                  <span class="input-group-text" id="basic-addon1">
+                    Priority*:{" "}
+                  </span>
+                  <input
+                    class="form-control"
+                    aria-label="Username"
+                    aria-describedby="basic-addon1"
+                    value={priority}
+                    onChange={(e) => setPriority(e.target.value)}
+                    type="number"
+                    min="1"
+                    max="5"
+                  />
+                </div> */}
+              </div>
+              <div class="modal-footer">
+                <button
+                  onClick={() => {
+                    setTheme("");
+                    setDescription("");
+                    setTitle("");
+                  }}
+                  type="button"
+                  class="btn btn-secondary"
+                  data-bs-dismiss="modal"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  data-bs-dismiss="modal"
+                  onClick={handleEditThemeSubmit}
                 >
                   Submit
                 </button>
@@ -844,12 +1016,10 @@ const UserLandingPage = () => {
                   src={`${environmentVariables.apiUrl}/uploadscitiesimages/${backgroundImage}`}
                 />
               </div>
-              <div class="modal-footer">
-              </div>
+              <div class="modal-footer"></div>
             </div>
           </div>
         </div>
-
 
         <StatesWrapper>
           <SelectState
@@ -876,7 +1046,7 @@ const UserLandingPage = () => {
             data-bs-toggle="modal"
             data-bs-target="#staticBackdrop"
           >
-            Add City
+            Add State
           </button>
           <button
             type="button"
@@ -902,25 +1072,31 @@ const UserLandingPage = () => {
           <Grid container spacing={2}>
             <Grid item xs={5}>
               <Item style={{ paddingTop: "35px" }}>
-                <h3>{stateSelected ? stateSelected.charAt(0).toUpperCase() + stateSelected.slice(1) : ''}</h3>
+                <h3>
+                  {stateSelected
+                    ? stateSelected.charAt(0).toUpperCase() +
+                      stateSelected.slice(1)
+                    : ""}
+                </h3>
               </Item>
-
             </Grid>
             <Grid item xs={4}>
               <Item>
-                <img height={100} width={250} src={`${environmentVariables.apiUrl}/uploadscitiesimages/${backgroundImage}`} type="" />
+                <img
+                  height={100}
+                  width={250}
+                  src={`${environmentVariables.apiUrl}/uploadscitiesimages/${backgroundImage}`}
+                  type=""
+                />
               </Item>
-
             </Grid>
-            <Grid item xs={3} >
+            <Grid item xs={3}>
               <Item style={{ paddingTop: "35px" }}>
-
                 <Button
                   variant="contained"
                   component="label"
                   size="small"
                   startIcon={<WallpaperIcon />}
-
                 >
                   Change
                   <input
@@ -929,16 +1105,20 @@ const UserLandingPage = () => {
                     onChange={(e) => setNewChangeImage(e)}
                   />
                 </Button>
-                {
-                  selectNewBackground ?
+                {selectNewBackground ? (
                   <>
-                  <div>image selected </div>
-                  <Button color="secondary" type="button" variant="contained" size="small" onClick={() => updateImageHandler()}>update image</Button>
+                    <div>image selected </div>
+                    <Button
+                      color="secondary"
+                      type="button"
+                      variant="contained"
+                      size="small"
+                      onClick={() => updateImageHandler()}
+                    >
+                      update image
+                    </Button>
                   </>
-                  : null
-                }
-
-                
+                ) : null}
               </Item>
             </Grid>
           </Grid>
@@ -988,7 +1168,7 @@ const UserLandingPage = () => {
                             id={val?._id}
                             className="fa-solid fa-pen-to-square"
                             data-bs-toggle="modal"
-                            data-bs-target="#staticBackdrop1"
+                            data-bs-target="#staticBackdrop3"
                           />
                         </ThemeBoxElement>
                         {/* <Modal show={showModal} onHide={hideModal}>
@@ -1148,8 +1328,8 @@ const ThemeContainer = styled.div`
   padding-bottom: 0;
 `;
 const BacgroundContainer = styled.div`
-// padding: 20px 0;
-margin: 0 5%;
+  // padding: 20px 0;
+  margin: 0 5%;
 `;
 
 const ThemeCardWrapper = styled.div`

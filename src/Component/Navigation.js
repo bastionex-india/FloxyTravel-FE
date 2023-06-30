@@ -55,7 +55,8 @@ const ListWrapper = styled.div`
   display: flex;
   flex-direction: column;
   position: absolute;
-  top: 60px;
+  top: 36px;
+  right: 0;
   z-index: 1000;
 `;
 const Option = styled.div`
@@ -121,12 +122,15 @@ const NotificationNumber = styled.div`
   right: 13px;
   font-size: 13px;
 `;
-function Navigation(props) {
-  const [showDropDown, setShowDropDown] = useState(false);
+function Navigation({
+  showNotifications,
+  setShowNotifications,
+  showDropDown,
+  setShowDropDown,
+}) {
   const { authData, setAuthData } = useContext(AuthContext);
   const [notificationData, setNotificationData] = useState(null);
   const [notificationLength, setNotificationLength] = useState(0);
-  const [showNotifications, setShowNotifications] = useState(false);
   const navigation = useNavigate();
   const getTimeNotification = (time) => {
     console.log((Date.now() - time) / 3600000);
@@ -147,7 +151,8 @@ function Navigation(props) {
       }`;
     }
   };
-  const handleNotificationBell = () => {
+  const handleNotificationBell = (e) => {
+    e.stopPropagation();
     setShowNotifications(!showNotifications);
     setShowDropDown(false);
     console.log(authData?.data?.id);
@@ -193,7 +198,8 @@ function Navigation(props) {
   //         // console.log(error);
   //       });
   //   };
-  const setShow = () => {
+  const setShow = (e) => {
+    e.stopPropagation();
     setShowDropDown(!showDropDown);
     setShowNotifications(false);
     // props.data()
@@ -281,7 +287,7 @@ function Navigation(props) {
       <RightWrapper>
         <NotificationsWrapper>
           <NotificationBell
-            onClick={handleNotificationBell}
+            onClick={(e) => handleNotificationBell(e)}
             src={bell}
           ></NotificationBell>
           <NotificationNumber>{notificationLength || 0}</NotificationNumber>
@@ -305,7 +311,7 @@ function Navigation(props) {
         </NotificationsWrapper>
         <UserInfo>
           {/* {authData?.data?.profile?<Image src={`http://http://139.59.82.13:4000/:1999/uploads/${authData?.data?.profile}`} style={{height:"50px",width:"50px"}} roundedCircle alt='image'/>:<UserImg src={Avtar} alt="hello" />} */}
-          <DropDown onClick={() => setShow(showDropDown)}>
+          <DropDown onClick={(e) => setShow(e)}>
             {authData?.data?.name}{" "}
             <i className="fa-sharp fa-solid fa-caret-down"></i>
           </DropDown>

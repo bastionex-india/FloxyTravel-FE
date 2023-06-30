@@ -48,6 +48,7 @@ export default function VendorGraphCheck() {
   const [isCustom, setIsCustom] = useState(false);
   const [toDate, setToDate] = useState(null);
   const [tab, setTab] = useState("Bookings");
+  const [xLabel, setXLabel] = useState();
   const [vendorId, setVendorId] = useState(null);
   const [isLoadingGraph, setIsLoadingGraph] = useState(false);
   const ButtonGroup = styled.div`
@@ -114,6 +115,7 @@ export default function VendorGraphCheck() {
         const mergedata = [...leftdata, ...data];
         setGraphData(mergedata);
         setYeardata(mergedata);
+        setXLabel("Year");
         setIsLoadingGraph(false);
       })
       .catch((err) => {
@@ -221,11 +223,15 @@ export default function VendorGraphCheck() {
     if (value === "yeardata") {
       setGraphData(yeardata);
       setIsCustom(false);
+      setXLabel("Year");
     } else if (value === "monthdata") {
       setGraphData(monthdata);
       setIsCustom(false);
-    } else if (value === "custom") setIsCustom(true);
-    else setIsCustom(false);
+      setXLabel("Month");
+    } else if (value === "custom") {
+      setIsCustom(true);
+      setXLabel("Date");
+    } else setIsCustom(false);
   }
 
   return (
@@ -333,25 +339,30 @@ export default function VendorGraphCheck() {
           )}
           <BarChart
             width={800}
-            height={300}
+            height={280}
             data={graphdata}
             margin={{
               top: 5,
               right: 30,
               left: 20,
-              bottom: 5,
+              bottom: 50,
             }}
           >
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis
               dataKey="Name"
-              label={{ value: tab, position: "insideBottom" }}
+              label={{ value: xLabel, dy: 20, position: "insideBottom" }}
             />
             <YAxis
-              label={{ value: "Numbers", angle: -90, position: "insideLeft" }}
+              label={{
+                value: `Number of ${tab}`,
+                angle: -90,
+                position: "insideLeft",
+                dy: 60,
+              }}
             />
             <Tooltip />
-            <Legend />
+            {/* <Legend /> */}
             <Bar dataKey={tab} shape={<CustomBar />} />
           </BarChart>
         </MDBCard>
