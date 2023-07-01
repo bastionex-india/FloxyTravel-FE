@@ -20,13 +20,16 @@ import Link from '@mui/material/Link';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import { ListItem, ListItemText,ListItemButton } from '@mui/material'
+import { ListItem, ListItemText, ListItemButton } from '@mui/material'
 import { AuthContext } from '../../ContextApi/ContextApi';
 import axios from "axios";
 // const ChatAPI = require("twilio-chat");
 import { Client } from 'twilio-chat';
 import { environmentVariables } from '../../config/config';
 import ChatWelcome from './ChatWelcome';
+import moment from 'moment/moment';
+
+// console.log('FF',moment().format('YYYY-MM-DD'))
 
 
 
@@ -70,13 +73,13 @@ const ChatSupport = () => {
   const [messages, setMessages] = useState([]);
   const [inputText, setInputText] = useState('');
   const [chatClient, setChatClient] = useState(null);
-  const [activeChannelSID,setActiveChannelSID] = useState('')
+  const [activeChannelSID, setActiveChannelSID] = useState('')
   const baseUrl = environmentVariables.apiUrl;
   let scrollDiv = useRef(null);
 
 
   const scrollToBottom = () => {
-    // console.log("scroll bottom called ....");
+    console.log("scroll bottom called ....");
     // setTimeout(() => {
     // console. log('Will be called after 2 seconds');
     const scrollHeight = scrollDiv.current.scrollHeight;
@@ -87,7 +90,7 @@ const ChatSupport = () => {
     // console.log('maxScrollTop',maxScrollTop);
     scrollDiv.current.scrollTop = maxScrollTop > 0 ? maxScrollTop : 0;
     // scrollDiv.current.scrollTop = scrollHeight
-    // }, 1000);
+    // }, 0);
 
   };
 
@@ -115,7 +118,7 @@ const ChatSupport = () => {
       console.error("Error initializing Chat client:", error);
     }
   }
- 
+
   const sendMessage = async () => {
     if (activeChannel && inputText.trim() !== '') {
       try {
@@ -131,14 +134,9 @@ const ChatSupport = () => {
       console.log("channel no found");
     }
   };
-  
-  const handleNewMessage = (message) => {
-    // console.log('New message received:', message);
-    // Handle the new message as desired
-    setMessages(messages => [...messages, message]);
-    messages.push(message)
-    // console.log("messages:" + messages)
-  };
+
+
+
   const getAllMessages = async (channel) => {
     const newMessages = await channel.getMessages();
     setMessages(newMessages.items || []);
@@ -147,6 +145,7 @@ const ChatSupport = () => {
   const selectChannel = (channel) => {
     setActiveChannel(channel);
     setActiveChannelSID(channel.sid)
+
     // console.log("channel selected...");
   }
   // Assuming you have a valid Twilio Chat client
@@ -159,6 +158,38 @@ const ChatSupport = () => {
       console.error('Error retrieving channels:', error);
     }
   };
+
+  // mark  All Messages As Consumed
+  const markAllMessagesAsConsumed = async (channel) => {
+    try {
+      await channel.setAllMessagesConsumed();
+      // await channel.setNoMessagesConsumed();
+      // let getMembersCount = await  channel.getMembersCount()
+      // console.log("getMembersCount",getMembersCount)
+      await getAllChannels(chatClient)
+      console.log('All messages marked as consumed');
+    } catch (error) {
+      console.error('Error marking all messages as consumed: ', error);
+    }
+  };
+
+  const handleNewMessage = async (message) => {
+
+    await markAllMessagesAsConsumed(activeChannel)
+    // await getAllChannels(chatClient)
+
+    console.log('New message received:', message);
+    // Handle the new message as desired
+    // message.channel.sid
+    setMessages(messages => [...messages, message]);
+    messages.push(message)
+    // console.log("messages:" + messages)
+
+    scrollToBottom();   //  to  scroll  message  on bottom
+
+
+  };
+
   const handleChannelAdded = (channel) => {
     // console.log('New channel created:', channel);
     // Perform any desired actions when a new channel is created
@@ -175,18 +206,22 @@ const ChatSupport = () => {
     getAllChannels(chatClient)
   };
 
+  const handleChangedChannel = async (activeChannel) => {
+    await  markAllMessagesAsConsumed(activeChannel)
+    await getAllMessages(activeChannel)
+    scrollToBottom();
+    console.log({ activeChannel });
+  }
   useEffect(() => {
+    console.log("channel changed...");
     if (activeChannel) {
-      getAllMessages(activeChannel)
-      scrollToBottom();
-      console.log({ activeChannel });
+      handleChangedChannel(activeChannel)
     }
     // scrollToBottom();
     if (activeChannel) {
       activeChannel.on('messageAdded', handleNewMessage);
-      scrollToBottom();
+
     }
-    
     return () => {
       if (activeChannel) {
         activeChannel.off('messageAdded', handleNewMessage);
@@ -194,19 +229,12 @@ const ChatSupport = () => {
     };
   }, [activeChannel])
 
-  const fetchUnconsumedMessagesCount = async (chatClient) => {
-    const channel = await chatClient.getChannelBySid("CHa8f28b43cbf240ebb1707f3021d090c7");
-    console.log("UNcunsumed channel",channel);
-    const unconsumedCount = await channel.getUnconsumedMessagesCount();
-    console.log('Unconsumed Messages Count:', unconsumedCount);
-  };
+
   useEffect(() => {
+    console.log("Client changed...");
     if (chatClient) {
       // console.log({ chatClient });
       getAllChannels(chatClient)
-    }
-    if(chatClient){
-      fetchUnconsumedMessagesCount(chatClient)
     }
     if (chatClient) {
       // Attach the event listener
@@ -217,7 +245,7 @@ const ChatSupport = () => {
       chatClient.on('channelDeleted', handleChannelDeleted);
       // chatClient.off('channelDeleted', handleChannelDeleted); //  in case  of memory  leak you can use it  
     }
-    if(chatClient){
+    if (chatClient) {
       chatClient.on('channelRemoved', handleChannelRemoved);
     }
   }, [chatClient])
@@ -228,7 +256,7 @@ const ChatSupport = () => {
     }
   }, [])
 
-  
+
 
   // console.log("messages",messages)
   return (
@@ -260,13 +288,17 @@ const ChatSupport = () => {
             {/* selected={true}  */}
             {
               allChannel && allChannel.map((channel, index) => {
+                // console.log("channel.lastConsumedMessageIndex",channel.lastConsumedMessageIndex);
+                // console.log("channel.lastMessage.index",channel.lastMessage.index);
+
                 return (
                   <>
-                    <ListItem  sx={{ backgroundColor: (channel.sid == activeChannelSID) ? 'skyblue' : 'inherit',cursor: 'pointer', ":hover": { background: "skyblue" } }} onClick={() => { selectChannel(channel) }}>
+                    <ListItem sx={{ backgroundColor: (channel.sid == activeChannelSID) ? 'skyblue' : 'inherit', cursor: 'pointer', ":hover": { background: "skyblue" } }} onClick={() => { selectChannel(channel) }}>
                       <ListItemText primary={channel.channelState.friendlyName} />
-                      {channel.lastConsumedMessageIndex !== channel.lastMessage.index ? channel.lastMessage.index - channel.lastConsumedMessageIndex : 0}
+                      <Badge badgeContent={channel.lastConsumedMessageIndex !== channel.lastMessage.index ? channel.lastMessage.index - channel.lastConsumedMessageIndex : 0} color="primary">
+                      </Badge>
                     </ListItem>
-                    
+
                     <Divider />
                   </>
                 )
@@ -309,6 +341,11 @@ const ChatSupport = () => {
                     {
                       messages && messages.length ?
                         messages.map((message, index) => {
+
+                          let messageDateTime = moment(message.dateCreated).format('hh:mm A')
+                          if (moment(message.dateCreated).format('YYYY-MM-DD') < moment().format('YYYY-MM-DD')) {
+                            messageDateTime = moment(message.dateCreated).format("D MMM")
+                          }
                           let messageAlignment = message.author == authData.data.email ? '-webkit-right' : "-webkit-left"
                           return (
                             <Grid key={message.sid} item xs={12} style={{ textAlign: messageAlignment }}>
@@ -317,7 +354,7 @@ const ChatSupport = () => {
                                   p: 1,
                                   display: 'flex',
                                   flexDirection: 'column',
-                                  height: 40,
+                                  minHeight: 40,
                                   // textAlign:"left",
                                   marginTop: "3px",
                                   background: "ligthgray",
@@ -325,7 +362,9 @@ const ChatSupport = () => {
                                 }}
                               >
                                 {message.body}
+                                <span style={{ fontSize: "8px", textAlign: "right" }}>{messageDateTime}</span>
                               </Paper>
+
                             </Grid>
                           )
                         })
