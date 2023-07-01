@@ -573,6 +573,7 @@ const AddHotels = () => {
                 <div>
                   <FormLabel>City*</FormLabel>
                   <FormSelect onChange={handleCityChange}>
+                  <FormOptions>Select City</FormOptions>
                     {allCities.map((val, index) => {
                       return (
                         <FormOptions
