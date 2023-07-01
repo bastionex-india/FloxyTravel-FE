@@ -153,7 +153,7 @@ const ChatSupport = () => {
   const getAllChannels = async (client) => {
     try {
       const channels = await client.getSubscribedChannels();
-      // console.log('All channels:', channels);
+      console.log('All channels:', channels);
       setAllChannel(channels.items)
     } catch (error) {
       console.error('Error retrieving channels:', error);
@@ -194,10 +194,19 @@ const ChatSupport = () => {
     };
   }, [activeChannel])
 
+  const fetchUnconsumedMessagesCount = async (chatClient) => {
+    const channel = await chatClient.getChannelBySid("CHa8f28b43cbf240ebb1707f3021d090c7");
+    console.log("UNcunsumed channel",channel);
+    const unconsumedCount = await channel.getUnconsumedMessagesCount();
+    console.log('Unconsumed Messages Count:', unconsumedCount);
+  };
   useEffect(() => {
     if (chatClient) {
       // console.log({ chatClient });
       getAllChannels(chatClient)
+    }
+    if(chatClient){
+      fetchUnconsumedMessagesCount(chatClient)
     }
     if (chatClient) {
       // Attach the event listener
@@ -250,11 +259,12 @@ const ChatSupport = () => {
           <List style={{ backgroundColor: "#f0f0f0", height: "470px", overflow: 'auto' }}>
             {/* selected={true}  */}
             {
-              allChannel && allChannel.map((row, index) => {
+              allChannel && allChannel.map((channel, index) => {
                 return (
                   <>
-                    <ListItem  sx={{ backgroundColor: (row.sid == activeChannelSID) ? 'skyblue' : 'inherit',cursor: 'pointer', ":hover": { background: "skyblue" } }} onClick={() => { selectChannel(row) }}>
-                      <ListItemText primary={row.channelState.friendlyName} />
+                    <ListItem  sx={{ backgroundColor: (channel.sid == activeChannelSID) ? 'skyblue' : 'inherit',cursor: 'pointer', ":hover": { background: "skyblue" } }} onClick={() => { selectChannel(channel) }}>
+                      <ListItemText primary={channel.channelState.friendlyName} />
+                      {channel.lastConsumedMessageIndex !== channel.lastMessage.index ? channel.lastMessage.index - channel.lastConsumedMessageIndex : 0}
                     </ListItem>
                     
                     <Divider />
