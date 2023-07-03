@@ -58,7 +58,7 @@ const Heading = styled.div`
 `;
 
 const TextSelectField = styled.div`
-  // margin: 10px 0px 0px 10px;
+  /* margin: 10px 0px 0px 10px; */
   @media (max-width: 768px) {
     margin: 0;
   }
@@ -75,8 +75,9 @@ const Select = styled.select`
 `;
 const TextWrapper = styled.div`
   display: flex;
-  justify-content: space-between;
-  align-item: center;
+  justify-content: start;
+  align-items: center;
+  text-align:center;
 
   @media (max-width: 768px) {
     justify-content: flex-end;
@@ -138,7 +139,7 @@ const FilterWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0px 50px;
+  /* padding: 0px 50px; */
 `;
 const FilterComponent = styled.div`
   margin-left: 10px;
