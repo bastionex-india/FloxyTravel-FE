@@ -28,8 +28,8 @@ import { Client } from 'twilio-chat';
 import { environmentVariables } from '../../config/config';
 import ChatWelcome from './ChatWelcome';
 import moment from 'moment/moment';
+import SearchIcon from '@mui/icons-material/Search';
 
-// console.log('FF',moment().format('YYYY-MM-DD'))
 
 
 
@@ -76,7 +76,7 @@ const ChatSupport = () => {
   const [activeChannelSID, setActiveChannelSID] = useState('')
   const baseUrl = environmentVariables.apiUrl;
   let scrollDiv = useRef(null);
-
+  
 
   const scrollToBottom = () => {
     console.log("scroll bottom called ....");
@@ -120,7 +120,7 @@ const ChatSupport = () => {
   }
 
   const sendMessage = async () => {
-    if (activeChannel && inputText.trim() !== '') {
+    if (activeChannel && inputText && inputText.trim() !== '') {
       try {
         let messageAttributes = null
         let response = await activeChannel.sendMessage(inputText, messageAttributes);
@@ -134,7 +134,22 @@ const ChatSupport = () => {
       console.log("channel no found");
     }
   };
-
+  const  SendButton = ()=>{
+    let backgroundColor = inputText ? '#2196F3' : "lightgray"; 
+    return (
+      <IconButton onClick={sendMessage}  disabled={inputText?false:true} color="primary" style={{backgroundColor:backgroundColor}}>
+          <SendIcon sx={{color:"white",fontSize:"15px"}}/>
+      </IconButton>
+    )
+  }
+  const handleKeyDown = (event)=>{
+    // console.log("event.key",event.shiftKey);
+    // console.log("event.key",event.key);
+    if (event.key === 'Enter' && !event.shiftKey) {
+      // 👇 Get input value
+      sendMessage()
+    }
+  }
 
 
   const getAllMessages = async (channel) => {
@@ -347,17 +362,17 @@ const ChatSupport = () => {
                             messageDateTime = moment(message.dateCreated).format("D MMM")
                           }
                           let messageAlignment = message.author == authData.data.email ? '-webkit-right' : "-webkit-left"
+                          let textColor = message.author == authData.data.email ? 'skyblue' : "#e9e9e9"
                           return (
-                            <Grid key={message.sid} item xs={12} style={{ textAlign: messageAlignment }}>
+                            <Grid key={message.sid} item xs={12} component="div" style={{ textAlign: messageAlignment }}>
                               <Paper
                                 sx={{
                                   p: 1,
                                   display: 'flex',
                                   flexDirection: 'column',
                                   minHeight: 40,
-                                  // textAlign:"left",
                                   marginTop: "3px",
-                                  background: "ligthgray",
+                                  background: textColor,
                                   width: 'fit-content'
                                 }}
                               >
@@ -378,31 +393,41 @@ const ChatSupport = () => {
                   sx={{
                     position: "fixed",
                     bottom: 0,
+                    width: "120%",
+                    marginBottom:"10px",
+                    padding: "0px 20px 0px 20px",
                   }}>
                   <Grid item xs={6} md={6} lg={6}>
-                    <Paper
+                    {/* <Paper
                       sx={{
-                        height: 70,
-                        width: "100%",
-                        padding: "8px",
+                        height: 60,
+                        width: "120%",
+                        padding: "6px 20px 6px 20px",
                       }}
-                    >
+                    > */}
                       <TextField
-                        id="outlined-multiline-static"
-                        label="Type your message"
+                        id="filled-multiline-flexible"
+                        // label="Multiline"
+                        placeholder='Type Your Message...'
                         multiline
-                        fullWidth
-                        // rows={2}
-                        autoFocus
-                        size="medium"
-                        style={{ fontSize: "13px" }}
-                        // defaultValue="Default Value"
+                        size="small"
+                        // maxRows={1}
+                        sx={{outline:"none"}}
+                        style={{ width: "100%" }}
                         value={inputText}
                         onChange={(e) => setInputText(e.target.value)}
+                        onKeyDown={handleKeyDown}
+                        InputProps={{
+                          endAdornment: <SendButton  />, style: {
+                            borderRadius:"12px 12px",
+                            outline:"none",
+                            textAlignVertical: 'top'
+                          }
+                        }}
                       />
-                    </Paper>
+                    {/* </Paper> */}
                   </Grid>
-                  <Grid item xs={2} md={2} lg={2}>
+                  {/* <Grid item xs={2} md={2} lg={2}>
                     <Paper
                       sx={{
                         height: 70,
@@ -413,7 +438,7 @@ const ChatSupport = () => {
                         Send
                       </Button>
                     </Paper>
-                  </Grid>
+                  </Grid> */}
                 </Grid>
               </>
               :
