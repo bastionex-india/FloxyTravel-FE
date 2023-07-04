@@ -97,7 +97,7 @@ const TextRoot = styled.div`
   }
 `;
 const HeadingWrapper = styled.div`
-  position: relative;
+  /* position: relative; */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -111,11 +111,16 @@ const DocName = styled.div`
 `;
 
 const Root = styled.div`
-  // margin: 0px 60px;
-  margin-bottom: 10px;
-  @media (max-width: 768px) {
+/* width:100%; */
+     display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+    margin: 20px 0;
+    
+  /* @media (max-width: 768px) {
     margin: 0px 20px;
-  }
+  } */
 `;
 
 const Heading = styled.div`
@@ -377,6 +382,7 @@ const ManageAdmin = () => {
             <TableContainer component={Paper}>
               <Table sx={{ minWidth: 650 }} aria-label="simple table">
                 <TableHead>
+                  qwe
                   <TableRow>
                     <TableCell style={boldTextCss}>Name</TableCell>
                     <TableCell style={boldTextCss} align="left">
