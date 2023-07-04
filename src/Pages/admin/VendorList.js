@@ -1,9 +1,9 @@
 import React from "react";
 import styled from "styled-components";
-import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
+import Card from "@material-ui/core/Card";
 import Button from "@mui/material/Button";
 import { environmentVariables } from "../../config/config";
 import Typography from "@mui/material/Typography";
@@ -29,16 +29,34 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useFormik } from "formik";
 import { VendorRegisterSchema } from "./schemas/VendorRegisterSchems";
+import Check from "./Check.js";
+import { Modal } from "react-bootstrap";
+import { BarChart, Bar, CartesianGrid, XAxis, YAxis } from "recharts";
+
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
+import GraphCheck from "./GraphCheck";
+import CircularLoader from "../../Component/CircularLoader/CircularLoader";
 
 const Root = styled.div`
   width: 90%;
   padding-left: 50px;
 `;
 const CardWrapper = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  grid-gap: 10%;
+  width: 25%;
 `;
+
+const CardsWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+`;
+// const Card = styled.div``;
 const ErrorMessage = styled.div`
   color: red;
   font-size: 12px;
@@ -48,6 +66,10 @@ const ErrorMessage = styled.div`
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
+
+const boldTextCss = {
+  fontWeight: 700,
+};
 
 const VendorList = () => {
   const [data, setData] = useState([]);
@@ -64,51 +86,47 @@ const VendorList = () => {
   const [vendorValue, setVendorValue] = useState("");
   const [adminValue, setAdminValue] = useState("");
   const [error, setError] = useState("");
+  const [showModal, setShowModel] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const getAllListData = async () => {
     await axios
-      .get(`${environmentVariables.apiUrl}/auth/getvendorlist`, {
+      .get(`${environmentVariables.apiUrl}/admin/getvendorlist`, {
         headers: { _token: authData.data.token },
       })
       .then((response) => {
-        // console.log("vendorlist",response.data)
         setData(response.data.message);
       })
       .catch((err) => {
         console.log("error", err);
       });
   };
+  const getSummaryData = () => {
+    axios
+      .get(`${environmentVariables?.apiUrl}/admin/getSummaryData`)
+      .then((res) => {
+        setSummaryData(res.data.data);
+        setIsLoading(false);
+      })
+      .catch((err) => console.log(err));
+  };
   useEffect(() => {
+    setIsLoading(true);
     getAllListData();
+    getSummaryData();
   }, []);
 
   const getAnotherComponent = (item) => {
     navigate("/gethotelsbyvendorid", { state: item });
   };
-  // const addVendor=()=>{
-
-  // }
   const [open, setOpen] = useState(false);
-  // const [open1, setOpen1] = useState(false);
+  const [summaryData, setSummaryData] = useState(null);
 
   const handleClickOpen = () => {
     setOpen(true);
   };
-  // const handleClickOpen1 = () => {
-  //   setOpen1(true);
-  // };
 
   const handleClose = () => {
-    // alert("ddd")
-    console.log(
-      "aaaaaaa",
-      name,
-      email,
-      number,
-      password,
-      cpassword,
-      adminValue
-    );
     if (adminValue === "vendor") {
       axios({
         method: "post",
@@ -128,7 +146,6 @@ const VendorList = () => {
         headers: { _token: authData.data.token },
       })
         .then((response) => {
-          // console.log(response.data.data,"00000000000001111111111")
           // setUpdatedHotelData(response.data.message)
           setResponseData(response.data.data);
 
@@ -165,8 +182,6 @@ const VendorList = () => {
         headers: { _token: authData.data.token },
       })
         .then((response) => {
-          // console.log(response.data.data,"00000000000001111111111")
-          // setUpdatedHotelData(response.data.message)
           setAdminResponseData(response.data.data);
 
           setName("");
@@ -181,7 +196,6 @@ const VendorList = () => {
         })
         .catch((error) => {
           console.log("///////////////", error);
-          // setError('Details are not valid');
         });
     }
   };
@@ -189,14 +203,7 @@ const VendorList = () => {
     setOpen(false);
   };
 
-  // const handleClose2=()=>{
-
-  // }
-  // const handleClose3=()=>{
-  //   setOpen1(false);
-  // }
   const deleteVendor = (item) => {
-    // alert(item._id)
     axios
       .delete(`${environmentVariables.apiUrl}/auth/deletevendor/${item._id}`, {
         headers: { _token: authData.data.token },
@@ -204,10 +211,8 @@ const VendorList = () => {
       .then((response) => {
         console.log(response.data.data);
         getAllListData();
+        setShowModel(false);
         navigate("/");
-
-        // toast(response.data.data)
-        // getAllUSers();
       })
       .catch((error) => {
         console.log("err", error);
@@ -248,8 +253,6 @@ const VendorList = () => {
               headers: { _token: authData.data.token },
             })
               .then((response) => {
-                // console.log(response.data.data,"00000000000001111111111")
-                // setUpdatedHotelData(response.data.message)
                 setResponseData(response.data.data);
 
                 action.resetForm();
@@ -259,7 +262,6 @@ const VendorList = () => {
               })
               .catch((error) => {
                 console.log("///////////////", error);
-                // setError('Details are not valid');
               });
           } else {
             axios({
@@ -280,8 +282,6 @@ const VendorList = () => {
               headers: { _token: authData.data.token },
             })
               .then((response) => {
-                // console.log(response.data.data,"00000000000001111111111")
-                // setUpdatedHotelData(response.data.message)
                 setAdminResponseData(response.data.data);
 
                 action.resetForm();
@@ -290,311 +290,104 @@ const VendorList = () => {
               })
               .catch((error) => {
                 console.log("///////////////", error);
-                // setError('Details are not valid');
               });
           }
         }
       },
     });
-  // console.log("first",errors);
+
+  function deleteConfirmation() {
+    setShowModel(true);
+  }
+
+  function hideModal() {
+    setShowModel(false);
+  }
 
   return (
-    <Root>
-      <button onClick={handleClickOpen}>Add Vendor or admin</button>
-      {/* <button onClick={handleClickOpen1}>Add Admin</button> */}
-      <CardWrapper>
-        {data.map((item, index) => {
-          // console.log("dddddddddd",item)
-          return (
-            item.active !== true && (
-              <Card
-                sx={{ maxWidth: 345 }}
-                key={index}
-                style={{ cursor: "pointer" }}
-              >
-                {/* <CardMedia
-                            component="img"
-                            alt="green iguana"
-                            height="140"
-                            image="../../Images/brandLogo.png"
-                            onClick={()=>getAnotherComponent(item)}
-                        /> */}
-                <CardContent>
-                  <DeleteIcon onClick={() => deleteVendor(item)} />
-                  <Typography
-                    gutterBottom
-                    variant="h5"
-                    component="div"
-                    onClick={() => getAnotherComponent(item)}
-                  >
-                    Name : {item.name}
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    onClick={() => getAnotherComponent(item)}
-                  >
-                    Email : {item.email}
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    onClick={() => getAnotherComponent(item)}
-                  >
-                    Contact : {item.mobile}
-                  </Typography>
-                </CardContent>
-                {/* <CardActions>
-                            <Button size="small">Share</Button>
-                            <Button size="small">Learn More</Button>
-                        </CardActions> */}
-              </Card>
-            )
-          );
-        })}
-
-        <div>
-          <Dialog
-            open={open}
-            TransitionComponent={Transition}
-            keepMounted
-            onClose={handleClose}
-            aria-describedby="alert-dialog-slide-description"
-          >
-            <DialogTitle>{"Add Vendor or Admin"}</DialogTitle>
-            <DialogContent>
-              <DialogContentText id="alert-dialog-slide-description">
-                <TextField
-                  type="text"
-                  placeholder="User Name*"
-                  name="name"
-                  value={values.name}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  id="outlined-basic"
-                  label="Name"
-                  variant="outlined"
-                  required
-                />
-                {errors.name && touched.name ? (
-                  <ErrorMessage>{errors.name}</ErrorMessage>
-                ) : null}
-                <TextField
-                  type="email"
-                  placeholder="Email*"
-                  name="email"
-                  value={values.email}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  id="outlined-basic"
-                  label="Email"
-                  variant="outlined"
-                  required
-                />
-                {errors.email && touched.email ? (
-                  <ErrorMessage>{errors.email}</ErrorMessage>
-                ) : null}
-                <TextField
-                  type="number"
-                  placeholder="Contact*"
-                  name="contact"
-                  value={values.contact}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  id="outlined-basic"
-                  label="Contact"
-                  variant="outlined"
-                  required
-                />
-                {errors.contact && touched.contact ? (
-                  <ErrorMessage>{errors.contact}</ErrorMessage>
-                ) : null}
-                <TextField
-                  type="password"
-                  placeholder="Password*"
-                  name="password"
-                  value={values.password}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  id="outlined-basic"
-                  label="Password"
-                  variant="outlined"
-                  required
-                />
-                {errors.password && touched.password ? (
-                  <ErrorMessage>{errors.password}</ErrorMessage>
-                ) : null}
-                <TextField
-                  type="password"
-                  placeholder="Confirm Password*"
-                  name="confirmPassword"
-                  value={values.confirmPassword}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  id="outlined-basic"
-                  label="Confirm Password"
-                  variant="outlined"
-                  required
-                />
-                {errors.confirmPassword && touched.confirmPassword ? (
-                  <ErrorMessage>{errors.confirmPassword}</ErrorMessage>
-                ) : null}
-                <FormControl>
-                  {/* <FormLabel id="demo-row-radio-buttons-group-label">Gender</FormLabel> */}
-                  <RadioGroup
-                    row
-                    aria-labelledby="demo-row-radio-buttons-group-label"
-                    name="row-radio-buttons-group"
-                    onChange={(e) => setAdminValue(e.target.value)}
-                    onClick={() => setError("")}
-                  >
-                    <FormControlLabel
-                      value="admin"
-                      control={<Radio />}
-                      label="Admin"
-                      checked={adminValue === "admin"}
-                      name="option"
-                    />
-                    <FormControlLabel
-                      value="vendor"
-                      control={<Radio />}
-                      label="Vendor"
-                      checked={adminValue === "vendor"}
-                      name="option"
-                    />
-                  </RadioGroup>
-                </FormControl>
-              </DialogContentText>
-              {error !== "" && <ErrorMessage>{error}</ErrorMessage>}
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={handleClose1}>Cancel</Button>
-              <Button onClick={handleSubmit}>Submit</Button>
-            </DialogActions>
-          </Dialog>
+    <>
+      {isLoading === true ? (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            marginTop: "30px",
+          }}
+        >
+          <CircularLoader></CircularLoader>
         </div>
-        {/* <div>
-      <Dialog
-        open={open1}
-        TransitionComponent={Transition}
-        keepMounted
-        onClose={handleClose2}
-        aria-describedby="alert-dialog-slide-description"
-      >
-        <DialogTitle>{"Add Vendor or Admin"}</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-slide-description">
-            <TextField id="outlined-basic" label="Name" variant="outlined" required type='text' value={adminName} onChange={e=>setadminName(e.target.value)}/>
-            <TextField id="outlined-basic" label="Email" variant="outlined" required type='email' value={adminEmail} onChange={e=>setAdminEmail(e.target.value)}/>
-            <TextField id="outlined-basic" label="Password" variant="outlined" required type='password' value={adminPassword} onChange={e=>setAdminPassword(e.target.value)}/>
-            <TextField id="outlined-basic" label="Confirm Password" variant="outlined" required type='password' value={admincpassword} onChange={e=>setAdminCPassword(e.target.value)}/>
-            <FormControl>
-              <RadioGroup
-                row
-                aria-labelledby="demo-row-radio-buttons-group-label"
-                name="row-radio-buttons-group"
-                onChange={(e)=>setAdminValue1(e.target.value)}
+      ) : (
+        <CardsWrapper>
+          <CardWrapper>
+            <Card style={{ padding: "50px 0px", marginRight: "20px" }}>
+              <h6 style={{ textAlign: "center" }} class="card-title">
+                EARNINGS
+              </h6>
+              <h1
+                style={{ textAlign: "center", color: "#008080" }}
+                class="card-text"
               >
-                <FormControlLabel value="admin" control={<Radio />} label="Admin"  checked={adminValue1 === "admin"} />
-                <FormControlLabel value="vendor" control={<Radio />} label="Vendor" checked={adminValue1 === "vendor"}/>
-              </RadioGroup>
-            </FormControl>
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose3}>Cancel</Button>  
-          <Button onClick={handleClose2}>Submit</Button>
-        </DialogActions>
-      </Dialog>
-      
-    </div> */}
-        <ToastContainer />
-        {/* <Card sx={{ maxWidth: 345 }}>
-      <CardMedia
-        component="img"
-        alt="green iguana"
-        height="140"
-        image="../../Images/download.jpg"
-      />
-      <CardContent>
-        <Typography gutterBottom variant="h5" component="div">
-          Lizard
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          Lizards are a widespread group of squamate reptiles, with over 6,000
-          species, ranging across all continents except Antarctica
-        </Typography>
-      </CardContent>
-      <CardActions>
-        <Button size="small">Share</Button>
-        <Button size="small">Learn More</Button>
-      </CardActions>
-    </Card>
-    <Card sx={{ maxWidth: 345 }}>
-      <CardMedia
-        component="img"
-        alt="green iguana"
-        height="140"
-        image="../../../public/download.jpg"
-      />
-      <CardContent>
-        <Typography gutterBottom variant="h5" component="div">
-          Lizard
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          Lizards are a widespread group of squamate reptiles, with over 6,000
-          species, ranging across all continents except Antarctica
-        </Typography>
-      </CardContent>
-      <CardActions>
-        <Button size="small">Share</Button>
-        <Button size="small">Learn More</Button>
-      </CardActions>
-    </Card>
-    <Card sx={{ maxWidth: 345 }}>
-      <CardMedia
-        component="img"
-        alt="green iguana"
-        height="140"
-        image="../../../public/download.jpg"
-      />
-      <CardContent>
-        <Typography gutterBottom variant="h5" component="div">
-          Lizard
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          Lizards are a widespread group of squamate reptiles, with over 6,000
-          species, ranging across all continents except Antarctica
-        </Typography>
-      </CardContent>
-      <CardActions>
-        <Button size="small">Share</Button>
-        <Button size="small">Learn More</Button>
-      </CardActions>
-    </Card>
-    <Card sx={{ maxWidth: 345 }}>
-      <CardMedia
-        component="img"
-        alt="green iguana"
-        height="140"
-        image="../../../public/download.jpg"
-      />
-      <CardContent>
-        <Typography gutterBottom variant="h5" component="div">
-          Lizard
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          Lizards are a widespread group of squamate reptiles, with over 6,000
-          species, ranging across all continents except Antarctica
-        </Typography>
-      </CardContent>
-      <CardActions>
-        <Button size="small">Share</Button>
-        <Button size="small">Learn More</Button>
-      </CardActions>
-    </Card> */}
-      </CardWrapper>
-    </Root>
+                ₹ {summaryData?.totalEarnings}
+              </h1>
+            </Card>
+          </CardWrapper>
+          <CardWrapper>
+            <Card style={{ padding: "50px 0px", marginRight: "20px" }}>
+              <h6 style={{ textAlign: "center" }} class="card-title">
+                PAYOUT
+              </h6>
+              <h1
+                style={{ textAlign: "center", color: "#008080" }}
+                class="card-text"
+              >
+                ₹ {summaryData?.allPayoutAmount.toFixed(2)}
+              </h1>
+            </Card>
+          </CardWrapper>
+          <CardWrapper>
+            <Card style={{ padding: "50px 0px", marginRight: "20px" }}>
+              <h6 style={{ textAlign: "center" }} class="card-title">
+                TOTAL VENDORS
+              </h6>
+              <h1
+                style={{ textAlign: "center", color: "#008080" }}
+                class="card-text"
+              >
+                {summaryData?.totalVendors}
+              </h1>
+            </Card>
+          </CardWrapper>
+          <CardWrapper>
+            <Card style={{ padding: "50px 0px", marginRight: "20px" }}>
+              <h6 style={{ textAlign: "center" }} class="card-title">
+                TOTAL HOTELS
+              </h6>
+              <h1
+                style={{ textAlign: "center", color: "#008080" }}
+                class="card-text"
+              >
+                {summaryData?.totalHotels}
+              </h1>
+            </Card>
+          </CardWrapper>
+          <CardWrapper>
+            <Card style={{ padding: "50px 0px", marginRight: "20px" }}>
+              <h6 style={{ textAlign: "center" }} class="card-title">
+                TOTAL BOOKINGS
+              </h6>
+              <h1
+                style={{ textAlign: "center", color: "#008080" }}
+                class="card-text"
+              >
+                {summaryData?.totalBookings}
+              </h1>
+            </Card>
+          </CardWrapper>
+        </CardsWrapper>
+      )}
+
+      <GraphCheck />
+    </>
   );
 };
 

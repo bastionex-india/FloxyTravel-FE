@@ -18,3 +18,11 @@ code {
   font-size: 16px !important;
   font-weight: 500 !important;
 }
+
+.css-pdct74-MuiTablePagination-selectLabel{
+  margin: 0 !important;
+}
+
+.css-levciy-MuiTablePagination-displayedRows{
+  margin: 0 !important;
+}

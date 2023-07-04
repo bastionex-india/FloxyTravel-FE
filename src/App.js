@@ -4,7 +4,7 @@ import Navigation from "./Component/Navigation";
 import SideBar from "./Component/SideBar";
 import Login from "./Pages/Login/Login";
 import { Route, Routes } from "react-router-dom";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { AuthContext } from "./ContextApi/ContextApi";
 import Dashboard from "./Pages/Dashboard/Dashboard";
 import BookingHistory from "./Pages/BookingHistory";
@@ -19,6 +19,15 @@ import UserLandingPage from "./Pages/admin/UserLandingPage";
 import UserLandingPageHome from "./Pages/admin/UserLandingPageHome";
 import BookingHistoryofAdmin from "./Pages/admin/BookingHistoryofAdmin";
 import BookingHistorybyOrderid from "./Pages/admin/BookingHistorybyOrderid";
+import ManageAdmin from "./Pages/admin/ManageAdmin/ManageAdmin";
+import ManageHotels from "./Pages/admin/ManageHotels/ManageHotels";
+import AddHotels from "./Pages/admin/AddHotels/AddHotels";
+import VendorManageHotels from "./Pages/VendorManageHotels";
+import GenerateInvoice from "./Pages/admin/GenerateInvoice";
+import VendorDetails from "./Pages/admin/VendorDetails/VendorDetails";
+import Payouts from "./Pages/Payouts";
+import VendorEditHotel from "./Pages/VendorEditHotel";
+import ChatSupport from "./Pages/admin/ChatSupport";
 
 const Root = styled.div``;
 const LeftWrapper = styled.div`
@@ -33,14 +42,27 @@ const Container = styled.div`
 `;
 function App() {
   const { authData, setAuthData } = useContext(AuthContext);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [showDropDown, setShowDropDown] = useState(false);
+
   // console.log("authdata of app",authData.data)
   return (
-    <Root>
+    <Root
+      onClick={() => {
+        setShowNotifications(false);
+        setShowDropDown(false);
+      }}
+    >
       {!authData ? (
         <Login />
       ) : (
         <>
-          <Navigation />
+          <Navigation
+            showNotifications={showNotifications}
+            setShowNotifications={setShowNotifications}
+            showDropDown={showDropDown}
+            setShowDropDown={setShowDropDown}
+          />
           <Container>
             <LeftWrapper>
               <SideBar />
@@ -51,6 +73,9 @@ function App() {
                   <>
                     <Route path="/" element={<Dashboard1 />} />
                     <Route path="/profile" element={<Profile />} />
+                    <Route path="managevendors" element={<ManageAdmin />} />
+                    <Route path="/addhotels" element={<AddHotels />} />
+                    <Route path="/addhotels/:id" element={<AddHotels />} />
                     <Route
                       path="/upcomingbookings"
                       element={<UpcomingBookings />}
@@ -62,6 +87,10 @@ function App() {
                     <Route
                       path="/bookinghistoryofadmin"
                       element={<BookingHistoryofAdmin />}
+                    />
+                    <Route
+                      path="/generateInvoice"
+                      element={<GenerateInvoice />}
                     />
                     <Route
                       path="/bookinghistorybyorderid"
@@ -76,9 +105,18 @@ function App() {
                       path="userhomepage"
                       element={<UserLandingPageHome />}
                     />
+                    <Route path="managehotels" element={<ManageHotels />} />
                     {/* <Route path="/bookinghistory" element={<BookingHistory />} />
                     <Route path="/hoteldetails" element={<HotelDetails />} />
                     <Route path="/profile" element={<Profile />} /> */}
+                    <Route
+                      path="vendordetails/:id"
+                      element={<VendorDetails />}
+                    />
+                    <Route
+                      path="chatSupport"
+                      element={<ChatSupport/>}
+                    />
                   </>
                 ) : (
                   <>
@@ -88,11 +126,26 @@ function App() {
                       element={<BookingHistory />}
                     />
                     <Route
+                      path="/generateInvoice"
+                      element={<GenerateInvoice />}
+                    />
+                    <Route
                       path="/bookinghotelbyid"
                       element={<BookingHotelById />}
                     />
+                    <Route
+                      path="/vendormanagehotels"
+                      element={<VendorManageHotels />}
+                    />
+                    <Route path="/payouts" element={<Payouts />} />
+
                     <Route path="/hoteldetails" element={<HotelDetails />} />
+
                     <Route path="/profile" element={<Profile />} />
+                    <Route
+                      path="/edithotels/:id"
+                      element={<VendorEditHotel />}
+                    />
                   </>
                 )}
               </Routes>

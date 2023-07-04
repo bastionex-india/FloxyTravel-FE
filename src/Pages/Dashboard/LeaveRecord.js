@@ -1,41 +1,24 @@
 import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import { AuthContext } from "../../ContextApi/ContextApi";
-// import moment from 'moment'
 import Cardbg1 from "../../Images/bg.jpg";
 import { useNavigate } from "react-router-dom";
 import { environmentVariables } from "../../config/config";
-// import { styled } from '@mui/material/styles';
-// import Card from '@mui/material/Card';
-// import CardHeader from '@mui/material/CardHeader';
-// import CardMedia from '@mui/material/CardMedia';
-// import CardContent from '@mui/material/CardContent';
-// import CardActions from '@mui/material/CardActions';
-// import Collapse from '@mui/material/Collapse';
-// import Avatar from '@mui/material/Avatar';
-// import IconButton, { IconButtonProps } from '@mui/material/IconButton';
-// import Typography from '@mui/material/Typography';
-// import { red } from '@mui/material/colors';
-// import FavoriteIcon from '@mui/icons-material/Favorite';
-// import ShareIcon from '@mui/icons-material/Share';
-// import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-// import MoreVertIcon from '@mui/icons-material/MoreVert';
+import { Modal, Button } from "react-bootstrap";
+import VendorGraphCheck from "./VendorGraphCheck.js";
+import Card from "@material-ui/core/Card";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
+import DeleteIcon from "@mui/icons-material/Delete";
+
 import axios from "axios";
+import CircularLoader from "../../Component/CircularLoader/CircularLoader";
 
-// interface ExpandMoreProps extends IconButtonProps {
-//   expand: boolean;
-// }
-
-// const ExpandMore = styled((props: ExpandMoreProps) => {
-//   const { expand, ...other } = props;
-//   return <IconButton {...other} />;
-// })(({ theme, expand }) => ({
-//   transform: !expand ? 'rotate(0deg)' : 'rotate(180deg)',
-//   marginLeft: 'auto',
-//   transition: theme.transitions.create('transform', {
-//     duration: theme.transitions.duration.shortest,
-//   }),
-// }));
 const LeftCardWrapper = styled.div`
   width: calc(60% - 10px);
   /* height: 100%; */
@@ -51,23 +34,16 @@ const TextWrapper = styled.div`
   text-align: center;
   flex-direction: column;
 `;
-const Card = styled.div`
+
+const CardWrapper = styled.div`
+  width: 25%;
+`;
+
+const CardsWrapper = styled.div`
   display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  ${(p) =>
-    p.bgImage &&
-    `
-    background-image:url(${p.bgImage});
-  `};
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: 100% 100%;
-  width: 100%;
-  height: 300px;
-  position: relative;
-  cursor: pointer;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  width: 74vw;
 `;
 const CardText = styled.div`
   color: #fff;
@@ -79,133 +55,109 @@ const CardText = styled.div`
   }
 `;
 
-export default function LeaveRecord() {
+export default function LeaveRecord({ vendorId }) {
   const { authData } = useContext(AuthContext);
   const navigate = useNavigate();
   const [data, setData] = useState([]);
-  // console.log("jjjjjjjjjjjjjj",data)
-  // const handleExpandClick = () => {
-  //   setExpanded(!expanded);
-  // };
+  const [summaryData, setSummaryData] = useState(null);
+  const [isLoadingCards, setIsLoadingCards] = useState(false);
   const componentClicked = (item) => {
     navigate("/hoteldetails", { state: item });
   };
-  const getVendorData = async () => {
-    await axios
-      .get(`${environmentVariables.apiUrl}/auth/vendorget`, {
-        headers: { _token: authData.data.token },
+  const getSummaryData = () => {
+    const vendorid = authData.data.vendorId || vendorId;
+
+    axios
+      .get(`${environmentVariables.apiUrl}/admin/getVendorSummary/${vendorid}`)
+      .then((res) => {
+        setSummaryData(res.data.data);
+        setIsLoadingCards(false);
       })
-      .then((response) => {
-        // console.log('rrrrrrrrrrrr',response.data.data.hotels)
-        setData(response.data.data.hotels);
-      })
-      .catch((error) => {
-        console.log("error", error);
-      });
+      .catch((err) => console.log(err));
   };
+
   useEffect(() => {
-    getVendorData();
-  }, []);
+    setIsLoadingCards(true);
+    getSummaryData();
+  }, [vendorId]);
+
+  const [showModal, setShowModel] = useState(false);
+
+  function deleteConfirmation() {
+    setShowModel(true);
+  }
+
+  function hideModal() {
+    setShowModel(false);
+  }
+
+  const boldTextCss = {
+    fontWeight: 700,
+  };
 
   return (
-    <div>
-      <div>
-        {data.map((item, key) => {
-          console.log(".................", item, key);
-          return (
-            <LeftCardWrapper>
-              <Card
-                bgImage={`${environmentVariables.apiUrl}/uploads/${item.image[0]}`}
-                onClick={() => componentClicked(item)}
+    <>
+      {isLoadingCards === true ? (
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <CircularLoader></CircularLoader>
+        </div>
+      ) : (
+        <CardsWrapper>
+          <CardWrapper>
+            <Card style={{ padding: "50px 0px", marginRight: "20px" }}>
+              <h6 style={{ textAlign: "center" }} class="card-title">
+                EARNINGS
+              </h6>
+              <h1
+                style={{ textAlign: "center", color: "#008080" }}
+                class="card-text"
               >
-                <TextWrapper>
-                  <TextWrapper>
-                    <CardText>{item.hotelname}</CardText>
-                    <CardText>
-                      {item.city} , {item.state}
-                    </CardText>
-                  </TextWrapper>
-                </TextWrapper>
-              </Card>
-            </LeftCardWrapper>
-          );
-        })}
-      </div>
-
-      {/* <Card sx={{ maxWidth: 345 }}>
-      <CardHeader
-        avatar={
-          <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
-            R
-          </Avatar>
-        }
-        action={
-          <IconButton aria-label="settings">
-            <MoreVertIcon />
-          </IconButton>
-        }
-        title="Shrimp and Chorizo Paella"
-        subheader="September 14, 2016"
-      />
-      <CardMedia
-        component="img"
-        height="194"
-        image="/static/images/cards/paella.jpg"
-        alt="Paella dish"
-      />
-      <CardContent>
-        <Typography variant="body2" color="text.secondary">
-          This impressive paella is a perfect party dish and a fun meal to cook
-          together with your guests. Add 1 cup of frozen peas along with the mussels,
-          if you like.
-        </Typography>
-      </CardContent>
-      <CardActions disableSpacing>
-        <IconButton aria-label="add to favorites">
-          <FavoriteIcon />
-        </IconButton>
-        <IconButton aria-label="share">
-          <ShareIcon />
-        </IconButton>
-        <ExpandMore
-          expand={expanded}
-          onClick={handleExpandClick}
-          aria-expanded={expanded}
-          aria-label="show more"
-        >
-          <ExpandMoreIcon />
-        </ExpandMore>
-      </CardActions>
-      <Collapse in={expanded} timeout="auto" unmountOnExit>
-        <CardContent>
-          <Typography paragraph>Method:</Typography>
-          <Typography paragraph>
-            Heat 1/2 cup of the broth in a pot until simmering, add saffron and set
-            aside for 10 minutes.
-          </Typography>
-          <Typography paragraph>
-            Heat oil in a (14- to 16-inch) paella pan or a large, deep skillet over
-            medium-high heat. Add chicken, shrimp and chorizo, and cook, stirring
-            occasionally until lightly browned, 6 to 8 minutes. Transfer shrimp to a
-            large plate and set aside, leaving chicken and chorizo in the pan. Add
-            pimentón, bay leaves, garlic, tomatoes, onion, salt and pepper, and cook,
-            stirring often until thickened and fragrant, about 10 minutes. Add
-            saffron broth and remaining 4 1/2 cups chicken broth; bring to a boil.
-          </Typography>
-          <Typography paragraph>
-            Add rice and stir very gently to distribute. Top with artichokes and
-            peppers, and cook without stirring, until most of the liquid is absorbed,
-            15 to 18 minutes. Reduce heat to medium-low, add reserved shrimp and
-            mussels, tucking them down into the rice, and cook again without
-            stirring, until mussels have opened and rice is just tender, 5 to 7
-            minutes more. (Discard any mussels that don&apos;t open.)
-          </Typography>
-          <Typography>
-            Set aside off of the heat to let rest for 10 minutes, and then serve.
-          </Typography>
-        </CardContent>
-      </Collapse>
-    </Card> */}
-    </div>
+                ₹ {summaryData?.totalEarnings}
+              </h1>
+            </Card>
+          </CardWrapper>
+          <CardWrapper>
+            <Card style={{ padding: "50px 0px", marginRight: "20px" }}>
+              <h6 style={{ textAlign: "center" }} class="card-title">
+                PAYOUT
+              </h6>
+              <h1
+                style={{ textAlign: "center", color: "#008080" }}
+                class="card-text"
+              >
+                ₹ {summaryData?.allPayoutAmount}
+              </h1>
+            </Card>
+          </CardWrapper>
+          <CardWrapper>
+            <Card style={{ padding: "50px 0px", marginRight: "20px" }}>
+              <h6 style={{ textAlign: "center" }} class="card-title">
+                HOTELS
+              </h6>
+              <h1
+                style={{ textAlign: "center", color: "#008080" }}
+                class="card-text"
+              >
+                {summaryData?.totalHotels}
+              </h1>
+            </Card>
+          </CardWrapper>
+          <CardWrapper>
+            <Card style={{ padding: "50px 0px" }}>
+              <h6 style={{ textAlign: "center" }} class="card-title">
+                BOOKINGS
+              </h6>
+              <h1
+                style={{ textAlign: "center", color: "#008080" }}
+                class="card-text"
+              >
+                {summaryData?.totalBookings}
+              </h1>
+            </Card>
+          </CardWrapper>
+        </CardsWrapper>
+      )}
+      <VendorGraphCheck />
+    </>
   );
 }

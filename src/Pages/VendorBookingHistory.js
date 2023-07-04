@@ -4,59 +4,8 @@ import styled from "styled-components";
 import { AuthContext } from "../../ContextApi/ContextApi";
 import CircularLoader from "../../Component/CircularLoader/CircularLoader";
 import Swal from "sweetalert2";
-import { useNavigate } from "react-router-dom";
-import { Button } from "@mui/material";
-
 import { environmentVariables } from "../../config/config";
-import { Modal } from "react-bootstrap";
-import Typography from "@mui/material/Typography";
-import { styled as newStyle } from "@mui/material/styles";
-import Dialog from "@mui/material/Dialog";
-import DialogTitle from "@mui/material/DialogTitle";
-import DialogContent from "@mui/material/DialogContent";
-import DialogActions from "@mui/material/DialogActions";
-import IconButton from "@mui/material/IconButton";
-import CloseIcon from "@mui/icons-material/Close";
-import PropTypes from "prop-types";
-const BootstrapDialog = newStyle(Dialog)(({ theme }) => ({
-  "& .MuiDialogContent-root": {
-    padding: theme.spacing(2),
-  },
-  "& .MuiDialogActions-root": {
-    padding: theme.spacing(1),
-  },
-}));
-
-function BootstrapDialogTitle(props) {
-  const { children, onClose, ...other } = props;
-
-  return (
-    <DialogTitle sx={{ m: 0, p: 2 }} {...other}>
-      {children}
-      {onClose ? (
-        <IconButton
-          aria-label="close"
-          onClick={onClose}
-          sx={{
-            position: "absolute",
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500],
-          }}
-        >
-          <CloseIcon />
-        </IconButton>
-      ) : null}
-    </DialogTitle>
-  );
-}
-
-BootstrapDialogTitle.propTypes = {
-  children: PropTypes.node,
-  onClose: PropTypes.func.isRequired,
-};
-
-const UserLandingPageHome = () => {
+const VendorBookingHistory = () => {
   const [isPriorityChanged, setIsPriority] = useState(false);
   const [addThemePopUp, setAddThemePopUp] = useState(false);
   const [themeId, setThemeId] = useState(null);
@@ -70,20 +19,6 @@ const UserLandingPageHome = () => {
   const [deletePopUp, setDeletePopUp] = useState(false);
   const [cityData, setCityData] = useState();
   const [city, setCity] = useState(null);
-  const [showModal, setShowModal] = useState(false);
-
-  const navigate = useNavigate();
-  const resetForm = () => {
-    setCity("");
-    setTheme("");
-    setTitle("");
-  };
-  const handleClose = () => {
-    setDeletePopUp(false);
-  };
-  const deleteRecord = (item) => {
-    handleDeleteData();
-  };
   const getPopularCities = () => {
     axios
       .get(`${environmentVariables.apiUrl}/auth/getnameofcity`)
@@ -119,7 +54,7 @@ const UserLandingPageHome = () => {
         headers: { _token: authData.data.token },
       })
       .then((response) => {
-        console.log("response.data", response.data.data);
+        // console.log("response.data", response.data.data);
         setAllData(response.data.data);
         setIsLoading(false);
       })
@@ -153,13 +88,12 @@ const UserLandingPageHome = () => {
       .then((response) => {
         if (response.status) {
           Swal.fire("Deleted", "Successfully Deleted the City Data", "success");
-          setDeletePopUp(false);
           getAllData();
         } else {
           Swal.fire("Error", "Something went wrong!", "error");
         }
         setThemeId(null);
-        setShowModal(false);
+        setDeletePopUp(false);
       })
       .catch((err) => {
         Swal.fire("Error", "Something went wrong!", "error");
@@ -192,8 +126,6 @@ const UserLandingPageHome = () => {
         .then((response) => {
           if (response?.data?.status) {
             getAllData();
-            resetForm();
-
             Swal.fire(
               `City ${themeId === null ? "Inserted" : "Updated"}`,
               `Successfully ${
@@ -202,7 +134,6 @@ const UserLandingPageHome = () => {
               "success"
             );
           } else {
-            resetForm();
             Swal.fire(
               "Error",
               "Please check again the values you are inserting!",
@@ -213,7 +144,6 @@ const UserLandingPageHome = () => {
         .catch((err) => {
           console.log(err.message);
           Swal.fire("Error", "Something went wrong", "error");
-          resetForm();
         });
     } else {
       Swal.fire("Warning", "Please enter all the data!", "warning");
@@ -259,52 +189,17 @@ const UserLandingPageHome = () => {
     });
     setAllData(newBoxState);
   };
-
-  function deleteConfirmation(e) {
-    setThemeId(e.target.id);
-    setShowModal(true);
-  }
-
-  function hideModal() {
-    setShowModal(false);
-  }
   return (
     <Root>
-      <HeadingWrapper>
-        {" "}
-        <i
-          style={{ position: "absolute", left: "0" }}
-          onClick={() => navigate(-1)}
-          class="fa-solid fa-chevron-left fa-2x"
-        ></i>
-        <MainHeading>Manage Home Landing Page</MainHeading>
-      </HeadingWrapper>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "flex-end",
-          padding: "20px 0",
-          margin: "0 5%",
-        }}
-      >
-        <button
-          type="button"
-          class="btn btn-primary"
-          data-bs-toggle="modal"
-          data-bs-target="#exampleModal"
-        >
-          Add Hotel Card Sections
-        </button>
-      </div>
+      <MainHeading>Manage Home Landing Page</MainHeading>
       <div style={{ backgroundColor: "#fff", marginBottom: "10px" }}>
         {" "}
         <ThemeContainer>
           <StateHeading>Hotel Card Sections :</StateHeading>
 
-          {/* <AddButton onClick={() => setAddThemePopUp(true)}>
+          <AddButton onClick={() => setAddThemePopUp(true)}>
             Add Hotel Card Sections
-          </AddButton> */}
-
+          </AddButton>
           {/* <StateAddIcon
           onClick={() => setAddThemePopUp(true)}
           className="fa-solid fa-circle-plus"
@@ -340,67 +235,16 @@ const UserLandingPageHome = () => {
                     <ThemeBoxElement>{val?.title}</ThemeBoxElement>
                     <ThemeBoxElement>{val?.theme}</ThemeBoxElement>
                     <ThemeBoxElement style={{ justifyContent: "flex-end" }}>
-                      <button type="button" class="btn">
-                        <DeleteIcon
-                          id={val?._id}
-                          onClick={(e) => {
-                            setDeletePopUp(true);
-                            setThemeId(e.target.id);
-                          }}
-                          className="fa-solid fa-trash"
-                        />
-                      </button>
-                      <button
-                        type="button"
-                        class="btn"
-                        data-bs-toggle="modal"
-                        data-bs-target="#exampleModal"
-                      >
-                        <EditIcon
-                          onClick={(e) => handleEditPopUp(e)}
-                          id={val?._id}
-                          className="fa-solid fa-pen-to-square"
-                        />
-                      </button>
-                      <BootstrapDialog
-                        onClose={handleClose}
-                        aria-labelledby="customized-dialog-title"
-                        open={deletePopUp}
-                      >
-                        <BootstrapDialogTitle
-                          id="customized-dialog-title"
-                          onClose={handleClose}
-                        >
-                          Delete
-                        </BootstrapDialogTitle>
-                        <DialogContent dividers>
-                          <Typography gutterBottom>
-                            Are you sure you want to delete the vendor?
-                          </Typography>
-                        </DialogContent>
-                        <DialogActions>
-                          <Button
-                            variant="contained"
-                            color="success"
-                            onClick={handleClose}
-                          >
-                            Cancel
-                          </Button>
-                          <Button
-                            variant="contained"
-                            color="error"
-                            onClick={() => deleteRecord()}
-                          >
-                            Delete
-                          </Button>
-                        </DialogActions>
-                      </BootstrapDialog>
-                      {/* <EditIcon
+                      <DeleteIcon
+                        id={val?._id}
+                        onClick={(e) => handleDeletePopUp(e)}
+                        className="fa-solid fa-trash"
+                      />
+                      <EditIcon
                         onClick={(e) => handleEditPopUp(e)}
                         id={val?._id}
                         className="fa-solid fa-pen-to-square"
-                        
-                      /> */}
+                      />
                     </ThemeBoxElement>
                   </RecentlyDocumentUploaded>
                 ))}
@@ -421,102 +265,12 @@ const UserLandingPageHome = () => {
           </ThemeCardWrapper>
         )}
       </div>
-
-      <div
-        class="modal fade"
-        id="exampleModal"
-        tabindex="-1"
-        aria-labelledby="exampleModalLabel"
-        aria-hidden="true"
-      >
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h1 class="modal-title fs-5" id="exampleModalLabel">{`${
-                themeId === null ? "Add" : "Edit"
-              } Section`}</h1>
-              <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-                onClick={resetForm}
-              ></button>
-            </div>
-            <div class="modal-body">
-              <div class="input-group mb-3">
-                <label class="input-group-text" for="inputGroupSelect01">
-                  City Name* :
-                </label>
-                <select
-                  class="form-select"
-                  id="inputGroupSelect01"
-                  value={city}
-                  onChange={(e) => setCity(e.target.value)}
-                >
-                  <option>Select City Name</option>
-                  {cityData &&
-                    cityData.map((val) => (
-                      <option value={val.city}>{val.city}</option>
-                    ))}
-                </select>
-              </div>
-
-              <div class="input-group mb-3">
-                <label class="input-group-text" for="inputGroupSelect01">
-                  Theme Name* :{" "}
-                </label>
-                <select
-                  class="form-select"
-                  id="inputGroupSelect01"
-                  value={theme}
-                  onChange={(e) => setTheme(e.target.value)}
-                >
-                  <option>Select Theme Name</option>
-                  <option value={`All`}>All</option>
-                  <option value={`Beach`}>Beach</option>
-                  <option value={`Wildlife`}>Wildlife</option>
-                  <option value={`Romantic`}>Romantic</option>
-                  <option value={`Hill`}>Hill</option>
-                  <option value={`Heritage`}>Heritage</option>
-                </select>
-              </div>
-
-              <div class="input-group mb-3">
-                <span class="input-group-text" id="inputGroup-sizing-default">
-                  Title* :{" "}
-                </span>
-                <input
-                  type="text"
-                  class="form-control"
-                  aria-label="Sizing example input"
-                  aria-describedby="inputGroup-sizing-default"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                />
-              </div>
-            </div>
-            <div class="modal-footer">
-              <button
-                type="button"
-                class="btn btn-primary"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-                onClick={handleAddData}
-              >
-                Submit
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-      {/* {addThemePopUp && (
-    
-        <AddThemePopUpContainer style={{border: 'black'}} >
-          <AddThemePopUp style={{backgroundColor: '#E3FAEE'}}> 
+      {addThemePopUp && (
+        <AddThemePopUpContainer>
+          <AddThemePopUp>
             <div
               style={{
-                color: "black",
+                color: "#fff",
                 textAlign: "center",
                 fontSize: "20px",
                 marginTop: "20px",
@@ -534,11 +288,11 @@ const UserLandingPageHome = () => {
                 setTitle(null);
               }}
               className="fa-solid fa-circle-xmark"
-              style={{ color: "black", fontSize: "20px" }}
+              style={{ color: "#fff", fontSize: "20px" }}
             />
             <AddThemeWrapper>
               <AddThemeInputWrapper>
-                <AddThemeLabel style={{color: 'black'}}>City Name* : </AddThemeLabel>
+                <AddThemeLabel>City Name* : </AddThemeLabel>
                 <AddThemePopUpSelect
                   value={city}
                   onChange={(e) => setCity(e.target.value)}
@@ -551,7 +305,7 @@ const UserLandingPageHome = () => {
                 </AddThemePopUpSelect>
               </AddThemeInputWrapper>{" "}
               <AddThemeInputWrapper>
-                <AddThemeLabel style={{color: 'black'}}>Theme Name* : </AddThemeLabel>
+                <AddThemeLabel>Theme Name* : </AddThemeLabel>
                 <AddThemePopUpSelect
                   value={theme}
                   onChange={(e) => setTheme(e.target.value)}
@@ -566,7 +320,7 @@ const UserLandingPageHome = () => {
                 </AddThemePopUpSelect>
               </AddThemeInputWrapper>
               <AddThemeInputWrapper>
-                <AddThemeLabel style={{color: 'black'}}>Title* : </AddThemeLabel>
+                <AddThemeLabel>Title* : </AddThemeLabel>
                 <AddThemePopUpInput
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
@@ -575,7 +329,7 @@ const UserLandingPageHome = () => {
             </AddThemeWrapper>
             <ButtonWrapper>
               <AddButton
-                
+                style={{ backgroundColor: "#fff", color: "#000" }}
                 onClick={handleAddData}
               >
                 Submit
@@ -583,14 +337,14 @@ const UserLandingPageHome = () => {
             </ButtonWrapper>
           </AddThemePopUp>
         </AddThemePopUpContainer>
-      )} */}
-      {/* {deletePopUp && (
+      )}
+      {deletePopUp && (
         <DeletePopUpContainer>
-          <DeletePopUp style={{ backgroundColor: "white" }}>
+          <DeletePopUp>
             <AddStatePopUpCloseIcon
               onClick={() => setDeletePopUp(false)}
               className="fa-solid fa-circle-xmark"
-              style={{ color: "black", fontSize: "20px" }}
+              style={{ color: "#fff", fontSize: "20px" }}
             />
             <DeletePopUpHeading>Delete Theme</DeletePopUpHeading>
             <DeletePopUpText>Are you sure you want to delete?</DeletePopUpText>
@@ -604,18 +358,11 @@ const UserLandingPageHome = () => {
             </DeletePopUpButtonWrapper>
           </DeletePopUp>
         </DeletePopUpContainer>
-      )} */}
+      )}
     </Root>
   );
 };
 
-const HeadingWrapper = styled.div`
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-const BackIcon = styled.i``;
 const AddButton = styled.div`
   background-color: #01575c;
   height: 40px;
@@ -805,7 +552,7 @@ const DeletePopUp = styled.div`
   position: relative;
   background-color: #01575c;
   margin: auto;
-  /* box-shadow: #000 2px 1px 1px 1px; */
+  box-shadow: #000 2px 1px 1px 1px;
   /* width: 30vw; */
   /* height: 30vh; */
   border-radius: 5px;
@@ -860,7 +607,7 @@ const AddThemePopUp = styled.div`
   position: relative;
   background-color: #01575c;
   margin: auto;
-  /* box-shadow: #000 2px 1px 1px 1px; */
+  box-shadow: #000 2px 1px 1px 1px;
   width: 42vw;
   // height: 50vh;
   border-radius: 5px;
@@ -868,7 +615,7 @@ const AddThemePopUp = styled.div`
 const AddStatePopUp = styled.div`
   position: relative;
   background-color: #01575c;
-  /* box-shadow: #000 2px 1px 1px 1px; */
+  box-shadow: #000 2px 1px 1px 1px;
   margin: auto;
   width: 42vw;
   height: 34vh;
@@ -970,8 +717,7 @@ export const RecentlyDocumentUploaded = styled.div`
   align-items: center;
   margin: 10px 5%;
   padding: 14px 15px;
-  border: 1px solid #b8b8b8;
-  /* box-shadow: 2px 2px 4px 1px #000; */
+  box-shadow: 2px 2px 4px 1px #000;
   border-radius: 5px;
   @media (max-width: 768px) {
     display: flex;
@@ -1009,4 +755,4 @@ export const PriorityButton = styled.div`
   font-weight: 700;
   margin-left: 20px;
 `;
-export default UserLandingPageHome;
+export default VendorBookingHistory;

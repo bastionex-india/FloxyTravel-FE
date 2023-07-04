@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import styled from "styled-components";
@@ -8,27 +8,39 @@ import { useEffect } from "react";
 import { useContext } from "react";
 import { AuthContext } from "../../ContextApi/ContextApi";
 import io, { socketIOClient } from "socket.io-client";
-
-import moment from "moment";
+import CircularLoader from "../../Component/CircularLoader/CircularLoader";
+import Table from "@mui/material/Table";
+import { Button } from "@mui/material";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
+import TablePagination from "@mui/material/TablePagination";
+import { BsCalendarDay } from "react-icons/bs";
+import DatePicker from "react-datepicker";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import "react-datepicker/dist/react-datepicker.css";
+const HeadingWrapper = styled.div`
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
 const TextRoot = styled.div`
-  background-color: #9f94942b;
-  padding: 20px 0px;
-  width: 967px;
+  // background-color: #9f94942b;
+  padding: 20px;
+  /* width: 967px; */
   margin: 10px auto;
   @media (max-width: 768px) {
     width: 100vw;
   }
 `;
-const DocInfo = styled.div`
-  // display: flex;
-`;
-const DocName = styled.div`
-  margin-left: 4px;
-  font-weight: 600;
-`;
-
 const Root = styled.div`
-  margin: 0px 60px;
+  // margin: 0px 60px;
+  margin-bottom: 10px;
   @media (max-width: 768px) {
     margin: 0px 20px;
   }
@@ -42,15 +54,15 @@ const Heading = styled.div`
 `;
 
 const TextSelectField = styled.div`
-  margin: 10px 0px 0px 10px;
-
+  // margin: 10px 0px 0px 10px;
   @media (max-width: 768px) {
     margin: 0;
   }
 `;
 
 const Select = styled.select`
-  padding: 10px;
+  height: 30px;
+  padding: 0px 10px;
   border-radius: 5px;
   outline: none;
   border: none;
@@ -60,77 +72,14 @@ const Select = styled.select`
 const TextWrapper = styled.div`
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  text-align: center;
+
   @media (max-width: 768px) {
     justify-content: flex-end;
   }
 `;
-const RecentlyUploaded = styled.div`
-  background: #fff;
-  display: grid;
-  grid-template-columns: 18% 27% 12% 18% 15% 9%;
-  -webkit-box-align: center;
-  align-items: center;
-  margin: 15px 2%;
-  padding: 14px 15px;
-  box-shadow: 0px 0px 5px 5px #0000;
-  border-radius: 5px;
-  @media (max-width: 768px) {
-    display: flex;
-    justify-content: space-between;
-  }
-`;
 
-const RecentlyUploadedDate = styled.div`
-  @media (max-width: 768px) {
-    display: none;
-  }
-`;
-const RecentlyUploadedType = styled.div`
-  @media (max-width: 768px) {
-    display: none;
-  }
-`;
-const RecentlyUploadedStatus = styled.div`
-  @media (max-width: 768px) {
-    display: none;
-  }
-`;
-const RecentlyUploadedButton = styled.div`
-  cursor: pointer;
-  border-radius: 5px;
-  padding: 5px 0px;
-  font-size: 14px;
-  background-color: #6836ed;
-  color: #fff;
-  text-align: center;
-  @media (max-width: 768px) {
-    padding: 5px 13px;
-  }
-`;
-
-const RecentlyUploadedHeader = styled.div`
-  display: grid;
-  grid-template-columns: 18% 27% 12% 18% 15% 9%;
-  margin: 15px 2%;
-  padding: 14px 15px;
-  @media (max-width: 768px) {
-    display: none;
-  }
-`;
-const RecentlyUploadedHeaderElem = styled.div`
-  color: #6c7074;
-  padding-left: 4px;
-`;
-
-const RecentlyUploadedButtonWrapper = styled.div``;
-
-const DocImage = styled.img`
-  /* width:50px;  */
-`;
-
-const SideBar = styled.div`
-  background-color: black;
-`;
 const TextMainWrapper = styled.div`
   /* display: grid; 
   grid-template-columns: 20% 80%;  */
@@ -138,32 +87,118 @@ const TextMainWrapper = styled.div`
     display: flex;
   }
 `;
+const DatePickerContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: Center;
+`;
+const CheckInDateWrapper = styled.input`
+  padding: 10px;
+  border-radius: 5px;
+  outline: none;
+  border: none;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px,
+    rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+  margin: 0 10px;
+`;
+const CheckOutDateWrapper = styled(CheckInDateWrapper)``;
+const SearchContainerWrapper = styled.div``;
+const SearchFilterContainer = styled.div`
+  position: relative;
+`;
+const SearchFilterInput = styled.input`
+  width: 50%;
+  margin: 10px 0 20px 0;
+  padding: 10px;
+  border-radius: 5px;
+  outline: none;
+  border: none;
+  // box-shadow: rgba(50,50,93,0.25) 0px 6px 12px -2px, rgba(0,0,0,0.3) 0px 3px 7px -3px;
+`;
+
+const Span = styled.span`
+  position: absolute;
+  bottom: 39%;
+  left: 47%;
+`;
+const FromDateInput = styled.div`
+  position: absolute;
+  top: -4%;
+  left: 82%;
+  font-size: 20px;
+  cursor: pointer;
+  @media (max-width: 768px) {
+    top: 14%;
+    left: 90%;
+    z-index: 1;
+  }
+`;
+const DateIcon = styled.div`
+  position: absolute;
+  left: 37%;
+  z-index: 1;
+`;
+
 const BookingHistoryofAdmin = () => {
   const [select, setSelect] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const [select1, setSelect1] = useState("");
+  const [response, setResponse] = useState({});
   const { authData, setAuthData } = useContext(AuthContext);
-  const [data, setData] = useState("");
+  const [data, setData] = useState([]);
   const navigation = useNavigate();
+  const [fromDate, setFromDate] = useState(null);
+  const [toDate, setToDate] = useState(null);
+  const [search, setSearch] = useState();
+  const [allVendors, setAllVendors] = useState([]);
+  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
+  const [isDatePickerOpen1, setIsDatePickerOpen1] = useState(false);
+  const InputStartsDate = useRef(null);
+  const InputEndDate = useRef(null);
 
+  // paginationstart
+  const [page, setPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [totalItems, setTotalItems] = useState();
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+  // paginationend
+
+  const handleChange = (event) => {
+    const data = event.target.value;
+    if (data.length >= 3) {
+      setSearch(data);
+      setSelect("");
+      setSelect1("");
+      setFromDate(null);
+      setToDate(null);
+    } else {
+      setSearch();
+    }
+  };
   const handleClick = (item) => {
-    // console.log("hcjhcjhf",item)
     navigation("/bookinghistorybyorderid", { state: item });
   };
   useEffect(() => {
     const socket = io.connect(environmentVariables?.apiUrl);
 
     socket.on("admin_notification", (data) => {
-      console.log(data, "sr");
       getAllUsers();
     });
 
     socket.on("admin_cancellation_notification", (data) => {
-      console.log(data, "sr");
       getAllUsers();
     });
 
     socket.on("admin_booking_notification", (data) => {
-      console.log(data, "sr");
       getAllUsers();
     });
 
@@ -171,20 +206,18 @@ const BookingHistoryofAdmin = () => {
       socket.disconnect();
     };
   }, []);
+
   const getAllUsers = async () => {
-    console.log("aaa", select1);
-    let data;
-    if (select1 !== "") {
-      data = {
-        status: select,
-        startDate: new Date(),
-        endDate: select1,
-      };
-    } else {
-      data = {
-        status: select,
-      };
-    }
+    let data = {
+      search: search,
+      status: select,
+      id: select1,
+      calenderStartDate: fromDate,
+      calenderEndDate: toDate,
+    };
+
+    data.page = page + 1;
+    data.pageSize = rowsPerPage;
 
     let config = {
       method: "post",
@@ -199,131 +232,327 @@ const BookingHistoryofAdmin = () => {
     axios
       .request(config)
       .then((response) => {
-        setData(response?.data?.data);
+        const { totalItems, totalPages, currentPage, data } = response.data;
+        setData(data);
+        setTotalPages(totalPages);
+        setPage(currentPage - 1);
+        setIsLoading(false);
+        setTotalItems(totalItems);
       })
       .catch((err) => {
-        console.log(err);
+        setIsLoading(false);
       });
   };
   useEffect(() => {
+    setIsLoading(true);
     getAllUsers();
-  }, [select, select1]);
+  }, [select, select1, page, rowsPerPage, search, fromDate, toDate]);
 
-  const ConfirmedData = () => {};
-  const ConfirmedData1 = () => {};
-  const CompletedData = () => {};
-  const CancelledData = () => {};
+  const ApprovedData = () => {};
+  const PendingData = () => {};
+  const boldTextCss = {
+    fontWeight: 700,
+  };
 
+  const getAllVendors = async () => {
+    try {
+      const response = await axios.get(
+        `${environmentVariables.apiUrl}/admin/getallvendor`,
+        {
+          headers: { _token: authData.data.token },
+        }
+      );
+      setAllVendors(response.data.data);
+    } catch (error) {
+      // Handle the error here
+      console.error(error);
+    }
+  };
+  useEffect(() => {
+    getAllVendors();
+  }, []);
+
+  const handleStartDateChange = (date) => {
+    setFromDate(date);
+    if (toDate && date > toDate) {
+      setToDate(null);
+    }
+
+    if (!date) {
+      setToDate(null);
+    }
+  };
+  const handleToggleDatePicker = () => {
+    setIsDatePickerOpen(!isDatePickerOpen);
+  };
+  const handleToggleDatePicker2 = () => {
+    setIsDatePickerOpen1(!isDatePickerOpen1);
+  };
+  const refHandle = () => {
+    InputStartsDate.current.setOpen(true);
+  };
+  const refHandle1 = () => {
+    InputEndDate.current.setOpen(true);
+  };
   return (
     <>
       <TextMainWrapper>
-        {/* <SideBar><LeftSlideBar/></SideBar>  */}
         <TextRoot>
           <Root>
-            <TextWrapper>
+            <HeadingWrapper>
+              <i
+                style={{ position: "absolute", left: "0" }}
+                onClick={() => navigation(-1)}
+                class="fa-solid fa-chevron-left fa-2x"
+              ></i>
               <Heading> Booking History</Heading>
-              <TextSelectField>
-                <Select
-                  onChange={(e) => {
-                    setSelect1(e.target.value);
-                  }}
-                  //   value={select1}
-                  required
-                >
-                  <option value="">Select Range</option>
-                  <option
-                    value={
-                      new Date(new Date().getTime() - 2 * 24 * 60 * 60 * 1000)
-                    }
+            </HeadingWrapper>
+            <SearchContainerWrapper>
+              <SearchFilterContainer>
+                <SearchFilterInput
+                  placeholder={"Search by Hotelname"}
+                  value={search}
+                  onChange={handleChange}
+                />
+                <Span>
+                  {" "}
+                  <i class="fa-solid fa-magnifying-glass"></i>
+                </Span>
+              </SearchFilterContainer>
+              <TextWrapper>
+                <TextSelectField>
+                  <Select
+                    onChange={(e) => {
+                      setSelect1(e.target.value);
+                    }}
+                    value={select1}
+                    required
                   >
-                    Past Two days
-                  </option>
-                  <option
-                    value={
-                      new Date(new Date().getTime() - 7 * 24 * 60 * 60 * 1000)
-                    }
+                    <option value="" hidden>
+                      Select Vendor
+                    </option>
+                    {allVendors.map((item, index) => {
+                      return (
+                        <option key={index} value={item._id}>
+                          {item.name}
+                        </option>
+                      );
+                    })}
+                  </Select>
+                </TextSelectField>
+                <div style={{display:'flex'}}>
+                <DatePickerContainer>
+                  {/* <DateIcon>
+                    <BsCalendarDay
+                      size="1.5rem"
+                      onClick={() => InputEndDate.current.setOpen(true)}
+                    />
+                  </DateIcon>
+
+                  <DatePicker
+                    placeholderText="End Date"
+                    selected={toDate}
+                    onChange={(date) => setToDate(date)}
+                    selectsStart
+                    startDate={fromDate}
+                    endDate={toDate}
+                    disabled={fromDate ? false : true}
+                    minDate={fromDate}
+                    style={{ padding: "10px" }}
+                    ref={InputEndDate}
+                  /> */}
+                  <div onClick={handleToggleDatePicker} style={{position:'relative'}}>
+                    <DatePicker
+                      open={isDatePickerOpen}
+                      onClickOutside={() => setIsDatePickerOpen(false)}
+                      onFocus={() => setIsDatePickerOpen(true)}
+                      // minDate={checkIn}
+                      
+
+                      placeholderText="Start Date"
+                      selected={fromDate}
+                      onChange={handleStartDateChange}
+                      selectsStart
+                      startDate={fromDate}
+                      endDate={toDate}
+                      ref={InputStartsDate}
+                    ></DatePicker>
+                    <FromDateInput onClick={refHandle}>
+                      <i class="fas fa-calendar-alt"></i>
+                    </FromDateInput>
+                  </div>
+                </DatePickerContainer>
+                <DatePickerContainer>
+                <div onClick={handleToggleDatePicker2} style={{position:'relative'}}>
+                    <DatePicker
+                      open={isDatePickerOpen1}
+                      onClickOutside={() => setIsDatePickerOpen1(false)}
+                      onFocus={() => setIsDatePickerOpen1(true)}
+                      // minDate={checkIn}
+                      
+
+                      placeholderText="End Date"
+                      selected={toDate}
+                      onChange={(date) => setToDate(date)}
+                      selectsStart
+                      startDate={fromDate}
+                      endDate={toDate}
+                      disabled={fromDate ? false : true}
+                      minDate={fromDate}
+                      ref={InputEndDate}
+                      style={{ padding: "10px" }}
+                    ></DatePicker>
+                    <FromDateInput onClick={refHandle1}>
+                      <i class="fas fa-calendar-alt"></i>
+                    </FromDateInput>
+                  </div>
+                   {/* <DateIcon>
+                    <BsCalendarDay
+                      size="1.5rem"
+                      onClick={() => InputEndDate.current.setOpen(true)}
+                    />
+                  </DateIcon>
+
+                  <DatePicker
+                    placeholderText="End Date"
+                    selected={toDate}
+                    onChange={(date) => setToDate(date)}
+                    selectsStart
+                    startDate={fromDate}
+                    endDate={toDate}
+                    disabled={fromDate ? false : true}
+                    minDate={fromDate}
+                    style={{ padding: "10px" }}
+                    ref={InputEndDate}
+                  /> */}
+                </DatePickerContainer>
+                </div>
+                <TextSelectField>
+                  <Select
+                    onChange={(e) => {
+                      setSelect(e.target.value);
+                    }}
+                    value={select}
+                    required
                   >
-                    Past one week
-                  </option>
-                  <option
-                    value={
-                      new Date(new Date().getTime() - 30 * 24 * 60 * 60 * 1000)
-                    }
-                  >
-                    Past one month
-                  </option>
-                  {/* <option value="2" onClick={CompletedData}>
-                    Completed Booking
-                  </option>
-                  <option value="3" onClick={CancelledData}>
+                    <option value="" hidden>
+                      Select Status
+                    </option>
+                    {/* <option value="all" onClick={ApprovedData}>
+                    All
+                  </option> */}
+                    <option value="pending">Pending Booking</option>
+                    <option value="approved">Confirmed Booking</option>
+                    <option value="cancelled">Cancelled Booking</option>
+                    <option value="completed">Completed Booking</option>
+                    {/* <option value="cancelled" onClick={CancelledData}>
                     Cancelled Booking
                   </option> */}
-                </Select>
-              </TextSelectField>
-              <TextSelectField>
-                <Select
-                  onChange={(e) => {
-                    setSelect(e.target.value);
-                  }}
-                  value={select}
-                  required
-                >
-                  <option value="all" onClick={ConfirmedData}>
-                    All
-                  </option>
-                  <option value="confirmed" onClick={ConfirmedData}>
-                    Confirmed Booking
-                  </option>
-                  <option value="completed" onClick={CompletedData}>
-                    Completed Booking
-                  </option>
-                  <option value="cancelled" onClick={CancelledData}>
-                    Cancelled Booking
-                  </option>
-                </Select>
-              </TextSelectField>
-            </TextWrapper>
+                  </Select>
+                </TextSelectField>
+              </TextWrapper>
+            </SearchContainerWrapper>
           </Root>
-          <RecentlyUploadedHeader>
-            <RecentlyUploadedHeaderElem>Hotel Name</RecentlyUploadedHeaderElem>
-            <RecentlyUploadedHeaderElem>Booking Id</RecentlyUploadedHeaderElem>
-            <RecentlyUploadedHeaderElem>
-              Creation date
-            </RecentlyUploadedHeaderElem>
-            <RecentlyUploadedHeaderElem>
-              Booking Date
-            </RecentlyUploadedHeaderElem>
-            <RecentlyUploadedHeaderElem>Status</RecentlyUploadedHeaderElem>
-            <RecentlyUploadedHeaderElem>Action</RecentlyUploadedHeaderElem>
-          </RecentlyUploadedHeader>
-
-          {data &&
-            data.map((item, key) => {
-              const bookingDate = new Date(item.createdAt);
-              //  console.log("------www-",moment(item.checkIn).format("YYYY/MM/DD"),item.checkIn)
-
-              return (
-                <RecentlyUploaded key={key}>
-                  <DocInfo>
-                    <DocImage />
-                    <DocName>{item.hotelname}</DocName>
-                  </DocInfo>
-                  <RecentlyUploadedDate>{item.orderid}</RecentlyUploadedDate>
-                  <RecentlyUploadedDate>
-                    {bookingDate.toLocaleDateString()}
-                  </RecentlyUploadedDate>
-                  <RecentlyUploadedDate>
-                    {item.checkIn}
-                  </RecentlyUploadedDate>
-                  <RecentlyUploadedStatus>{item.status}</RecentlyUploadedStatus>
-                  <RecentlyUploadedButtonWrapper>
-                    <RecentlyUploadedButton onClick={() => handleClick(item)}>
-                      View
-                    </RecentlyUploadedButton>
-                  </RecentlyUploadedButtonWrapper>
-                </RecentlyUploaded>
-              );
-            })}
+          {isLoading === true ? (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                marginTop: "30px",
+              }}
+            >
+              <CircularLoader></CircularLoader>
+            </div>
+          ) : (
+            <TableContainer component={Paper}>
+              <Table aria-label="simple table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell style={boldTextCss}>Hotel Name</TableCell>
+                    <TableCell style={boldTextCss}>Vendor Name</TableCell>
+                    <TableCell style={boldTextCss} align="right">
+                      CheckIn Date
+                    </TableCell>
+                    <TableCell style={boldTextCss} align="right">
+                      Checkout Date
+                    </TableCell>
+                    <TableCell style={boldTextCss} align="right">
+                      Creation date
+                    </TableCell>
+                    <TableCell style={boldTextCss} align="right">
+                      Status
+                    </TableCell>
+                    <TableCell style={boldTextCss} align="right">
+                      Action
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody >
+                  {data && data.length !== 0 ? (
+                    data.map((item, index) => {
+                      const bookingDate = new Date(item.createdAt);
+                      return (
+                        <TableRow
+                          key={index}
+                          sx={{
+                            "&:last-child td, &:last-child th": { border: 0 },
+                          }}
+                        >
+                          <TableCell component="th" scope="row">
+                            {item.hotelname}
+                          </TableCell>
+                          <TableCell align="left">
+                            {item.vendorData.name}
+                          </TableCell>
+                          <TableCell align="right">{item.checkIn}</TableCell>
+                          <TableCell align="right">{item.checkOut}</TableCell>
+                          <TableCell align="right">
+                            {bookingDate.toLocaleDateString()}
+                          </TableCell>
+                          <TableCell align="right">
+                            {item.status === "pending"
+                              ? "Pending"
+                              : item.status === "cancelled"
+                              ? "Cancelled"
+                              : item.status === "completed"
+                              ? "Completed"
+                              : item.status === "approved" && "Confirmed"}
+                          </TableCell>
+                          <TableCell align="right">
+                            <Button
+                              size="small"
+                              variant="contained"
+                              type="button"
+                              onClick={() => handleClick(item)}
+                            >
+                              View
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })
+                  ) : (
+                    <TableRow>
+                      <TableCell colSpan={7}>
+                        <div style={{ display: "flex", justifyContent: "center", alignItems: "center"}}>
+                          <Typography variant="body1">Data not found</Typography>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+              <TablePagination
+                rowsPerPageOptions={[1, 3, 10]}
+                component="div"
+                count={totalItems}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+              />
+            </TableContainer>
+          )}
         </TextRoot>
       </TextMainWrapper>
     </>

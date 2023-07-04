@@ -4,19 +4,15 @@ import { AuthContext } from "../../ContextApi/ContextApi";
 import ActivityStatus from "../Dashboard/ActivityStatus";
 import VendorList from "./VendorList";
 
-
-const Root = styled.div`
-  width: 70%;
-  padding-right: 30px;
-`;
+const Root = styled.div``;
 
 const MainSection = () => {
   return (
     <Root>
-      <ActivityStatus/>      
-      < VendorList/>
+      <ActivityStatus />
+      <VendorList />
     </Root>
-  )
-}
+  );
+};
 
-export default MainSection
+export default MainSection;

@@ -13,11 +13,12 @@ const Root = styled.div`
   top: 80px;
 `;
 const LinkWrapper = styled.div`
-  padding: 15px 0px 15px 60px;
+  // padding: 15px 0px 15px 60px;
+  padding: 15px 0px 15px 15px;
   display: flex;
   color: #01575c;
   font-size: 17px;
-  font-weight: bold;
+  // font-weight: bold;
   border-left: 5px solid #fff;
   ${(p) =>
     p.select &&
@@ -51,9 +52,26 @@ function SideBar(props) {
       } else if (window.location.href.split("/").pop() === "userselectedcity") {
         setselected("Landing page");
       } else if (
-        window.location.href.split("/").pop() === "bookinghistoryofadmin"
+        window.location.href.split("/").pop() === "bookinghistoryofadmin" ||
+        window.location.href.split("/").pop() === "bookinghistory"
       ) {
         setselected("Booking history");
+      } else if (window.location.href.split("/").pop() === "managevendors") {
+        setselected("manageadmin");
+      } else if (window.location.href.split("/").pop() === "managehotels") {
+        setselected("managehotels");
+      } else if (
+        window.location.href.split("/").pop() === "vendormanagehotels"
+      ) {
+        setselected("vendormanagehotels");
+      } else if (
+        window.location.href.split("/").pop() === "payouts"
+      ) {
+        setselected("payouts");
+      } else if (
+        window.location.href.split("/").pop() === "chatSupport"
+      ) {
+        setselected("chatSupport");
       } else {
         setselected("Dashboard");
       }
@@ -72,6 +90,24 @@ function SideBar(props) {
             }}
           >
             <Link>Dashboard</Link>
+          </LinkWrapper>{" "}
+          <LinkWrapper
+            select={selected === "manageadmin"}
+            onClick={() => {
+              setselected("manageadmin");
+              navigate("/managevendors");
+            }}
+          >
+            <Link>Manage Vendors</Link>
+          </LinkWrapper>
+          <LinkWrapper
+            select={selected === "managehotels"}
+            onClick={() => {
+              setselected("managehotels");
+              navigate("/managehotels");
+            }}
+          >
+            <Link>Manage Hotels</Link>
           </LinkWrapper>
           <LinkWrapper
             select={selected === "user homepage slider"}
@@ -80,7 +116,7 @@ function SideBar(props) {
               navigate("/userhomepage");
             }}
           >
-            <Link>User Homepage Slider</Link>
+            <Link>Manage Home Landing Page</Link>
           </LinkWrapper>
           <LinkWrapper
             select={selected === "Landing page"}
@@ -89,7 +125,7 @@ function SideBar(props) {
               navigate("/userselectedcity");
             }}
           >
-            <Link>User Selected City</Link>
+            <Link>Manage State Landing Page</Link>
           </LinkWrapper>
           <LinkWrapper
             select={selected === "Booking history"}
@@ -98,7 +134,7 @@ function SideBar(props) {
               navigate("/bookinghistoryofadmin");
             }}
           >
-            <Link>Booking history</Link>
+            <Link>Booking History</Link>
           </LinkWrapper>
           {/* <LinkWrapper
             select={selected === "Upcoming Bookings"}
@@ -109,6 +145,17 @@ function SideBar(props) {
           >
             <Link>Upcoming Bookings</Link>
           </LinkWrapper> */}
+
+          <LinkWrapper
+            select={selected === "chatSupport"}
+            onClick={() => {
+              setselected("chatSupport");
+              navigate("/chatSupport");
+            }}
+          >
+            <Link>Chat Support</Link>
+          </LinkWrapper>
+
         </>
       ) : (
         <>
@@ -121,6 +168,17 @@ function SideBar(props) {
           >
             <Link>Dashboard</Link>
           </LinkWrapper>
+
+          <LinkWrapper
+            select={selected === "vendormanagehotels"}
+            onClick={() => {
+              setselected("vendormanagehotels");
+              navigate("/vendormanagehotels");
+            }}
+          >
+            <Link>Manage Hotels</Link>
+          </LinkWrapper>
+
           <LinkWrapper
             select={selected === "Booking history"}
             onClick={() => {
@@ -129,6 +187,15 @@ function SideBar(props) {
             }}
           >
             <Link>Booking History</Link>
+          </LinkWrapper>
+          <LinkWrapper
+            select={selected === "payouts"}
+            onClick={() => {
+              setselected("payouts");
+              navigate("/payouts");
+            }}
+          >
+            <Link>Payouts</Link>
           </LinkWrapper>
         </>
       )}

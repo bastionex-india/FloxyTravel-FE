@@ -173,7 +173,7 @@ const GetHotelByVendor = () => {
     console.log("sssssss", formdata);
     axios({
       method: "post",
-      url: `${environmentVariables.apiUrl}/auth/addhotely`,
+      url: `${environmentVariables.apiUrl}/auth/addhotel`,
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
@@ -379,6 +379,14 @@ const GetHotelByVendor = () => {
 
   return (
     <Root>
+      <div style={{ display: "flex", alignItems: "center" }}>
+        {" "}
+        <i
+          style={{ cursor: "pointer", marginRight: "50px" }}
+          onClick={() => navigate(-1)}
+          class="fa-solid fa-chevron-left fa-2x"
+        ></i>
+      </div>
       <NavigationSecvtion>
         <b
           style={{ marginRight: "5px", cursor: "pointer", color: "#01575c" }}
@@ -568,9 +576,9 @@ const GetHotelByVendor = () => {
                       label="Hotel Category"
                       onChange={(e) => setHotelCategory(e.target.value)}
                     >
-                      <MenuItem value="Economy">Economy</MenuItem>
-                      <MenuItem value="Mid Range">Mid Range</MenuItem>
-                      <MenuItem value="Luxury">Luxury</MenuItem>
+                      <MenuItem value="economy">Economy</MenuItem>
+                      <MenuItem value="midrange">Mid Range</MenuItem>
+                      <MenuItem value="luxury">Luxury</MenuItem>
                     </Select>
                   </FormControl>
                 </Box>

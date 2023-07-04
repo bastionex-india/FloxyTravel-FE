@@ -3,16 +3,84 @@ import React, { useState, useContext, useEffect } from "react";
 import styled from "styled-components";
 import { AuthContext } from "../../ContextApi/ContextApi";
 import { environmentVariables } from "../../config/config";
+import CircularLoader from "../../Component/CircularLoader/CircularLoader";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
+import { Button, Link } from "@mui/material";
+import { Modal } from "react-bootstrap";
+import Typography from "@mui/material/Typography";
+import { styled as newStyle } from "@mui/material/styles";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
+import PropTypes from "prop-types";
+import { style } from "@mui/system";
+import Box from "@mui/material/Box";
+import Grid from "@mui/material/Grid";
+import Paper from "@mui/material/Paper";
+import WallpaperIcon from "@mui/icons-material/Wallpaper";
+
+const Item = newStyle(Paper)(({ theme }) => ({
+  backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
+  ...theme.typography.body2,
+  padding: theme.spacing(1),
+  textAlign: "center",
+  height: "120px",
+  color: theme.palette.text.secondary,
+}));
+
+const BootstrapDialog = newStyle(Dialog)(({ theme }) => ({
+  "& .MuiDialogContent-root": {
+    padding: theme.spacing(2),
+  },
+  "& .MuiDialogActions-root": {
+    padding: theme.spacing(1),
+  },
+}));
+
+function BootstrapDialogTitle(props) {
+  const { children, onClose, ...other } = props;
+
+  return (
+    <DialogTitle sx={{ m: 0, p: 2 }} {...other}>
+      {children}
+      {onClose ? (
+        <IconButton
+          aria-label="close"
+          onClick={onClose}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+      ) : null}
+    </DialogTitle>
+  );
+}
+
+BootstrapDialogTitle.propTypes = {
+  children: PropTypes.node,
+  onClose: PropTypes.func.isRequired,
+};
+
 const UserLandingPage = () => {
   const [allStates, setAllStates] = useState([]);
   const [stateSelected, setStateSelected] = useState();
   const [stateId, setStateId] = useState();
   const { authData } = useContext(AuthContext);
   const [isPriorityChanged, setIsPriority] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [chosenState, setChosenState] = useState("");
   const [addStatePopUp, setAddStatePopUp] = useState(false);
   const [addThemePopUp, setAddThemePopUp] = useState(false);
+  const [addImagePopUp, setAddImagePopUp] = useState(false);
   const [deletePopUp, setDeletePopUp] = useState(false);
   const [backgroundImage, setBackgroundImage] = useState(null);
   const [themeId, setThemeId] = useState(null);
@@ -23,6 +91,45 @@ const UserLandingPage = () => {
   const [dragId, setDragId] = useState();
   const [priority, setPriority] = useState(null);
   const [file, setFile] = useState(null);
+  const [selectNewBackground, setSelectNewBackground] = useState(null);
+  const [selectedCityData, setSelectedCityData] = useState(null);
+  const navigate = useNavigate();
+  const [showModal, setShowModal] = useState(false);
+
+  function deleteConfirmation(e) {
+    setThemeId(e.target.id);
+    setDeletePopUp(true);
+  }
+  const handleClose = () => {
+    setDeletePopUp(false);
+  };
+  function hideModal() {
+    setShowModal(false);
+  }
+  const deleteRecord = () => {
+    handleDeleteTheme();
+  };
+
+  const deleteVendor = async (vendorId) => {
+    await axios
+      .delete(
+        `${environmentVariables.apiUrl}/admin/deletevendor/${vendorId._id}`,
+        {
+          headers: { _token: authData.data.token },
+        }
+      )
+      .then((response) => {
+        setIsLoading(true);
+        getThemes();
+        setDeletePopUp(false);
+        Swal.fire("Deleted", "Hotel Deleted Successfully", "success");
+      })
+      .catch((err) => {
+        // console.log("error", err);
+        setIsLoading(false);
+        Swal.fire("Error", "Something went wrong", "error");
+      });
+  };
   const stateData = [
     {
       name: "Andhra Pradesh",
@@ -184,26 +291,28 @@ const UserLandingPage = () => {
     });
     setThemeData(newBoxState);
   };
-  console.log(isPriorityChanged);
+  // console.log(isPriorityChanged);
   const handlePriority = () => {
-    axios({
-      method: "put",
-      url: `${environmentVariables.apiUrl}/admin/updatepriority/${stateId}`,
-      data: themeData,
-      headers: { _token: authData.data.token },
-    })
-      .then((response) => {
-        console.log(response);
-        Swal.fire(
-          "Priorities changed",
-          "Successfully changed priorities of theme data",
-          "success"
-        );
+    if (isPriorityChanged === true) {
+      axios({
+        method: "put",
+        url: `${environmentVariables.apiUrl}/admin/updatepriority/${stateId}`,
+        data: themeData,
+        headers: { _token: authData.data.token },
       })
-      .catch((err) => {
-        console.log(err.message);
-        Swal.fire("Error", "Something went wrong", "error");
-      });
+        .then((response) => {
+          // console.log(response);
+          Swal.fire(
+            "Priorities changed",
+            "Successfully changed priorities of theme data",
+            "success"
+          );
+        })
+        .catch((err) => {
+          // console.log(err.message);
+          Swal.fire("Error", "Something went wrong", "error");
+        });
+    }
     setIsPriority(false);
   };
   const handleAddStateSubmit = () => {
@@ -227,7 +336,7 @@ const UserLandingPage = () => {
         }
         axios({
           method: "post",
-          url: `${environmentVariables.apiUrl}/auth/addimagesacctocities/${chosenState}`,
+          url: `${environmentVariables.apiUrl}/admin/addimagesacctocities/${chosenState}`,
           headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
@@ -255,8 +364,11 @@ const UserLandingPage = () => {
             }
           })
           .catch((err) => {
-            console.log(err.message);
-            Swal.fire("Error", "Something went wrong", "error");
+            let errorMsg =
+              err.response && err.response.data.message
+                ? err.response.data.message
+                : "Something went wrong";
+            Swal.fire("Error", errorMsg, "error");
             setChosenState(null);
             setFile(null);
           });
@@ -278,10 +390,10 @@ const UserLandingPage = () => {
       },
     })
       .then((response) => {
-        console.log(response.data.data[0].cityName, "subhan");
         setAllStates(response.data.data);
         setStateSelected(response?.data?.data[0].cityName);
         setStateId(response.data.data[0]._id);
+        setIsLoading(false);
         // allStates.forEach((val) => {
         // console.log(val.theme, "theme");
         //   setThemeData([...themeData, val.theme]);
@@ -293,7 +405,10 @@ const UserLandingPage = () => {
 
         setThemeData(newthemedata[0]?.theme);
       })
-      .catch((err) => console.log(err.message));
+      .catch((err) => {
+        // console.log(err.message);
+        setIsLoading(false);
+      });
   };
 
   const getBackgroundImage = () => {
@@ -304,15 +419,21 @@ const UserLandingPage = () => {
         _token: authData?.data?.token,
       },
     })
-      .then((response) => setBackgroundImage(response.data.data.image))
+      .then((response) => {
+        setSelectedCityData(response.data.data);
+        setBackgroundImage(response.data.data.image);
+      })
       .catch((err) => console.log(err.message));
   };
   const addImage = (e) => {
     setFile(e.target.files);
   };
+  const setNewChangeImage = (e) => {
+    setSelectNewBackground(e.target.files);
+  };
 
   const getThemes = () => {
-    console.log(stateId);
+    // console.log(stateId);
     axios({
       method: "get",
       url: `${environmentVariables.apiUrl}/admin/getthemebystate/${stateId}`,
@@ -322,15 +443,19 @@ const UserLandingPage = () => {
     })
       .then((response) => {
         setThemeData(response.data.data);
-        console.log(response.data.data, "sr");
+        setIsLoading(false);
+        // console.log(response.data.data, "sr");
       })
-      .catch((err) => console.log(err.message));
+      .catch((err) => {
+        // console.log(err.message);
+        setIsLoading(false);
+      });
   };
 
   const getThemesByState = (e) => {
     axios({
       method: "get",
-      url: `${environmentVariables.apiUrl}/admin/getthemebystate/${e.target.id}`,
+      url: `${environmentVariables.apiUrl}/admin/getthemebystate/${stateId}`,
       headers: {
         _token: authData?.data?.token,
       },
@@ -342,7 +467,7 @@ const UserLandingPage = () => {
   };
 
   const handleAddThemeSubmit = () => {
-    if (!theme || !title || !description || !priority) {
+    if (!theme || !title || !description) {
       Swal.fire("Warning", "Please Fill all the data to continue", "warning");
       setAddThemePopUp(false);
     } else {
@@ -353,14 +478,13 @@ const UserLandingPage = () => {
           name: theme,
           heading: title,
           description: description,
-          priority: priority,
         },
         headers: {
           _token: authData?.data?.token,
         },
       })
         .then((response) => {
-          console.log(response);
+          // console.log(response);
           if (response.data.status === true) {
             setAddThemePopUp(false);
             setTheme(null);
@@ -372,12 +496,66 @@ const UserLandingPage = () => {
               "Successfully added the entered theme",
               "success"
             );
+            getThemes();
           } else {
             setAddThemePopUp(false);
             setTheme(null);
             setTitle(null);
             setDescription(null);
             setPriority(null);
+            Swal.fire("Error", "Something went wrong!", "error");
+          }
+        })
+        .catch((err) => {
+          setAddThemePopUp(false);
+          setTheme(null);
+          setTitle(null);
+          setDescription(null);
+          setPriority(null);
+          Swal.fire("Error", "Something went wrong!", "error");
+        });
+    }
+  };
+  const handleEditThemeSubmit = () => {
+    if (!theme || !title || !description) {
+      Swal.fire("Warning", "Please Fill all the data to continue", "warning");
+      setAddThemePopUp(false);
+      setThemeId(null);
+    } else {
+      axios({
+        method: "put",
+        url: `${environmentVariables.apiUrl}/admin/updatetheme/${themeId}/${stateId}`,
+        data: {
+          name: theme,
+          heading: title,
+          description: description,
+        },
+        headers: {
+          _token: authData?.data?.token,
+        },
+      })
+        .then((response) => {
+          // console.log(response);
+          if (response.data.status === true) {
+            setAddThemePopUp(false);
+            setTheme("");
+            setThemeId(null);
+            setTitle("");
+            setDescription("");
+            setPriority("");
+            Swal.fire(
+              "Theme Added",
+              "Successfully added the entered theme",
+              "success"
+            );
+            getThemes();
+          } else {
+            setAddThemePopUp(false);
+            setTheme("");
+            setTitle("");
+            setDescription("");
+            setPriority("");
+            setThemeId(null);
             Swal.fire("Error", "Something went wrong!", "error");
           }
         })
@@ -412,89 +590,208 @@ const UserLandingPage = () => {
         }
         setThemeId(null);
         setDeletePopUp(false);
+        getThemes();
       })
       .catch((err) => {
         Swal.fire("Error", "Something went wrong!", "error");
         setThemeId(null);
         setDeletePopUp(false);
+        getThemes();
       });
   };
   const handleEditTheme = (e) => {
     const editTheme = themeData.filter((val) => val._id === e.target.id);
-    console.log(editTheme[0], "edit");
+    // console.log(editTheme[0], "edit");
+    setThemeId(e.target.id);
     setTheme(editTheme[0].name);
     setTitle(editTheme[0].heading);
     setDescription(editTheme[0].description);
-    setPriority(editTheme[0].priority);
-    setAddThemePopUp(true);
+  };
+  const handleDescriptionChange = (e) => {
+    const inputValue = e.target.value;
+    const sanitizedValue = inputValue.replace(/[^A-Za-z]+/g, "");
+    setDescription(sanitizedValue);
   };
   useEffect(() => {
+    setIsLoading(true);
     getStatesData();
   }, []);
   useEffect(() => {
+    setIsLoading(true);
     getThemes();
   }, [stateId]);
   useEffect(() => {
     getBackgroundImage();
   }, [chosenState, stateSelected]);
+  const updateNewImage = async () => {
+    if (selectNewBackground) {
+      const formData = new FormData();
+      for (let i = 0; i < selectNewBackground.length; i++) {
+        formData.append("myFile", selectNewBackground[i]);
+      }
+      axios({
+        method: "post",
+        url: `${environmentVariables.apiUrl}/admin/updateCityBackground/${selectedCityData._id}`,
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        data: formData,
+        headers: { _token: authData.data.token },
+      })
+        .then((response) => {
+          if (response?.data?.status) {
+            // setBackgroundImage(response.data.data.image)
+            getBackgroundImage();
+            setSelectNewBackground(null);
+            Swal.fire({
+              icon: "success",
+              title: "Background updated.",
+              timer: "800",
+            });
+          } else {
+            Swal.fire(
+              "Error",
+              "Please check again the Image you are inserting!",
+              "error"
+            );
+            // setFile(null);
+          }
+        })
+        .catch((err) => {
+          let errorMsg =
+            err.response && err.response.data.message
+              ? err.response.data.message
+              : "Something went wrong";
+          Swal.fire("Error", errorMsg, "error");
+          // setChosenState(null);
+          // setFile(null);
+        });
+    } else {
+      Swal.fire("Error", "Please add background image to continue", "error");
+    }
+  };
+  const updateImageHandler = () => {
+    updateNewImage();
+  };
   return (
     <Root>
-      <MainHeading>User Landing Page</MainHeading>
+      <HeadingWrapper>
+        {" "}
+        <i
+          style={{ position: "absolute", left: "0" }}
+          onClick={() => navigate(-1)}
+          class="fa-solid fa-chevron-left fa-2x"
+        ></i>
+        <MainHeading>Manage State Landing Page</MainHeading>
+      </HeadingWrapper>
       <StatesContainer>
-        <StateHeading>States : </StateHeading>
-        {addStatePopUp && (
-          <AddStatePopUpContainer>
-            <AddStatePopUp>
-              <div
-                style={{ textAlign: "center", color: "#fff", fontSize: "20px" }}
-              >
-                Add State
+        {/* <StateHeading>States : </StateHeading> */}
+
+        <div
+          class="modal fade"
+          id="staticBackdrop"
+          data-bs-backdrop="static"
+          data-bs-keyboard="false"
+          tabindex="-1"
+          aria-labelledby="staticBackdropLabel"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">
+                  Add State
+                </h1>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
               </div>
-              <AddStatePopUpCloseIcon
-                onClick={() => setAddStatePopUp(false)}
-                className="fa-solid fa-circle-xmark"
-                style={{ color: "#fff", fontSize: "20px" }}
-              />
-              <AddStatePopUpInputContainer>
-                <AddStatePopUpLabel>State* :</AddStatePopUpLabel>
-                <AddStateInputSelect
-                  onChange={(e) => setChosenState(e.target.value)}
+              <div class="modal-body">
+                <div class="input-group mb-3">
+                  <label class="input-group-text" for="inputGroupSelect01">
+                    State*:{" "}
+                  </label>
+                  <select
+                    class="form-select"
+                    onChange={(e) => setChosenState(e.target.value)}
+                    id="inputGroupSelect01"
+                  >
+                    <option>Select State</option>
+                    {stateData.map((val) => (
+                      <option value={val.name}>{val.name}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div class="input-group mb-3">
+                  <label class="input-group-text" for="inputGroupFile01">
+                    Background Image*:{" "}
+                  </label>
+                  <input
+                    type="file"
+                    class="form-control"
+                    onChange={(e) => addImage(e)}
+                    id="inputGroupFile03"
+                    aria-describedby="inputGroupFileAddon03"
+                    aria-label="Upload"
+                  />
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-bs-dismiss="modal"
                 >
-                  <option>Select State</option>
-                  {stateData.map((val) => (
-                    <option value={val.name}>{val.name}</option>
-                  ))}
-                </AddStateInputSelect>
-              </AddStatePopUpInputContainer>
-              <AddStatePopUpInputContainer>
-                <AddStatePopUpLabel>Background Image* :</AddStatePopUpLabel>
-                <AddStateFileInput onChange={(e) => addImage(e)} type="file" />
-              </AddStatePopUpInputContainer>
-              <AddStatePopUpInputContainer>
-                <AddStatePopUpSubmitButton onClick={handleAddStateSubmit}>
+                  Close
+                </button>
+                <button
+                  type="button"
+                  onClick={handleAddStateSubmit}
+                  data-bs-dismiss="modal"
+                  class="btn btn-primary"
+                >
                   Submit
-                </AddStatePopUpSubmitButton>
-              </AddStatePopUpInputContainer>
-            </AddStatePopUp>
-          </AddStatePopUpContainer>
-        )}
-        {addThemePopUp && (
-          <AddThemePopUpContainer>
-            <AddThemePopUp>
-              <div
-                style={{ color: "#fff", textAlign: "center", fontSize: "20px" }}
-              >
-                Add Theme
+                </button>
               </div>
-              <AddStatePopUpCloseIcon
-                onClick={() => setAddThemePopUp(false)}
-                className="fa-solid fa-circle-xmark"
-                style={{ color: "#fff", fontSize: "20px" }}
-              />
-              <AddThemeWrapper>
-                <AddThemeInputWrapper>
-                  <AddThemeLabel>Name* : </AddThemeLabel>
-                  <AddThemePopUpSelect
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="modal fade"
+          id="staticBackdrop1"
+          data-bs-backdrop="static"
+          data-bs-keyboard="false"
+          tabindex="-1"
+          aria-labelledby="staticBackdropLabel1"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel1">
+                  Add Theme
+                </h1>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="modal-body">
+                <div class="input-group mb-3">
+                  <label class="input-group-text" for="inputGroupSelect01">
+                    Name*:{" "}
+                  </label>
+                  <select
+                    class="form-select"
+                    id="inputGroupSelect01"
                     value={theme}
                     onChange={(e) => setTheme(e.target.value)}
                   >
@@ -504,179 +801,453 @@ const UserLandingPage = () => {
                     <option value={`romantic`}>Romantic</option>
                     <option value={`hill`}>Hill</option>
                     <option value={`heritage`}>Heritage</option>
-                  </AddThemePopUpSelect>
-                </AddThemeInputWrapper>
-                <AddThemeInputWrapper>
-                  <AddThemeLabel>Title* : </AddThemeLabel>
-                  <AddThemePopUpInput
+                  </select>
+                </div>
+
+                <div class="input-group mb-3">
+                  <span class="input-group-text" id="basic-addon1">
+                    Title*:{" "}
+                  </span>
+                  <input
+                    type="text"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
+                    class="form-control"
+                    aria-label="Username"
+                    aria-describedby="basic-addon1"
                   />
-                </AddThemeInputWrapper>
-                <AddThemeInputWrapper>
-                  <AddThemeLabel>Description* : </AddThemeLabel>
-                  <AddThemePopUpTextArea
+                </div>
+
+                <div class="input-group">
+                  <span class="input-group-text">Description*: </span>
+                  <textarea
+                    class="form-control"
+                    aria-label="With textarea"
                     value={description}
-                    onChange={(e) => setDescription(e.target.value)}
+                    onChange={handleDescriptionChange}
                     rows="4"
                     cols="50"
-                  />
-                </AddThemeInputWrapper>
-                <AddThemeInputWrapper>
-                  <AddThemeLabel>Priority* : </AddThemeLabel>
-                  <AddThemePriority
+                  ></textarea>
+                </div>
+
+                {/* <br></br>
+
+                <div class="input-group mb-3">
+                  <span class="input-group-text" id="basic-addon1">
+                    Priority*:{" "}
+                  </span>
+                  <input
+                    class="form-control"
+                    aria-label="Username"
+                    aria-describedby="basic-addon1"
                     value={priority}
                     onChange={(e) => setPriority(e.target.value)}
                     type="number"
                     min="1"
                     max="5"
                   />
-                </AddThemeInputWrapper>
-              </AddThemeWrapper>
-              <ButtonWrapper>
-                <AddStatePopUpSubmitButton onClick={handleAddThemeSubmit}>
+                </div> */}
+              </div>
+              <div class="modal-footer">
+                <button
+                  onClick={() => {
+                    setTheme("");
+                    setDescription("");
+                    setTitle("");
+                  }}
+                  type="button"
+                  class="btn btn-secondary"
+                  data-bs-dismiss="modal"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  data-bs-dismiss="modal"
+                  onClick={handleAddThemeSubmit}
+                >
                   Submit
-                </AddStatePopUpSubmitButton>
-              </ButtonWrapper>
-            </AddThemePopUp>
-          </AddThemePopUpContainer>
-        )}
-        {deletePopUp && (
-          <DeletePopUpContainer>
-            <DeletePopUp>
-              <AddStatePopUpCloseIcon
-                onClick={() => setDeletePopUp(false)}
-                className="fa-solid fa-circle-xmark"
-                style={{ color: "#fff", fontSize: "20px" }}
-              />
-              <DeletePopUpHeading>Delete Theme</DeletePopUpHeading>
-              <DeletePopUpText>
-                Are you sure you want to delete?
-              </DeletePopUpText>
-              <DeletePopUpButtonWrapper>
-                <AddStatePopUpSubmitButton
-                  onClick={(e) => handleDeleteTheme(e)}
-                >
-                  Yes
-                </AddStatePopUpSubmitButton>
-                <AddStatePopUpSubmitButton
-                  onClick={() => setDeletePopUp(false)}
-                >
-                  No
-                </AddStatePopUpSubmitButton>
-              </DeletePopUpButtonWrapper>
-            </DeletePopUp>
-          </DeletePopUpContainer>
-        )}
-        <StatesWrapper>
-          {allStates &&
-            allStates.map((val) => (
-              <StateOptions
-                id={val._id}
-                onClick={(e) => {
-                  setStateSelected(val?.cityName);
-                  setStateId(val?._id);
-                  getThemesByState(e);
-                }}
-                selected={stateSelected == val.cityName}
-              >
-                {val.cityName}
-              </StateOptions>
-            ))}
-        </StatesWrapper>
-        <StateAddIcon
-          onClick={() => setAddStatePopUp(true)}
-          className="fa-solid fa-circle-plus"
-          style={{ color: "#07515c" }}
-        />
-      </StatesContainer>
-      <ThemeContainer>
-        <StateHeading>Themes :</StateHeading>
-
-        <StateAddIcon
-          onClick={() => setAddThemePopUp(true)}
-          className="fa-solid fa-circle-plus"
-          style={{ color: "#07515c" }}
-        />
-      </ThemeContainer>
-      <MainThemeContainer>
-        <RecentlyDocumentHeader>
-          <RecentlyDocumentHeaderElem>Name</RecentlyDocumentHeaderElem>
-          <RecentlyDocumentHeaderElem>Title</RecentlyDocumentHeaderElem>
-          <RecentlyDocumentHeaderElem>Description</RecentlyDocumentHeaderElem>
-          <RecentlyDocumentHeaderElem>Actions</RecentlyDocumentHeaderElem>
-        </RecentlyDocumentHeader>
-        <ThemeCardWrapper>
-          {themeData &&
-            themeData
-              .sort((a, b) => a.priority - b.priority)
-              .map((val) => {
-                return (
-                  <RecentlyDocumentUploaded
-                    draggable={true}
-                    id={val?._id}
-                    onDragOver={(e) => e.preventDefault()}
-                    onDragStart={handleDrag}
-                    onDrop={handleDrop}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="modal fade"
+          id="staticBackdrop3"
+          data-bs-backdrop="static"
+          data-bs-keyboard="false"
+          tabindex="-1"
+          aria-labelledby="staticBackdropLabel2"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel2">
+                  Edit Theme
+                </h1>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                  onClick={() => {
+                    setTheme("");
+                    setDescription("");
+                    setTitle("");
+                  }}
+                ></button>
+              </div>
+              <div class="modal-body">
+                <div class="input-group mb-3">
+                  <label class="input-group-text" for="inputGroupSelect01">
+                    Name*:{" "}
+                  </label>
+                  <select
+                    class="form-select"
+                    id="inputGroupSelect01"
+                    value={theme}
+                    onChange={(e) => setTheme(e.target.value)}
                   >
-                    <ThemeBoxElement>{val?.name}</ThemeBoxElement>
-                    <ThemeBoxElement>{val?.heading}</ThemeBoxElement>
-                    <ThemeBoxElementDesc>{`${val?.description}`}</ThemeBoxElementDesc>
-                    <ThemeBoxElement>
-                      <DeleteIcon
-                        id={val?._id}
-                        onClick={(e) => handleDeleteThemePopUp(e)}
-                        className="fa-solid fa-trash"
-                      />
-                      <EditIcon
-                        onClick={(e) => handleEditTheme(e)}
-                        id={val?._id}
-                        className="fa-solid fa-pen-to-square"
-                      />
-                    </ThemeBoxElement>
-                  </RecentlyDocumentUploaded>
-                );
-              })}
-        </ThemeCardWrapper>
+                    <option>Select Theme Name</option>
+                    <option value={`beach`}>Beach</option>
+                    <option value={`wildlife`}>Wildlife</option>
+                    <option value={`romantic`}>Romantic</option>
+                    <option value={`hill`}>Hill</option>
+                    <option value={`heritage`}>Heritage</option>
+                  </select>
+                </div>
 
-        {/* <ThemeCardWrapper>
-          {themeData &&
-            themeData.map((val) => {
-              return (
-                // <ThemeCard>
-                //   <ThemeNameIconWrapper>
-                //     {" "}
-                //     <ThemeName>{val?.name}</ThemeName>
-                //     <div>
-                //       {" "}
-                //       <DeleteIcon
-                //         id={val?._id}
-                //         onClick={(e) => handleDeleteThemePopUp(e)}
-                //         className="fa-solid fa-trash"
-                //       />
-                //       <EditIcon
-                //         onClick={(e) => handleEditTheme(e)}
-                //         id={val?._id}
-                //         className="fa-solid fa-pen-to-square"
-                //       />
-                //     </div>
-                //   </ThemeNameIconWrapper>
-                //   <ThemeTitle>{val?.heading}</ThemeTitle>
-                //   <ThemeDescription>{val?.description}</ThemeDescription>
-                // </ThemeCard>
-              );
-            })}
-        </ThemeCardWrapper> */}
-        <PriorityButton isPriority={isPriorityChanged} onClick={handlePriority}>
-          Save
-        </PriorityButton>
-      </MainThemeContainer>
-      <BackgroundImageContainer>
-        <StateHeading>Background Image : </StateHeading>
-        <BackgroundImage
-          src={`${environmentVariables.apiUrl}/uploadscitiesimages/${backgroundImage}`}
-        />
-      </BackgroundImageContainer>
+                <div class="input-group mb-3">
+                  <span class="input-group-text" id="basic-addon1">
+                    Title*:{" "}
+                  </span>
+                  <input
+                    type="text"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    class="form-control"
+                    aria-label="Username"
+                    aria-describedby="basic-addon1"
+                  />
+                </div>
+
+                <div class="input-group">
+                  <span class="input-group-text">Description*: </span>
+                  <textarea
+                    class="form-control"
+                    aria-label="With textarea"
+                    value={description}
+                    onChange={handleDescriptionChange}
+                    rows="4"
+                    cols="50"
+                  ></textarea>
+                </div>
+
+                {/* <br></br>
+
+                <div class="input-group mb-3">
+                  <span class="input-group-text" id="basic-addon1">
+                    Priority*:{" "}
+                  </span>
+                  <input
+                    class="form-control"
+                    aria-label="Username"
+                    aria-describedby="basic-addon1"
+                    value={priority}
+                    onChange={(e) => setPriority(e.target.value)}
+                    type="number"
+                    min="1"
+                    max="5"
+                  />
+                </div> */}
+              </div>
+              <div class="modal-footer">
+                <button
+                  onClick={() => {
+                    setTheme("");
+                    setDescription("");
+                    setTitle("");
+                  }}
+                  type="button"
+                  class="btn btn-secondary"
+                  data-bs-dismiss="modal"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  data-bs-dismiss="modal"
+                  onClick={handleEditThemeSubmit}
+                >
+                  Submit
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="modal fade"
+          id="staticBackdrop2"
+          data-bs-backdrop="static"
+          data-bs-keyboard="false"
+          tabindex="-1"
+          aria-labelledby="staticBackdropLabel2"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel2"></h1>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="modal-body">
+                <BackgroundImage
+                  style={{ width: "45rem" }}
+                  src={`${environmentVariables.apiUrl}/uploadscitiesimages/${backgroundImage}`}
+                />
+              </div>
+              <div class="modal-footer"></div>
+            </div>
+          </div>
+        </div>
+
+        <StatesWrapper>
+          <SelectState
+            onChange={(e) => {
+              setStateSelected(e.target.value.split("-")[0]);
+              setStateId(e.target.value.split("-")[1]);
+            }}
+          >
+            {/* <SelectOption>Select City</SelectOption> */}
+            {allStates &&
+              allStates.map((val) => (
+                <SelectOption value={`${val.cityName}-${val._id}`}>
+                  {val.cityName}
+                </SelectOption>
+              ))}
+          </SelectState>
+        </StatesWrapper>
+        <div style={{ display: "flex" }}>
+          {" "}
+          <button
+            type="button"
+            style={{ marginRight: "1rem" }}
+            class="btn btn-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#staticBackdrop"
+          >
+            Add State
+          </button>
+          <button
+            type="button"
+            style={{ marginRight: "1rem" }}
+            class="btn btn-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#staticBackdrop1"
+          >
+            Add Theme
+          </button>
+          {/* <button
+            type="button"
+            class="btn btn-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#staticBackdrop2"
+          >
+            View Background Image
+          </button> */}
+        </div>
+      </StatesContainer>
+      <div style={{ backgroundColor: "#fff", marginBottom: "10px" }}>
+        <BacgroundContainer>
+          <Grid container spacing={2}>
+            <Grid item xs={5}>
+              <Item style={{ paddingTop: "35px" }}>
+                <h3>
+                  {stateSelected
+                    ? stateSelected.charAt(0).toUpperCase() +
+                      stateSelected.slice(1)
+                    : ""}
+                </h3>
+              </Item>
+            </Grid>
+            <Grid item xs={4}>
+              <Item>
+                <img
+                  height={100}
+                  width={250}
+                  src={`${environmentVariables.apiUrl}/uploadscitiesimages/${backgroundImage}`}
+                  type=""
+                />
+              </Item>
+            </Grid>
+            <Grid item xs={3}>
+              <Item style={{ paddingTop: "35px" }}>
+                <Button
+                  variant="contained"
+                  component="label"
+                  size="small"
+                  startIcon={<WallpaperIcon />}
+                >
+                  Change
+                  <input
+                    type="file"
+                    hidden
+                    onChange={(e) => setNewChangeImage(e)}
+                  />
+                </Button>
+                {selectNewBackground ? (
+                  <>
+                    <div>image selected </div>
+                    <Button
+                      color="secondary"
+                      type="button"
+                      variant="contained"
+                      size="small"
+                      onClick={() => updateImageHandler()}
+                    >
+                      update image
+                    </Button>
+                  </>
+                ) : null}
+              </Item>
+            </Grid>
+          </Grid>
+        </BacgroundContainer>
+        <ThemeContainer>
+          <StateHeading>Themes :</StateHeading>
+        </ThemeContainer>
+        <MainThemeContainer>
+          <RecentlyDocumentHeader>
+            <RecentlyDocumentHeaderElem>Name</RecentlyDocumentHeaderElem>
+            <RecentlyDocumentHeaderElem>Title</RecentlyDocumentHeaderElem>
+            <RecentlyDocumentHeaderElem>Description</RecentlyDocumentHeaderElem>
+            <RecentlyDocumentHeaderElem style={{ justifyContent: "flex-end" }}>
+              Actions
+            </RecentlyDocumentHeaderElem>
+          </RecentlyDocumentHeader>
+          {isLoading === true ? (
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              <CircularLoader></CircularLoader>
+            </div>
+          ) : (
+            <ThemeCardWrapper>
+              {themeData &&
+                themeData
+                  .sort((a, b) => a.priority - b.priority)
+                  .map((val) => {
+                    return (
+                      <RecentlyDocumentUploaded
+                        draggable={true}
+                        id={val?._id}
+                        onDragOver={(e) => e.preventDefault()}
+                        onDragStart={handleDrag}
+                        onDrop={handleDrop}
+                      >
+                        <ThemeBoxElement>{val?.name}</ThemeBoxElement>
+                        <ThemeBoxElement>{val?.heading}</ThemeBoxElement>
+                        <ThemeBoxElementDesc>{`${val?.description}`}</ThemeBoxElementDesc>
+                        <ThemeBoxElement style={{ justifyContent: "flex-end" }}>
+                          <DeleteIcon
+                            id={val?._id}
+                            deleteConfirmation
+                            onClick={(e) => deleteConfirmation(e)}
+                            className="fa-solid fa-trash"
+                          />
+                          <EditIcon
+                            onClick={(e) => handleEditTheme(e)}
+                            id={val?._id}
+                            className="fa-solid fa-pen-to-square"
+                            data-bs-toggle="modal"
+                            data-bs-target="#staticBackdrop3"
+                          />
+                        </ThemeBoxElement>
+                        {/* <Modal show={showModal} onHide={hideModal}>
+                          <Modal.Header closeButton>
+                            <Modal.Title>Delete Confirmation</Modal.Title>
+                          </Modal.Header>
+                          <Modal.Body>
+                            <div className="alert alert-danger">
+                              Are you sure you want to delete ?
+                            </div>
+                          </Modal.Body>
+                          <Modal.Footer>
+                            <Button variant="default" onClick={hideModal}>
+                              Cancel
+                            </Button>
+                            <Button
+                              variant="danger"
+                              id={val?._id}
+                              onClick={() => handleDeleteTheme()}
+                            >
+                              Delete
+                            </Button>
+                          </Modal.Footer>
+                        </Modal> */}
+                        <BootstrapDialog
+                          onClose={handleClose}
+                          aria-labelledby="customized-dialog-title"
+                          open={deletePopUp}
+                        >
+                          <BootstrapDialogTitle
+                            id="customized-dialog-title"
+                            onClose={handleClose}
+                          >
+                            Delete
+                          </BootstrapDialogTitle>
+                          <DialogContent dividers>
+                            <Typography gutterBottom>
+                              Are you sure you want to delete?
+                            </Typography>
+                          </DialogContent>
+                          <DialogActions>
+                            <Button
+                              variant="contained"
+                              color="success"
+                              onClick={handleClose}
+                            >
+                              Cancel
+                            </Button>
+                            <Button
+                              variant="contained"
+                              color="error"
+                              onClick={() => deleteRecord()}
+                            >
+                              Delete
+                            </Button>
+                          </DialogActions>
+                        </BootstrapDialog>
+                      </RecentlyDocumentUploaded>
+                    );
+                  })}
+            </ThemeCardWrapper>
+          )}
+
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              margin: "10px 5%",
+            }}
+          >
+            <PriorityButton
+              isPriority={isPriorityChanged}
+              onClick={handlePriority}
+            >
+              Save
+            </PriorityButton>
+          </div>
+        </MainThemeContainer>
+      </div>
     </Root>
   );
 };
@@ -684,6 +1255,13 @@ const UserLandingPage = () => {
 const ThemeNameIconWrapper = styled.div`
   display: flex;
   justify-content: space-between;
+`;
+
+const HeadingWrapper = styled.div`
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 const DeleteIcon = styled.i`
   color: #07515c;
@@ -703,17 +1281,17 @@ const BackgroundImageContainer = styled.div`
 const AddThemePopUpInput = styled.input`
   padding: 4px;
   border-radius: 5px;
-  width: 75%;
+  width: 500px;
 `;
 const AddThemePopUpSelect = styled.select`
   padding: 4px;
   border-radius: 5px;
-  width: 75%;
+  width: 500px;
 `;
 const AddThemePopUpTextArea = styled.textarea`
   padding: 4px;
   border-radius: 5px;
-  width: 75%;
+  width: 450px;
 `;
 
 const AddThemePriority = styled.input`
@@ -738,14 +1316,20 @@ const AddThemeWrapper = styled.div`
 `;
 
 const BackgroundImage = styled.img`
-  width: 100%;
-  margin-top: 40px;
+  width: 40vw;
+  margin: 40px 20px;
 `;
 const ThemeContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   padding: 20px 0;
+  margin: 0 5%;
+  padding-bottom: 0;
+`;
+const BacgroundContainer = styled.div`
+  // padding: 20px 0;
+  margin: 0 5%;
 `;
 
 const ThemeCardWrapper = styled.div`
@@ -786,10 +1370,11 @@ const Root = styled.div`
 `;
 
 const MainHeading = styled.div`
-  font-size: 30px;
-  font-weight: 500;
-  text-align: center;
-  color: #01575c;
+  font-size: 1.75rem;
+  /* font-weight: 500; */
+  /* text-align: center; */
+  color: #000;
+  margin: 0 5% 10px 5%;
 `;
 
 const StatesContainer = styled.div`
@@ -797,6 +1382,8 @@ const StatesContainer = styled.div`
   justify-content: space-between;
   align-items: flex-start;
   padding: 20px 0;
+  margin: 0 5%;
+  /* margin-bottom: 40px; */
 `;
 
 const StateHeading = styled.div`
@@ -806,7 +1393,8 @@ const StateHeading = styled.div`
 `;
 const StatesWrapper = styled.div`
   display: flex;
-  width: 80%;
+  width: 31vw;
+  height: 40px;
   flex-wrap: wrap;
   justify-content: space-around;
 `;
@@ -823,7 +1411,15 @@ const StateOptions = styled.div`
   background-color: ${(props) => (props.selected ? "#01575c" : "transparent")};
   color: ${(props) => (props.selected ? "#fff" : "#000")};
 `;
-
+const SelectState = styled.select`
+  width: 100%;
+  font-size: 14px;
+  border-radius: 5px;
+  padding: 0 10px;
+`;
+const SelectOption = styled.option`
+  font-size: 14px;
+`;
 const StateAddIcon = styled.i`
   cursor: pointer;
   font-size: 20px;
@@ -845,9 +1441,9 @@ const DeletePopUp = styled.div`
   position: relative;
   background-color: #01575c;
   margin: auto;
-  box-shadow: #000 2px 1px 1px 1px;
-  width: 30vw;
-  height: 30vh;
+  /* box-shadow: #000 2px 1px 1px 1px; */
+  /* width: 30vw; */
+  /* height: 30vh; */
   border-radius: 5px;
 `;
 
@@ -861,6 +1457,7 @@ const DeletePopUpText = styled.div`
   color: #fff;
   text-align: center;
   font-size: 16px;
+  margin: 0 40px;
 `;
 const DeletePopUpButtonWrapper = styled.div`
   display: flex;
@@ -872,6 +1469,7 @@ const AddStatePopUpContainer = styled.div`
   position: fixed;
   top: 0;
   z-index: 99999;
+  backdrop-filter: blur(2px);
   left: 0;
   width: 100%;
   height: 100%;
@@ -883,6 +1481,7 @@ const AddStatePopUpContainer = styled.div`
 
 const AddThemePopUpContainer = styled.div`
   position: fixed;
+  backdrop-filter: blur(2px);
   top: 0;
   z-index: 99999;
   left: 0;
@@ -898,23 +1497,38 @@ const AddThemePopUp = styled.div`
   position: relative;
   background-color: #01575c;
   margin: auto;
-  box-shadow: #000 2px 1px 1px 1px;
-  width: 42vw;
-  height: 50vh;
+  /* box-shadow: #000 2px 1px 1px 1px; */
+  /* width: 42vw; */
+  /* height: 50vh; */
   border-radius: 5px;
 `;
 const AddStatePopUp = styled.div`
   position: relative;
   background-color: #01575c;
-  box-shadow: #000 2px 1px 1px 1px;
+  box-shadow: #000 2px 2px 4px 3px;
   margin: auto;
-  width: 42vw;
-  height: 34vh;
+  /* width: 42vw; */
+  /* height: 34vh; */
   border-radius: 5px;
 `;
 
 const AddStatePopUpHeading = styled.div`
   font-size: 20px;
+`;
+
+const AddButton = styled.div`
+  background-color: #01575c;
+  height: 40px;
+  font-size: 14px;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0px 20px;
+  border-radius: 5px;
+  font-weight: 700;
+  margin-left: 20px;
+  cursor: pointer;
 `;
 
 const AddStatePopUpCloseIcon = styled.i`
@@ -928,10 +1542,12 @@ const AddStatePopUpCloseIcon = styled.i`
 const AddStatePopUpInputContainer = styled.div`
   display: flex;
   padding: 30px 50px 0px;
+  justify-content: space-between;
 `;
 
 const AddStatePopUpLabel = styled.div`
   color: #fff;
+  font-size: 14px;
 `;
 
 const ButtonWrapper = styled.div`
@@ -944,29 +1560,45 @@ const AddStateInputSelect = styled.select`
   width: 110px;
   padding: 3px;
   margin-left: 20px;
+  width: 450px;
 `;
 
 const AddStateFileInput = styled.input`
   padding: 3px;
   margin-left: 20px;
   color: #fff;
+  background-color: #659297;
+  width: 450px;
+  border-radius: 5px;
 `;
 
 const AddStatePopUpSubmitButton = styled.div`
   cursor: pointer;
-  width: 110px;
+  /* width: 110px;
   padding: 5px 0;
   text-align: center;
   color: #fff;
   background-color: #333;
-  border-radius: 50px;
+  border-radius: 50px; */
+  background-color: #fff;
+  height: 40px;
+  font-size: 14px;
+  color: #01565c;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0px 20px;
+  border-radius: 5px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  /* margin-left:20px; */
 `;
 
 export const RecentlyDocumentHeader = styled.div`
-  display: grid;
-  grid-template-columns: 25% 25% 25% 25%;
+  display: flex;
   margin: 5px 5%;
-  padding: 14px 15px;
+  justify-content: space-between;
+  padding: 0px 15px;
   @media (max-width: 768px) {
     display: none;
   }
@@ -978,23 +1610,26 @@ export const RecentlyDocumentHeaderElem = styled.div`
   display: flex;
   justify-content: center; */
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   color: rgb(22 22 22);
-  padding-left: 4px;
-  font-weight: 600;
-  font-size: 18px;
+  width: 300px;
+  /* padding-right: 150px; */
+  font-weight: 500;
+  font-size: 16px;
 `;
 
 export const RecentlyDocumentUploaded = styled.div`
   cursor: move;
   background: #fff;
-  display: grid;
-  grid-template-columns: 25% 25% 25% 25%;
+  display: flex;
   -webkit-box-align: center;
   align-items: center;
+  justify-content: space-between;
   margin: 10px 5%;
   padding: 14px 15px;
-  box-shadow: 0px 0px 5px 5px #0000;
+  border: 1px solid #b8b8b8;
+  // padding-right: 0;
+  /* box-shadow: 2px 2px 4px 1px #000; */
   border-radius: 5px;
   @media (max-width: 768px) {
     display: flex;
@@ -1005,12 +1640,15 @@ export const RecentlyDocumentUploaded = styled.div`
 export const MainThemeContainer = styled.div``;
 export const ThemeBoxElement = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
+  /* padding-right: 150px; */
+  width: 300px;
 `;
 export const ThemeBoxElementDesc = styled.div`
   display: flex;
   justify-content: center;
   height: 70px;
+  width: 300px;
   overflow: scroll;
   ::-webkit-scrollbar {
     display: none;
@@ -1018,12 +1656,19 @@ export const ThemeBoxElementDesc = styled.div`
 `;
 export const PriorityButton = styled.div`
   cursor: ${(props) => (props.isPriority ? "pointer" : "default")};
-  float: right;
-  margin: 10px 50px 0 0;
-  padding: 5px 10px;
-  color: #fff;
   background-color: ${(props) => (props.isPriority ? `#01565b` : `grey`)};
-  border: 1px solid transparent;
+  /* background-color: #01575c; */
+  height: 40px;
+  font-size: 14px;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0px 20px;
   border-radius: 5px;
+  font-weight: 700;
+  margin-left: 20px;
+  margin-bottom: 10px;
+  /* cursor: pointer; */
 `;
 export default UserLandingPage;
