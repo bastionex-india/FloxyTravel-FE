@@ -12,6 +12,8 @@ import "./GenerateInvoice.css";
 import { styled as newStyled } from "@mui/material/styles";
 import { Box, Paper, Grid, Container } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import Swal from "sweetalert2";
 import Table from "@mui/material/Table";
@@ -29,6 +31,8 @@ import Input from "@mui/material/Input";
 import InputLabel from "@mui/material/InputLabel";
 import InputAdornment from "@mui/material/InputAdornment";
 import FormControl from "@mui/material/FormControl";
+import { useRef } from "react";
+import { format, parse, differenceInCalendarDays  } from 'date-fns';
 
 const Item = newStyled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -82,6 +86,14 @@ const GenerateInvoice = () => {
   const [discount, setDiscount] = useState(0);
   const [totalAmount, setTotalAmount] = useState(0);
   const [payMethod, setPayMethod] = useState("online");
+  const [checkIn, setCheckIn] = useState(null);
+  const [checkOut, setCheckOut] = useState();
+  const InputCheckIn = useRef(null);
+  const InputCheckOut = useRef(null);
+  const [numOfDays, setNumOfDays] = useState(0);
+  const [noofpersons, setNoofPerons] = useState(state.adult);
+  const [noofrooms, setNoofRooms] = useState(state.noOfRooms);
+
 
   const sendInvoice = () => {
     if (hotelPrice && Number(hotelPrice) - Number(discountAmount) > 0) {
@@ -161,7 +173,6 @@ const GenerateInvoice = () => {
     axios
       .request(config)
       .then((response) => {
-        // console.log("Payment Details ", response)
         if (response.data.status) {
           let responsedata = response.data.data;
           setAmount(+responsedata.payAmount + +responsedata.discount);
@@ -177,7 +188,6 @@ const GenerateInvoice = () => {
         }
       })
       .catch((err) => {
-        console.log(err);
         Swal.fire({
           icon: "error",
           title: err.response.data.message,
@@ -186,12 +196,62 @@ const GenerateInvoice = () => {
       });
   };
   useEffect(() => {
-    console.log(state, "subhan");
     if (state.status !== "pending") {
       getPaymentdetail();
     }
   });
+  const handleCheckInChange = (date) => {
+    setCheckIn(date);
+    if (checkOut && date > checkOut) {
+      setCheckOut(null);
+    }
+  };
+  const handleCheckOutChange = (date) => {
+    setCheckOut(date);
+  };
+  const handleChangePerson=(e)=>{
+    setNoofPerons(e.target.value)
+  }
+  const handleChangeRooms=(e)=>{
+    setNoofRooms(e.target.value)
+  }
 
+  useEffect(() => {
+    if (state) {
+      const parsedDatecheckIn = moment(state.checkIn, ['DD/MM/YYYY', 'MM/DD/YYYY', 'YYYY/MM/DD', 'DD-MM-YYYY', 'MM-DD-YYYY'], true);
+      const parsedDatecheckOut = moment(state.checkOut, ['DD/MM/YYYY', 'MM/DD/YYYY', 'YYYY/MM/DD', 'DD-MM-YYYY', 'MM-DD-YYYY'], true);
+      if (parsedDatecheckIn.isValid()) {
+        setCheckIn(parsedDatecheckIn.toDate());
+      }
+      if(parsedDatecheckOut.isValid()){
+        setCheckOut(parsedDatecheckOut.toDate());
+      }
+    }
+  }, [state]);
+
+  // useEffect(() => {
+  //   const parsedCheckInDate = parse(checkIn, 'dd/MMM/yyyy', new Date());
+  //   const parsedCheckOutDate = parse(checkOut, 'dd/MMM/yyyy', new Date());
+
+  //   if (parsedCheckInDate && parsedCheckOutDate) {
+  //     const days = differenceInCalendarDays(parsedCheckOutDate, parsedCheckInDate);
+  //     setNumOfDays(days);
+  //   } else {
+  //     setNumOfDays(0);
+  //   }
+  // }, [checkIn, checkOut]);
+  useEffect(() => {
+    const parsedCheckInDate = moment(checkIn, 'DD/MMM/YYYY', true);
+    const parsedCheckOutDate = moment(checkOut, 'DD/MMM/YYYY', true);
+
+    if (parsedCheckInDate.isValid() && parsedCheckOutDate.isValid()) {
+      const days = parsedCheckOutDate.diff(parsedCheckInDate, 'days');
+      setNumOfDays(days);
+    } else {
+      setNumOfDays(0);
+    }
+  }, [checkIn, checkOut]);
+  
   return (
     <>
       <TextMainWrapper>
@@ -252,6 +312,8 @@ const GenerateInvoice = () => {
                   <p>Payment method</p>
                   <p>CheckIn Date</p>
                   <p>CheckOut Date</p>
+                  <p>Number of Persons</p>
+                  <p>Number of Rooms</p>
                   <p>Days</p>
                   <p>Amount</p>
                   <p>Discount Amount</p>
@@ -260,13 +322,109 @@ const GenerateInvoice = () => {
                   <p>{state._id}</p>
                   <p>{state.status}</p>
                   <p>{payMethod}</p>
-                  <p>{state.checkIn}</p>
-                  <p>{state.checkOut}</p>
+                  <div style={{position:"relative"}}>
+                  {/* <DatePicker selected={selectedDate} onChange={handleChange} dateFormat="dd/MM/yyyy" /> */}
+                  {/* <DatePicker selected={selectedDate} onChange={handleChange} dateFormat="dd/MM/yyyy" /> */}
+                  {/* <DatePicker selected={checkIn} onChange={handleCheckInChange} dateFormat="dd/MM/yyyy" /> */}
+                  <DatePicker
+                      className=""
+                      placeholderText=" CheckIn"
+                      dateFormat="dd/MM/yyyy"
+                      selected={checkIn}
+                      onChange={handleCheckInChange}
+                      selectsStartcheckIn
+                      startDate={checkIn}
+                      endDate={checkOut}
+                      // maxDate={checkOut}
+                      ref={InputCheckIn}
+                      minDate={checkIn}
+                    ></DatePicker>
+                    <div
+                      onClick={() => {
+                        // alert("sadasd")
+                        InputCheckIn.current.setOpen(true);
+                      }}
+                      style={{
+                        position: "absolute",
+                        // zIndex: "999999",
+                        top: "-4%",
+                        left: "95%",
+                        fontSize: "20px",
+                        cursor: "pointer",
+                      }}
+                    >
+                      <i class="fas fa-calendar-alt"></i>
+                    </div>
+                  </div>
+                  <div style={{position:"relative"}}>
+                  <DatePicker
+                      className=""
+                      placeholderText=" CheckOut"
+                      dateFormat="dd/MM/yyyy"
+                      selected={checkOut}
+                      onChange={handleCheckOutChange}
+                      startDate={checkIn}
+                      endDate={checkOut}
+                      minDate={checkIn}
+                      ref={InputCheckOut}
+                      //   width='100px'
+                      // styled={{ width: "98%",backgroundColor:'red',color:'green'}}
+                    ></DatePicker>
+                    <div
+                      onClick={() => InputCheckOut.current.setOpen(true)}
+                      style={{
+                        top: "10%",
+                        left: "90%",
+                        fontSize: "20px",
+                        cursor: "pointer",
+                        position: "absolute",
+                      }}
+                    >
+                      <i class="fas fa-calendar-alt"></i>
+                    </div>
+                  </div>
+                  {/* <p>{state.checkIn}</p>
+                  <p>{state.checkOut}</p> */}
+                  {/* <p>{state.adult}</p> */}
+                  {/* <InputWrapper> */}
                   <p>
-                    {moment(state.checkOut, "DD/MM/YYYY").diff(
+                  <FormControl
+                        sx={{ width: "80px" }}
+                        variant="standard"
+                        className="pull-right"
+                      >
+                       <Input
+                      type="number"
+                      placeholder="Total persons*"
+                      name="noofpersons"
+                      value={noofpersons}
+                      onChange={handleChangePerson}
+                    />
+                  </FormControl>
+                  </p>
+                  {/* </InputWrapper> */}
+                  {/* <p>{state.noOfRooms}</p> */}
+                 <p>
+                 <FormControl
+                        sx={{ width: "80px" }}
+                        variant="standard"
+                        className="pull-right"
+                      >
+                       <Input
+                      type="number"
+                      placeholder="Total rooms*"
+                      name="noofrooms"
+                      value={noofrooms}
+                      onChange={handleChangeRooms}
+                    />
+                  </FormControl>
+                 </p>
+                  <p>
+                    {/* {moment(state.checkOut, "DD/MM/YYYY").diff(
                       moment(state.checkIn, "DD/MM/YYYY"),
                       "days"
-                    )}
+                    )} */}
+                    {numOfDays}
                   </p>
                   <p>
                     {state.status === "pending" ? (
@@ -279,7 +437,7 @@ const GenerateInvoice = () => {
                         <Input
                           id="standard-adornment-amount"
                           startAdornment={
-                            <InputAdornment position="start">$</InputAdornment>
+                            <InputAdornment position="start">INR</InputAdornment>
                           }
                           size="small"
                           onChange={(e) => setHotelPrice(e.target.value)}
@@ -300,7 +458,7 @@ const GenerateInvoice = () => {
                         <Input
                           id="standard-adornment-amount"
                           startAdornment={
-                            <InputAdornment position="start">$</InputAdornment>
+                            <InputAdornment position="start">INR</InputAdornment>
                           }
                           size="small"
                           onChange={(e) => setDiscountAmount(e.target.value)}
