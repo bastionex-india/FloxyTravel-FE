@@ -28,8 +28,14 @@ import { Client } from 'twilio-chat';
 import { environmentVariables } from '../../config/config';
 import ChatWelcome from './ChatWelcome';
 import moment from 'moment/moment';
+import Avatar from '@mui/material/Avatar';
+import CircularLoader from '../../Component/CircularLoader/CircularLoader';
+import { amber, blue, blueGrey, brown, common, cyan, deepOrange, deepPurple, green, grey, indigo, lightBlue, lightGreen, lime, orange, pink, purple, red, teal, yellow } from '@mui/material/colors';
 
-// console.log('FF',moment().format('YYYY-MM-DD'))
+
+
+
+
 
 
 
@@ -66,6 +72,8 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 const defaultTheme = createTheme();
 
 const ChatSupport = () => {
+  let colorList = [amber, blue, blueGrey, brown, common, cyan, deepOrange, deepPurple, green, grey, indigo, lightBlue, lightGreen, lime, orange, pink, purple, red, teal, yellow];
+
   const [open, setOpen] = useState(true);
   const { authData, setAuthData } = useContext(AuthContext);
   const [activeChannel, setActiveChannel] = useState(null);
@@ -74,23 +82,30 @@ const ChatSupport = () => {
   const [inputText, setInputText] = useState('');
   const [chatClient, setChatClient] = useState(null);
   const [activeChannelSID, setActiveChannelSID] = useState('')
+  const [isMessageLoading, setIsMessageLoading] = useState(false);
+  const [isSendButtonDisable, setIsSendButtonDisable] = useState(false);
   const baseUrl = environmentVariables.apiUrl;
   let scrollDiv = useRef(null);
 
 
+  function getSortName(string) {
+    string = string.split(' ');
+    let shortString = string.map((word) => word.charAt(0).toUpperCase())
+    return shortString;
+  }
   const scrollToBottom = () => {
     console.log("scroll bottom called ....");
-    // setTimeout(() => {
-    // console. log('Will be called after 2 seconds');
-    const scrollHeight = scrollDiv.current.scrollHeight;
-    const height = scrollDiv.current.clientHeight;
-    const maxScrollTop = scrollHeight - height;
-    // console.log('scrollHeight',scrollHeight);
-    // console.log('height',height);
-    // console.log('maxScrollTop',maxScrollTop);
-    scrollDiv.current.scrollTop = maxScrollTop > 0 ? maxScrollTop : 0;
-    // scrollDiv.current.scrollTop = scrollHeight
-    // }, 0);
+    setTimeout(() => {
+      // console. log('Will be called after 2 seconds');
+      const scrollHeight = scrollDiv.current.scrollHeight;
+      const height = scrollDiv.current.clientHeight;
+      const maxScrollTop = scrollHeight - height;
+      // console.log('scrollHeight',scrollHeight);
+      // console.log('height',height);
+      // console.log('maxScrollTop',maxScrollTop);
+      scrollDiv.current.scrollTop = maxScrollTop > 0 ? maxScrollTop : 0;
+      // scrollDiv.current.scrollTop = scrollHeight
+    }, 0);
 
   };
 
@@ -112,7 +127,7 @@ const ChatSupport = () => {
       const response = await getTwilioAuthToken();
       const token = response.data.token;
       const client = new Client(token);
-      // console.log("Token created.....",client);
+      console.log("Token created.....", client);
       setChatClient(client);
     } catch (error) {
       console.error("Error initializing Chat client:", error);
@@ -120,13 +135,16 @@ const ChatSupport = () => {
   }
 
   const sendMessage = async () => {
-    if (activeChannel && inputText.trim() !== '') {
+    setIsSendButtonDisable(true)
+    if (activeChannel && inputText && inputText.trim() !== '') {
       try {
         let messageAttributes = null
         let response = await activeChannel.sendMessage(inputText, messageAttributes);
         setInputText('');
         // console.log("sent");
+        setIsSendButtonDisable(false)
       } catch (error) {
+        isSendButtonDisable(false)
         console.error('Error sending message:', error);
       }
     }
@@ -134,7 +152,22 @@ const ChatSupport = () => {
       console.log("channel no found");
     }
   };
-
+  const SendButton = () => {
+    let backgroundColor = inputText ? '#2196F3' : "lightgray";
+    return (
+      <IconButton onClick={sendMessage} disabled={ (inputText || !isSendButtonDisable)  ? false : true} color="primary" style={{ backgroundColor: backgroundColor }}>
+        <SendIcon sx={{ color: "white", fontSize: "15px" }} />
+      </IconButton>
+    )
+  }
+  const handleKeyDown = (event) => {
+    // console.log("event.key",event.shiftKey);
+    // console.log("event.key",event.key);
+    if (event.key === 'Enter' && !event.shiftKey) {
+      // 👇 Get input value
+      sendMessage()
+    }
+  }
 
 
   const getAllMessages = async (channel) => {
@@ -207,8 +240,10 @@ const ChatSupport = () => {
   };
 
   const handleChangedChannel = async (activeChannel) => {
-    await  markAllMessagesAsConsumed(activeChannel)
+    setIsMessageLoading(true)
+    await markAllMessagesAsConsumed(activeChannel)
     await getAllMessages(activeChannel)
+    setIsMessageLoading(false)
     scrollToBottom();
     console.log({ activeChannel });
   }
@@ -261,6 +296,8 @@ const ChatSupport = () => {
   // console.log("messages",messages)
   return (
     <ThemeProvider theme={defaultTheme} >
+
+
       <Box sx={{ display: 'flex' }} >
         {/* <CssBaseline /> */}
 
@@ -290,12 +327,21 @@ const ChatSupport = () => {
               allChannel && allChannel.map((channel, index) => {
                 // console.log("channel.lastConsumedMessageIndex",channel.lastConsumedMessageIndex);
                 // console.log("channel.lastMessage.index",channel.lastMessage.index);
+                let unreadMessageCount = 0;
+                if (channel.lastConsumedMessageIndex && channel.lastMessage != undefined && channel.lastMessage.index != undefined && channel.lastConsumedMessageIndex !== channel.lastMessage.index) {
+                  unreadMessageCount = channel.lastMessage.index - channel.lastConsumedMessageIndex
+                }
+                //  channel.lastConsumedMessageIndex !== channel.lastMessage.index ? channel.lastMessage.index - channel.lastConsumedMessageIndex : 0
+                let userName = channel.channelState.friendlyName;
+                let number = index % (colorList.length - 1)
+                let shortName = getSortName(userName)
 
                 return (
                   <>
-                    <ListItem sx={{ backgroundColor: (channel.sid == activeChannelSID) ? 'skyblue' : 'inherit', cursor: 'pointer', ":hover": { background: "skyblue" } }} onClick={() => { selectChannel(channel) }}>
+                    <ListItem key={index} sx={{ backgroundColor: (channel.sid == activeChannelSID) ? 'skyblue' : 'inherit', cursor: 'pointer', ":hover": { background: "skyblue" } }} onClick={() => { selectChannel(channel) }}>
+                      <Avatar sx={{ bgcolor: colorList[number][500] }}>{shortName}</Avatar>&nbsp;
                       <ListItemText primary={channel.channelState.friendlyName} />
-                      <Badge badgeContent={channel.lastConsumedMessageIndex !== channel.lastMessage.index ? channel.lastMessage.index - channel.lastConsumedMessageIndex : 0} color="primary">
+                      <Badge badgeContent={unreadMessageCount} color="primary">
                       </Badge>
                     </ListItem>
 
@@ -328,48 +374,58 @@ const ChatSupport = () => {
                       sx={{
                         p: 2,
                         display: 'flex',
-                        flexDirection: 'column',
+                        flexDirection: 'row',
+                        lineHeight: 2,
                         height: 60,
                       }}
                     >
-                      <b>{activeChannel ? activeChannel.channelState.friendlyName : 'Demo'}</b>
+                      <Avatar sx={{ bgcolor: amber[500] }}>{getSortName(activeChannel ? activeChannel.channelState.friendlyName : 'Admin')}</Avatar>&nbsp;
+                      {activeChannel ? activeChannel.channelState.friendlyName : 'Demo'}
                     </Paper>
                   </Grid>
                 </Grid>
                 <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }} >
                   <Grid container>
                     {
-                      messages && messages.length ?
-                        messages.map((message, index) => {
-
-                          let messageDateTime = moment(message.dateCreated).format('hh:mm A')
-                          if (moment(message.dateCreated).format('YYYY-MM-DD') < moment().format('YYYY-MM-DD')) {
-                            messageDateTime = moment(message.dateCreated).format("D MMM")
-                          }
-                          let messageAlignment = message.author == authData.data.email ? '-webkit-right' : "-webkit-left"
-                          return (
-                            <Grid key={message.sid} item xs={12} style={{ textAlign: messageAlignment }}>
-                              <Paper
-                                sx={{
-                                  p: 1,
-                                  display: 'flex',
-                                  flexDirection: 'column',
-                                  minHeight: 40,
-                                  // textAlign:"left",
-                                  marginTop: "3px",
-                                  background: "ligthgray",
-                                  width: 'fit-content'
-                                }}
-                              >
-                                {message.body}
-                                <span style={{ fontSize: "8px", textAlign: "right" }}>{messageDateTime}</span>
-                              </Paper>
-
-                            </Grid>
-                          )
-                        })
+                      isMessageLoading ?
+                        <>
+                          <Grid item xs={6} component="div" style={{ textAlign: "center" }}>
+                          </Grid>
+                          <Grid item xs={6} component="div">
+                            <CircularLoader></CircularLoader>
+                          </Grid>
+                        </>
                         :
-                        null
+                        messages && messages.length ?
+                          messages.map((message, index) => {
+                            let messageDateTime = moment(message.dateCreated).format('hh:mm A')
+                            if (moment(message.dateCreated).format('YYYY-MM-DD') < moment().format('YYYY-MM-DD')) {
+                              messageDateTime = moment(message.dateCreated).format("D MMM")
+                            }
+                            let messageAlignment = message.author == authData.data.email ? '-webkit-right' : "-webkit-left"
+                            let textColor = message.author == authData.data.email ? 'skyblue' : "#e9e9e9"
+                            return (
+                              <Grid key={index} item xs={12} component="div" style={{ textAlign: messageAlignment }}>
+                                <Paper
+                                  sx={{
+                                    p: 1,
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    minHeight: 40,
+                                    marginTop: "3px",
+                                    background: textColor,
+                                    width: 'fit-content'
+                                  }}
+                                >
+                                  {message.body}
+                                  <span style={{ fontSize: "8px", textAlign: "right" }}>{messageDateTime}</span>
+                                </Paper>
+
+                              </Grid>
+                            )
+                          })
+                          :
+                          null
                     }
                   </Grid>
 
@@ -378,31 +434,41 @@ const ChatSupport = () => {
                   sx={{
                     position: "fixed",
                     bottom: 0,
+                    width: "120%",
+                    marginBottom: "10px",
+                    padding: "0px 20px 0px 20px",
                   }}>
                   <Grid item xs={6} md={6} lg={6}>
-                    <Paper
+                    {/* <Paper
                       sx={{
-                        height: 70,
-                        width: "100%",
-                        padding: "8px",
+                        height: 60,
+                        width: "120%",
+                        padding: "6px 20px 6px 20px",
                       }}
-                    >
-                      <TextField
-                        id="outlined-multiline-static"
-                        label="Type your message"
-                        multiline
-                        fullWidth
-                        // rows={2}
-                        autoFocus
-                        size="medium"
-                        style={{ fontSize: "13px" }}
-                        // defaultValue="Default Value"
-                        value={inputText}
-                        onChange={(e) => setInputText(e.target.value)}
-                      />
-                    </Paper>
+                    > */}
+                    <TextField
+                      id="filled-multiline-flexible"
+                      // label="Multiline"
+                      placeholder='Type Your Message...'
+                      multiline
+                      size="small"
+                      // maxRows={1}
+                      sx={{ outline: "none" }}
+                      style={{ width: "100%" }}
+                      value={inputText}
+                      onChange={(e) => setInputText(e.target.value)}
+                      onKeyDown={handleKeyDown}
+                      InputProps={{
+                        endAdornment: <SendButton />, style: {
+                          borderRadius: "12px 12px",
+                          outline: "none",
+                          textAlignVertical: 'top'
+                        }
+                      }}
+                    />
+                    {/* </Paper> */}
                   </Grid>
-                  <Grid item xs={2} md={2} lg={2}>
+                  {/* <Grid item xs={2} md={2} lg={2}>
                     <Paper
                       sx={{
                         height: 70,
@@ -413,7 +479,7 @@ const ChatSupport = () => {
                         Send
                       </Button>
                     </Paper>
-                  </Grid>
+                  </Grid> */}
                 </Grid>
               </>
               :
