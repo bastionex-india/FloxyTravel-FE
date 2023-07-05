@@ -92,16 +92,23 @@ const GenerateInvoice = () => {
   const InputCheckOut = useRef(null);
   const [numOfDays, setNumOfDays] = useState(0);
   const [noofpersons, setNoofPerons] = useState(state.adult);
+  const [noofchildren, setNoofChildren] = useState(state.children);
   const [noofrooms, setNoofRooms] = useState(state.noOfRooms);
 
 
   const sendInvoice = () => {
+    // console.log(checkIn,checkOut,noofpersons,Number(noofchildren),noofrooms,state._id,amount.toString(),Number(discountAmount))
     if (hotelPrice && Number(hotelPrice) - Number(discountAmount) > 0) {
       let amount = Number(hotelPrice) - Number(discountAmount);
       let data = {
         bookingID: state._id,
         amount: amount.toString(),
         discount: Number(discountAmount),
+        checkIn:checkIn,
+        checkOut:checkOut,
+        persons:noofpersons,
+        children:Number(noofchildren),
+        rooms:noofrooms,
       };
       let config = {
         method: "post",
@@ -122,6 +129,7 @@ const GenerateInvoice = () => {
               title: "Invoice sent successfully",
               timer: "800",
             });
+            navigate('/bookinghistoryofadmin');
           } else {
             Swal.fire({
               icon: "error",
@@ -146,6 +154,7 @@ const GenerateInvoice = () => {
       });
     }
   };
+  
   const sendInvoiceHandler = () => {
     sendInvoice();
   };
@@ -154,9 +163,11 @@ const GenerateInvoice = () => {
     // setDiscount(2)
     // setTotalAmount(18)
     let url =
-      authData.data.isadmin === true
-        ? `${environmentVariables.apiUrl}/admin/getPaymentdetail`
-        : `${environmentVariables.apiUrl}/vendor/getPaymentdetail`;
+      authData.data.isadmin === "true"
+        ?
+         `${environmentVariables.apiUrl}/admin/getPaymentdetail`
+        : 
+        `${environmentVariables.apiUrl}/vendor/getPaymentdetail`;
     let requestBody = {
       bookingID: state._id,
     };
@@ -211,6 +222,9 @@ const GenerateInvoice = () => {
   };
   const handleChangePerson=(e)=>{
     setNoofPerons(e.target.value)
+  }
+  const handleChangeChildren=(e)=>{
+    setNoofChildren(e.target.value)
   }
   const handleChangeRooms=(e)=>{
     setNoofRooms(e.target.value)
@@ -286,7 +300,7 @@ const GenerateInvoice = () => {
                 <Grid xs={4} className="pull-right">
                   <h2>INVOICE</h2>
                   <p>
-                    <b>Invoice # :</b>
+                    <b>Invoice Number :</b>
                     {state._id}
                   </p>
                   <p>
@@ -307,20 +321,21 @@ const GenerateInvoice = () => {
               <hr />
               <Grid container>
                 <Grid xs={6}>
-                  <p>Booking Number</p>
-                  <p>Booking Status</p>
+                  {/* <p>Booking Number</p>
+                  <p>Booking Status</p> */}
                   <p>Payment method</p>
                   <p>CheckIn Date</p>
                   <p>CheckOut Date</p>
                   <p>Number of Persons</p>
+                  <p>Number of Children</p>
                   <p>Number of Rooms</p>
                   <p>Days</p>
                   <p>Amount</p>
                   <p>Discount Amount</p>
                 </Grid>
                 <Grid xs={6} className="pull-right">
-                  <p>{state._id}</p>
-                  <p>{state.status}</p>
+                  {/* <p>{state._id}</p>
+                  <p>{state.status}</p> */}
                   <p>{payMethod}</p>
                   <div style={{position:"relative"}}>
                   {/* <DatePicker selected={selectedDate} onChange={handleChange} dateFormat="dd/MM/yyyy" /> */}
@@ -399,6 +414,21 @@ const GenerateInvoice = () => {
                       name="noofpersons"
                       value={noofpersons}
                       onChange={handleChangePerson}
+                    />
+                  </FormControl>
+                  </p>
+                  <p>
+                  <FormControl
+                        sx={{ width: "80px" }}
+                        variant="standard"
+                        className="pull-right"
+                      >
+                       <Input
+                      type="number"
+                      placeholder="Total Children*"
+                      name="noofchildren"
+                      value={noofchildren}
+                      onChange={handleChangeChildren}
                     />
                   </FormControl>
                   </p>

@@ -542,7 +542,9 @@ const BookingHistoryofAdmin = () => {
                               ? "Cancelled"
                               : item.status === "completed"
                               ? "Completed"
-                              : item.status === "approved" && "Confirmed"}
+                              : item.status === "approved" ? "Approved"
+                              : item.status === "confirmed" && "Confirmed"
+                            }
                           </TableCell>
                           <TableCell align="right">
                             <Button
