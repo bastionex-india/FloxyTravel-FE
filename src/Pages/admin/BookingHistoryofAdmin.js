@@ -23,6 +23,7 @@ import DatePicker from "react-datepicker";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import "react-datepicker/dist/react-datepicker.css";
+import { format, parse } from 'date-fns';
 const HeadingWrapper = styled.div`
   position: relative;
   display: flex;
@@ -294,6 +295,31 @@ const BookingHistoryofAdmin = () => {
   const refHandle1 = () => {
     InputEndDate.current.setOpen(true);
   };
+  function convertDateFormat(inputDate) {
+    const possibleFormats = [
+      'yyyy-MM-dd',
+      'MM-dd-yyyy',
+      'MM/dd/yyyy',
+      'dd/MM/yyyy',
+      'yyyy/MM/dd',
+      // Add more date formats as needed
+    ];
+  
+    let parsedDate;
+    for (const formatString of possibleFormats) {
+      parsedDate = parse(inputDate, formatString, new Date());
+      if (!isNaN(parsedDate)) {
+        break;
+      }
+    }
+  
+    if (isNaN(parsedDate)) {
+      return ''; // Return an empty string or handle the error as needed
+    }
+  
+    const formattedDate = format(parsedDate, 'dd/MM/yyyy');
+    return formattedDate;
+  }
   return (
     <>
       <TextMainWrapper>
@@ -504,10 +530,10 @@ const BookingHistoryofAdmin = () => {
                           <TableCell align="left">
                             {item.vendorData.name}
                           </TableCell>
-                          <TableCell align="right">{item.checkIn}</TableCell>
-                          <TableCell align="right">{item.checkOut}</TableCell>
+                          <TableCell align="right">{convertDateFormat(item.checkIn)}</TableCell>
+                          <TableCell align="right">{convertDateFormat(item.checkOut)}</TableCell>
                           <TableCell align="right">
-                            {bookingDate.toLocaleDateString()}
+                            {convertDateFormat(bookingDate.toLocaleDateString())}
                           </TableCell>
                           <TableCell align="right">
                             {item.status === "pending"
@@ -516,7 +542,9 @@ const BookingHistoryofAdmin = () => {
                               ? "Cancelled"
                               : item.status === "completed"
                               ? "Completed"
-                              : item.status === "approved" && "Confirmed"}
+                              : item.status === "approved" ? "Approved"
+                              : item.status === "confirmed" && "Confirmed"
+                            }
                           </TableCell>
                           <TableCell align="right">
                             <Button
