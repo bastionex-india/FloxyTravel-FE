@@ -75,3 +75,19 @@ input[type="text" i] {
 .fa-solid, .fas{
   font-weight: 900!important;
 }
+
+.css-1fs1ktg-MuiPaper-root{
+  border-radius: 10px 15px 0 10px !important;
+}
+
+
+
+.css-1osagdw-MuiToolbar-root{
+  padding:" 10px 0 !important";
+}
+
+.css-tlelie-MuiListItemText-root{
+  margin: 0 7px;
+  font-size: 18px !important;
+}
+
