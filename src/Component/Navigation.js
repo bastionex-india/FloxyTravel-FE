@@ -158,9 +158,6 @@ const NotificationText = styled.text`
 `;
 
 
-
-
-
 function Navigation({
   showNotifications,
   setShowNotifications,
