@@ -320,6 +320,14 @@ const BookingHistoryofAdmin = () => {
     const formattedDate = format(parsedDate, 'dd/MM/yyyy');
     return formattedDate;
   }
+  function formatDate(timestamp) {
+    const options = { timeZone: 'Asia/Kolkata', day: '2-digit', month: '2-digit', year: 'numeric' };
+    const formattedDate = new Date(timestamp).toLocaleString('en-IN', options);
+    return formattedDate;
+  }
+  
+  // const formattedCheckInDate = formatDate(checkIn);
+  // const formattedCheckOutDate = formatDate(checkOut);
   return (
     <>
       <TextMainWrapper>
@@ -516,7 +524,6 @@ const BookingHistoryofAdmin = () => {
                 <TableBody >
                   {data && data.length !== 0 ? (
                     data.map((item, index) => {
-                      const bookingDate = new Date(item.createdAt);
                       return (
                         <TableRow
                           key={index}
@@ -530,10 +537,10 @@ const BookingHistoryofAdmin = () => {
                           <TableCell align="left">
                             {item.vendorData.name}
                           </TableCell>
-                          <TableCell align="right">{convertDateFormat(item.checkIn)}</TableCell>
-                          <TableCell align="right">{convertDateFormat(item.checkOut)}</TableCell>
+                          <TableCell align="right">{formatDate(item.checkIn)}</TableCell>
+                          <TableCell align="right">{formatDate(item.checkOut)}</TableCell>
                           <TableCell align="right">
-                            {convertDateFormat(bookingDate.toLocaleDateString())}
+                            {formatDate(item.createdAt)}
                           </TableCell>
                           <TableCell align="right">
                             {item.status === "pending"
