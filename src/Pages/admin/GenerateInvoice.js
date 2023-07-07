@@ -97,15 +97,15 @@ const GenerateInvoice = () => {
 
 
   const sendInvoice = () => {
-    // console.log(checkIn,checkOut,noofpersons,Number(noofchildren),noofrooms,state._id,amount.toString(),Number(discountAmount))
+    // console.log(checkIn,checkOut,noofpersons,Number(noofchildren),noofrooms,state._id,amount.toString(),Number(discountAmount),new Date(checkIn).getTime(),new Date(checkOut).getTime())
     if (hotelPrice && Number(hotelPrice) - Number(discountAmount) > 0) {
       let amount = Number(hotelPrice) - Number(discountAmount);
       let data = {
         bookingID: state._id,
         amount: amount.toString(),
         discount: Number(discountAmount),
-        checkIn:checkIn,
-        checkOut:checkOut,
+        checkIn:new Date(checkIn).getTime(),
+        checkOut:new Date(checkOut).getTime(),
         persons:noofpersons,
         children:Number(noofchildren),
         rooms:noofrooms,
