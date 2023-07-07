@@ -154,10 +154,10 @@ const TextSelectField = styled.div`
   }
 `;
 const SelectVendor = styled.select`
-  width: 85%;
+  /* width: 85%; */
   font-size: 14px;
   border-radius: 5px;
-  padding: 0 10px;
+  padding: 10px;
 `;
 const SelectOption = styled.option`
   font-size: 14px;
@@ -172,8 +172,10 @@ const Select = styled.select`
 `;
 const TextWrapper = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
+  align-items:center;
   margin-top: 20px;
+
   @media (max-width: 768px) {
     justify-content: flex-end;
   }
