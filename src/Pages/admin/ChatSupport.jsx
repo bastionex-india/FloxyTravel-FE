@@ -32,7 +32,7 @@ import Avatar from '@mui/material/Avatar';
 import CircularLoader from '../../Component/CircularLoader/CircularLoader';
 import { amber, blue, blueGrey, brown, common, cyan, deepOrange, deepPurple, green, grey, indigo, lightBlue, lightGreen, lime, orange, pink, purple, red, teal, yellow } from '@mui/material/colors';
 
-
+import RightClickMenu from './chat/RightClickMenu';
 
 
 
@@ -85,8 +85,27 @@ const ChatSupport = () => {
   const [isMessageLoading, setIsMessageLoading] = useState(false);
   const [isSendButtonDisable, setIsSendButtonDisable] = useState(false);
   const baseUrl = environmentVariables.apiUrl;
+
+  const [selectedMessages, setSelectedMessages] = useState([]);
+
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
+  const menuRef = useRef(null);
+
+
   let scrollDiv = useRef(null);
 
+
+  const handleContextMenu = (e, message) => {
+    e.preventDefault(); // Prevent default right-click menu from showing
+    setSelectedMessages([...selectedMessages, message])
+    setMenuOpen(true);
+    setMenuPosition({ x: e.clientX, y: e.clientY });
+  };
+
+  const handleCloseMenu = () => {
+    setMenuOpen(false);
+  };
 
   function getSortName(string) {
     string = string.split(' ');
@@ -134,6 +153,8 @@ const ChatSupport = () => {
     }
   }
 
+  
+
   const sendMessage = async () => {
     setIsSendButtonDisable(true)
     if (activeChannel && inputText && inputText.trim() !== '') {
@@ -155,7 +176,7 @@ const ChatSupport = () => {
   const SendButton = () => {
     let backgroundColor = inputText ? '#2196F3' : "lightgray";
     return (
-      <IconButton onClick={sendMessage} disabled={ (inputText || !isSendButtonDisable)  ? false : true} color="primary" style={{ backgroundColor: backgroundColor }}>
+      <IconButton onClick={sendMessage} disabled={(inputText || !isSendButtonDisable) ? false : true} color="primary" style={{ backgroundColor: backgroundColor }}>
         <SendIcon sx={{ color: "white", fontSize: "15px" }} />
       </IconButton>
     )
@@ -192,6 +213,41 @@ const ChatSupport = () => {
     }
   };
 
+  const deleteMessages = async () => {
+
+    for (let index = 0; index < selectedMessages.length; index++) {
+      const message = selectedMessages[index];
+      try {
+        //  hard  delete 
+        // let deletedMessage = await message.remove();
+        // console.log("deleted ",deletedMessage);
+
+        // soft delete 
+        const updatedAttributes = {
+          ...message.state.attributes,
+          deleted: true,
+        };
+        await message.updateAttributes(updatedAttributes);
+
+
+        // console.log('Message deleted successfully!');
+      } catch (error) {
+        console.error('Error deleting message:', error);
+      }
+    }
+    return true;
+  };
+
+  const handleMessageDelete = async () => {
+    // handleMessageDelete
+    // console.log("data >>>>>>>>>",selectedMessages);
+    let getResult = await deleteMessages()
+    if (getResult) {
+      getAllMessages(activeChannel)
+    }
+    setSelectedMessages([])
+    handleCloseMenu()
+  }
   // mark  All Messages As Consumed
   const markAllMessagesAsConsumed = async (channel) => {
     try {
@@ -206,8 +262,9 @@ const ChatSupport = () => {
     }
   };
 
-  const handleNewMessage = async (message) => {
 
+
+  const handleNewMessage = async (message) => {
     await markAllMessagesAsConsumed(activeChannel)
     // await getAllChannels(chatClient)
 
@@ -285,6 +342,22 @@ const ChatSupport = () => {
     }
   }, [chatClient])
 
+
+  useEffect(() => {
+    const handleOutsideClick = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setMenuOpen(false);
+        // after  click  on outside =>  selected message  will be empty 
+        setSelectedMessages([])
+      }
+    };
+
+    document.addEventListener('mousedown', handleOutsideClick);
+    return () => {
+      document.removeEventListener('mousedown', handleOutsideClick);
+    };
+  }, []);
+
   useEffect(() => {
     if (authData) {
       initializeChatClient();
@@ -294,6 +367,8 @@ const ChatSupport = () => {
 
 
   // console.log("messages",messages)
+  // console.log("seleceted Message",selectedMessages);
+
   return (
     <ThemeProvider theme={defaultTheme} >
 
@@ -336,11 +411,31 @@ const ChatSupport = () => {
                 let number = index % (colorList.length - 1)
                 let shortName = getSortName(userName)
 
+
+                let lastMessageDateTime = '';
+                if (channel.lastMessage != undefined && channel.lastMessage.dateCreated != undefined) {
+                  lastMessageDateTime = moment(channel.lastMessage.dateCreated).format('hh:mm A')
+                  if (moment(channel.lastMessage.dateCreated).format('YYYY-MM-DD') < moment().format('YYYY-MM-DD')) {
+                    lastMessageDateTime = moment(channel.lastMessage.dateCreated).format("D MMM")
+                  }
+                }
+
+
+                console.log("channel", channel);
+
                 return (
                   <>
                     <ListItem key={index} sx={{ backgroundColor: (channel.sid == activeChannelSID) ? 'skyblue' : 'inherit', cursor: 'pointer', ":hover": { background: "skyblue" } }} onClick={() => { selectChannel(channel) }}>
                       <Avatar sx={{ bgcolor: colorList[number][500] }}>{shortName}</Avatar>&nbsp;
                       <ListItemText primary={channel.channelState.friendlyName} />
+                      <span></span>
+                      <Box component="span" sx={{position:"absolute",fontSize:"10px",top: 0, right:3 }}>
+                        {lastMessageDateTime}
+                      </Box>
+                      {/* <Box component="span" sx={{position:"absolute",color:"gray",fontSize:"12px",bottom: 0, right:3 }}>
+                        last  messages ......
+                      </Box> */}
+
                       <Badge badgeContent={unreadMessageCount} color="primary">
                       </Badge>
                     </ListItem>
@@ -398,12 +493,16 @@ const ChatSupport = () => {
                         :
                         messages && messages.length ?
                           messages.map((message, index) => {
+
                             let messageDateTime = moment(message.dateCreated).format('hh:mm A')
                             if (moment(message.dateCreated).format('YYYY-MM-DD') < moment().format('YYYY-MM-DD')) {
                               messageDateTime = moment(message.dateCreated).format("D MMM")
                             }
                             let messageAlignment = message.author == authData.data.email ? '-webkit-right' : "-webkit-left"
                             let textColor = message.author == authData.data.email ? 'skyblue' : "#e9e9e9"
+                            let isDeleted = (message.attributes != null && message.attributes.deleted != undefined) ? message.attributes.deleted : false;
+                            // console.log("message isDeleted >>>>>>",isDeleted);
+
                             return (
                               <Grid key={index} item xs={12} component="div" style={{ textAlign: messageAlignment }}>
                                 <Paper
@@ -416,10 +515,28 @@ const ChatSupport = () => {
                                     background: textColor,
                                     width: 'fit-content'
                                   }}
+                                  onContextMenu={(e) => {
+
+                                    !isDeleted && handleContextMenu(e, message)
+                                  }}
                                 >
-                                  {message.body}
-                                  <span style={{ fontSize: "8px", textAlign: "right" }}>{messageDateTime}</span>
+                                  {
+                                    isDeleted ?
+                                      <i>This message was deleted</i>
+                                      :
+                                      <>
+                                        {message.body}
+                                        <span style={{ fontSize: "8px", textAlign: "right" }}>{messageDateTime}</span>
+                                      </>
+                                  }
+
                                 </Paper>
+
+                                {menuOpen && (
+                                  <div ref={menuRef}>
+                                    <RightClickMenu x={menuPosition.x} y={menuPosition.y} handleMessageDelete={handleMessageDelete} onClose={handleCloseMenu} />
+                                  </div>
+                                )}
 
                               </Grid>
                             )
