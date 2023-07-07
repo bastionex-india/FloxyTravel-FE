@@ -58,13 +58,15 @@ const Heading = styled.div`
 `;
 
 const TextSelectField = styled.div`
-  // margin: 10px 0px 0px 10px;
+  /* margin: 10px 0px 0px 10px; */
   @media (max-width: 768px) {
     margin: 0;
   }
 `;
 
 const Select = styled.select`
+
+width: 100%;
   height: 30px;
   padding: 0px 10px;
   border-radius: 5px;
@@ -72,11 +74,13 @@ const Select = styled.select`
   border: none;
   box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px,
     rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+    height: 50px;
 `;
 const TextWrapper = styled.div`
   display: flex;
-  justify-content: space-between;
-  align-item: center;
+  justify-content: start;
+  align-items: center;
+  text-align:center;
 
   @media (max-width: 768px) {
     justify-content: flex-end;
@@ -138,7 +142,7 @@ const FilterWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0px 50px;
+  /* padding: 0px 50px; */
 `;
 const FilterComponent = styled.div`
   margin-left: 10px;
@@ -157,8 +161,8 @@ const DatePickerContainer = styled.div`
 `;
 const FromDateInput = styled.div`
   position: absolute;
-  top: -4%;
-  left: 82%;
+  top: 18%;
+  right: 35px;
   font-size: 20px;
   cursor: pointer;
   @media (max-width: 768px) {
@@ -167,6 +171,8 @@ const FromDateInput = styled.div`
     z-index: 1;
   }
 `;
+
+
 
 const BookingHistory = () => {
   const { authData, setAuthData } = useContext(AuthContext);
@@ -464,8 +470,6 @@ const BookingHistory = () => {
                       onClickOutside={() => setIsDatePickerOpen(false)}
                       onFocus={() => setIsDatePickerOpen(true)}
                       // minDate={checkIn}
-                      
-
                       placeholderText="Start Date"
                       selected={fromDate}
                       onChange={handleStartDateChange}
@@ -473,6 +477,7 @@ const BookingHistory = () => {
                       startDate={fromDate}
                       endDate={toDate}
                       ref={InputStartsDate}
+                     
                     ></DatePicker>
                     <FromDateInput onClick={refHandle}>
                       <i class="fas fa-calendar-alt"></i>
@@ -487,7 +492,6 @@ const BookingHistory = () => {
                       onFocus={() => setIsDatePickerOpen1(true)}
                       // minDate={checkIn}
                       
-
                       placeholderText="End Date"
                       selected={toDate}
                       onChange={(date) => setToDate(date)}
@@ -505,7 +509,9 @@ const BookingHistory = () => {
                   </div>
                 </DatePickerContainer>
                 </div>
-              <TextSelectField>
+              <TextSelectField 
+               style={{width:"20%"}}
+              >
                 <Select
                   onChange={(e) => {
                     setSelect(e.target.value);
