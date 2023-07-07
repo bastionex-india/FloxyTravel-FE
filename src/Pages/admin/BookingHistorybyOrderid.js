@@ -118,6 +118,11 @@ const BookingHistorybyOrderid = () => {
     const formattedDate = format(parsedDate, 'dd/MM/yyyy');
     return formattedDate;
   }
+  function formatDate(timestamp) {
+    const options = { timeZone: 'Asia/Kolkata', day: '2-digit', month: '2-digit', year: 'numeric' };
+    const formattedDate = new Date(timestamp).toLocaleString('en-IN', options);
+    return formattedDate;
+  }
   return (
     <>
       <TextMainWrapper>
@@ -256,7 +261,7 @@ const BookingHistorybyOrderid = () => {
                           <TableCell component="th" scope="row">
                             CheckIn Date
                           </TableCell>
-                          <TableCell align="right">{convertDateFormat(data.checkIn)}</TableCell>
+                          <TableCell align="right">{formatDate(data.checkIn)}</TableCell>
                         </TableRow>
                         <TableRow
                           sx={{
@@ -266,7 +271,7 @@ const BookingHistorybyOrderid = () => {
                           <TableCell component="th" scope="row">
                             CheckOut Date
                           </TableCell>
-                          <TableCell align="right">{convertDateFormat(data.checkOut)}</TableCell>
+                          <TableCell align="right">{formatDate(data.checkOut)}</TableCell>
                         </TableRow>
                       </TableBody>
                     </Table>

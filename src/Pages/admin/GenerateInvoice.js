@@ -87,7 +87,7 @@ const GenerateInvoice = () => {
   const [totalAmount, setTotalAmount] = useState(0);
   const [payMethod, setPayMethod] = useState("online");
   const [checkIn, setCheckIn] = useState(null);
-  const [checkOut, setCheckOut] = useState();
+  const [checkOut, setCheckOut] = useState(null);
   const InputCheckIn = useRef(null);
   const InputCheckOut = useRef(null);
   const [numOfDays, setNumOfDays] = useState(0);
@@ -213,10 +213,13 @@ const GenerateInvoice = () => {
   });
   const handleCheckInChange = (date) => {
     setCheckIn(date);
+    
     if (checkOut && date > checkOut) {
+      setNumOfDays(0);
       setCheckOut(null);
     }
   };
+  
   const handleCheckOutChange = (date) => {
     setCheckOut(date);
   };
@@ -230,18 +233,18 @@ const GenerateInvoice = () => {
     setNoofRooms(e.target.value)
   }
 
-  useEffect(() => {
-    if (state) {
-      const parsedDatecheckIn = moment(state.checkIn, ['DD/MM/YYYY', 'MM/DD/YYYY', 'YYYY/MM/DD', 'DD-MM-YYYY', 'MM-DD-YYYY'], true);
-      const parsedDatecheckOut = moment(state.checkOut, ['DD/MM/YYYY', 'MM/DD/YYYY', 'YYYY/MM/DD', 'DD-MM-YYYY', 'MM-DD-YYYY'], true);
-      if (parsedDatecheckIn.isValid()) {
-        setCheckIn(parsedDatecheckIn.toDate());
-      }
-      if(parsedDatecheckOut.isValid()){
-        setCheckOut(parsedDatecheckOut.toDate());
-      }
-    }
-  }, [state]);
+  // useEffect(() => {
+  //   if (state) {
+  //     const parsedDatecheckIn = moment(state.checkIn, ['DD/MM/YYYY', 'MM/DD/YYYY', 'YYYY/MM/DD', 'DD-MM-YYYY', 'MM-DD-YYYY'], true);
+  //     const parsedDatecheckOut = moment(state.checkOut, ['DD/MM/YYYY', 'MM/DD/YYYY', 'YYYY/MM/DD', 'DD-MM-YYYY', 'MM-DD-YYYY'], true);
+  //     if (parsedDatecheckIn.isValid()) {
+  //       setCheckIn(parsedDatecheckIn.toDate());
+  //     }
+  //     if(parsedDatecheckOut.isValid()){
+  //       setCheckOut(parsedDatecheckOut.toDate());
+  //     }
+  //   }
+  // }, [state]);
 
   // useEffect(() => {
   //   const parsedCheckInDate = parse(checkIn, 'dd/MMM/yyyy', new Date());
@@ -254,9 +257,20 @@ const GenerateInvoice = () => {
   //     setNumOfDays(0);
   //   }
   // }, [checkIn, checkOut]);
+ 
   useEffect(() => {
-    const parsedCheckInDate = moment(checkIn, 'DD/MMM/YYYY', true);
-    const parsedCheckOutDate = moment(checkOut, 'DD/MMM/YYYY', true);
+    if (!checkIn) {
+      setCheckIn(new Date(state.checkIn));
+    }
+    if (!checkOut) {
+      setCheckOut(new Date(state.checkOut));
+    }
+    
+  }, [state]);
+  // console.log(state.checkIn,checkIn,checkOut)
+   useEffect(() => {
+    const parsedCheckInDate = moment(checkIn, 'MM/DD/YYYY', true);
+    const parsedCheckOutDate = moment(checkOut, 'MM/DD/YYYY', true);
 
     if (parsedCheckInDate.isValid() && parsedCheckOutDate.isValid()) {
       const days = parsedCheckOutDate.diff(parsedCheckInDate, 'days');
@@ -264,7 +278,7 @@ const GenerateInvoice = () => {
     } else {
       setNumOfDays(0);
     }
-  }, [checkIn, checkOut]);
+  }, [checkIn, checkOut,state]);
   
   return (
     <>
@@ -344,7 +358,7 @@ const GenerateInvoice = () => {
                   <DatePicker
                       className=""
                       placeholderText=" CheckIn"
-                      dateFormat="dd/MM/yyyy"
+                      // dateFormat="dd/MM/yyyy"
                       selected={checkIn}
                       onChange={handleCheckInChange}
                       selectsStartcheckIn
@@ -375,7 +389,7 @@ const GenerateInvoice = () => {
                   <DatePicker
                       className=""
                       placeholderText=" CheckOut"
-                      dateFormat="dd/MM/yyyy"
+                      // dateFormat="dd/MM/yyyy"
                       selected={checkOut}
                       onChange={handleCheckOutChange}
                       startDate={checkIn}
