@@ -55,6 +55,7 @@ const Heading = styled.div`
 `;
 
 const TextSelectField = styled.div`
+
   // margin: 10px 0px 0px 10px;
   @media (max-width: 768px) {
     margin: 0;
@@ -62,19 +63,28 @@ const TextSelectField = styled.div`
 `;
 
 const Select = styled.select`
-  height: 30px;
+width:15rem;
+  height: 50px;
   padding: 0px 10px;
   border-radius: 5px;
   outline: none;
   border: none;
   box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px,
     rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+
+    ::-ms-expand{
+      margin:"0 20px 0 10px";
+      padding:"0 20px 0 10px";
+    } 
 `;
 const TextWrapper = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
   text-align: center;
+  width:100%;
+
+
 
   @media (max-width: 768px) {
     justify-content: flex-end;
@@ -90,7 +100,7 @@ const TextMainWrapper = styled.div`
 `;
 const DatePickerContainer = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: center;  
   align-items: center;
   text-align: Center;
 `;
@@ -124,11 +134,11 @@ const Span = styled.span`
   left: 47%;
 `;
 const FromDateInput = styled.div`
-  position: absolute;
-  top: -4%;
-  left: 82%;
-  font-size: 20px;
-  cursor: pointer;
+     position: absolute;
+    right: 26px;
+    font-size: 20px;
+    cursor: pointer;
+    top: 10px;
   @media (max-width: 768px) {
     top: 14%;
     left: 90%;

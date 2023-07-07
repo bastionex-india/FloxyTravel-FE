@@ -23,6 +23,7 @@ import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import WallpaperIcon from "@mui/icons-material/Wallpaper";
 
+
 const Item = newStyle(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
   ...theme.typography.body2,
@@ -32,6 +33,14 @@ const Item = newStyle(Paper)(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 
+const SearchButtonWrapper = styled.div`
+display:flex;
+align-items:center;
+justify-content:flex-start;
+padding:10px 0;
+
+`;
+
 const BootstrapDialog = newStyle(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
     padding: theme.spacing(2),
@@ -40,6 +49,8 @@ const BootstrapDialog = newStyle(Dialog)(({ theme }) => ({
     padding: theme.spacing(1),
   },
 }));
+
+
 
 function BootstrapDialogTitle(props) {
   const { children, onClose, ...other } = props;
@@ -1021,7 +1032,8 @@ const UserLandingPage = () => {
           </div>
         </div>
 
-        <StatesWrapper>
+      <SearchButtonWrapper>
+      <StatesWrapper>
           <SelectState
             onChange={(e) => {
               setStateSelected(e.target.value.split("-")[0]);
@@ -1037,7 +1049,7 @@ const UserLandingPage = () => {
               ))}
           </SelectState>
         </StatesWrapper>
-        <div style={{ display: "flex" }}>
+        <div style={{ display: "flex" , margin:"0px 15px"}}>
           {" "}
           <button
             type="button"
@@ -1066,6 +1078,7 @@ const UserLandingPage = () => {
             View Background Image
           </button> */}
         </div>
+      </SearchButtonWrapper>
       </StatesContainer>
       <div style={{ backgroundColor: "#fff", marginBottom: "10px" }}>
         <BacgroundContainer>
@@ -1382,7 +1395,7 @@ const StatesContainer = styled.div`
   justify-content: space-between;
   align-items: flex-start;
   padding: 20px 0;
-  margin: 0 5%;
+  margin: 0;
   /* margin-bottom: 40px; */
 `;
 
@@ -1393,7 +1406,7 @@ const StateHeading = styled.div`
 `;
 const StatesWrapper = styled.div`
   display: flex;
-  width: 31vw;
+  /* width: 31vw; */
   height: 40px;
   flex-wrap: wrap;
   justify-content: space-around;
