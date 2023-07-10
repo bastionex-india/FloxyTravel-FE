@@ -23,6 +23,7 @@ import DatePicker from "react-datepicker";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import "react-datepicker/dist/react-datepicker.css";
+import { format, parse } from 'date-fns';
 const HeadingWrapper = styled.div`
   position: relative;
   display: flex;
@@ -54,6 +55,7 @@ const Heading = styled.div`
 `;
 
 const TextSelectField = styled.div`
+
   // margin: 10px 0px 0px 10px;
   @media (max-width: 768px) {
     margin: 0;
@@ -61,19 +63,28 @@ const TextSelectField = styled.div`
 `;
 
 const Select = styled.select`
-  height: 30px;
+width:15rem;
+  height: 50px;
   padding: 0px 10px;
   border-radius: 5px;
   outline: none;
   border: none;
   box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px,
     rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+
+    ::-ms-expand{
+      margin:"0 20px 0 10px";
+      padding:"0 20px 0 10px";
+    } 
 `;
 const TextWrapper = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
   text-align: center;
+  width:100%;
+
+
 
   @media (max-width: 768px) {
     justify-content: flex-end;
@@ -89,7 +100,7 @@ const TextMainWrapper = styled.div`
 `;
 const DatePickerContainer = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: center;  
   align-items: center;
   text-align: Center;
 `;
@@ -123,11 +134,11 @@ const Span = styled.span`
   left: 47%;
 `;
 const FromDateInput = styled.div`
-  position: absolute;
-  top: -4%;
-  left: 82%;
-  font-size: 20px;
-  cursor: pointer;
+     position: absolute;
+    right: 26px;
+    font-size: 20px;
+    cursor: pointer;
+    top: 10px;
   @media (max-width: 768px) {
     top: 14%;
     left: 90%;
@@ -294,6 +305,39 @@ const BookingHistoryofAdmin = () => {
   const refHandle1 = () => {
     InputEndDate.current.setOpen(true);
   };
+  function convertDateFormat(inputDate) {
+    const possibleFormats = [
+      'yyyy-MM-dd',
+      'MM-dd-yyyy',
+      'MM/dd/yyyy',
+      'dd/MM/yyyy',
+      'yyyy/MM/dd',
+      // Add more date formats as needed
+    ];
+  
+    let parsedDate;
+    for (const formatString of possibleFormats) {
+      parsedDate = parse(inputDate, formatString, new Date());
+      if (!isNaN(parsedDate)) {
+        break;
+      }
+    }
+  
+    if (isNaN(parsedDate)) {
+      return ''; // Return an empty string or handle the error as needed
+    }
+  
+    const formattedDate = format(parsedDate, 'dd/MM/yyyy');
+    return formattedDate;
+  }
+  function formatDate(timestamp) {
+    const options = { timeZone: 'Asia/Kolkata', day: '2-digit', month: '2-digit', year: 'numeric' };
+    const formattedDate = new Date(timestamp).toLocaleString('en-IN', options);
+    return formattedDate;
+  }
+  
+  // const formattedCheckInDate = formatDate(checkIn);
+  // const formattedCheckOutDate = formatDate(checkOut);
   return (
     <>
       <TextMainWrapper>
@@ -490,7 +534,6 @@ const BookingHistoryofAdmin = () => {
                 <TableBody >
                   {data && data.length !== 0 ? (
                     data.map((item, index) => {
-                      const bookingDate = new Date(item.createdAt);
                       return (
                         <TableRow
                           key={index}
@@ -504,10 +547,10 @@ const BookingHistoryofAdmin = () => {
                           <TableCell align="left">
                             {item.vendorData.name}
                           </TableCell>
-                          <TableCell align="right">{item.checkIn}</TableCell>
-                          <TableCell align="right">{item.checkOut}</TableCell>
+                          <TableCell align="right">{formatDate(item.checkIn)}</TableCell>
+                          <TableCell align="right">{formatDate(item.checkOut)}</TableCell>
                           <TableCell align="right">
-                            {bookingDate.toLocaleDateString()}
+                            {formatDate(item.createdAt)}
                           </TableCell>
                           <TableCell align="right">
                             {item.status === "pending"
@@ -516,7 +559,9 @@ const BookingHistoryofAdmin = () => {
                               ? "Cancelled"
                               : item.status === "completed"
                               ? "Completed"
-                              : item.status === "approved" && "Confirmed"}
+                              : item.status === "approved" ? "Approved"
+                              : item.status === "confirmed" && "Confirmed"
+                            }
                           </TableCell>
                           <TableCell align="right">
                             <Button

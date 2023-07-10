@@ -80,35 +80,63 @@ const NotificationsWrapper = styled.div`
   position: relative;
 `;
 
+const NotificationNameTime = styled.div`
+  background-color: #FAFAFA;
+  /* background-color:red; */
+  width:100%;
+  margin: 5px 0px;
+  padding: 0px 15px;
+`;
+
+
 const Notifications = styled.div`
   position: absolute;
-  background-color: #fff;
-  color: #000;
-  height: 240px;
-  overflow: scroll;
-  width: 400px;
-  height: 275px;
-  right: 15px;
-  overflow: scroll;
-  border: 1px solid #bdbdbd;
-  border-radius: 5px;
+    background-color: #fff;
+    color: #000;
+    width: 390px;
+    padding: 20px 10px;
+    height: 410px;
+    right: -2px;
+    top: 53px;
+    overflow: scroll;
+    border: none;
+    border-radius: 5px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
   ::-webkit-scrollbar {
     display: none;
   }
 `;
 
 const Notification = styled.div`
-  padding: 5px;
+  /* padding: 5px; */
+  text-transform: capitalize;
+  color:#4D4D4D;
+  font-weight:400;
+  font-size:16px;
+  padding-bottom:5px;
+
 `;
 const NotificationTime = styled.div`
   font-size: 12px;
   margin-right: 5px;
+  color:#4D4D4DCC;
+  /* padding-top:5px; */
+
 `;
 const NotificationDiv = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: ${(props) => (props.opened === true ? "#fff" : "#f8f8fa")};
+  /* background-color: ${(props) => (props.opened === true ? "#fff" : "#f8f8fa")}; */
+  margin: 12px 0;
+  ${({ isLatest }) =>
+    isLatest &&
+    `
+   border: 1px solid #ccc;
+   border-radius:5px;
+
+
+  `}
 `;
 const NotificationNumber = styled.div`
   position: absolute;
@@ -122,6 +150,14 @@ const NotificationNumber = styled.div`
   right: 13px;
   font-size: 13px;
 `;
+const NotificationWrapper = styled.div``;
+const NotificationText = styled.text`
+    color: #4D4D4D;
+    font-size: 18px;
+    font-weight: 600;
+`;
+
+
 function Navigation({
   showNotifications,
   setShowNotifications,
@@ -294,15 +330,24 @@ function Navigation({
           {showNotifications && (
             <>
               <Notifications>
+               <NotificationWrapper>
+                <NotificationText>
+                Notifications
+                </NotificationText>
+               </NotificationWrapper>
                 {notificationData &&
-                  notificationData?.map((val) => (
-                    <NotificationDiv
+                  notificationData?.map((val, key) => (
+                    <NotificationDiv key={key}
+                    isLatest={key === 0}
                       opened={val?.openedId.includes(authData?.data?.id)}
                     >
-                      <Notification>{`${val?.username} ${val?.status}`}</Notification>
+                    
+                     <NotificationNameTime>
+                     <Notification>{`${val?.status} by ${val?.username} `}</Notification>
                       <NotificationTime>
                         {getTimeNotification(val?.createdAt)}
                       </NotificationTime>
+                     </NotificationNameTime>
                     </NotificationDiv>
                   ))}
               </Notifications>
