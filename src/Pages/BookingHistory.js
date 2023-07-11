@@ -81,6 +81,7 @@ const TextWrapper = styled.div`
   justify-content: start;
   align-items: center;
   text-align:center;
+  margin-top: 25px;
 
   @media (max-width: 768px) {
     justify-content: flex-end;
