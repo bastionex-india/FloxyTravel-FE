@@ -284,6 +284,7 @@ const BookingHistoryofAdmin = () => {
   }, []);
 
   const handleStartDateChange = (date) => {
+    setSearch("")
     setFromDate(date);
     if (toDate && date > toDate) {
       setToDate(null);
@@ -368,12 +369,16 @@ const BookingHistoryofAdmin = () => {
                   <Select
                     onChange={(e) => {
                       setSelect1(e.target.value);
+                      setSearch("")
                     }}
                     value={select1}
                     required
                   >
                     <option value="" hidden>
                       Select Vendor
+                    </option>
+                    <option value="">
+                      All
                     </option>
                     {allVendors.map((item, index) => {
                       return (
@@ -475,6 +480,7 @@ const BookingHistoryofAdmin = () => {
                   <Select
                     onChange={(e) => {
                       setSelect(e.target.value);
+                      setSearch("")
                     }}
                     value={select}
                     required
@@ -482,11 +488,12 @@ const BookingHistoryofAdmin = () => {
                     <option value="" hidden>
                       Select Status
                     </option>
-                    {/* <option value="all" onClick={ApprovedData}>
+                    <option value="">
                     All
-                  </option> */}
+                  </option>
                     <option value="pending">Pending Booking</option>
-                    <option value="approved">Confirmed Booking</option>
+                    <option value="approved">Approved Booking</option>
+                    <option value="confirmed">Confirmed Booking</option>
                     <option value="cancelled">Cancelled Booking</option>
                     <option value="completed">Completed Booking</option>
                     {/* <option value="cancelled" onClick={CancelledData}>

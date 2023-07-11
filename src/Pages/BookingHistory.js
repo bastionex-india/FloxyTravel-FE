@@ -329,6 +329,11 @@ const BookingHistory = () => {
   const refHandle1 = () => {
     InputEndDate.current.setOpen(true);
   };
+  function formatDate(timestamp) {
+    const options = { timeZone: 'Asia/Kolkata', day: '2-digit', month: '2-digit', year: 'numeric' };
+    const formattedDate = new Date(timestamp).toLocaleString('en-IN', options);
+    return formattedDate;
+  }
   // function convertToUnixTimestamp(dateString) {
   //   const [day, month, year] = dateString.split('/');
   //   const formattedDateString = `${month}/${day}/${year}`;
@@ -524,7 +529,7 @@ const BookingHistory = () => {
                   </option>
                   <option value="">All</option>
                   <option value="completed">Completed Booking</option>
-                  <option value="approved">Upcoming Booking</option>
+                  <option value="confirmed">Upcoming Booking</option>
                 </Select>
               </TextSelectField>
             </TextWrapper>
@@ -545,19 +550,19 @@ const BookingHistory = () => {
                 <TableHead>
                   <TableRow>
                     <TableCell style={boldTextCss}>Hotel Name</TableCell>
-                    <TableCell style={boldTextCss} align="right">
+                    <TableCell style={boldTextCss} align="center">
                       CheckIn Date
                     </TableCell>
-                    <TableCell style={boldTextCss} align="right">
+                    <TableCell style={boldTextCss} align="center">
                       Checkout Date
                     </TableCell>
-                    <TableCell style={boldTextCss} align="right">
+                    <TableCell style={boldTextCss} align="center">
                       Creation date
                     </TableCell>
-                    <TableCell style={boldTextCss} align="right">
+                    <TableCell style={boldTextCss} align="center">
                       Status
                     </TableCell>
-                    <TableCell style={boldTextCss} align="right">
+                    <TableCell style={boldTextCss} align="center">
                       Action
                     </TableCell>
                   </TableRow>
@@ -576,17 +581,17 @@ const BookingHistory = () => {
                           <TableCell component="th" scope="row">
                             {item.hotelname}
                           </TableCell>
-                          <TableCell align="right">{item.checkIn}</TableCell>
-                          <TableCell align="right">{item.checkOut}</TableCell>
-                          <TableCell align="right">
+                          <TableCell align="center">{formatDate(item.checkIn)}</TableCell>
+                          <TableCell align="center">{formatDate(item.checkOut)}</TableCell>
+                          <TableCell align="center">
                             {bookingDate.toLocaleDateString()}
                           </TableCell>
-                          <TableCell align="right">
+                          <TableCell align="center">
                             {item.status === "completed"
                               ? "Completed"
-                              : item.status === "approved" && "Upcoming"}
+                              : item.status === "confirmed" && "Upcoming"}
                           </TableCell>
-                          <TableCell align="right">
+                          <TableCell align="center">
                             <Button
                               size="small"
                               variant="contained"

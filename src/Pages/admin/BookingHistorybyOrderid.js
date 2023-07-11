@@ -214,7 +214,7 @@ const BookingHistorybyOrderid = () => {
                       onClick={generateInvoiceHandler}
                       endIcon={<PictureAsPdfIcon />}
                     >
-                      {data.status === "pending"
+                      {data.status === "pending" || data.status==="approved"
                         ? "Generate Invoice"
                         : "View Invoice"}
                     </Button>

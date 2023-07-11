@@ -145,6 +145,11 @@ const BookingHotelById = () => {
         });
     }
   };
+  function formatDate(timestamp) {
+    const options = { timeZone: 'Asia/Kolkata', day: '2-digit', month: '2-digit', year: 'numeric' };
+    const formattedDate = new Date(timestamp).toLocaleString('en-IN', options);
+    return formattedDate;
+  }
 
   return (
     <>
@@ -271,7 +276,7 @@ const BookingHotelById = () => {
                         <TableCell component="th" scope="row">
                           CheckIn Date
                         </TableCell>
-                        <TableCell align="right">{data.checkIn}</TableCell>
+                        <TableCell align="right">{formatDate(data.checkIn)}</TableCell>
                       </TableRow>
                       <TableRow
                         sx={{
@@ -281,7 +286,7 @@ const BookingHotelById = () => {
                         <TableCell component="th" scope="row">
                           CheckOut Date
                         </TableCell>
-                        <TableCell align="right">{data.checkOut}</TableCell>
+                        <TableCell align="right">{formatDate(data.checkOut)}</TableCell>
                       </TableRow>
                     </TableBody>
                   </Table>

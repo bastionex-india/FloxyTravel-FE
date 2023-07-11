@@ -291,7 +291,7 @@ const GenerateInvoice = () => {
               onClick={() => navigate(-1)}
               class="fa-solid fa-chevron-left fa-2x"
             ></i>
-            {state.status === "pending" ? (
+            {state.status === "pending" || state.status === "approved"? (
               <Heading>Generate Invoice</Heading>
             ) : (
               <Heading>View Invoice</Heading>
@@ -471,7 +471,7 @@ const GenerateInvoice = () => {
                     {numOfDays}
                   </p>
                   <p>
-                    {state.status === "pending" ? (
+                    {state.status === "pending" || state.status === "approved" ? (
                       <FormControl
                         sx={{ width: "80px" }}
                         variant="standard"
@@ -492,7 +492,7 @@ const GenerateInvoice = () => {
                     )}
                   </p>
                   <p>
-                    {state.status === "pending" ? (
+                    {state.status === "pending" || state.status === "approved"? (
                       <FormControl
                         sx={{ width: "80px" }}
                         variant="standard"
@@ -530,20 +530,20 @@ const GenerateInvoice = () => {
                 <Grid xs={6} className="pull-right">
                   <p>
                     $
-                    {state.status === "pending"
+                    {state.status === "pending" || state.status === "approved"
                       ? Number(hotelPrice) - Number(discountAmount)
                       : totalAmount}
                   </p>
-                  <p>${state.status === "pending" ? "0.00" : totalAmount}</p>
+                  <p>${state.status === "pending"  || state.status === "approved"? "0.00" : totalAmount}</p>
                   <p>
                     $
-                    {state.status === "pending"
+                    {state.status === "pending" || state.status === "approved"
                       ? Number(hotelPrice) - Number(discountAmount)
                       : "0.00"}
                   </p>
                 </Grid>
               </Grid>
-              {state.status === "pending" ? (
+              {state.status === "pending" || state.status === "approved" ? (
                 <Grid container>
                   <Grid xs={8}></Grid>
                   <Grid xs={4} className="pull-right">
