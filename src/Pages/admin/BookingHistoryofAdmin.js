@@ -357,7 +357,7 @@ const BookingHistoryofAdmin = () => {
           <Root>
             <HeadingWrapper>
               <i
-                style={{ position: "absolute", left: "0" }}
+                style={{ position: "absolute", left: "0",cursor: "pointer" }}
                 onClick={() => navigation(-1)}
                 class="fa-solid fa-chevron-left fa-2x"
               ></i>

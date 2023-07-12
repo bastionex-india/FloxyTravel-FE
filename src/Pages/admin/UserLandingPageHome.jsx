@@ -273,7 +273,7 @@ const UserLandingPageHome = () => {
       <HeadingWrapper>
         {" "}
         <i
-          style={{ position: "absolute", left: "0" }}
+          style={{ position: "absolute", left: "0", cursor: "pointer" }}
           onClick={() => navigate(-1)}
           class="fa-solid fa-chevron-left fa-2x"
         ></i>

@@ -445,7 +445,7 @@ const ManageAdmin = () => {
             <HeadingWrapper>
               {" "}
               <i
-               
+                style={{ cursor: "pointer" }}
                 onClick={() => navigate(-1)}
                 class="fa-solid fa-chevron-left fa-2x"
               ></i>

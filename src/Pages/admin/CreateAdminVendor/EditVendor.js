@@ -33,8 +33,9 @@ const AddThemePopUpContainer = styled.div`
   align-items: center;
 `;
 const AddThemeLabel = styled.div`
-  color: #000;
-  margin-left: 20px;
+  color: #969696;
+  margin-left: 30px;
+  padding-bottom: 5px;
 `;
 const RadioWrapper = styled.div`
   display: flex;
@@ -53,7 +54,7 @@ const AddThemePopUp = styled.div`
 const ButtonWrapper = styled.div`
   display: flex;
   justify-content: center;
-  margin-bottom: 20px;
+  margin: 21px 0px 10px;
 `;
 const AddStatePopUpCloseIcon = styled.i`
   position: absolute;
@@ -85,17 +86,17 @@ const AddStatePopUpSubmitButton = styled.div`
 `;
 const AddThemeInputWrapper = styled.div`
   display: flex;
+  flex-direction:column;
   position: relative;
-  justify-content: space-between;
-  align-items: center;
-  margin: 20px 0;
-  /* width: 80%; */
+  align-items: flex-start;
+  margin: 10px 0;
+  width: 100%;
 `;
 const AddThemePopUpInput = styled.input`
-  padding: 4px;
   border-radius: 5px;
-  width: 500px;
-  margin: 0 20px;
+  width: 80%;
+  padding: 10px;
+  margin: 0 30px;
 `;
 const EditVendor = ({ open, setOpen, vendorDetails }) => {
   const [name, setName] = useState("");
@@ -214,15 +215,16 @@ const EditVendor = ({ open, setOpen, vendorDetails }) => {
               marginTop: "20px",
             }}
           >
-            Edit Admin/Vendor
+            Edit Vendor
           </div>
           <AddStatePopUpCloseIcon
             onClick={() => setOpen(false)}
             className="fa-solid fa-circle-xmark"
-            style={{ color: "#fff", fontSize: "20px" }}
+            style={{ fontSize: "20px" }}
           />
+          <div style={{display:'flex',flexDirection:'column',width:'450px',alignItems: 'center'}}>
           <AddThemeInputWrapper>
-            <AddThemeLabel>Name* : </AddThemeLabel>
+            <AddThemeLabel>Full Name*</AddThemeLabel>
             <AddThemePopUpInput
               name="name"
               value={values.name}
@@ -234,7 +236,7 @@ const EditVendor = ({ open, setOpen, vendorDetails }) => {
              ) : null}
           </AddThemeInputWrapper>
           <AddThemeInputWrapper>
-            <AddThemeLabel>Email* : </AddThemeLabel>
+            <AddThemeLabel>Email*</AddThemeLabel>
             <AddThemePopUpInput
               name="email"
               value={values.email}
@@ -246,7 +248,7 @@ const EditVendor = ({ open, setOpen, vendorDetails }) => {
              ) : null}
           </AddThemeInputWrapper>
           <AddThemeInputWrapper>
-            <AddThemeLabel>Contact* : </AddThemeLabel>
+            <AddThemeLabel>Contact*</AddThemeLabel>
             <AddThemePopUpInput
               name="contact"
               value={values.contact}
@@ -266,6 +268,7 @@ const EditVendor = ({ open, setOpen, vendorDetails }) => {
               Cancel
             </AddStatePopUpSubmitButton>
           </ButtonWrapper>
+          </div>
         </AddThemePopUp>
       </AddThemePopUpContainer>
     </>

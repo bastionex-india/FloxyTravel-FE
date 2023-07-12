@@ -23,7 +23,6 @@ import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import WallpaperIcon from "@mui/icons-material/Wallpaper";
 
-
 const Item = newStyle(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
   ...theme.typography.body2,
@@ -34,11 +33,10 @@ const Item = newStyle(Paper)(({ theme }) => ({
 }));
 
 const SearchButtonWrapper = styled.div`
-display:flex;
-align-items:center;
-justify-content:flex-start;
-padding:10px 0;
-
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 10px 0;
 `;
 
 const BootstrapDialog = newStyle(Dialog)(({ theme }) => ({
@@ -49,8 +47,6 @@ const BootstrapDialog = newStyle(Dialog)(({ theme }) => ({
     padding: theme.spacing(1),
   },
 }));
-
-
 
 function BootstrapDialogTitle(props) {
   const { children, onClose, ...other } = props;
@@ -690,7 +686,7 @@ const UserLandingPage = () => {
       <HeadingWrapper>
         {" "}
         <i
-          style={{ position: "absolute", left: "0" }}
+          style={{ position: "absolute", left: "0", cursor: "pointer" }}
           onClick={() => navigate(-1)}
           class="fa-solid fa-chevron-left fa-2x"
         ></i>
@@ -1032,44 +1028,44 @@ const UserLandingPage = () => {
           </div>
         </div>
 
-      <SearchButtonWrapper>
-      <StatesWrapper>
-          <SelectState
-            onChange={(e) => {
-              setStateSelected(e.target.value.split("-")[0]);
-              setStateId(e.target.value.split("-")[1]);
-            }}
-          >
-            {/* <SelectOption>Select City</SelectOption> */}
-            {allStates &&
-              allStates.map((val) => (
-                <SelectOption value={`${val.cityName}-${val._id}`}>
-                  {val.cityName}
-                </SelectOption>
-              ))}
-          </SelectState>
-        </StatesWrapper>
-        <div style={{ display: "flex" , margin:"0px 15px"}}>
-          {" "}
-          <button
-            type="button"
-            style={{ marginRight: "1rem" }}
-            class="btn btn-primary"
-            data-bs-toggle="modal"
-            data-bs-target="#staticBackdrop"
-          >
-            Add State
-          </button>
-          <button
-            type="button"
-            style={{ marginRight: "1rem" }}
-            class="btn btn-primary"
-            data-bs-toggle="modal"
-            data-bs-target="#staticBackdrop1"
-          >
-            Add Theme
-          </button>
-          {/* <button
+        <SearchButtonWrapper>
+          <StatesWrapper>
+            <SelectState
+              onChange={(e) => {
+                setStateSelected(e.target.value.split("-")[0]);
+                setStateId(e.target.value.split("-")[1]);
+              }}
+            >
+              {/* <SelectOption>Select City</SelectOption> */}
+              {allStates &&
+                allStates.map((val) => (
+                  <SelectOption value={`${val.cityName}-${val._id}`}>
+                    {val.cityName}
+                  </SelectOption>
+                ))}
+            </SelectState>
+          </StatesWrapper>
+          <div style={{ display: "flex", margin: "0px 15px" }}>
+            {" "}
+            <button
+              type="button"
+              style={{ marginRight: "1rem" }}
+              class="btn btn-primary"
+              data-bs-toggle="modal"
+              data-bs-target="#staticBackdrop"
+            >
+              Add State
+            </button>
+            <button
+              type="button"
+              style={{ marginRight: "1rem" }}
+              class="btn btn-primary"
+              data-bs-toggle="modal"
+              data-bs-target="#staticBackdrop1"
+            >
+              Add Theme
+            </button>
+            {/* <button
             type="button"
             class="btn btn-primary"
             data-bs-toggle="modal"
@@ -1077,8 +1073,8 @@ const UserLandingPage = () => {
           >
             View Background Image
           </button> */}
-        </div>
-      </SearchButtonWrapper>
+          </div>
+        </SearchButtonWrapper>
       </StatesContainer>
       <div style={{ backgroundColor: "#fff", marginBottom: "10px" }}>
         <BacgroundContainer>

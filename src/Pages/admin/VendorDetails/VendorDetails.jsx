@@ -6,6 +6,7 @@ import { AuthContext } from "../../../ContextApi/ContextApi";
 import axios from "axios";
 import { environmentVariables } from "../../../config/config";
 import CardDetails from "../../Dashboard/Card";
+import { useNavigate } from "react-router-dom";
 const Root = styled.div`
   margin: 20px;
 `;
@@ -15,12 +16,24 @@ const P = styled.div`
   font-weight: bold;
   padding-bottom: 10px;
 `;
+const HeadingWrapper = styled.div`
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+const Heading = styled.div`
+  font-size: 1.75rem;
+  @media (max-width: 768px) {
+    display: none;
+  }
+`;
 
 const VendorDetails = () => {
   const [vendorId, setVendorId] = useState(null);
   const [vendorData,setVendorData]  = useState(null)
   const { authData } = useContext(AuthContext);
-
+  const navigation = useNavigate();
   const getVendorData = async () => {
     const vendorid = window.location.href.split("/").pop();
     
@@ -47,7 +60,15 @@ const VendorDetails = () => {
   return (
     <Root>
       {/* <P>{vendorData ? vendorData.name : null}</P> */}
-      <div> 
+      <HeadingWrapper>
+        <i
+          style={{ position: "absolute", left: "0", cursor:'pointer' }}
+          onClick={() => navigation(-1)}
+          class="fa-solid fa-chevron-left fa-2x"
+        ></i>
+      <Heading>Vendor Details</Heading>
+      </HeadingWrapper>
+      <div style={{marginTop:"30px"}}> 
       <CardDetails 
         data={vendorData}
       /> 
