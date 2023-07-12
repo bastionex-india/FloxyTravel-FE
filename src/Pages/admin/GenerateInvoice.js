@@ -318,7 +318,7 @@ const GenerateInvoice = () => {
               onClick={() => navigate(-1)}
               class="fa-solid fa-chevron-left fa-2x"
             ></i>
-            {state.status === "pending" ? (
+            {state.status === "pending" || state.status === "approved"? (
               <Heading>Generate Invoice</Heading>
             ) : (
               <Heading>View Invoice</Heading>
@@ -698,9 +698,8 @@ const GenerateInvoice = () => {
                   </p>
                   <p>{numOfDays}</p>
                   <p>
-                    {state.status === "pending" ? (
+                    {state.status === "pending" || state.status === "approved" ? (
                       <FormControl
-                        sx={{ width: "80px" }}
                         variant="standard"
                         className="pull-right"
                       >
@@ -720,9 +719,8 @@ const GenerateInvoice = () => {
                     )}
                   </p>
                   <p>
-                    {state.status === "pending" ? (
+                    {state.status === "pending" || state.status === "approved"? (
                       <FormControl
-                        sx={{ width: "80px" }}
                         variant="standard"
                         className="pull-right"
                       >
@@ -746,40 +744,41 @@ const GenerateInvoice = () => {
               <hr />
               <Grid container>
                 <Grid xs={6}>
-                  <p>
-                    <b>Total</b>
+                  <p style={{fontSize: 'large',fontWeight: 'bolder'}}>
+                    <b>Total Amount</b>
                   </p>
-                  <p>
+                  {/* <p>
                     <b>Paid</b>
                   </p>
                   <p>
                     <b>Due</b>
-                  </p>
+                  </p> */}
                 </Grid>
                 <Grid xs={6} className="pull-right">
-                  <p>
-                    $
-                    {state.status === "pending"
+                  <p style={{fontSize: 'x-large',fontWeight: 'bolder',color: 'green'}}>
+                    INR{" "}
+                    {state.status === "pending" || state.status === "approved"
                       ? Number(hotelPrice) - Number(discountAmount)
                       : totalAmount}
                   </p>
-                  <p>${state.status === "pending" ? "0.00" : totalAmount}</p>
+                  {/* <p>INR {" "}{state.status === "pending"  || state.status === "approved"? "0.00" : totalAmount}</p>
                   <p>
-                    $
-                    {state.status === "pending"
+                    INR{" "}
+                    {state.status === "pending" || state.status === "approved"
                       ? Number(hotelPrice) - Number(discountAmount)
                       : "0.00"}
-                  </p>
+                  </p> */}
                 </Grid>
               </Grid>
-              {state.status === "pending" ? (
-                <Grid container>
+              {state.status === "pending" || state.status === "approved" ? (
+                <Grid container style={{margin:'30px 0px 30px'}}>
                   <Grid xs={8}></Grid>
                   <Grid xs={4} className="pull-right">
                     <Button
                       disabled={hotelPrice.length ? false : true}
                       variant="contained"
                       onClick={sendInvoiceHandler}
+                      style={{padding: '12px 40px'}}
                     >
                       Send Invoice
                     </Button>

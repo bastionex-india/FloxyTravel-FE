@@ -156,7 +156,7 @@ const BookingHistorybyOrderid = () => {
           <Grid container>
             <Grid xs={12}>
               <Item>
-                <h4>Hotel Location</h4>
+                {/* <h4>Hotel Location</h4> */}
                 <h4>
                   <i>{data.hotelname}</i>
                 </h4>
@@ -214,7 +214,7 @@ const BookingHistorybyOrderid = () => {
                       onClick={generateInvoiceHandler}
                       endIcon={<PictureAsPdfIcon />}
                     >
-                      {data.status === "pending"
+                      {data.status === "pending" || data.status==="approved"
                         ? "Generate Invoice"
                         : "View Invoice"}
                     </Button>
