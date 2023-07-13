@@ -106,7 +106,7 @@ export default function LeaveRecord({ vendorId }) {
           <CardWrapper>
             <Card style={{ padding: "50px 0px", marginRight: "20px" }}>
               <h6 style={{ textAlign: "center" }} class="card-title">
-                EARNINGS
+                EARNINGSuu
               </h6>
               <h1
                 style={{ textAlign: "center", color: "#008080" }}

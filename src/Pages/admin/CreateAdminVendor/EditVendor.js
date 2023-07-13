@@ -33,7 +33,7 @@ const AddThemePopUpContainer = styled.div`
   align-items: center;
 `;
 const AddThemeLabel = styled.div`
-  color: #000;
+  color: #999;
   margin-left: 20px;
 `;
 const RadioWrapper = styled.div`
@@ -79,7 +79,22 @@ const AddStatePopUpSubmitButton = styled.div`
   align-items: center;
   padding: 0px 20px;
   border-radius: 5px;
-  font-weight: 700;
+  font-weight: 400;
+  margin-bottom: 20px;
+  margin-left: 20px;
+`;
+const CancelButton = styled.div`
+background : #cccc; 
+cursor: pointer;
+  height: 40px;
+  font-size: 14px;
+  color: #000000e0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0px 20px;
+  border-radius: 5px;
+  font-weight: 400;
   margin-bottom: 20px;
   margin-left: 20px;
 `;
@@ -89,11 +104,15 @@ const AddThemeInputWrapper = styled.div`
   justify-content: space-between;
   align-items: center;
   margin: 20px 0;
+  padding:0px 20px 0px 20px;
   /* width: 80%; */
 `;
+
 const AddThemePopUpInput = styled.input`
   padding: 4px;
-  border-radius: 5px;
+  border-radius: 2px;
+  border:1px solid #cccc;
+  // border: none;
   width: 500px;
   margin: 0 20px;
 `;
@@ -222,6 +241,7 @@ const EditVendor = ({ open, setOpen, vendorDetails }) => {
             style={{ color: "#fff", fontSize: "20px" }}
           />
           <AddThemeInputWrapper>
+          <div className="form-group">
             <AddThemeLabel>Name* : </AddThemeLabel>
             <AddThemePopUpInput
               name="name"
@@ -232,8 +252,10 @@ const EditVendor = ({ open, setOpen, vendorDetails }) => {
             {errors.name && touched.name ? (
               <ErrorText>{errors.name}</ErrorText>
              ) : null}
+          </div>
           </AddThemeInputWrapper>
           <AddThemeInputWrapper>
+          <div className="form-group">
             <AddThemeLabel>Email* : </AddThemeLabel>
             <AddThemePopUpInput
               name="email"
@@ -244,8 +266,10 @@ const EditVendor = ({ open, setOpen, vendorDetails }) => {
             {errors.email && touched.email ? (
               <ErrorText>{errors.email}</ErrorText>
              ) : null}
+          </div>
           </AddThemeInputWrapper>
           <AddThemeInputWrapper>
+          <div className="form-group">
             <AddThemeLabel>Contact* : </AddThemeLabel>
             <AddThemePopUpInput
               name="contact"
@@ -257,14 +281,15 @@ const EditVendor = ({ open, setOpen, vendorDetails }) => {
             {errors.contact && touched.contact ? (
               <ErrorText>{errors.contact}</ErrorText>
              ) : null}
+          </div>
           </AddThemeInputWrapper>{" "}
           <ButtonWrapper>
             <AddStatePopUpSubmitButton onClick={handleSubmit}>
               Submit
             </AddStatePopUpSubmitButton>
-            <AddStatePopUpSubmitButton onClick={handleClose}>
+            <CancelButton onClick={handleClose}>
               Cancel
-            </AddStatePopUpSubmitButton>
+            </CancelButton>
           </ButtonWrapper>
         </AddThemePopUp>
       </AddThemePopUpContainer>
