@@ -415,8 +415,6 @@ const BookingHistoryofAdmin = () => {
                       onClickOutside={() => setIsDatePickerOpen(false)}
                       onFocus={() => setIsDatePickerOpen(true)}
                       // minDate={checkIn}
-                      
-
                       placeholderText="Start Date"
                       selected={fromDate}
                       onChange={handleStartDateChange}
