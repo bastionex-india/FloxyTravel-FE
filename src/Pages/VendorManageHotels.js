@@ -15,10 +15,12 @@ import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
-import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import Typography from "@mui/material/Typography";
 import Swal from "sweetalert2";
+import IconButton from "@mui/material/IconButton";
+import ArrowBackIosNewOutlinedIcon from '@mui/icons-material/ArrowBackIosNewOutlined';
+
 
 const BootstrapDialog = newStyle(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -132,6 +134,7 @@ const Root = styled.div`
 
 const Heading = styled.div`
   font-size: 1.75rem;
+  padding-left: 40px; 
   @media (max-width: 768px) {
     display: none;
   }
@@ -259,6 +262,16 @@ const TextMainWrapper = styled.div`
     display: flex;
   }
 `;
+
+const HeadingWrapper = styled.div`
+  position: relative;
+  // display: flex;
+  display: -webkit-box;
+  // justify-content: center;
+  // align-items: center;
+`;
+
+
 const ManageAdmin = () => {
   const [select, setSelect] = useState("");
   const [select1, setSelect1] = useState("");
@@ -272,10 +285,7 @@ const ManageAdmin = () => {
   const [hotelDetails, setHotelDetails] = useState();
   const navigate = useNavigate();
 
-  const handleClick = (item) => {
-    console.log("hcjhcjhf", item);
-    navigate("/bookinghistorybyorderid", { state: item });
-  };
+  
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
@@ -386,7 +396,7 @@ const ManageAdmin = () => {
 
   const getVendor = async () => {
     await axios
-      .get(`https://travel-api.floxypay.com/auth/vendorget`, {
+      .get(`${environmentVariables.apiUrl}/auth/vendorget`, {
         headers: { _token: authData.data.token },
       })
       .then((response) => {
@@ -433,16 +443,12 @@ const ManageAdmin = () => {
       <TextMainWrapper>
         <TextRoot>
           <Root>
-            <div style={{ display: "flex", alignItems: "center" }}>
-              {" "}
-              <i
-                style={{ cursor: "pointer", marginRight: "50px" }}
-                onClick={() => navigate(-1)}
-                class="fa-solid fa-chevron-left fa-2x"
-              ></i>
+          <HeadingWrapper>
+              <IconButton  title="Back" onClick={() => navigate(-1)} size="small" sx={{ backgroundColor: "#e1e1e1",color:"#01575c",marginTop:"4px" }}>
+                        <ArrowBackIosNewOutlinedIcon />
+              </IconButton>
               <Heading> Manage Hotels</Heading>
-            </div>
-            <TextWrapper></TextWrapper>
+            </HeadingWrapper>
           </Root>
           <HotelCardsWrapper>{getComponents()}</HotelCardsWrapper>
           {/* )} */}
