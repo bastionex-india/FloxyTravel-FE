@@ -22,6 +22,7 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import WallpaperIcon from "@mui/icons-material/Wallpaper";
+import ArrowBackIosNewOutlinedIcon from '@mui/icons-material/ArrowBackIosNewOutlined';
 
 
 const Item = newStyle(Paper)(({ theme }) => ({
@@ -688,12 +689,9 @@ const UserLandingPage = () => {
   return (
     <Root>
       <HeadingWrapper>
-        {" "}
-        <i
-          style={{ position: "absolute", left: "0" }}
-          onClick={() => navigate(-1)}
-          class="fa-solid fa-chevron-left fa-2x"
-        ></i>
+        <IconButton title="Back" onClick={() => navigate(-1)} size="small" sx={{ backgroundColor: "#e1e1e1", color: "#01575c", marginTop: "4px" }}>
+          <ArrowBackIosNewOutlinedIcon />
+        </IconButton>
         <MainHeading>Manage State Landing Page</MainHeading>
       </HeadingWrapper>
       <StatesContainer>
@@ -1032,44 +1030,44 @@ const UserLandingPage = () => {
           </div>
         </div>
 
-      <SearchButtonWrapper>
-      <StatesWrapper>
-          <SelectState
-            onChange={(e) => {
-              setStateSelected(e.target.value.split("-")[0]);
-              setStateId(e.target.value.split("-")[1]);
-            }}
-          >
-            {/* <SelectOption>Select City</SelectOption> */}
-            {allStates &&
-              allStates.map((val) => (
-                <SelectOption value={`${val.cityName}-${val._id}`}>
-                  {val.cityName}
-                </SelectOption>
-              ))}
-          </SelectState>
-        </StatesWrapper>
-        <div style={{ display: "flex" , margin:"0px 15px"}}>
-          {" "}
-          <button
-            type="button"
-            style={{ marginRight: "1rem" }}
-            class="btn btn-primary"
-            data-bs-toggle="modal"
-            data-bs-target="#staticBackdrop"
-          >
-            Add State
-          </button>
-          <button
-            type="button"
-            style={{ marginRight: "1rem" }}
-            class="btn btn-primary"
-            data-bs-toggle="modal"
-            data-bs-target="#staticBackdrop1"
-          >
-            Add Theme
-          </button>
-          {/* <button
+        <SearchButtonWrapper>
+          <StatesWrapper>
+            <SelectState
+              onChange={(e) => {
+                setStateSelected(e.target.value.split("-")[0]);
+                setStateId(e.target.value.split("-")[1]);
+              }}
+            >
+              {/* <SelectOption>Select City</SelectOption> */}
+              {allStates &&
+                allStates.map((val) => (
+                  <SelectOption value={`${val.cityName}-${val._id}`}>
+                    {val.cityName}
+                  </SelectOption>
+                ))}
+            </SelectState>
+          </StatesWrapper>
+          <div style={{ display: "flex", margin: "0px 15px" }}>
+            {" "}
+            <button
+              type="button"
+              style={{ marginRight: "1rem" }}
+              class="btn btn-primary"
+              data-bs-toggle="modal"
+              data-bs-target="#staticBackdrop"
+            >
+              Add State
+            </button>
+            <button
+              type="button"
+              style={{ marginRight: "1rem" }}
+              class="btn btn-primary"
+              data-bs-toggle="modal"
+              data-bs-target="#staticBackdrop1"
+            >
+              Add Theme
+            </button>
+            {/* <button
             type="button"
             class="btn btn-primary"
             data-bs-toggle="modal"
@@ -1077,8 +1075,8 @@ const UserLandingPage = () => {
           >
             View Background Image
           </button> */}
-        </div>
-      </SearchButtonWrapper>
+          </div>
+        </SearchButtonWrapper>
       </StatesContainer>
       <div style={{ backgroundColor: "#fff", marginBottom: "10px" }}>
         <BacgroundContainer>
@@ -1088,7 +1086,7 @@ const UserLandingPage = () => {
                 <h3>
                   {stateSelected
                     ? stateSelected.charAt(0).toUpperCase() +
-                      stateSelected.slice(1)
+                    stateSelected.slice(1)
                     : ""}
                 </h3>
               </Item>
@@ -1272,9 +1270,10 @@ const ThemeNameIconWrapper = styled.div`
 
 const HeadingWrapper = styled.div`
   position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  display: -webkit-box;
+  // display: flex;
+  // justify-content: center;
+  // align-items: center;
 `;
 const DeleteIcon = styled.i`
   color: #07515c;
@@ -1384,10 +1383,9 @@ const Root = styled.div`
 
 const MainHeading = styled.div`
   font-size: 1.75rem;
-  /* font-weight: 500; */
-  /* text-align: center; */
+  padding-left: 40px;
   color: #000;
-  margin: 0 5% 10px 5%;
+  // margin: 0 5% 10px 5%;
 `;
 
 const StatesContainer = styled.div`

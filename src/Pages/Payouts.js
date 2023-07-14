@@ -31,6 +31,7 @@ import Grid from "@mui/material/Grid";
 import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
 import NativeSelect from "@mui/material/NativeSelect";
+import ArrowBackIosNewOutlinedIcon from '@mui/icons-material/ArrowBackIosNewOutlined';
 
 const Item = newStyle(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -151,9 +152,17 @@ const Root = styled.div`
 
 const Heading = styled.div`
   font-size: 1.75rem;
+  padding-left: 40px;
   @media (max-width: 768px) {
     display: none;
   }
+`;
+const HeadingWrapper = styled.div`
+  position: relative;
+  // display: flex;
+  display: -webkit-box;
+  // justify-content: center;
+  // align-items: center;
 `;
 const TextWrapper = styled.div`
   display: flex;
@@ -286,7 +295,7 @@ const Payouts = () => {
       if (data && data.length === 0) {
         return (
           <TextCenter>
-            <span>No data found.</span>
+            <span>No payouts found.</span>
           </TextCenter>
         );
       } else {
@@ -453,16 +462,12 @@ const Payouts = () => {
       <TextMainWrapper>
         <TextRoot>
           <Root>
-            <div style={{ display: "flex", alignItems: "center" }}>
-              {" "}
-              <i
-                style={{ cursor: "pointer", marginRight: "50px" }}
-                onClick={() => navigate(-1)}
-                class="fa-solid fa-chevron-left fa-2x"
-              ></i>
+            <HeadingWrapper>
+              <IconButton  title="Back" onClick={() => navigate(-1)} size="small" sx={{ backgroundColor: "#e1e1e1",color:"#01575c",marginTop:"4px" }}>
+                        <ArrowBackIosNewOutlinedIcon />
+              </IconButton>
               <Heading>Hotel's Payout</Heading>
-            </div>
-            <TextWrapper></TextWrapper>
+            </HeadingWrapper>
           </Root>
           {/* <NewRow>
             <PayoutSection2>

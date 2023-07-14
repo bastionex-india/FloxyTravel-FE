@@ -15,9 +15,11 @@ import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
-import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import PropTypes from "prop-types";
+import IconButton from "@mui/material/IconButton";
+import ArrowBackIosNewOutlinedIcon from '@mui/icons-material/ArrowBackIosNewOutlined';
+
 const BootstrapDialog = newStyle(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
     padding: theme.spacing(2),
@@ -271,12 +273,9 @@ const UserLandingPageHome = () => {
   return (
     <Root>
       <HeadingWrapper>
-        {" "}
-        <i
-          style={{ position: "absolute", left: "0" }}
-          onClick={() => navigate(-1)}
-          class="fa-solid fa-chevron-left fa-2x"
-        ></i>
+      <IconButton  title="Back" onClick={() => navigate(-1)} size="small" sx={{ backgroundColor: "#e1e1e1",color:"#01575c",marginTop:"4px" }}>
+                        <ArrowBackIosNewOutlinedIcon />
+              </IconButton>
         <MainHeading>Manage Home Landing Page</MainHeading>
       </HeadingWrapper>
       <div
@@ -611,9 +610,10 @@ const UserLandingPageHome = () => {
 
 const HeadingWrapper = styled.div`
   position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  display: -webkit-box;
+  // display: flex;
+  // justify-content: center;
+  // align-items: center;
 `;
 const BackIcon = styled.i``;
 const AddButton = styled.div`
@@ -741,15 +741,13 @@ const Root = styled.div`
 `;
 
 const MainHeading = styled.div`
-  /* font-size: 30px;
-  font-weight: 500;
-  text-align: center;
-  color: #01575c; */
+  
   font-size: 1.75rem;
+  padding-left:40px; 
   /* font-weight: 500; */
   /* text-align: center; */
   color: #000;
-  margin: 0 5% 10px 5%;
+  // margin: 0 5% 10px 5%;
 `;
 
 const StatesContainer = styled.div`

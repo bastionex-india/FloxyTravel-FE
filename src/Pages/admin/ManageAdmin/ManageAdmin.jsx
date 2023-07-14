@@ -35,6 +35,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import Typography from "@mui/material/Typography";
 import TablePagination from "@mui/material/TablePagination";
 import EditVendor from "./../CreateAdminVendor/EditVendor";
+import ArrowBackIosNewOutlinedIcon from '@mui/icons-material/ArrowBackIosNewOutlined';
 import { makeStyles } from "@material-ui/core";
 
 const BootstrapDialog = newStyle(Dialog)(({ theme }) => ({
@@ -47,11 +48,11 @@ const BootstrapDialog = newStyle(Dialog)(({ theme }) => ({
 }));
 
 const useStyles = makeStyles({
-  customContainer: {
-border: "1px solid #E0E0E0",
-borderRadius:"20px !important",
+//   customContainer: {
+// border: "1px solid #E0E0E0",
+// borderRadius:"20px !important",
 
-  },
+//   },
   HeadingText:{
     color:"#131313",
     fontSize:"26px",
@@ -151,10 +152,11 @@ const TextRoot = styled.div`
   }
 `;
 const HeadingWrapper = styled.div`
-  /* position: relative; */
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  position: relative;
+  display: -webkit-box;
+  // display: flex;
+  // justify-content: center;
+  // align-items: center;
 `;
 const DocInfo = styled.div`
   // display: flex;
@@ -179,7 +181,7 @@ const Root = styled.div`
 
 const Heading = styled.div`
   font-size: 1.75rem;
-  /* ; */
+  padding-left:40px;
   @media (max-width: 768px) {
     display: none;
   }
@@ -413,14 +415,11 @@ const ManageAdmin = () => {
           ></EditVendor>
         )}
         <TextRoot>
-          {/* <Root>
+          <Root>
             <HeadingWrapper>
-              {" "}
-              <i
-                style={{ position: "absolute", left: "0" }}
-                onClick={() => navigate(-1)}
-                class="fa-solid fa-chevron-left fa-2x"
-              ></i>
+            <IconButton  title="Back" onClick={() => navigate(-1)} size="small" sx={{ backgroundColor: "#e1e1e1",color:"#01575c",marginTop:"4px" }}>
+                        <ArrowBackIosNewOutlinedIcon />
+              </IconButton>
               <Heading> Manage Vendors</Heading>
             </HeadingWrapper>
             <TextWrapper>
@@ -428,7 +427,7 @@ const ManageAdmin = () => {
                 Add Vendor
               </AddButton>
             </TextWrapper>
-          </Root> */}
+          </Root>
           {isLoading === true ? (
             <div
               style={{
@@ -440,25 +439,7 @@ const ManageAdmin = () => {
               <CircularLoader></CircularLoader>
             </div>
           ) : (
-            <TableContainer component={Paper} className={classes.customContainer}>
-             <Root>
-            <HeadingWrapper>
-              {" "}
-              <i
-               
-                onClick={() => navigate(-1)}
-                class="fa-solid fa-chevron-left fa-2x"
-              ></i>
-              <Heading className={classes.HeadingText} > Manage Vendors</Heading>
-            </HeadingWrapper>
-            <TextWrapper>
-              <AddButton onClick={() => setAddVendorPopUp(true)}
-              className={classes.AddVendorButton}
-              >
-                Add Vendor
-              </AddButton>
-            </TextWrapper>
-          </Root>
+            <TableContainer component={Paper}>
               <Table className={classes.Table}>
                 <TableHead >
               
