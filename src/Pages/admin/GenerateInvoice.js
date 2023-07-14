@@ -477,7 +477,7 @@ const GenerateInvoice = () => {
                         variant="standard"
                         className="pull-right"
                       >
-                        {/* <InputLabel htmlFor="standard-adornment-amount">Discount Amount</InputLabel> */}
+                        {/* <InputLabel>Discount Amount</InputLabel> */}
                         <Input
                           id="standard-adornment-amount"
                           startAdornment={
@@ -498,7 +498,7 @@ const GenerateInvoice = () => {
                         variant="standard"
                         className="pull-right"
                       >
-                        {/* <InputLabel htmlFor="standard-adornment-amount">Discount Amount</InputLabel> */}
+                        {/* <InputLabel >Discount Amount</InputLabel> */}
                         <Input
                           id="standard-adornment-amount"
                           startAdornment={

@@ -488,14 +488,13 @@ const Payouts = () => {
             >
               <Grid item xs={4}>
                 <FormControl fullWidth>
-                  <InputLabel variant="standard" htmlFor="uncontrolled-native">
+                  <InputLabel variant="standard">
                     Hotels
                   </InputLabel>
                   <NativeSelect
                     defaultValue={"all"}
                     inputProps={{
                       name: "age",
-                      id: "uncontrolled-native",
                     }}
                     onChange={(event) => handleHotelChange(event.target.value)}
                   >
@@ -512,14 +511,13 @@ const Payouts = () => {
               </Grid>
               <Grid item xs={4}>
                 <FormControl fullWidth>
-                  <InputLabel variant="standard" htmlFor="uncontrolled-native">
+                  <InputLabel variant="standard">
                     City
                   </InputLabel>
                   <NativeSelect
                     defaultValue={"all"}
                     inputProps={{
-                      name: "age",
-                      id: "uncontrolled-native",
+                      name: "age"
                     }}
                     onChange={(event) => handleCityChange(event.target.value)}
                   >

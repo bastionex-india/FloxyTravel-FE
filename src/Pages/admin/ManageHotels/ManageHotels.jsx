@@ -161,6 +161,7 @@ const SelectVendor = styled.select`
   /* width: 85%; */
   font-size: 14px;
   border-radius: 5px;
+  min-width:400px;
   padding: 10px;
 `;
 const SelectOption = styled.option`
@@ -178,7 +179,7 @@ const TextWrapper = styled.div`
   display: flex;
   justify-content: flex-start;
   align-items:center;
-  margin-top: 20px;
+  margin-top: 40px;
 
   @media (max-width: 768px) {
     justify-content: flex-end;
@@ -535,11 +536,11 @@ const ManageAdmin = () => {
               </IconButton>
               <Heading> Manage Hotels</Heading>
             </HeadingWrapper>
-            <Lable>Select Vendor</Lable>
+            {/* <Lable>Select Vendor</Lable> */}
             <TextWrapper>
               <SelectVendor onChange={vendorHandler}>
                 {/* <SelectOption value={"all"}>Select Vendor*</SelectOption> */}
-                <SelectOption value={"all"}>All</SelectOption>
+                <SelectOption value={"all"}>All Vendors</SelectOption>
                 {vendorlist &&
                   vendorlist.map((row, index) => {
                     return (
