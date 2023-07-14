@@ -463,8 +463,8 @@ const Payouts = () => {
         <TextRoot>
           <Root>
             <HeadingWrapper>
-              <IconButton  title="Back" onClick={() => navigate(-1)} size="small" sx={{ backgroundColor: "#e1e1e1",color:"#01575c",marginTop:"4px" }}>
-                        <ArrowBackIosNewOutlinedIcon />
+              <IconButton title="Back" onClick={() => navigate(-1)} size="small" sx={{ backgroundColor: "#e1e1e1", color: "#01575c", marginTop: "4px" }}>
+                <ArrowBackIosNewOutlinedIcon />
               </IconButton>
               <Heading>Hotel's Payout</Heading>
             </HeadingWrapper>

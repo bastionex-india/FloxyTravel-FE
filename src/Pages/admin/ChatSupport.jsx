@@ -481,7 +481,7 @@ const ChatSupport = () => {
                 }
 
 
-                console.log("channel", channel);
+                // console.log("channel", channel);
 
                 return (
                   <>
@@ -518,9 +518,9 @@ const ChatSupport = () => {
                       <Box component="span" sx={{ position: "absolute", fontSize: "10px", top: 0, right: 3 }}>
                         {lastMessageDateTime}
                       </Box>
-                      <Box component="span" sx={{position:"absolute",color:"gray",fontSize:"12px",bottom: 0, right:3 }}>
+                      {/* <Box component="span" sx={{position:"absolute",color:"gray",fontSize:"12px",bottom: 0, right:3 }}>
                         last  messages ......
-                      </Box>
+                      </Box> */}
                       <Badge
                         badgeContent={unreadMessageCount}
                         color="primary"

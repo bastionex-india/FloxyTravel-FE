@@ -32,7 +32,7 @@ import InputLabel from "@mui/material/InputLabel";
 import InputAdornment from "@mui/material/InputAdornment";
 import FormControl from "@mui/material/FormControl";
 import { useRef } from "react";
-import { format, parse, differenceInCalendarDays  } from 'date-fns';
+import { format, parse, differenceInCalendarDays } from 'date-fns';
 
 const Item = newStyled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -104,11 +104,11 @@ const GenerateInvoice = () => {
         bookingID: state._id,
         amount: amount.toString(),
         discount: Number(discountAmount),
-        checkIn:new Date(checkIn).getTime(),
-        checkOut:new Date(checkOut).getTime(),
-        persons:noofpersons,
-        children:Number(noofchildren),
-        rooms:noofrooms,
+        checkIn: new Date(checkIn).getTime(),
+        checkOut: new Date(checkOut).getTime(),
+        persons: noofpersons,
+        children: Number(noofchildren),
+        rooms: noofrooms,
       };
       let config = {
         method: "post",
@@ -154,7 +154,7 @@ const GenerateInvoice = () => {
       });
     }
   };
-  
+
   const sendInvoiceHandler = () => {
     sendInvoice();
   };
@@ -165,8 +165,8 @@ const GenerateInvoice = () => {
     let url =
       authData.data.isadmin === "true"
         ?
-         `${environmentVariables.apiUrl}/admin/getPaymentdetail`
-        : 
+        `${environmentVariables.apiUrl}/admin/getPaymentdetail`
+        :
         `${environmentVariables.apiUrl}/vendor/getPaymentdetail`;
     let requestBody = {
       bookingID: state._id,
@@ -213,23 +213,23 @@ const GenerateInvoice = () => {
   });
   const handleCheckInChange = (date) => {
     setCheckIn(date);
-    
+
     if (checkOut && date > checkOut) {
       setNumOfDays(0);
       setCheckOut(null);
     }
   };
-  
+
   const handleCheckOutChange = (date) => {
     setCheckOut(date);
   };
-  const handleChangePerson=(e)=>{
+  const handleChangePerson = (e) => {
     setNoofPerons(e.target.value)
   }
-  const handleChangeChildren=(e)=>{
+  const handleChangeChildren = (e) => {
     setNoofChildren(e.target.value)
   }
-  const handleChangeRooms=(e)=>{
+  const handleChangeRooms = (e) => {
     setNoofRooms(e.target.value)
   }
 
@@ -257,7 +257,7 @@ const GenerateInvoice = () => {
   //     setNumOfDays(0);
   //   }
   // }, [checkIn, checkOut]);
- 
+
   useEffect(() => {
     if (!checkIn) {
       setCheckIn(new Date(state.checkIn));
@@ -265,10 +265,10 @@ const GenerateInvoice = () => {
     if (!checkOut) {
       setCheckOut(new Date(state.checkOut));
     }
-    
+
   }, [state]);
   // console.log(state.checkIn,checkIn,checkOut)
-   useEffect(() => {
+  useEffect(() => {
     const parsedCheckInDate = moment(checkIn, 'MM/DD/YYYY', true);
     const parsedCheckOutDate = moment(checkOut, 'MM/DD/YYYY', true);
 
@@ -278,8 +278,8 @@ const GenerateInvoice = () => {
     } else {
       setNumOfDays(0);
     }
-  }, [checkIn, checkOut,state]);
-  
+  }, [checkIn, checkOut, state]);
+
   return (
     <>
       <TextMainWrapper>
@@ -351,11 +351,11 @@ const GenerateInvoice = () => {
                   {/* <p>{state._id}</p>
                   <p>{state.status}</p> */}
                   <p>{payMethod}</p>
-                  <div style={{position:"relative"}}>
-                  {/* <DatePicker selected={selectedDate} onChange={handleChange} dateFormat="dd/MM/yyyy" /> */}
-                  {/* <DatePicker selected={selectedDate} onChange={handleChange} dateFormat="dd/MM/yyyy" /> */}
-                  {/* <DatePicker selected={checkIn} onChange={handleCheckInChange} dateFormat="dd/MM/yyyy" /> */}
-                  <DatePicker
+                  <div style={{ position: "relative" }}>
+                    {/* <DatePicker selected={selectedDate} onChange={handleChange} dateFormat="dd/MM/yyyy" /> */}
+                    {/* <DatePicker selected={selectedDate} onChange={handleChange} dateFormat="dd/MM/yyyy" /> */}
+                    {/* <DatePicker selected={checkIn} onChange={handleCheckInChange} dateFormat="dd/MM/yyyy" /> */}
+                    <DatePicker
                       className=""
                       placeholderText=" CheckIn"
                       // dateFormat="dd/MM/yyyy"
@@ -385,8 +385,8 @@ const GenerateInvoice = () => {
                       <i class="fas fa-calendar-alt"></i>
                     </div>
                   </div>
-                  <div style={{position:"relative"}}>
-                  <DatePicker
+                  <div style={{ position: "relative" }}>
+                    <DatePicker
                       className=""
                       placeholderText=" CheckOut"
                       // dateFormat="dd/MM/yyyy"
@@ -396,8 +396,8 @@ const GenerateInvoice = () => {
                       endDate={checkOut}
                       minDate={checkIn}
                       ref={InputCheckOut}
-                      //   width='100px'
-                      // styled={{ width: "98%",backgroundColor:'red',color:'green'}}
+                    //   width='100px'
+                    // styled={{ width: "98%",backgroundColor:'red',color:'green'}}
                     ></DatePicker>
                     <div
                       onClick={() => InputCheckOut.current.setOpen(true)}
@@ -417,52 +417,52 @@ const GenerateInvoice = () => {
                   {/* <p>{state.adult}</p> */}
                   {/* <InputWrapper> */}
                   <p>
-                  <FormControl
-                        sx={{ width: "80px" }}
-                        variant="standard"
-                        className="pull-right"
-                      >
-                       <Input
-                      type="number"
-                      placeholder="Total persons*"
-                      name="noofpersons"
-                      value={noofpersons}
-                      onChange={handleChangePerson}
-                    />
-                  </FormControl>
+                    <FormControl
+                      sx={{ width: "80px" }}
+                      variant="standard"
+                      className="pull-right"
+                    >
+                      <Input
+                        type="number"
+                        placeholder="Total persons*"
+                        name="noofpersons"
+                        value={noofpersons}
+                        onChange={handleChangePerson}
+                      />
+                    </FormControl>
                   </p>
                   <p>
-                  <FormControl
-                        sx={{ width: "80px" }}
-                        variant="standard"
-                        className="pull-right"
-                      >
-                       <Input
-                      type="number"
-                      placeholder="Total Children*"
-                      name="noofchildren"
-                      value={noofchildren}
-                      onChange={handleChangeChildren}
-                    />
-                  </FormControl>
+                    <FormControl
+                      sx={{ width: "80px" }}
+                      variant="standard"
+                      className="pull-right"
+                    >
+                      <Input
+                        type="number"
+                        placeholder="Total Children*"
+                        name="noofchildren"
+                        value={noofchildren}
+                        onChange={handleChangeChildren}
+                      />
+                    </FormControl>
                   </p>
                   {/* </InputWrapper> */}
                   {/* <p>{state.noOfRooms}</p> */}
-                 <p>
-                 <FormControl
-                        sx={{ width: "80px" }}
-                        variant="standard"
-                        className="pull-right"
-                      >
-                       <Input
-                      type="number"
-                      placeholder="Total rooms*"
-                      name="noofrooms"
-                      value={noofrooms}
-                      onChange={handleChangeRooms}
-                    />
-                  </FormControl>
-                 </p>
+                  <p>
+                    <FormControl
+                      sx={{ width: "80px" }}
+                      variant="standard"
+                      className="pull-right"
+                    >
+                      <Input
+                        type="number"
+                        placeholder="Total rooms*"
+                        name="noofrooms"
+                        value={noofrooms}
+                        onChange={handleChangeRooms}
+                      />
+                    </FormControl>
+                  </p>
                   <p>
                     {/* {moment(state.checkOut, "DD/MM/YYYY").diff(
                       moment(state.checkIn, "DD/MM/YYYY"),

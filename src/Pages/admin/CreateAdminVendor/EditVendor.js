@@ -137,44 +137,44 @@ const EditVendor = ({ open, setOpen, vendorDetails }) => {
       initialValues,
       validationSchema: VendorEditSchema,
       onSubmit: async (values, action) => {
-            axios({
-              method: "put",
-              url: `${environmentVariables.apiUrl}/admin/updatevendor/${vendorDetails.vendorId}`,
-              headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
-              },
-              data: {
-                name: values.name,
-                email: values.email,
-                mobile: values.contact,
-              },
-              headers: { _token: authData.data.token },
-            })
-              .then((response) => {
-                console.log(response.data,"00000000000001111111111")
-                // setUpdatedHotelData(response.data.message)
-                // setResponseData(response.data.data);
-                Swal.fire({
-                  title: "Success",
-                  text: "Vendor updated successfully",
-                  timer: 2000,
-                });
-                action.resetForm();
-                // getAllListData();
-                // toast(response.data.message);
-                setOpen(false);
-              })
-              .catch((error) => {
-                console.log("///////////////", error);
-                // setError('Details are not valid');
-                Swal.fire({
-                  title: "Error",
-                  text: error,
-                  timer: 2000,
-                });
-                setOpen(false);
-              });
+        axios({
+          method: "put",
+          url: `${environmentVariables.apiUrl}/admin/updatevendor/${vendorDetails.vendorId}`,
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          data: {
+            name: values.name,
+            email: values.email,
+            mobile: values.contact,
+          },
+          headers: { _token: authData.data.token },
+        })
+          .then((response) => {
+            console.log(response.data, "00000000000001111111111")
+            // setUpdatedHotelData(response.data.message)
+            // setResponseData(response.data.data);
+            Swal.fire({
+              title: "Success",
+              text: "Vendor updated successfully",
+              timer: 2000,
+            });
+            action.resetForm();
+            // getAllListData();
+            // toast(response.data.message);
+            setOpen(false);
+          })
+          .catch((error) => {
+            console.log("///////////////", error);
+            // setError('Details are not valid');
+            Swal.fire({
+              title: "Error",
+              text: error,
+              timer: 2000,
+            });
+            setOpen(false);
+          });
         //   } else {
         //     axios({
         //       method: "post",
@@ -221,9 +221,9 @@ const EditVendor = ({ open, setOpen, vendorDetails }) => {
     });
   return (
     <>
-    
+
       <AddThemePopUpContainer>
-      
+
         <AddThemePopUp>
           <div
             style={{
@@ -241,47 +241,47 @@ const EditVendor = ({ open, setOpen, vendorDetails }) => {
             style={{ color: "#fff", fontSize: "20px" }}
           />
           <AddThemeInputWrapper>
-          <div className="form-group">
-            <AddThemeLabel>Name* : </AddThemeLabel>
-            <AddThemePopUpInput
-              name="name"
-              value={values.name}
-              onChange={handleChange}
-              onBlur={handleBlur}
-            />
-            {errors.name && touched.name ? (
-              <ErrorText>{errors.name}</ErrorText>
-             ) : null}
-          </div>
+            <div className="form-group">
+              <AddThemeLabel>Name* : </AddThemeLabel>
+              <AddThemePopUpInput
+                name="name"
+                value={values.name}
+                onChange={handleChange}
+                onBlur={handleBlur}
+              />
+              {errors.name && touched.name ? (
+                <ErrorText>{errors.name}</ErrorText>
+              ) : null}
+            </div>
           </AddThemeInputWrapper>
           <AddThemeInputWrapper>
-          <div className="form-group">
-            <AddThemeLabel>Email* : </AddThemeLabel>
-            <AddThemePopUpInput
-              name="email"
-              value={values.email}
-              onChange={handleChange}
-              onBlur={handleBlur}
-            />
-            {errors.email && touched.email ? (
-              <ErrorText>{errors.email}</ErrorText>
-             ) : null}
-          </div>
+            <div className="form-group">
+              <AddThemeLabel>Email* : </AddThemeLabel>
+              <AddThemePopUpInput
+                name="email"
+                value={values.email}
+                onChange={handleChange}
+                onBlur={handleBlur}
+              />
+              {errors.email && touched.email ? (
+                <ErrorText>{errors.email}</ErrorText>
+              ) : null}
+            </div>
           </AddThemeInputWrapper>
           <AddThemeInputWrapper>
-          <div className="form-group">
-            <AddThemeLabel>Contact* : </AddThemeLabel>
-            <AddThemePopUpInput
-              name="contact"
-              value={values.contact}
-              type="number"
-              onChange={handleChange}
-              onBlur={handleBlur}
-            />
-            {errors.contact && touched.contact ? (
-              <ErrorText>{errors.contact}</ErrorText>
-             ) : null}
-          </div>
+            <div className="form-group">
+              <AddThemeLabel>Contact* : </AddThemeLabel>
+              <AddThemePopUpInput
+                name="contact"
+                value={values.contact}
+                type="number"
+                onChange={handleChange}
+                onBlur={handleBlur}
+              />
+              {errors.contact && touched.contact ? (
+                <ErrorText>{errors.contact}</ErrorText>
+              ) : null}
+            </div>
           </AddThemeInputWrapper>{" "}
           <ButtonWrapper>
             <AddStatePopUpSubmitButton onClick={handleSubmit}>

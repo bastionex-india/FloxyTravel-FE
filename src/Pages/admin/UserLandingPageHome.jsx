@@ -198,8 +198,7 @@ const UserLandingPageHome = () => {
 
             Swal.fire(
               `City ${themeId === null ? "Inserted" : "Updated"}`,
-              `Successfully ${
-                themeId === null ? "Inserted" : "Updated"
+              `Successfully ${themeId === null ? "Inserted" : "Updated"
               } city on homepage`,
               "success"
             );
@@ -273,9 +272,9 @@ const UserLandingPageHome = () => {
   return (
     <Root>
       <HeadingWrapper>
-      <IconButton  title="Back" onClick={() => navigate(-1)} size="small" sx={{ backgroundColor: "#e1e1e1",color:"#01575c",marginTop:"4px" }}>
-                        <ArrowBackIosNewOutlinedIcon />
-              </IconButton>
+        <IconButton title="Back" onClick={() => navigate(-1)} size="small" sx={{ backgroundColor: "#e1e1e1", color: "#01575c", marginTop: "4px" }}>
+          <ArrowBackIosNewOutlinedIcon />
+        </IconButton>
         <MainHeading>Manage Home Landing Page</MainHeading>
       </HeadingWrapper>
       <div
@@ -430,9 +429,8 @@ const UserLandingPageHome = () => {
         <div class="modal-dialog modal-dialog-centered modal-lg">
           <div class="modal-content">
             <div class="modal-header">
-              <h1 class="modal-title fs-5" id="exampleModalLabel">{`${
-                themeId === null ? "Add" : "Edit"
-              } Section`}</h1>
+              <h1 class="modal-title fs-5" id="exampleModalLabel">{`${themeId === null ? "Add" : "Edit"
+                } Section`}</h1>
               <button
                 type="button"
                 class="btn-close"

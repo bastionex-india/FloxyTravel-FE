@@ -441,7 +441,7 @@ const ManageAdmin = () => {
               ? row.image[0]
               : "1675936089112-teanest1.jpg";
             return (
-             <> <HotelCardsWrapper><HotelCard key={index}>
+              <> <HotelCardsWrapper><HotelCard key={index}>
                 <HotelImageWrapper>
                   <HotelImage
                     src={`https://uat-travel-api.floxypay.com/uploads/${imageSrc}`}
@@ -510,17 +510,17 @@ const ManageAdmin = () => {
                 </BootstrapDialog>
               </HotelCard>
               </HotelCardsWrapper>
-          </>
+              </>
             );
           })} <TablePagination
-            component="div"
-            count={response?.totalrecords}
-            page={page}
-            onPageChange={handleChangePage}
-            rowsPerPage={rowsPerPage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          /></>)
-         
+              component="div"
+              count={response?.totalrecords}
+              page={page}
+              onPageChange={handleChangePage}
+              rowsPerPage={rowsPerPage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+            /></>)
+
         }
       }
     }
@@ -531,8 +531,8 @@ const ManageAdmin = () => {
         <TextRoot>
           <Root>
             <HeadingWrapper>
-              <IconButton  title="Back" onClick={() => navigate(-1)} size="small" sx={{ backgroundColor: "#e1e1e1",color:"#01575c",marginTop:"4px" }}>
-                        <ArrowBackIosNewOutlinedIcon />
+              <IconButton title="Back" onClick={() => navigate(-1)} size="small" sx={{ backgroundColor: "#e1e1e1", color: "#01575c", marginTop: "4px" }}>
+                <ArrowBackIosNewOutlinedIcon />
               </IconButton>
               <Heading> Manage Hotels</Heading>
             </HeadingWrapper>
