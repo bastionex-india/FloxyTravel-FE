@@ -112,6 +112,7 @@ const ChatSupport = () => {
   const { authData, setAuthData } = useContext(AuthContext);
   const [activeChannel, setActiveChannel] = useState(null);
   const [allChannel, setAllChannel] = useState([]);
+  const [isChannelLoading, setIsChannelLoading] = useState(false);
   const [messages, setMessages] = useState([]);
   const [inputText, setInputText] = useState("");
   const [chatClient, setChatClient] = useState(null);
@@ -237,11 +238,14 @@ const ChatSupport = () => {
   };
   // Assuming you have a valid Twilio Chat client
   const getAllChannels = async (client) => {
+    setIsChannelLoading(true);
     try {
       const channels = await client.getSubscribedChannels();
       console.log("All channels:", channels);
       setAllChannel(channels.items);
+      setIsChannelLoading(false)
     } catch (error) {
+
       console.error("Error retrieving channels:", error);
     }
   };
@@ -335,7 +339,7 @@ const ChatSupport = () => {
     scrollToBottom();
     console.log({ activeChannel });
   };
-  
+
   useEffect(() => {
     console.log("channel changed...");
     if (activeChannel) {
@@ -450,86 +454,99 @@ const ChatSupport = () => {
               margin: "10px 0",
             }}
           >
-            {/* selected={true}  */}
-            {allChannel &&
-              allChannel.map((channel, index) => {
-                // console.log("channel.lastConsumedMessageIndex",channel.lastConsumedMessageIndex);
-                // console.log("channel.lastMessage.index",channel.lastMessage.index);
-                let unreadMessageCount = 0;
-                if (
-                  channel.lastConsumedMessageIndex &&
-                  channel.lastMessage != undefined &&
-                  channel.lastMessage.index != undefined &&
-                  channel.lastConsumedMessageIndex !== channel.lastMessage.index
-                ) {
-                  unreadMessageCount =
-                    channel.lastMessage.index -
-                    channel.lastConsumedMessageIndex;
-                }
-                //  channel.lastConsumedMessageIndex !== channel.lastMessage.index ? channel.lastMessage.index - channel.lastConsumedMessageIndex : 0
-                let userName = channel.channelState.friendlyName;
-                let number = index % (colorList.length - 1);
-                let shortName = getSortName(userName);
-
-
-                let lastMessageDateTime = '';
-                if (channel.lastMessage != undefined && channel.lastMessage.dateCreated != undefined) {
-                  lastMessageDateTime = moment(channel.lastMessage.dateCreated).format('hh:mm A')
-                  if (moment(channel.lastMessage.dateCreated).format('YYYY-MM-DD') < moment().format('YYYY-MM-DD')) {
-                    lastMessageDateTime = moment(channel.lastMessage.dateCreated).format("D MMM")
+            {
+              isChannelLoading ?
+                <>
+                  <Grid container>
+                  <Grid item xs={5} component="div">
+                  </Grid>
+                  <Grid item xs={2} component="div">
+                    <CircularLoader></CircularLoader>
+                  </Grid>
+                  <Grid item xs={5} component="div">
+                  </Grid>
+                  </Grid>
+                </>
+                :
+                allChannel &&
+                allChannel.map((channel, index) => {
+                  // console.log("channel.lastConsumedMessageIndex",channel.lastConsumedMessageIndex);
+                  // console.log("channel.lastMessage.index",channel.lastMessage.index);
+                  let unreadMessageCount = 0;
+                  if (
+                    channel.lastConsumedMessageIndex &&
+                    channel.lastMessage != undefined &&
+                    channel.lastMessage.index != undefined &&
+                    channel.lastConsumedMessageIndex !== channel.lastMessage.index
+                  ) {
+                    unreadMessageCount =
+                      channel.lastMessage.index -
+                      channel.lastConsumedMessageIndex;
                   }
-                }
+                  //  channel.lastConsumedMessageIndex !== channel.lastMessage.index ? channel.lastMessage.index - channel.lastConsumedMessageIndex : 0
+                  let userName = channel.channelState.friendlyName;
+                  let number = index % (colorList.length - 1);
+                  let shortName = getSortName(userName);
 
 
-                // console.log("channel", channel);
+                  let lastMessageDateTime = '';
+                  if (channel.lastMessage != undefined && channel.lastMessage.dateCreated != undefined) {
+                    lastMessageDateTime = moment(channel.lastMessage.dateCreated).format('hh:mm A')
+                    if (moment(channel.lastMessage.dateCreated).format('YYYY-MM-DD') < moment().format('YYYY-MM-DD')) {
+                      lastMessageDateTime = moment(channel.lastMessage.dateCreated).format("D MMM")
+                    }
+                  }
 
-                return (
-                  <>
-                    <ListItem
-                      key={index}
-                      sx={{
-                        backgroundColor:
-                          channel.sid == activeChannelSID
-                            ? "#F2F2F2"
-                            : "inherit",
-                        cursor: "pointer",
-                        ":hover": { background: "#F2F2F2" },
-                        borderRadius: "10px",
-                        margin: "2px 0",
-                      }}
-                      onClick={() => {
-                        selectChannel(channel);
-                      }}
-                    >
-                      <Avatar
+
+                  // console.log("channel", channel);
+
+                  return (
+                    <>
+                      <ListItem
+                        key={index}
                         sx={{
-                          bgcolor: colorList[number][500],
-                          width: "30px",
-                          height: "30px",
-                          fontSize: "14px",
+                          backgroundColor:
+                            channel.sid == activeChannelSID
+                              ? "#F2F2F2"
+                              : "inherit",
+                          cursor: "pointer",
+                          ":hover": { background: "#F2F2F2" },
+                          borderRadius: "10px",
+                          margin: "2px 0",
+                        }}
+                        onClick={() => {
+                          selectChannel(channel);
                         }}
                       >
-                        {shortName}
-                      </Avatar>
-                      &nbsp;
-                      <ListItemText
-                        primary={channel.channelState.friendlyName}
-                      />
-                      <Box component="span" sx={{ position: "absolute", fontSize: "10px", top: 0, right: 3 }}>
-                        {lastMessageDateTime}
-                      </Box>
-                      {/* <Box component="span" sx={{position:"absolute",color:"gray",fontSize:"12px",bottom: 0, right:3 }}>
+                        <Avatar
+                          sx={{
+                            bgcolor: colorList[number][500],
+                            width: "30px",
+                            height: "30px",
+                            fontSize: "14px",
+                          }}
+                        >
+                          {shortName}
+                        </Avatar>
+                        &nbsp;
+                        <ListItemText
+                          primary={channel.channelState.friendlyName}
+                        />
+                        <Box component="span" sx={{ position: "absolute", fontSize: "10px", top: 0, right: 3 }}>
+                          {lastMessageDateTime}
+                        </Box>
+                        {/* <Box component="span" sx={{position:"absolute",color:"gray",fontSize:"12px",bottom: 0, right:3 }}>
                         last  messages ......
                       </Box> */}
-                      <Badge
-                        badgeContent={unreadMessageCount}
-                        color="primary"
-                      ></Badge>
-                    </ListItem>
-                    <Divider />
-                  </>
-                );
-              })}
+                        <Badge
+                          badgeContent={unreadMessageCount}
+                          color="primary"
+                        ></Badge>
+                      </ListItem>
+                      <Divider />
+                    </>
+                  );
+                })}
           </List>
         </Drawer>
         <Box
@@ -572,7 +589,7 @@ const ChatSupport = () => {
                   </Paper>
                 </Grid>
                 <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }} >
-                <Grid container>
+                  <Grid container>
                     {
                       isMessageLoading ?
                         <>
@@ -646,7 +663,7 @@ const ChatSupport = () => {
                     marginBottom: "10px",
                     padding: "0px 20px 0px 20px",
                   }}>
-                    <Grid item xs={6} md={6} lg={6}>
+                  <Grid item xs={6} md={6} lg={6}>
                     <TextField
                       id="filled-multiline-flexible"
                       // label="Multiline"
@@ -668,8 +685,8 @@ const ChatSupport = () => {
                         },
                       }}
                     />
-                    </Grid>
                   </Grid>
+                </Grid>
               </Grid>
             </>
           )

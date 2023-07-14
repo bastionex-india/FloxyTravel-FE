@@ -1084,7 +1084,7 @@ const UserLandingPage = () => {
           ) :
             <BacgroundContainer>
               <Grid container spacing={2}>
-                <Grid item xs={5}>
+                <Grid item xs={5} >
                   <Item style={{ paddingTop: "35px" }}>
                     <h3>
                       {stateSelected
