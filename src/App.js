@@ -28,6 +28,7 @@ import VendorDetails from "./Pages/admin/VendorDetails/VendorDetails";
 import Payouts from "./Pages/Payouts";
 import VendorEditHotel from "./Pages/VendorEditHotel";
 import ChatSupport from "./Pages/admin/ChatSupport";
+import PayoutRequest from "./Pages/admin/PayoutRequest";
 
 const Root = styled.div``;
 const LeftWrapper = styled.div`
@@ -113,6 +114,7 @@ function App() {
                       path="vendordetails/:id"
                       element={<VendorDetails />}
                     />
+                    <Route path="/payoutRequests" element={<PayoutRequest />} />
                     <Route
                       path="chatSupport"
                       element={<ChatSupport/>}
