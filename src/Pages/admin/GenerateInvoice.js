@@ -31,7 +31,7 @@ import InputLabel from "@mui/material/InputLabel";
 import InputAdornment from "@mui/material/InputAdornment";
 import FormControl from "@mui/material/FormControl";
 import { useRef } from "react";
-import { format, parse, differenceInCalendarDays } from "date-fns";
+import { format, parse, differenceInCalendarDays } from 'date-fns';
 
 const Item = newStyled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -194,8 +194,10 @@ const GenerateInvoice = () => {
     // setTotalAmount(18)
     let url =
       authData.data.isadmin === "true"
-        ? `${environmentVariables.apiUrl}/admin/getPaymentdetail`
-        : `${environmentVariables.apiUrl}/vendor/getPaymentdetail`;
+        ?
+        `${environmentVariables.apiUrl}/admin/getPaymentdetail`
+        :
+        `${environmentVariables.apiUrl}/vendor/getPaymentdetail`;
     let requestBody = {
       bookingID: state._id,
     };
@@ -252,14 +254,14 @@ const GenerateInvoice = () => {
     setCheckOut(date);
   };
   const handleChangePerson = (e) => {
-    setNoofPerons(e.target.value);
-  };
+    setNoofPerons(e.target.value)
+  }
   const handleChangeChildren = (e) => {
-    setNoofChildren(e.target.value);
-  };
+    setNoofChildren(e.target.value)
+  }
   const handleChangeRooms = (e) => {
-    setNoofRooms(e.target.value);
-  };
+    setNoofRooms(e.target.value)
+  }
 
   // useEffect(() => {
   //   if (state) {
@@ -314,11 +316,12 @@ const GenerateInvoice = () => {
     if (!checkOut) {
       setCheckOut(new Date(state.checkOut));
     }
+
   }, [state]);
   // console.log(state.checkIn,checkIn,checkOut)
   useEffect(() => {
-    const parsedCheckInDate = moment(checkIn, "MM/DD/YYYY", true);
-    const parsedCheckOutDate = moment(checkOut, "MM/DD/YYYY", true);
+    const parsedCheckInDate = moment(checkIn, 'MM/DD/YYYY', true);
+    const parsedCheckOutDate = moment(checkOut, 'MM/DD/YYYY', true);
 
     if (parsedCheckInDate.isValid() && parsedCheckOutDate.isValid()) {
       const days = parsedCheckOutDate.diff(parsedCheckInDate, "days");
@@ -339,7 +342,7 @@ const GenerateInvoice = () => {
               onClick={() => navigate(-1)}
               class="fa-solid fa-chevron-left fa-2x"
             ></i>
-            {state.status === "pending" || state.status === "approved"? (
+            {state.status === "pending" || state.status === "approved" ? (
               <Heading>Generate Invoice</Heading>
             ) : (
               <Heading>View Invoice</Heading>
@@ -391,75 +394,75 @@ const GenerateInvoice = () => {
                 <DetailContainer>
                   <Detailkey> CheckIn Date </Detailkey>
                   <DetailValue>
-                  <div style={{ position: "relative" }}>
-                  <div
-                      onClick={() => {
-                        InputCheckIn.current.setOpen(true);
-                      }}
-                      style={{
-                        position: "absolute",
-                        top:"17%",
-                        right: "50%",
-                        zIndex: "99",
-                        fontSize: "20px",
-                        cursor: "pointer",
-                      }}
-                    >
-                      <i class="fas fa-calendar-alt"></i>
+                    <div style={{ position: "relative" }}>
+                      <div
+                        onClick={() => {
+                          InputCheckIn.current.setOpen(true);
+                        }}
+                        style={{
+                          position: "absolute",
+                          top: "17%",
+                          right: "50%",
+                          zIndex: "99",
+                          fontSize: "20px",
+                          cursor: "pointer",
+                        }}
+                      >
+                        <i class="fas fa-calendar-alt"></i>
+                      </div>
+                      <DatePickerStyled2
+                        className=""
+                        placeholderText=" CheckIn"
+                        selected={checkIn}
+                        onChange={handleCheckInChange}
+                        selectsStartcheckIn
+                        startDate={checkIn}
+                        endDate={checkOut}
+                        ref={InputCheckIn}
+                        minDate={checkIn}
+
+                      ></DatePickerStyled2>
+
                     </div>
-                    <DatePickerStyled2
-                      className=""
-                      placeholderText=" CheckIn"
-                      selected={checkIn}
-                      onChange={handleCheckInChange}
-                      selectsStartcheckIn
-                      startDate={checkIn}
-                      endDate={checkOut}
-                      ref={InputCheckIn}
-                      minDate={checkIn}
-                      
-                    ></DatePickerStyled2>
-                  
-                  </div>
                   </DetailValue>
                 </DetailContainer>
 
                 <DetailContainer>
                   <Detailkey> CheckOut Date  </Detailkey>
                   <DetailValue>
-                  <div style={{ position: "relative" }}>
-                  <div
-                      onClick={() => InputCheckOut.current.setOpen(true)}
-                      style={{
-                        top:"17%",
-                        right: "50%",
-                        zIndex: "999",
-                        fontSize: "20px",
-                        cursor: "pointer",
-                        position: "absolute",
-                      }}
-                    >
-                      <i class="fas fa-calendar-alt"></i>
+                    <div style={{ position: "relative" }}>
+                      <div
+                        onClick={() => InputCheckOut.current.setOpen(true)}
+                        style={{
+                          top: "17%",
+                          right: "50%",
+                          zIndex: "999",
+                          fontSize: "20px",
+                          cursor: "pointer",
+                          position: "absolute",
+                        }}
+                      >
+                        <i class="fas fa-calendar-alt"></i>
+                      </div>
+
+                      <DatePickerStyled2
+                        className=""
+                        placeholderText=" CheckOut"
+                        selected={checkOut}
+                        onChange={handleCheckOutChange}
+                        startDate={checkIn}
+                        endDate={checkOut}
+                        minDate={checkIn}
+                        ref={InputCheckOut}
+                      ></DatePickerStyled2>
+
                     </div>
-                 
-                    <DatePickerStyled2
-                      className=""
-                      placeholderText=" CheckOut"
-                      selected={checkOut}
-                      onChange={handleCheckOutChange}
-                      startDate={checkIn}
-                      endDate={checkOut}
-                      minDate={checkIn}
-                      ref={InputCheckOut}
-                    ></DatePickerStyled2>
-                 
-                  </div>
                   </DetailValue>
-                </DetailContainer>        
+                </DetailContainer>
 
                 <DetailContainer>
                   <Detailkey> Number of Persons </Detailkey>
-                  <DetailValue>  
+                  <DetailValue>
                     <FormControl
                       sx={{ width: "80px" }}
                       variant="standard"
@@ -474,13 +477,13 @@ const GenerateInvoice = () => {
                         onKeyDown={handleKeyPress}
                       />
                     </FormControl>
-                 </DetailValue>
+                  </DetailValue>
                 </DetailContainer>
-                      
+
                 <DetailContainer>
                   <Detailkey> Number of Children </Detailkey>
                   <DetailValue>
-                
+
                     <FormControl
                       sx={{ width: "80px" }}
                       variant="standard"
@@ -495,21 +498,21 @@ const GenerateInvoice = () => {
                         onKeyDown={handleKeyPress}
                       />
                     </FormControl>
-                 
-                    </DetailValue>
+
+                  </DetailValue>
                 </DetailContainer>
 
                 <DetailContainer>
                   <Detailkey> Number of Rooms </Detailkey>
                   <DetailValue>
-                 
+
                     <FormControl
                       sx={{ width: "80px" }}
                       variant="standard"
                       className="pull-right"
                     >
                       <Input
-                   
+
                         type="number"
                         placeholder="Total rooms*"
                         name="noofrooms"
@@ -518,27 +521,27 @@ const GenerateInvoice = () => {
                         onKeyDown={handleKeyPress}
                       />
                     </FormControl>
-                 
+
 
                   </DetailValue>
                 </DetailContainer>
 
 
-                <DetailContainer 
-                style={{padding:"6px 0"}}
+                <DetailContainer
+                  style={{ padding: "6px 0" }}
                 >
                   <Detailkey> Days </Detailkey>
                   <DetailValue
-                     style={{marginRight:"15px"}}
+                    style={{ marginRight: "15px" }}
                   >{numOfDays}</DetailValue>
                 </DetailContainer>
 
                 <DetailContainer
-                 style={{padding:"10px 0"}}
+                  style={{ padding: "10px 0" }}
                 >
                   <Detailkey> Amount </Detailkey>
-                  <DetailValue 
-                   style={{marginRight:"15px"}}
+                  <DetailValue
+                    style={{ marginRight: "15px" }}
                   >
 
                     {state.status === "pending" ? (
@@ -564,21 +567,21 @@ const GenerateInvoice = () => {
                     ) : (
                       amount
                     )}
-                
+
 
                   </DetailValue>
                 </DetailContainer>
 
                 <DetailContainer
-                 style={{padding:"8px 0"}}
+                  style={{ padding: "8px 0" }}
                 >
                   <Detailkey>
                     Discount Amount
                   </Detailkey>
                   <DetailValue
-                   style={{marginRight:"15px"}}
+                    style={{ marginRight: "15px" }}
                   >
-                
+
                     {state.status === "pending" ? (
                       <FormControl
                         variant="standard"
@@ -603,223 +606,214 @@ const GenerateInvoice = () => {
                     ) : (
                       discount
                     )}
-               
+
                   </DetailValue>
                 </DetailContainer>
-              
+
 
               </BilingDetailsContainer>
+              <DatePicker
+                className=""
+                placeholderText=" CheckIn"
+                selected={checkIn}
+                onChange={handleCheckInChange}
+                selectsStartcheckIn
+                startDate={checkIn}
+                endDate={checkOut}
+                ref={InputCheckIn}
+                minDate={checkIn}
+              ></DatePicker>
+              <div
+                onClick={() => {
+                  InputCheckIn.current.setOpen(true);
+                }}
+                style={{
+                  position: "absolute",
 
+                  top: "13%",
+                  right: "3.5%",
+                  fontSize: "20px",
+                  cursor: "pointer",
+                }}
+              >
+                <i class="fas fa-calendar-alt"></i>
+              </div>
+              <div style={{ position: "relative" }}>
+                <DatePicker
+                  className=""
+                  placeholderText=" CheckOut"
+                  selected={checkOut}
+                  onChange={handleCheckOutChange}
+                  startDate={checkIn}
+                  endDate={checkOut}
+                  minDate={checkIn}
+                  ref={InputCheckOut}
+                //   width='100px'
+                // styled={{ width: "98%",backgroundColor:'red',color:'green'}}
+                ></DatePicker>
+                <div
+                  onClick={() => InputCheckOut.current.setOpen(true)}
+                  style={{
+                    top: "13%",
+                    right: "3.5%",
+                    fontSize: "20px",
+                    cursor: "pointer",
+                    position: "absolute",
+                  }}
+                >
+                  <i class="fas fa-calendar-alt"></i>
+                </div>
+              </div>
 
+              <p>
+                <FormControl
+                  sx={{ width: "80px" }}
+                  variant="standard"
+                  className="pull-right"
+                >
+                  <Input
+                    type="number"
+                    placeholder="Total persons*"
+                    name="noofpersons"
+                    value={noofpersons}
+                    onChange={handleChangePerson}
+                  />
+                </FormControl>
+              </p>
 
-              {/* <Grid container>
-                <Grid xs={6}>
-                  <p>Payment method</p>
-                  <p>CheckIn Date</p>
-                  <p>CheckOut Date</p>
-                  <p>Number of Persons</p>
-                  <p>Number of Children</p>
-                  <p>Number of Rooms</p>
-                  <p>Days</p>
-                  <p>Amount</p>
-                  <p>Discount Amount</p>
-                </Grid>
-                <Grid xs={6} className="pull-right">
-                 
-                  <p>{payMethod}</p>
-                  <div style={{ position: "relative" }}>
-                    <DatePickerStyled2
-                      className=""
-                      placeholderText=" CheckIn"
-                      selected={checkIn}
-                      onChange={handleCheckInChange}
-                      selectsStartcheckIn
-                      startDate={checkIn}
-                      endDate={checkOut}
-                      ref={InputCheckIn}
-                      minDate={checkIn}
-                    ></DatePickerStyled2>
-                    <div
-                      onClick={() => {
-                        InputCheckIn.current.setOpen(true);
-                      }}
-                      style={{
-                        position: "absolute",
+              <p>
+                <FormControl
+                  sx={{ width: "80px" }}
+                  variant="standard"
+                  className="pull-right"
+                >
+                  <Input
+                    type="number"
+                    placeholder="Total Children*"
+                    name="noofchildren"
+                    value={noofchildren}
+                    onChange={handleChangeChildren}
+                  />
+                </FormControl>
+              </p>
 
-                        top: "13%",
-                        right: "3.5%",
-                        fontSize: "20px",
-                        cursor: "pointer",
-                      }}
-                    >
-                      <i class="fas fa-calendar-alt"></i>
-                    </div>
-                  </div>
-                  <div style={{ position: "relative" }}>
-                    <DatePickerStyled2
-                      className=""
-                      placeholderText=" CheckOut"
-                      selected={checkOut}
-                      onChange={handleCheckOutChange}
-                      startDate={checkIn}
-                      endDate={checkOut}
-                      minDate={checkIn}
-                      ref={InputCheckOut}
-                    ></DatePickerStyled2>
-                    <div
-                      onClick={() => InputCheckOut.current.setOpen(true)}
-                      style={{
-                        top: "13%",
-                        right: "3.5%",
-                        fontSize: "20px",
-                        cursor: "pointer",
-                        position: "absolute",
-                      }}
-                    >
-                      <i class="fas fa-calendar-alt"></i>
-                    </div>
-                  </div>
-
-                  <p>
-                    <FormControl
-                      sx={{ width: "80px" }}
-                      variant="standard"
-                      className="pull-right"
-                    >
-                      <Input
-                        type="number"
-                        placeholder="Total persons*"
-                        name="noofpersons"
-                        value={noofpersons}
-                        onChange={handleChangePerson}
-                      />
-                    </FormControl>
-                  </p>
-                  
-                  <p>
-                    <FormControl
-                      sx={{ width: "80px" }}
-                      variant="standard"
-                      className="pull-right"
-                    >
-                      <Input
-                        type="number"
-                        placeholder="Total Children*"
-                        name="noofchildren"
-                        value={noofchildren}
-                        onChange={handleChangeChildren}
-                      />
-                    </FormControl>
-                  </p>
-
-                  <p>
-                    <FormControl
-                      sx={{ width: "80px" }}
-                      variant="standard"
-                      className="pull-right"
-                    >
-                      <Input
-                        type="number"
-                        placeholder="Total rooms*"
-                        name="noofrooms"
-                        value={noofrooms}
-                        onChange={handleChangeRooms}
-                      />
-                    </FormControl>
-                  </p>
-                  <p>{numOfDays}</p>
-                  <p>
-                    {state.status === "pending" || state.status === "approved" ? (
-                      <FormControl
-                        variant="standard"
-                        className="pull-right"
-                      >
-                        <Input
-                          id="standard-adornment-amount"
-                          startAdornment={
-                            <InputAdornment position="start">
-                              INR
-                            </InputAdornment>
-                          }
-                          size="small"
-                          onChange={(e) => setHotelPrice(e.target.value)}
-                        />
-                      </FormControl>
-                    ) : (
-                      amount
-                    )}
-                  </p>
-                  <p>
-                    {state.status === "pending" || state.status === "approved"? (
-                      <FormControl
-                        variant="standard"
-                        className="pull-right"
-                      >
-                        <Input
-                          id="standard-adornment-amount"
-                          startAdornment={
-                            <InputAdornment position="start">
-                              INR
-                            </InputAdornment>
-                          }
-                          size="small"
-                          onChange={(e) => setDiscountAmount(e.target.value)}
-                        />
-                      </FormControl>
-                    ) : (
-                      discount
-                    )}
-                  </p>
-                </Grid>
-              </Grid> */}
-              <hr />
-              <Grid container>
-                <Grid xs={6}>
-                  <p style={{fontSize: 'large',fontWeight: 'bolder'}}>
-                    <b>Total Amount</b>
-                  </p>
-                  {/* <p>
-                    <b>Paid</b>
-                  </p>
-                  <p>
-                    <b>Due</b>
-                  </p> */}
-                </Grid>
-                <Grid xs={6} className="pull-right">
-                  <p style={{fontSize: 'x-large',fontWeight: 'bolder',color: 'green'}}>
-                    INR{" "}
-                    {state.status === "pending" || state.status === "approved"
-                      ? Number(hotelPrice) - Number(discountAmount)
-                      : totalAmount}
-                  </p>
-                  {/* <p>INR {" "}{state.status === "pending"  || state.status === "approved"? "0.00" : totalAmount}</p>
+              <p>
+                <FormControl
+                  sx={{ width: "80px" }}
+                  variant="standard"
+                  className="pull-right"
+                >
+                  <Input
+                    type="number"
+                    placeholder="Total rooms*"
+                    name="noofrooms"
+                    value={noofrooms}
+                    onChange={handleChangeRooms}
+                  />
+                </FormControl>
+              </p>
+              <p>
+                <FormControl
+                  sx={{ width: "80px" }}
+                  variant="standard"
+                  className="pull-right"
+                >
+                  <Input
+                    type="number"
+                    placeholder="Total rooms*"
+                    name="noofrooms"
+                    value={noofrooms}
+                    onChange={handleChangeRooms}
+                  />
+                </FormControl>
+              </p>
+              <p>{numOfDays}</p>
+              <p>
+                {state.status === "pending" || state.status === "approved" ? (
+                  <FormControl
+                    variant="standard"
+                    className="pull-right"
+                  >
+                    {/* <InputLabel>Discount Amount</InputLabel> */}
+                    <Input
+                      id="standard-adornment-amount"
+                      startAdornment={
+                        <InputAdornment position="start">
+                          INR
+                        </InputAdornment>
+                      }
+                      size="small"
+                      onChange={(e) => setHotelPrice(e.target.value)}
+                    />
+                  </FormControl>
+                ) : (
+                  amount
+                )}
+              </p>
+              <p>
+                {state.status === "pending" || state.status === "approved" ? (
+                  <FormControl
+                    variant="standard"
+                    className="pull-right"
+                  >
+                    {/* <InputLabel >Discount Amount</InputLabel> */}
+                    <Input
+                      id="standard-adornment-amount"
+                      startAdornment={
+                        <InputAdornment position="start">
+                          INR
+                        </InputAdornment>
+                      }
+                      size="small"
+                      onChange={(e) => setDiscountAmount(e.target.value)}
+                    />
+                  </FormControl>
+                ) : (
+                  discount
+                )}
+              </p>
+              </Item>
+          </Grid>
+        </Grid>
+        <hr />
+        <Grid container>
+          <Grid xs={6}>
+            <p style={{ fontSize: 'large', fontWeight: 'bolder' }}>
+              <b>Total Amount</b>
+            </p>
+          </Grid>
+          <Grid xs={6} className="pull-right">
+            <p style={{ fontSize: 'x-large', fontWeight: 'bolder', color: 'green' }}>
+              INR{" "}
+              {state.status === "pending" || state.status === "approved"
+                ? Number(hotelPrice) - Number(discountAmount)
+                : totalAmount}
+            </p>
+            {/* <p>INR {" "}{state.status === "pending"  || state.status === "approved"? "0.00" : totalAmount}</p>
                   <p>
                     INR{" "}
                     {state.status === "pending" || state.status === "approved"
                       ? Number(hotelPrice) - Number(discountAmount)
                       : "0.00"}
                   </p> */}
-                </Grid>
-              </Grid>
-              {state.status === "pending" || state.status === "approved" ? (
-                <Grid container style={{margin:'30px 0px 30px'}}>
-                  <Grid xs={8}></Grid>
-                  <Grid xs={4} className="pull-right">
-                    <Button
-                      disabled={hotelPrice.length ? false : true}
-                      variant="contained"
-                      onClick={sendInvoiceHandler}
-                      style={{padding: '12px 40px'}}
-                    >
-                      Send Invoice
-                    </Button>
-                  </Grid>
-                </Grid>
-              ) : null}
-            </Item>
           </Grid>
         </Grid>
-      </Container>
+        {state.status === "pending" || state.status === "approved" ? (
+          <Grid container style={{ margin: '30px 0px 30px' }}>
+            <Grid xs={8}></Grid>
+            <Grid xs={4} className="pull-right">
+              <Button
+                disabled={hotelPrice.length ? false : true}
+                variant="contained"
+                onClick={sendInvoiceHandler}
+                style={{ padding: '12px 40px' }}
+              >
+                Send Invoice
+              </Button>
+            </Grid>
+          </Grid>
+        ) : null}
+      </Container >
     </>
   );
 };

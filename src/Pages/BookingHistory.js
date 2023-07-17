@@ -16,6 +16,8 @@ import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
 import SearchIcon from ".././Images/SearchIconNavbar.png";
 import Typography from "@mui/material/Typography";
+import IconButton from "@mui/material/IconButton";
+import ArrowBackIosNewOutlinedIcon from '@mui/icons-material/ArrowBackIosNewOutlined';
 
 import {
   Button,
@@ -52,6 +54,7 @@ const Root = styled.div`
 
 const Heading = styled.div`
   font-size: 1.75rem;
+  padding-left: 40px; 
   @media (max-width: 768px) {
     display: none;
   }
@@ -173,17 +176,13 @@ const FromDateInput = styled.div`
   }
 `;
 
-const DatePickerStyled = styled(DatePicker)`
-height: 50px;
-    padding: 0px 10px;
-    border-radius: 5px;
-    outline: none;
-    border: none;
-    box-shadow: rgba(50,50,93,0.25) 0px 6px 12px -2px, rgba(0,0,0,0.3) 0px 0px 7px -3px !important;
-    background-color: #EFEFEF;
-    margin: 0 10px;
+const HeadingWrapper = styled.div`
+  position: relative;
+  // display: flex;
+  display: -webkit-box;
+  // justify-content: center;
+  // align-items: center;
 `;
-
 
 const BookingHistory = () => {
   const { authData, setAuthData } = useContext(AuthContext);
@@ -355,16 +354,12 @@ const BookingHistory = () => {
       <TextMainWrapper>
         <TextRoot>
           <Root>
-            <div style={{ display: "flex", alignItems: "center" }}>
-              {" "}
-              <i
-                style={{ cursor: "pointer", marginRight: "50px" }}
-                onClick={() => navigate(-1)}
-                class="fa-solid fa-chevron-left fa-2x"
-              ></i>
-              <Heading> Booking History</Heading>
-            </div>
-
+            <HeadingWrapper>
+              <IconButton title="Back" onClick={() => navigate(-1)} size="small" sx={{ backgroundColor: "#e1e1e1", color: "#01575c", marginTop: "4px" }}>
+                <ArrowBackIosNewOutlinedIcon />
+              </IconButton>
+              <Heading>Booking History</Heading>
+            </HeadingWrapper>
             <TextWrapper>
               {/* {
                 select!=="upcoming" && (
@@ -419,8 +414,8 @@ const BookingHistory = () => {
                   // onKeyDown={(e) => KeyDown(e)}
                   autoComplete="false"
                 /> */}
-              <TextSelectField 
-              style={{width:"20%"}}
+              <TextSelectField
+                style={{ width: "20%" }}
               >
                 <Select
                   onChange={(e) => {
@@ -428,7 +423,7 @@ const BookingHistory = () => {
                   }}
                   value={searchByName}
                   required
-                  style={{width:"100%"}}
+                  style={{ width: "100%" }}
                 >
                   <option value="" hidden>
                     Select Hotel
@@ -478,10 +473,10 @@ const BookingHistory = () => {
                 </FilterComponent>
               </FilterWrapper> */}
 
-              <div style={{display:'flex'}}>
+              <div style={{ display: 'flex' }}>
                 <DatePickerContainer>
-                  <div onClick={handleToggleDatePicker} style={{position:'relative'}}>
-                    <DatePickerStyled
+                  <div onClick={handleToggleDatePicker} style={{ position: 'relative' }}>
+                    <DatePicker
                       open={isDatePickerOpen}
                       onClickOutside={() => setIsDatePickerOpen(false)}
                       onFocus={() => setIsDatePickerOpen(true)}
@@ -493,21 +488,21 @@ const BookingHistory = () => {
                       startDate={fromDate}
                       endDate={toDate}
                       ref={InputStartsDate}
-                     
-                    ></DatePickerStyled>
+
+                    ></DatePicker>
                     <FromDateInput onClick={refHandle}>
                       <i class="fas fa-calendar-alt"></i>
                     </FromDateInput>
                   </div>
                 </DatePickerContainer>
                 <DatePickerContainer>
-                <div onClick={handleToggleDatePicker2} style={{position:'relative'}}>
-                    <DatePickerStyled
+                  <div onClick={handleToggleDatePicker2} style={{ position: 'relative' }}>
+                    <DatePicker
                       open={isDatePickerOpen1}
                       onClickOutside={() => setIsDatePickerOpen1(false)}
                       onFocus={() => setIsDatePickerOpen1(true)}
                       // minDate={checkIn}
-                      
+
                       placeholderText="End Date"
                       selected={toDate}
                       onChange={(date) => setToDate(date)}
@@ -518,15 +513,15 @@ const BookingHistory = () => {
                       minDate={fromDate}
                       ref={InputEndDate}
                       style={{ padding: "10px" }}
-                    ></DatePickerStyled>
+                    ></DatePicker>
                     <FromDateInput onClick={refHandle1}>
                       <i class="fas fa-calendar-alt"></i>
                     </FromDateInput>
                   </div>
                 </DatePickerContainer>
-                </div>
-              <TextSelectField 
-               style={{width:"20%"}}
+              </div>
+              <TextSelectField
+                style={{ width: "20%" }}
               >
                 <Select
                   onChange={(e) => {
@@ -618,7 +613,7 @@ const BookingHistory = () => {
                   ) : (
                     <TableRow>
                       <TableCell colSpan={7}>
-                        <div style={{ display: "flex", justifyContent: "center", alignItems: "center"}}>
+                        <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
                           <Typography variant="body1">Data not found</Typography>
                         </div>
                       </TableCell>

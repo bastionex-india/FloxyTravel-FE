@@ -33,9 +33,8 @@ const AddThemePopUpContainer = styled.div`
   align-items: center;
 `;
 const AddThemeLabel = styled.div`
-  color: #969696;
-  margin-left: 30px;
-  padding-bottom: 5px;
+  color: #999;
+  margin-left: 20px;
 `;
 const RadioWrapper = styled.div`
   display: flex;
@@ -80,7 +79,22 @@ const AddStatePopUpSubmitButton = styled.div`
   align-items: center;
   padding: 0px 20px;
   border-radius: 5px;
-  font-weight: 700;
+  font-weight: 400;
+  margin-bottom: 20px;
+  margin-left: 20px;
+`;
+const CancelButton = styled.div`
+background : #cccc; 
+cursor: pointer;
+  height: 40px;
+  font-size: 14px;
+  color: #000000e0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0px 20px;
+  border-radius: 5px;
+  font-weight: 400;
   margin-bottom: 20px;
   margin-left: 20px;
 `;
@@ -88,15 +102,20 @@ const AddThemeInputWrapper = styled.div`
   display: flex;
   flex-direction:column;
   position: relative;
-  align-items: flex-start;
-  margin: 10px 0;
-  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  margin: 20px 0;
+  padding:0px 20px 0px 20px;
+  /* width: 80%; */
 `;
+
 const AddThemePopUpInput = styled.input`
-  border-radius: 5px;
-  width: 80%;
-  padding: 10px;
-  margin: 0 30px;
+  padding: 4px;
+  border-radius: 2px;
+  border:1px solid #cccc;
+  // border: none;
+  width: 500px;
+  margin: 0 20px;
 `;
 const EditVendor = ({ open, setOpen, vendorDetails }) => {
   const [name, setName] = useState("");
@@ -119,44 +138,44 @@ const EditVendor = ({ open, setOpen, vendorDetails }) => {
       initialValues,
       validationSchema: VendorEditSchema,
       onSubmit: async (values, action) => {
-            axios({
-              method: "put",
-              url: `${environmentVariables.apiUrl}/admin/updatevendor/${vendorDetails.vendorId}`,
-              headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
-              },
-              data: {
-                name: values.name,
-                email: values.email,
-                mobile: values.contact,
-              },
-              headers: { _token: authData.data.token },
-            })
-              .then((response) => {
-                console.log(response.data,"00000000000001111111111")
-                // setUpdatedHotelData(response.data.message)
-                // setResponseData(response.data.data);
-                Swal.fire({
-                  title: "Success",
-                  text: "Vendor updated successfully",
-                  timer: 2000,
-                });
-                action.resetForm();
-                // getAllListData();
-                // toast(response.data.message);
-                setOpen(false);
-              })
-              .catch((error) => {
-                console.log("///////////////", error);
-                // setError('Details are not valid');
-                Swal.fire({
-                  title: "Error",
-                  text: error,
-                  timer: 2000,
-                });
-                setOpen(false);
-              });
+        axios({
+          method: "put",
+          url: `${environmentVariables.apiUrl}/admin/updatevendor/${vendorDetails.vendorId}`,
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          data: {
+            name: values.name,
+            email: values.email,
+            mobile: values.contact,
+          },
+          headers: { _token: authData.data.token },
+        })
+          .then((response) => {
+            console.log(response.data, "00000000000001111111111")
+            // setUpdatedHotelData(response.data.message)
+            // setResponseData(response.data.data);
+            Swal.fire({
+              title: "Success",
+              text: "Vendor updated successfully",
+              timer: 2000,
+            });
+            action.resetForm();
+            // getAllListData();
+            // toast(response.data.message);
+            setOpen(false);
+          })
+          .catch((error) => {
+            console.log("///////////////", error);
+            // setError('Details are not valid');
+            Swal.fire({
+              title: "Error",
+              text: error,
+              timer: 2000,
+            });
+            setOpen(false);
+          });
         //   } else {
         //     axios({
         //       method: "post",
@@ -203,9 +222,9 @@ const EditVendor = ({ open, setOpen, vendorDetails }) => {
     });
   return (
     <>
-    
+
       <AddThemePopUpContainer>
-      
+
         <AddThemePopUp>
           <div
             style={{
@@ -224,49 +243,55 @@ const EditVendor = ({ open, setOpen, vendorDetails }) => {
           />
           <div style={{display:'flex',flexDirection:'column',width:'450px',alignItems: 'center'}}>
           <AddThemeInputWrapper>
-            <AddThemeLabel>Full Name*</AddThemeLabel>
-            <AddThemePopUpInput
-              name="name"
-              value={values.name}
-              onChange={handleChange}
-              onBlur={handleBlur}
-            />
-            {errors.name && touched.name ? (
-              <ErrorText>{errors.name}</ErrorText>
-             ) : null}
+            <div className="form-group">
+              <AddThemeLabel>Name* : </AddThemeLabel>
+              <AddThemePopUpInput
+                name="name"
+                value={values.name}
+                onChange={handleChange}
+                onBlur={handleBlur}
+              />
+              {errors.name && touched.name ? (
+                <ErrorText>{errors.name}</ErrorText>
+              ) : null}
+            </div>
           </AddThemeInputWrapper>
           <AddThemeInputWrapper>
-            <AddThemeLabel>Email*</AddThemeLabel>
-            <AddThemePopUpInput
-              name="email"
-              value={values.email}
-              onChange={handleChange}
-              onBlur={handleBlur}
-            />
-            {errors.email && touched.email ? (
-              <ErrorText>{errors.email}</ErrorText>
-             ) : null}
+            <div className="form-group">
+              <AddThemeLabel>Email* : </AddThemeLabel>
+              <AddThemePopUpInput
+                name="email"
+                value={values.email}
+                onChange={handleChange}
+                onBlur={handleBlur}
+              />
+              {errors.email && touched.email ? (
+                <ErrorText>{errors.email}</ErrorText>
+              ) : null}
+            </div>
           </AddThemeInputWrapper>
           <AddThemeInputWrapper>
-            <AddThemeLabel>Contact*</AddThemeLabel>
-            <AddThemePopUpInput
-              name="contact"
-              value={values.contact}
-              type="number"
-              onChange={handleChange}
-              onBlur={handleBlur}
-            />
-            {errors.contact && touched.contact ? (
-              <ErrorText>{errors.contact}</ErrorText>
-             ) : null}
+            <div className="form-group">
+              <AddThemeLabel>Contact* : </AddThemeLabel>
+              <AddThemePopUpInput
+                name="contact"
+                value={values.contact}
+                type="number"
+                onChange={handleChange}
+                onBlur={handleBlur}
+              />
+              {errors.contact && touched.contact ? (
+                <ErrorText>{errors.contact}</ErrorText>
+              ) : null}
+            </div>
           </AddThemeInputWrapper>{" "}
           <ButtonWrapper>
             <AddStatePopUpSubmitButton onClick={handleSubmit}>
               Submit
             </AddStatePopUpSubmitButton>
-            <AddStatePopUpSubmitButton onClick={handleClose}>
+            <CancelButton onClick={handleClose}>
               Cancel
-            </AddStatePopUpSubmitButton>
+            </CancelButton>
           </ButtonWrapper>
           </div>
         </AddThemePopUp>

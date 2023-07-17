@@ -24,11 +24,15 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import "react-datepicker/dist/react-datepicker.css";
 import { format, parse } from 'date-fns';
+import IconButton from "@mui/material/IconButton";
+import ArrowBackIosNewOutlinedIcon from '@mui/icons-material/ArrowBackIosNewOutlined';
+
 const HeadingWrapper = styled.div`
   position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  display: -webkit-box;
+  // display: flex;
+  // justify-content: center;
+  // align-items: center;
 `;
 const TextRoot = styled.div`
   // background-color: #9f94942b;
@@ -49,6 +53,7 @@ const Root = styled.div`
 
 const Heading = styled.div`
   font-size: 1.75rem;
+  padding-left: 40px;
   @media (max-width: 768px) {
     display: none;
   }
@@ -170,6 +175,7 @@ const BookingHistoryofAdmin = () => {
   const { authData, setAuthData } = useContext(AuthContext);
   const [data, setData] = useState([]);
   const navigation = useNavigate();
+  const navigate = useNavigate();
   const [fromDate, setFromDate] = useState(null);
   const [toDate, setToDate] = useState(null);
   const [search, setSearch] = useState();
@@ -356,11 +362,9 @@ const BookingHistoryofAdmin = () => {
         <TextRoot>
           <Root>
             <HeadingWrapper>
-              <i
-                style={{ position: "absolute", left: "0",cursor: "pointer" }}
-                onClick={() => navigation(-1)}
-                class="fa-solid fa-chevron-left fa-2x"
-              ></i>
+            <IconButton  title="Back" onClick={() => navigate(-1)} size="small" sx={{ backgroundColor: "#e1e1e1",color:"#01575c",marginTop:"4px" }}>
+                        <ArrowBackIosNewOutlinedIcon />
+              </IconButton>
               <Heading> Booking History</Heading>
             </HeadingWrapper>
             <SearchContainerWrapper>
@@ -427,8 +431,6 @@ const BookingHistoryofAdmin = () => {
                       onClickOutside={() => setIsDatePickerOpen(false)}
                       onFocus={() => setIsDatePickerOpen(true)}
                       // minDate={checkIn}
-                      
-
                       placeholderText="Start Date"
                       selected={fromDate}
                       onChange={handleStartDateChange}

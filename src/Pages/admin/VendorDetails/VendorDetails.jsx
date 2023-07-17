@@ -73,7 +73,7 @@ const VendorDetails = () => {
         data={vendorData}
       /> 
       </div> 
-      <LeaveRecord vendorId={vendorId} />
+      <LeaveRecord vendorId={vendorId || window.location.href.split("/").pop()} />
     </Root>
   );
 };
