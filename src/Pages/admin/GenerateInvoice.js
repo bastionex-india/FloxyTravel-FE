@@ -286,6 +286,27 @@ const GenerateInvoice = () => {
   //   }
   // }, [checkIn, checkOut]);
 
+  const handleKeyPress = (event) => {
+    const keyCode = event.keyCode || event.which;
+    const keyValue = String.fromCharCode(keyCode);
+    const isCtrlPressed = event.ctrlKey || event.metaKey; // Check if Ctrl key is pressed
+
+    if (
+      keyCode === 8 || // Allow backspace key (key code 8)
+      keyCode === 46 ||
+      (keyCode >= 48 && keyCode <= 57) || // Allow numeric keys (0-9)
+      (isCtrlPressed && keyValue === "r") || // Allow Ctrl+R combination
+      keyCode === 37 || // Allow left arrow key (key code 37)
+      keyCode === 39 // Allow right arrow key (key code 39)
+    ) {
+      // Check for plus (+) and minus (-) symbols
+      if (keyValue === "+" || keyValue === "-") {
+        event.preventDefault();
+      }
+    } else {
+      event.preventDefault();
+    }
+  };
   useEffect(() => {
     if (!checkIn) {
       setCheckIn(new Date(state.checkIn));
@@ -450,6 +471,7 @@ const GenerateInvoice = () => {
                         name="noofpersons"
                         value={noofpersons}
                         onChange={handleChangePerson}
+                        onKeyDown={handleKeyPress}
                       />
                     </FormControl>
                  </DetailValue>
@@ -470,6 +492,7 @@ const GenerateInvoice = () => {
                         name="noofchildren"
                         value={noofchildren}
                         onChange={handleChangeChildren}
+                        onKeyDown={handleKeyPress}
                       />
                     </FormControl>
                  
@@ -492,6 +515,7 @@ const GenerateInvoice = () => {
                         name="noofrooms"
                         value={noofrooms}
                         onChange={handleChangeRooms}
+                        onKeyDown={handleKeyPress}
                       />
                     </FormControl>
                  
@@ -524,6 +548,8 @@ const GenerateInvoice = () => {
                         className="pull-right"
                       >
                         <Input
+                        type="number"
+                        onKeyDown={handleKeyPress}
                           id="standard-adornment-amount"
                           startAdornment={
                             <InputAdornment position="start">
@@ -532,6 +558,7 @@ const GenerateInvoice = () => {
                           }
                           size="small"
                           onChange={(e) => setHotelPrice(e.target.value)}
+                          value={hotelPrice}
                         />
                       </FormControl>
                     ) : (
@@ -558,6 +585,8 @@ const GenerateInvoice = () => {
                         className="pull-right"
                       >
                         <Input
+                         type="number"
+                         onKeyDown={handleKeyPress}
                         style={{width:"80px"}}
                           id="standard-adornment-amount"
                           startAdornment={
@@ -566,7 +595,9 @@ const GenerateInvoice = () => {
                             </InputAdornment>
                           }
                           size="small"
+                          value={discountAmount}
                           onChange={(e) => setDiscountAmount(e.target.value)}
+
                         />
                       </FormControl>
                     ) : (
