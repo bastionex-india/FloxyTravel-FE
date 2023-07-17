@@ -401,8 +401,8 @@ const GenerateInvoice = () => {
                         }}
                         style={{
                           position: "absolute",
-                          top: "17%",
-                          right: "50%",
+                          top: "20%",
+                          right: "54%",
                           zIndex: "99",
                           fontSize: "20px",
                           cursor: "pointer",
@@ -434,9 +434,9 @@ const GenerateInvoice = () => {
                       <div
                         onClick={() => InputCheckOut.current.setOpen(true)}
                         style={{
-                          top: "17%",
-                          right: "50%",
-                          zIndex: "999",
+                          top: "20%",
+                          right: "54%",
+                          zIndex: "99",
                           fontSize: "20px",
                           cursor: "pointer",
                           position: "absolute",
@@ -612,166 +612,7 @@ const GenerateInvoice = () => {
 
 
               </BilingDetailsContainer>
-              <DatePicker
-                className=""
-                placeholderText=" CheckIn"
-                selected={checkIn}
-                onChange={handleCheckInChange}
-                selectsStartcheckIn
-                startDate={checkIn}
-                endDate={checkOut}
-                ref={InputCheckIn}
-                minDate={checkIn}
-              ></DatePicker>
-              <div
-                onClick={() => {
-                  InputCheckIn.current.setOpen(true);
-                }}
-                style={{
-                  position: "absolute",
-
-                  top: "13%",
-                  right: "3.5%",
-                  fontSize: "20px",
-                  cursor: "pointer",
-                }}
-              >
-                <i class="fas fa-calendar-alt"></i>
-              </div>
-              <div style={{ position: "relative" }}>
-                <DatePicker
-                  className=""
-                  placeholderText=" CheckOut"
-                  selected={checkOut}
-                  onChange={handleCheckOutChange}
-                  startDate={checkIn}
-                  endDate={checkOut}
-                  minDate={checkIn}
-                  ref={InputCheckOut}
-                //   width='100px'
-                // styled={{ width: "98%",backgroundColor:'red',color:'green'}}
-                ></DatePicker>
-                <div
-                  onClick={() => InputCheckOut.current.setOpen(true)}
-                  style={{
-                    top: "13%",
-                    right: "3.5%",
-                    fontSize: "20px",
-                    cursor: "pointer",
-                    position: "absolute",
-                  }}
-                >
-                  <i class="fas fa-calendar-alt"></i>
-                </div>
-              </div>
-
-              <p>
-                <FormControl
-                  sx={{ width: "80px" }}
-                  variant="standard"
-                  className="pull-right"
-                >
-                  <Input
-                    type="number"
-                    placeholder="Total persons*"
-                    name="noofpersons"
-                    value={noofpersons}
-                    onChange={handleChangePerson}
-                  />
-                </FormControl>
-              </p>
-
-              <p>
-                <FormControl
-                  sx={{ width: "80px" }}
-                  variant="standard"
-                  className="pull-right"
-                >
-                  <Input
-                    type="number"
-                    placeholder="Total Children*"
-                    name="noofchildren"
-                    value={noofchildren}
-                    onChange={handleChangeChildren}
-                  />
-                </FormControl>
-              </p>
-
-              <p>
-                <FormControl
-                  sx={{ width: "80px" }}
-                  variant="standard"
-                  className="pull-right"
-                >
-                  <Input
-                    type="number"
-                    placeholder="Total rooms*"
-                    name="noofrooms"
-                    value={noofrooms}
-                    onChange={handleChangeRooms}
-                  />
-                </FormControl>
-              </p>
-              <p>
-                <FormControl
-                  sx={{ width: "80px" }}
-                  variant="standard"
-                  className="pull-right"
-                >
-                  <Input
-                    type="number"
-                    placeholder="Total rooms*"
-                    name="noofrooms"
-                    value={noofrooms}
-                    onChange={handleChangeRooms}
-                  />
-                </FormControl>
-              </p>
-              <p>{numOfDays}</p>
-              <p>
-                {state.status === "pending" || state.status === "approved" ? (
-                  <FormControl
-                    variant="standard"
-                    className="pull-right"
-                  >
-                    {/* <InputLabel>Discount Amount</InputLabel> */}
-                    <Input
-                      id="standard-adornment-amount"
-                      startAdornment={
-                        <InputAdornment position="start">
-                          INR
-                        </InputAdornment>
-                      }
-                      size="small"
-                      onChange={(e) => setHotelPrice(e.target.value)}
-                    />
-                  </FormControl>
-                ) : (
-                  amount
-                )}
-              </p>
-              <p>
-                {state.status === "pending" || state.status === "approved" ? (
-                  <FormControl
-                    variant="standard"
-                    className="pull-right"
-                  >
-                    {/* <InputLabel >Discount Amount</InputLabel> */}
-                    <Input
-                      id="standard-adornment-amount"
-                      startAdornment={
-                        <InputAdornment position="start">
-                          INR
-                        </InputAdornment>
-                      }
-                      size="small"
-                      onChange={(e) => setDiscountAmount(e.target.value)}
-                    />
-                  </FormControl>
-                ) : (
-                  discount
-                )}
-              </p>
+            
               </Item>
           </Grid>
         </Grid>
