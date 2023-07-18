@@ -85,7 +85,6 @@ const CheckinoutButton = styled.div`
 `;
 const HeadingDiv = styled.div`
   display:flex;
-  width: 65%;
   justify-content: space-between;
   align-items: flex-start;
 `;
