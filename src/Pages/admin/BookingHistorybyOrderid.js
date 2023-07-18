@@ -64,6 +64,11 @@ const Heading = styled.div`
     display: none;
   }
 `;
+const HeadingDiv = styled.div`
+  display:flex;
+  justify-content: space-between;
+  align-items: flex-start;
+`;
 const BookingHistorybyOrderid = () => {
   const { state } = useLocation();
   const { authData } = useContext(AuthContext);
@@ -155,14 +160,31 @@ const BookingHistorybyOrderid = () => {
         ) : (
           <Grid container>
             <Grid xs={12}>
-              <Item>
+              <Item style={{ padding: "40px" }}>
                 {/* <h4>Hotel Location</h4> */}
-                <h4>
+                <HeadingDiv>
+                <div>
+                  <h4>{data.hotelname}</h4>
+                  <p>
+                    {data.area} , {data.state}
+                  </p>
+                </div>
+                <Button
+                  variant="contained"
+                  onClick={generateInvoiceHandler}
+                  endIcon={<PictureAsPdfIcon />}
+                >
+                  {data.status === "pending" || data.status==="approved"
+                    ? "Generate Invoice"
+                    : "View Invoice"}
+                </Button>
+                </HeadingDiv>
+                {/* <h4>
                   <i>{data.hotelname}</i>
                 </h4>
                 <p>
                   {data.area} , {data.state}
-                </p>
+                </p> */}
                 <Grid container>
                   <Grid xs={6}>
                     <h4>Customer Details</h4>
@@ -209,15 +231,7 @@ const BookingHistorybyOrderid = () => {
                         </TableRow>
                       </TableBody>
                     </Table>
-                    <Button
-                      variant="contained"
-                      onClick={generateInvoiceHandler}
-                      endIcon={<PictureAsPdfIcon />}
-                    >
-                      {data.status === "pending" || data.status==="approved"
-                        ? "Generate Invoice"
-                        : "View Invoice"}
-                    </Button>
+                   
                   </Grid>
                   <Grid xs={6}>
                     <h4>Booking Details</h4>

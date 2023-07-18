@@ -532,7 +532,6 @@ const GenerateInvoice = () => {
                 >
                   <Detailkey> Days </Detailkey>
                   <DetailValue
-                    style={{ marginRight: "15px" }}
                   >{numOfDays}</DetailValue>
                 </DetailContainer>
 
@@ -541,10 +540,9 @@ const GenerateInvoice = () => {
                 >
                   <Detailkey> Amount </Detailkey>
                   <DetailValue
-                    style={{ marginRight: "15px" }}
                   >
 
-                    {state.status === "pending" ? (
+                    {state.status === "pending" || state.status === "approved"  ? (
                       <FormControl
                         sx={{ width: "80px" }}
                         variant="standard"
@@ -579,10 +577,9 @@ const GenerateInvoice = () => {
                     Discount Amount
                   </Detailkey>
                   <DetailValue
-                    style={{ marginRight: "15px" }}
                   >
 
-                    {state.status === "pending" ? (
+                    {state.status === "pending" || state.status === "approved"  ? (
                       <FormControl
                         variant="standard"
                         className="pull-right"
