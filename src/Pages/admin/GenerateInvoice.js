@@ -318,7 +318,7 @@ const GenerateInvoice = () => {
     }
 
   }, [state]);
-  // console.log(state.checkIn,checkIn,checkOut)
+  
   useEffect(() => {
     const parsedCheckInDate = moment(checkIn, 'MM/DD/YYYY', true);
     const parsedCheckOutDate = moment(checkOut, 'MM/DD/YYYY', true);
@@ -330,6 +330,11 @@ const GenerateInvoice = () => {
       setNumOfDays(0);
     }
   }, [checkIn, checkOut, state]);
+  const handleDiscountAmountChange = (e) => {
+    if (Number(e.target.value)  <= Number(hotelPrice) ) {
+      setDiscountAmount(e.target.value);
+    }
+  };
 
   return (
     <>
@@ -596,7 +601,7 @@ const GenerateInvoice = () => {
                           }
                           size="small"
                           value={discountAmount}
-                          onChange={(e) => setDiscountAmount(e.target.value)}
+                          onChange={handleDiscountAmountChange}
 
                         />
                       </FormControl>
