@@ -381,7 +381,7 @@ const Payouts = () => {
                       )
                     }
                   >
-                    Payout
+                    Payout Request
                   </Button>
                 ) : null}
               </PayOutInfoWrapper>
