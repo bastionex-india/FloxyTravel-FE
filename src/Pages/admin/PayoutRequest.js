@@ -589,19 +589,9 @@ const PayoutRequest = () => {
             >
               <Grid item xs={3}>
                 <FormControl fullWidth>
-                  <InputLabel variant="standard">
-                    Hotels
-                  </InputLabel>
-
-                  <NativeSelect
-                    defaultValue={"all"}
-                    inputProps={{
-                      name: "age",
-                    }}
-                    onChange={(event) => handleHotelChange(event.target.value)}
-                  >
-
-                    <option value={"all"}>All</option>
+                  <label>Hotels</label>
+                  <select style={{height: '45px',border:"1px solid #cccc",marginTop:"10px",borderRadius:"6px"}} onChange={(event) => handleHotelChange(event.target.value)} >
+                    <option value="all" selected >All</option>
                     {hotelList.map((row, index) => {
                       return (
                         <option key={index} value={row._id}>
@@ -609,21 +599,16 @@ const PayoutRequest = () => {
                         </option>
                       );
                     })}
-                  </NativeSelect>
+                  </select>
                 </FormControl>
               </Grid>
               <Grid item xs={3}>
                 <FormControl fullWidth>
-                  <InputLabel variant="standard">
+                  <label>
                     Vendor
-                  </InputLabel>
-                  <NativeSelect
-                    defaultValue={"all"}
-                    inputProps={{
-                      name: "age",
-                    }}
-                    onChange={(event) => handleVendorChange(event.target.value)}
-                  >
+                  </label>
+                  <select style={{height: '45px',border:"1px solid #cccc",marginTop:"10px",borderRadius:"6px"}} 
+                  onChange={(event) => handleVendorChange(event.target.value)} >
                     <option value={"all"}>All</option>
                     {vendorlist.map((row, index) => {
                       return (
@@ -632,19 +617,16 @@ const PayoutRequest = () => {
                         </option>
                       );
                     })}
-                  </NativeSelect>
+                  </select>
                 </FormControl>
               </Grid>
               <Grid item xs={3}>
                 <FormControl fullWidth>
-                  <InputLabel variant="standard">
+                  <label>
                     City
-                  </InputLabel>
-                  <NativeSelect
-                    defaultValue={"all"}
-                    inputProps={{
-                      name: "age"
-                    }}
+                  </label>
+                  <select
+                    style={{height: '45px',border:"1px solid #cccc",marginTop:"10px",borderRadius:"6px"}} 
                     onChange={(event) => handleCityChange(event.target.value)}
                   >
                     <option value={"all"}>All</option>
@@ -655,25 +637,22 @@ const PayoutRequest = () => {
                         </option>
                       );
                     })}
-                  </NativeSelect>
+                  </select>
                 </FormControl>
               </Grid>
               <Grid item xs={3}>
                 <FormControl fullWidth>
-                  <InputLabel variant="standard">
+                  <label>
                     Status
-                  </InputLabel>
-                  <NativeSelect
-                    defaultValue={"all"}
-                    inputProps={{
-                      name: "age",
-                    }}
+                  </label>
+                  <select
+                    style={{height: '45px',border:"1px solid #cccc",marginTop:"10px",borderRadius:"6px"}} 
                     onChange={(event) => handleStatusChange(event.target.value)}
                   >
                     <option value={"all"}>All</option>
                     <option value="pending">Pending</option>
                     <option value="approved">Approved</option>
-                  </NativeSelect>
+                  </select>
                 </FormControl>
               </Grid>
             </Grid>

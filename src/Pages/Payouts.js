@@ -225,15 +225,17 @@ const Payouts = () => {
   const handleClickOpen = (item) => {
     setOpen(true);
   };
-  const payoutRequestHandler = (payLinkObjectIds, hotelIds, payOutAmount) => {
+  const payoutRequestHandler = (payLinkObjectIds, hotelIds, payOutAmount,payoutFrom,payoutTo) => {
     handleClickOpen();
-    setPayoutRequestData({ payLinkObjectIds, hotelIds, payOutAmount });
+    setPayoutRequestData({ payLinkObjectIds, hotelIds, payOutAmount,payoutFrom,payoutTo});
   };
   const savePayout = async () => {
     let data = {
       payLinkId: payoutRequestData.payLinkObjectIds,
       hotelId: payoutRequestData.hotelIds,
       payoutAmount: payoutRequestData.payOutAmount,
+      payoutFrom: payoutRequestData.payoutFrom,
+      payoutTo: payoutRequestData.payoutTo
     };
     let config = {
       method: "post",
@@ -266,6 +268,8 @@ const Payouts = () => {
       })
       .catch((err) => {
         console.log(err);
+        setIsButtonLoading(false);
+        handleClose();
         Swal.fire({
           icon: "error",
           title: err.response.data.message,
@@ -273,7 +277,7 @@ const Payouts = () => {
         });
       });
   };
-  //
+  
   const makePayOutRequest = () => {
     setIsButtonLoading(true);
     savePayout();
@@ -330,7 +334,16 @@ const Payouts = () => {
             var b = moment(new Date());
             dayCount = Number(a.diff(b, "days")); // 1
           }
+          // console.log("lastPayoutDate",lastPayoutDate);
+          let payoutFrom = lastPayoutDate ? moment(new Date(lastPayoutDate)).format('YYYY-MM-DD') : '1950-01-19'; 
+          let payoutTo = moment().format('YYYY-MM-DD');
 
+          // console.log("payoutFrom",payoutFrom);
+          // console.log("currentDate",currentDate)
+
+          // console.log("dayCount",dayCount);
+          // console.log("payoutInterval",payoutInterval)
+          // console.log("row",row)
           return (
             <HotelCard>
               <HotelImageWrapper>
@@ -377,7 +390,9 @@ const Payouts = () => {
                       payoutRequestHandler(
                         payLinkObjectIds,
                         hotelIds,
-                        payOutAmount
+                        payOutAmount,
+                        payoutFrom,
+                        payoutTo
                       )
                     }
                   >
@@ -488,14 +503,11 @@ const Payouts = () => {
             >
               <Grid item xs={4}>
                 <FormControl fullWidth>
-                  <InputLabel variant="standard">
+                  <label>
                     Hotels
-                  </InputLabel>
-                  <NativeSelect
-                    defaultValue={"all"}
-                    inputProps={{
-                      name: "age",
-                    }}
+                  </label>
+                  <select
+                    style={{height: '45px',border:"1px solid #cccc",marginTop:"10px",borderRadius:"6px"}}
                     onChange={(event) => handleHotelChange(event.target.value)}
                   >
                     <option value={"all"}>All</option>
@@ -506,19 +518,16 @@ const Payouts = () => {
                         </option>
                       );
                     })}
-                  </NativeSelect>
+                  </select>
                 </FormControl>
               </Grid>
               <Grid item xs={4}>
                 <FormControl fullWidth>
-                  <InputLabel variant="standard">
+                  <label>
                     City
-                  </InputLabel>
-                  <NativeSelect
-                    defaultValue={"all"}
-                    inputProps={{
-                      name: "age"
-                    }}
+                  </label>
+                  <select
+                    style={{height: '45px',border:"1px solid #cccc",marginTop:"10px",borderRadius:"6px"}}
                     onChange={(event) => handleCityChange(event.target.value)}
                   >
                     <option value={"all"}>All</option>
@@ -529,7 +538,7 @@ const Payouts = () => {
                         </option>
                       );
                     })}
-                  </NativeSelect>
+                  </select>
                 </FormControl>
               </Grid>
               <Grid item xs={4} mt={3}>
