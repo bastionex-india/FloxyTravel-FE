@@ -21,7 +21,7 @@ import DialogActions from "@mui/material/DialogActions";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import Typography from "@mui/material/Typography";
-
+import { io } from "socket.io-client";
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 
@@ -53,6 +53,8 @@ const BootstrapDialog = newStyle(Dialog)(({ theme }) => ({
     padding: theme.spacing(1),
   },
 }));
+
+const socket = io(`${environmentVariables?.apiUrl}`);
 
 function BootstrapDialogTitle(props) {
   const { children, onClose, ...other } = props;
@@ -256,6 +258,7 @@ const PayoutRequest = () => {
         setIsButtonLoading(false);
         handleClose();
         if (response.data.status) {
+          socket.emit("sendPayoutRequestToAdmin", response.data);
           Swal.fire({
             icon: "success",
             title: "Request send Successfully.",
@@ -308,7 +311,7 @@ const PayoutRequest = () => {
         setIsLoading(false);
       });
   };
-  const updatePayoutRequest = (status,requestId) => {
+  const updatePayoutRequest = (status, requestId) => {
     let data = {
       requestId,
       status
@@ -353,10 +356,10 @@ const PayoutRequest = () => {
         });
       });
   }
-  const handleChangeStatus = (e,item) => {
+  const handleChangeStatus = (e, item) => {
     console.log("target", item)
 
-    updatePayoutRequest(e.target.value,item._id)
+    updatePayoutRequest(e.target.value, item._id)
   }
   const getComponents = () => {
     if (isLoading === true) {
@@ -435,58 +438,35 @@ const PayoutRequest = () => {
                 </HotelIconWrapper>
               </HotelInfoWrapper>
               <PayOutInfoWrapper>
-                <p>
-                  <b>Vendor Name : </b>
-                  {row.vendorData.name}
-                </p>
-                <p>
-                  <b>Status : </b>
-                  <Chip
+                <ul style={{ listStyle: "none" }}>
+                  <li><b>Vendor Name : </b> {row.vendorData.name}</li>
+                  <li><b>Status : </b> <Chip
                     sx={{
                       borderRadius: "3px",
                       border: "1px solid black"
                     }}
 
-                    label={row.status} color={row.status === 'pending' ? 'warning' : 'success'} />
-                </p>
+                    label={row.status} color={row.status === 'pending' ? 'warning' : 'success'} /></li>
+                  <li><b>Payout amount : </b> {row.payoutAmount.toFixed(2)} INR</li>
+                  <li><b>Requested Date : </b> {moment(row.createdAt).format('LL')}</li>
+                  <li><b>Payout Time periods : </b> {moment(row.payoutFrom).format('LL')} to {moment(row.payoutTo).format('LL')}</li>
+                  <li>
+                    <FormControl sx={{ m: 1, minWidth: 120 }}>
+                      <Select
+                        defaultValue={row.status}
+                        onChange={(e) => handleChangeStatus(e, row)}
+                        displayEmpty
+                        size="small"
+                      >
+                        <MenuItem value='pending'>Pending</MenuItem>
+                        <MenuItem value='approved'>Approved</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </li>
+                </ul>
 
-                {/* <p>
-                  <b>TotalPaid amount : </b>
-                  {totalEarnings} INR
-                </p> */}
-                {/* <p>
-                  <b>Fee amount : </b>
-                  {feeAmount} ({adminFee}%) INR
-                </p> */}
-                <p>
-                  <b>Payout amount : </b>
-                  {row.payoutAmount} INR
-                </p>
-                <FormControl sx={{ m: 1, minWidth: 120 }}>
-                  <Select
-                    defaultValue={row.status}
-                    onChange={(e)=>handleChangeStatus(e,row)}
-                    displayEmpty
-                    size="small"
-                  >
-                    <MenuItem value='pending'>Pending</MenuItem>
-                    <MenuItem value='approved'>Approved</MenuItem>
-                  </Select>
-                </FormControl>
-                {/* <Button
-                    variant="contained"
-                    size="small"
-                    loading={true}
-                    onClick={() =>
-                      payoutRequestHandler(
-                        payLinkObjectIds,
-                        hotelIds,
-                        payOutAmount
-                      )
-                    }
-                  >
-                    Payout
-                  </Button> */}
+
+
               </PayOutInfoWrapper>
             </HotelCard>
           );
@@ -590,7 +570,7 @@ const PayoutRequest = () => {
               <Grid item xs={3}>
                 <FormControl fullWidth>
                   <label>Hotels</label>
-                  <select style={{height: '45px',border:"1px solid #cccc",marginTop:"10px",borderRadius:"6px"}} onChange={(event) => handleHotelChange(event.target.value)} >
+                  <select style={{ height: '45px', border: "1px solid #cccc", marginTop: "10px", borderRadius: "6px" }} onChange={(event) => handleHotelChange(event.target.value)} >
                     <option value="all" selected >All</option>
                     {hotelList.map((row, index) => {
                       return (
@@ -607,8 +587,8 @@ const PayoutRequest = () => {
                   <label>
                     Vendor
                   </label>
-                  <select style={{height: '45px',border:"1px solid #cccc",marginTop:"10px",borderRadius:"6px"}} 
-                  onChange={(event) => handleVendorChange(event.target.value)} >
+                  <select style={{ height: '45px', border: "1px solid #cccc", marginTop: "10px", borderRadius: "6px" }}
+                    onChange={(event) => handleVendorChange(event.target.value)} >
                     <option value={"all"}>All</option>
                     {vendorlist.map((row, index) => {
                       return (
@@ -626,7 +606,7 @@ const PayoutRequest = () => {
                     City
                   </label>
                   <select
-                    style={{height: '45px',border:"1px solid #cccc",marginTop:"10px",borderRadius:"6px"}} 
+                    style={{ height: '45px', border: "1px solid #cccc", marginTop: "10px", borderRadius: "6px" }}
                     onChange={(event) => handleCityChange(event.target.value)}
                   >
                     <option value={"all"}>All</option>
@@ -646,7 +626,7 @@ const PayoutRequest = () => {
                     Status
                   </label>
                   <select
-                    style={{height: '45px',border:"1px solid #cccc",marginTop:"10px",borderRadius:"6px"}} 
+                    style={{ height: '45px', border: "1px solid #cccc", marginTop: "10px", borderRadius: "6px" }}
                     onChange={(event) => handleStatusChange(event.target.value)}
                   >
                     <option value={"all"}>All</option>

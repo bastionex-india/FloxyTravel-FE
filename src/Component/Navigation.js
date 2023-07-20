@@ -287,6 +287,9 @@ function Navigation({
       console.log(data, "sr");
       getNotificationData();
     });
+    socket.on("emitPayoutRequestToAdmin", (data) => {
+      getNotificationData();
+    });
 
     return () => {
       socket.disconnect();

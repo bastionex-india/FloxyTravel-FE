@@ -29,6 +29,7 @@ import Payouts from "./Pages/Payouts";
 import VendorEditHotel from "./Pages/VendorEditHotel";
 import ChatSupport from "./Pages/admin/ChatSupport";
 import PayoutRequest from "./Pages/admin/PayoutRequest";
+import PayoutHistory from "./Pages/PayoutHistory";
 
 const Root = styled.div``;
 const LeftWrapper = styled.div`
@@ -140,7 +141,8 @@ function App() {
                       element={<VendorManageHotels />}
                     />
                     <Route path="/payouts" element={<Payouts />} />
-
+                    <Route path="/payoutHistory" element={<PayoutHistory />} />
+                    
                     <Route path="/hoteldetails" element={<HotelDetails />} />
 
                     <Route path="/profile" element={<Profile />} />
