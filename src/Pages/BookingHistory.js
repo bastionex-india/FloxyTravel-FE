@@ -281,7 +281,7 @@ const BookingHistory = () => {
       .request(config)
       .then((response) => {
         // setData(response.data.sort((a, b) => b.createdAt - a.createdAt));
-        console.log(response.data);
+        // console.log(response.data);
         const { totalItems, totalPages, currentPage, data } = response.data;
         setData(data);
         setTotalPages(totalPages);
