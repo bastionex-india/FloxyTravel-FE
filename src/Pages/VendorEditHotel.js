@@ -203,6 +203,8 @@ const VendorEditHotel = () => {
     { label: "Romantic", value: "romantic" },
     { label: "Hill", value: "hill" },
     { label: "Heritage", value: "heritage" },
+    { label: "Yatch", value: "yatch" },
+    { label: "Desert", value: "desert" },
   ];
 
   const getVendorList = async () => {
