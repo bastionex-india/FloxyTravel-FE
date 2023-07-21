@@ -482,10 +482,13 @@ const Payouts = () => {
                 <ArrowBackIosNewOutlinedIcon />
               </IconButton>
               <Heading>Hotel's Payout</Heading>
-
-              <IconButton title="History" onClick={() => getPayoutHistory()} size="small" sx={{ backgroundColor: "#e1e1e1", color: "#01575c", marginTop: "4px", position:"absolute",right:"0px" }}>
+              <div style={{marginTop: "4px", position:"absolute",right:"0px"}}>
+              Payout History {" "}
+              <IconButton title="History" onClick={() => getPayoutHistory()} size="small" sx={{ backgroundColor: "#e1e1e1", color: "#01575c" }}>
+                
                 <HistoryIcon />
               </IconButton>
+              </div>
 
             </HeadingWrapper>
           </Root>
@@ -548,7 +551,7 @@ const Payouts = () => {
               </Grid>
               <Grid item xs={4} mt={3}>
                 <b>Total Payout amount :</b>
-                <span>{mainResponse.allHotelPayoutAmount} INR</span>{" "}
+                <span>{(mainResponse.allHotelPayoutAmount) ?mainResponse.allHotelPayoutAmount.toFixed(2):'0.00'} INR</span>{" "}
                 {/* <Button variant="contained" size="small" onClick={() => payoutRequestHandler(mainResponse.payLinkIds, mainResponse.hotelIds, mainResponse.allHotelPayoutAmount)}>Payout</Button> */}
               </Grid>
             </Grid>
