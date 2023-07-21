@@ -25,13 +25,18 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import moment from "moment";
 import logo from "../../Images/LogoDark.png";
-
+import { LoadingButton } from "@mui/lab";
 // import Box from '@mui/material/Box';
 import InputLabel from "@mui/material/InputLabel";
 import InputAdornment from "@mui/material/InputAdornment";
 import FormControl from "@mui/material/FormControl";
 import { useRef } from "react";
 import { format, parse, differenceInCalendarDays } from 'date-fns';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormLabel from '@mui/material/FormLabel';
+
 
 const Item = newStyled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -122,9 +127,11 @@ const GenerateInvoice = () => {
   const InputCheckIn = useRef(null);
   const InputCheckOut = useRef(null);
   const [numOfDays, setNumOfDays] = useState(0);
+  const [isSendInvoice,setIsSendInvoice] = useState(false);
   const [noofpersons, setNoofPerons] = useState(state.adult);
   const [noofchildren, setNoofChildren] = useState(state.children);
   const [noofrooms, setNoofRooms] = useState(state.noOfRooms);
+  const [currency,setCurrency] = useState('INR');
 
   const sendInvoice = () => {
     // console.log(checkIn,checkOut,noofpersons,Number(noofchildren),noofrooms,state._id,amount.toString(),Number(discountAmount),new Date(checkIn).getTime(),new Date(checkOut).getTime())
@@ -139,7 +146,9 @@ const GenerateInvoice = () => {
         persons: noofpersons,
         children: Number(noofchildren),
         rooms: noofrooms,
+        currency: currency
       };
+      setIsSendInvoice(true)
       let config = {
         method: "post",
         url: `${environmentVariables.apiUrl}/admin/sendInvoice`,
@@ -153,6 +162,7 @@ const GenerateInvoice = () => {
       axios
         .request(config)
         .then((response) => {
+          setIsSendInvoice(false)
           if (response.data.status) {
             Swal.fire({
               icon: "success",
@@ -169,6 +179,7 @@ const GenerateInvoice = () => {
           }
         })
         .catch((err) => {
+          setIsSendInvoice(false)
           console.log(err);
           Swal.fire({
             icon: "error",
@@ -318,7 +329,7 @@ const GenerateInvoice = () => {
     }
 
   }, [state]);
-  
+
   useEffect(() => {
     const parsedCheckInDate = moment(checkIn, 'MM/DD/YYYY', true);
     const parsedCheckOutDate = moment(checkOut, 'MM/DD/YYYY', true);
@@ -331,7 +342,7 @@ const GenerateInvoice = () => {
     }
   }, [checkIn, checkOut, state]);
   const handleDiscountAmountChange = (e) => {
-    if (Number(e.target.value)  <= Number(hotelPrice) ) {
+    if (Number(e.target.value) <= Number(hotelPrice)) {
       setDiscountAmount(e.target.value);
     }
   };
@@ -393,116 +404,149 @@ const GenerateInvoice = () => {
               <BilingDetailsContainer>
                 <DetailContainer>
                   <Detailkey> Payment method </Detailkey>
-                  <DetailValue>{payMethod}</DetailValue>
+                  <DetailValue>{payMethod.toUpperCase()}</DetailValue>
                 </DetailContainer>
 
                 <DetailContainer>
                   <Detailkey> CheckIn Date </Detailkey>
                   <DetailValue>
-                    <div style={{ position: "relative" }}>
-                      <div
-                        onClick={() => {
-                          InputCheckIn.current.setOpen(true);
-                        }}
-                        style={{
-                          position: "absolute",
-                          top: "20%",
-                          right: "54%",
-                          zIndex: "99",
-                          fontSize: "20px",
-                          cursor: "pointer",
-                        }}
-                      >
-                        <i class="fas fa-calendar-alt"></i>
-                      </div>
-                      <DatePickerStyled2
-                        className=""
-                        placeholderText=" CheckIn"
-                        selected={checkIn}
-                        onChange={handleCheckInChange}
-                        selectsStartcheckIn
-                        startDate={checkIn}
-                        endDate={checkOut}
-                        ref={InputCheckIn}
-                        minDate={checkIn}
+                    {
+                      state.status === "pending" || state.status === "approved" ? 
+                        <div style={{ position: "relative" }}>
+                          <div
+                            onClick={() => {
+                              InputCheckIn.current.setOpen(true);
+                            }}
+                            style={{
+                              position: "absolute",
+                              top: "20%",
+                              right: "54%",
+                              zIndex: "99",
+                              fontSize: "20px",
+                              cursor: "pointer",
+                            }}
+                          >
+                            <i class="fas fa-calendar-alt"></i>
+                          </div>
+                          <DatePickerStyled2
+                            className=""
+                            placeholderText=" CheckIn"
+                            selected={checkIn}
+                            onChange={handleCheckInChange}
+                            selectsStartcheckIn
+                            startDate={checkIn}
+                            endDate={checkOut}
+                            ref={InputCheckIn}
+                            minDate={checkIn}
 
-                      ></DatePickerStyled2>
+                          ></DatePickerStyled2>
 
-                    </div>
+                        </div>
+                        :
+                        <>
+                        {moment(checkIn).format('DD/MM/YYYY')}
+                        </>
+
+                    }
                   </DetailValue>
                 </DetailContainer>
 
                 <DetailContainer>
                   <Detailkey> CheckOut Date  </Detailkey>
                   <DetailValue>
-                    <div style={{ position: "relative" }}>
-                      <div
-                        onClick={() => InputCheckOut.current.setOpen(true)}
-                        style={{
-                          top: "20%",
-                          right: "54%",
-                          zIndex: "99",
-                          fontSize: "20px",
-                          cursor: "pointer",
-                          position: "absolute",
-                        }}
-                      >
-                        <i class="fas fa-calendar-alt"></i>
+                    {
+                      state.status === "pending" || state.status === "approved" ?
+                      <div style={{ position: "relative" }}>
+                        <div
+                          onClick={() => InputCheckOut.current.setOpen(true)}
+                          style={{
+                            top: "20%",
+                            right: "54%",
+                            zIndex: "99",
+                            fontSize: "20px",
+                            cursor: "pointer",
+                            position: "absolute",
+                          }}
+                        >
+                          <i class="fas fa-calendar-alt"></i>
+                        </div>
+
+                        <DatePickerStyled2
+                          className=""
+                          placeholderText=" CheckOut"
+                          selected={checkOut}
+                          onChange={handleCheckOutChange}
+                          startDate={checkIn}
+                          endDate={checkOut}
+                          minDate={checkIn}
+                          ref={InputCheckOut}
+                        ></DatePickerStyled2>
+
                       </div>
+                      :
+                      <>
+                        {moment(checkOut).format('DD/MM/YYYY')}
+                        </>
 
-                      <DatePickerStyled2
-                        className=""
-                        placeholderText=" CheckOut"
-                        selected={checkOut}
-                        onChange={handleCheckOutChange}
-                        startDate={checkIn}
-                        endDate={checkOut}
-                        minDate={checkIn}
-                        ref={InputCheckOut}
-                      ></DatePickerStyled2>
-
-                    </div>
+                    }
                   </DetailValue>
                 </DetailContainer>
-
+                  {
+                    console.log("checkOut date",checkOut)
+                  }
                 <DetailContainer>
                   <Detailkey> Number of Persons </Detailkey>
                   <DetailValue>
-                    <FormControl
-                      sx={{ width: "80px" }}
-                      variant="standard"
-                      className="pull-right"
-                    >
-                      <Input
-                        type="number"
-                        placeholder="Total persons*"
-                        name="noofpersons"
-                        value={noofpersons}
-                        onChange={handleChangePerson}
-                        onKeyDown={handleKeyPress}
-                      />
-                    </FormControl>
+                    {
+                      state.status === "pending" || state.status === "approved" ?
+                        <FormControl
+                          sx={{ width: "80px" }}
+                          variant="standard"
+                          className="pull-right"
+                        >
+                          <Input
+                            type="number"
+                            placeholder="Total persons*"
+                            name="noofpersons"
+                            value={noofpersons}
+                            onChange={handleChangePerson}
+                            onKeyDown={handleKeyPress}
+                          />
+                        </FormControl>
+                        :
+                        <>
+                          {noofpersons}
+                        </>
+
+                    }
                   </DetailValue>
                 </DetailContainer>
 
                 <DetailContainer>
                   <Detailkey> Number of Children </Detailkey>
                   <DetailValue>
+                    {
+                      state.status === "pending" || state.status === "approved"?
+                      <FormControl
+                        sx={{ width: "80px" }}
+                        variant="standard"
+                        className="pull-right"
+                      >
+                        <Input
+                          type="number"
+                          placeholder="Total Children*"
+                          name="noofchildren"
+                          value={noofchildren}
+                          onChange={handleChangeChildren}
+                          onKeyDown={handleKeyPress}
+                        />
+                      </FormControl>
+                      :
+                      <>
+                      {noofchildren}
+                      </>
 
-                    <FormControl
-                      sx={{ width: "80px" }}
-                      variant="standard"
-                      className="pull-right"
-                    >
-                      <Input
-                        type="number"
-                        placeholder="Total Children*"
-                        name="noofchildren"
-                        value={noofchildren}
-                        onChange={handleChangeChildren}
-                        onKeyDown={handleKeyPress}
-                      />
-                    </FormControl>
+                    }
 
                   </DetailValue>
                 </DetailContainer>
@@ -510,8 +554,9 @@ const GenerateInvoice = () => {
                 <DetailContainer>
                   <Detailkey> Number of Rooms </Detailkey>
                   <DetailValue>
-
-                    <FormControl
+                    {
+                      state.status === "pending" || state.status === "approved" ?
+                      <FormControl
                       sx={{ width: "80px" }}
                       variant="standard"
                       className="pull-right"
@@ -526,6 +571,10 @@ const GenerateInvoice = () => {
                         onKeyDown={handleKeyPress}
                       />
                     </FormControl>
+                    :
+                      <>{noofrooms}</>
+                    }
+                    
 
 
                   </DetailValue>
@@ -539,6 +588,42 @@ const GenerateInvoice = () => {
                   <DetailValue
                   >{numOfDays}</DetailValue>
                 </DetailContainer>
+                <DetailContainer
+                  style={{ padding: "6px 0" }}
+                >
+                  {
+                    console.log("state",state)
+                  }
+                  <Detailkey> Currency </Detailkey>
+                  <DetailValue>
+                  {state.status === "pending" || state.status === "approved" ?
+                    <FormControl>
+                      <RadioGroup
+                        row
+                        aria-labelledby="demo-row-radio-buttons-group-label"
+                        name="row-radio-buttons-group"
+                      >
+                        <FormControlLabel checked={currency=='INR'?true:false} value="INR" onChange={()=>{ setCurrency('INR')}} control={<Radio
+                          sx={{
+                            '& .MuiSvgIcon-root': {
+                              fontSize: 13,
+                            },
+                          }} />} label="INR" />
+                          <FormControlLabel checked={currency=='INR'?false:true} value="USD" onChange={()=>{ setCurrency('USD')}} control={<Radio
+                            sx={{
+                              '& .MuiSvgIcon-root': {
+                                fontSize: 13,
+                              },
+                            }} />} label="USD" />
+                      </RadioGroup>
+                    </FormControl>
+                    :
+                    <>
+                    {state.currency!=undefined? state.currency : 'INR'}
+                    </>
+                          }
+                  </DetailValue>
+                </DetailContainer>
 
                 <DetailContainer
                   style={{ padding: "10px 0" }}
@@ -546,29 +631,29 @@ const GenerateInvoice = () => {
                   <Detailkey> Amount </Detailkey>
                   <DetailValue
                   >
-
-                    {state.status === "pending" || state.status === "approved"  ? (
+                    <span style={{fontSize:'14px',fontWeight: "bold",lineHeight: "37px",paddingRight: "10px"}}>{currency}</span>
+                    {state.status === "pending" || state.status === "approved" ? (
                       <FormControl
                         sx={{ width: "80px" }}
                         variant="standard"
                         className="pull-right"
                       >
                         <Input
-                        type="number"
-                        onKeyDown={handleKeyPress}
+                          type="number"
+                          onKeyDown={handleKeyPress}
                           id="standard-adornment-amount"
-                          startAdornment={
-                            <InputAdornment position="start">
-                              INR
-                            </InputAdornment>
-                          }
+                          // startAdornment={
+                          //   <InputAdornment position="start">
+                          //     INR
+                          //   </InputAdornment>
+                          // }
                           size="small"
                           onChange={(e) => setHotelPrice(e.target.value)}
                           value={hotelPrice}
                         />
                       </FormControl>
                     ) : (
-                      amount
+                      amount.toFixed(2)
                     )}
 
 
@@ -583,22 +668,22 @@ const GenerateInvoice = () => {
                   </Detailkey>
                   <DetailValue
                   >
-
-                    {state.status === "pending" || state.status === "approved"  ? (
+                    <span style={{fontSize:'14px',fontWeight: "bold",lineHeight: "37px",paddingRight: "10px"}}>{currency}</span>
+                    {state.status === "pending" || state.status === "approved" ? (
                       <FormControl
                         variant="standard"
                         className="pull-right"
                       >
                         <Input
-                         type="number"
-                         onKeyDown={handleKeyPress}
-                        style={{width:"80px"}}
+                          type="number"
+                          onKeyDown={handleKeyPress}
+                          style={{ width: "80px" }}
                           id="standard-adornment-amount"
-                          startAdornment={
-                            <InputAdornment position="start">
-                              INR
-                            </InputAdornment>
-                          }
+                          // startAdornment={
+                          //   <InputAdornment position="end">
+                          //     INR
+                          //   </InputAdornment>
+                          // }
                           size="small"
                           value={discountAmount}
                           onChange={handleDiscountAmountChange}
@@ -606,7 +691,7 @@ const GenerateInvoice = () => {
                         />
                       </FormControl>
                     ) : (
-                      discount
+                      discount.toFixed(2)
                     )}
 
                   </DetailValue>
@@ -614,8 +699,8 @@ const GenerateInvoice = () => {
 
 
               </BilingDetailsContainer>
-            
-              </Item>
+
+            </Item>
           </Grid>
         </Grid>
         <hr />
@@ -627,10 +712,10 @@ const GenerateInvoice = () => {
           </Grid>
           <Grid xs={6} className="pull-right">
             <p style={{ fontSize: 'x-large', fontWeight: 'bolder', color: 'green' }}>
-              INR{" "}
+              {currency}{" "}
               {state.status === "pending" || state.status === "approved"
-                ? Number(hotelPrice) - Number(discountAmount)
-                : totalAmount}
+                ? (Number(hotelPrice) - Number(discountAmount)).toFixed(2)
+                : totalAmount.toFixed(2)}
             </p>
             {/* <p>INR {" "}{state.status === "pending"  || state.status === "approved"? "0.00" : totalAmount}</p>
                   <p>
@@ -645,14 +730,15 @@ const GenerateInvoice = () => {
           <Grid container style={{ margin: '30px 0px 30px' }}>
             <Grid xs={8}></Grid>
             <Grid xs={4} className="pull-right">
-              <Button
-                disabled={hotelPrice.length ? false : true}
+              <LoadingButton
+                loading={ isSendInvoice }
+                disabled={(hotelPrice.length ||  !isSendInvoice) ? false : true}
                 variant="contained"
                 onClick={sendInvoiceHandler}
-                style={{ padding: '12px 40px' }}
+                
               >
                 Send Invoice
-              </Button>
+              </LoadingButton>
             </Grid>
           </Grid>
         ) : null}
