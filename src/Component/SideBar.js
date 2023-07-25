@@ -86,7 +86,7 @@ function SideBar(props) {
   // console.log("authdata of sidebar",authData.data)
   return (
     <Root>
-      {authData.data.isadmin === "true" ? (
+      {authData!==null && authData.data.isadmin === "true" ? (
         <>
           <LinkWrapper
             select={selected === "Dashboard"}

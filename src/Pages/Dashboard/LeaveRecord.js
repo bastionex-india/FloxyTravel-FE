@@ -85,7 +85,7 @@ export default function LeaveRecord({ vendorId }) {
     navigate("/hoteldetails", { state: item });
   };
   const getSummaryData = () => {
-    const vendorid = authData.data.vendorId || vendorId;
+    const vendorid = authData!==null && (authData.data.vendorId || vendorId);
 
     axios
       .get(`${environmentVariables.apiUrl}/admin/getVendorSummary/${vendorid}`)
@@ -123,9 +123,6 @@ export default function LeaveRecord({ vendorId }) {
         </div>
       ) : (
         <CardsWrapper>
-          {
-            console.log("summaryData",summaryData)
-          }
           <CardWrapper>
             <Card elevation={0} style={{ padding: "50px 0px", marginRight: "20px" }}>
               <Box sx={{ flexGrow: 1 }}>

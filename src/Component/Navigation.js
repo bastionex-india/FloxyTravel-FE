@@ -163,6 +163,7 @@ function Navigation({
   setShowNotifications,
   showDropDown,
   setShowDropDown,
+  loggedIn
 }) {
   const { authData, setAuthData } = useContext(AuthContext);
   const [notificationData, setNotificationData] = useState(null);
@@ -259,32 +260,20 @@ function Navigation({
       });
   };
   useEffect(() => {
-    // socket.emit("fetchData", authData?.data?.token);
-    // socket.on("dataFetched", (data) => {
-    //   console.log(data, "fetched data");
-    //   setNotificationData(data.data);
-    //   setNotificationLength(data.data.length);
-    // });
-    // return () => {
-    //   socket.disconnect();
-    // };
     getNotificationData();
   }, []);
   useEffect(() => {
     const socket = io.connect(environmentVariables?.apiUrl);
 
     socket.on("admin_notification", (data) => {
-      console.log(data, "sr");
       getNotificationData();
     });
 
     socket.on("admin_cancellation_notification", (data) => {
-      console.log(data, "sr");
       getNotificationData();
     });
 
     socket.on("admin_booking_notification", (data) => {
-      console.log(data, "sr");
       getNotificationData();
     });
     socket.on("emitPayoutRequestToAdmin", (data) => {
@@ -298,25 +287,7 @@ function Navigation({
 
   const Logout = async () => {
     localStorage.removeItem("authdata");
-    setAuthData("");
-    // const time = new Date();
-    // const response = await axios.post('/logout',{
-    //     // method:'POST',
-    //     headers:{
-    //         Acccept:"application/json",
-    //         "Content-Type":"application/json"
-    //     },
-    //     loginTime:authData.data.time,
-    //     logoutTime:time,
-    //     credentials:"include"
-    //  })
-    //   .then((response) => {
-    //     navigation("/")
-    //     // console.log(response);
-    //   })
-    //   .catch((error) => {
-    //     // console.log(error);
-    //   });
+    setAuthData(null);
   };
   return (
     <Root>
@@ -363,25 +334,27 @@ function Navigation({
             {authData?.data?.name}{" "}
             <i className="fa-sharp fa-solid fa-caret-down"></i>
           </DropDown>
-          {showDropDown && (
-            <ListWrapper>
-              <Option
-                onClick={() => {
-                  setShowDropDown(false);
-                  navigation("/profile");
-                }}
-              >
-                Profile
-              </Option>
-              <Option
-                onClick={() => {
-                  setShowDropDown(false);
-                  Logout();
-                }}
-              >
-                Logout
-              </Option>
-            </ListWrapper>
+          {loggedIn && (
+            showDropDown && (
+              <ListWrapper>
+                <Option
+                  onClick={() => {
+                    setShowDropDown(false);
+                    navigation("/profile");
+                  }}
+                >
+                  Profile
+                </Option>
+                <Option
+                  onClick={() => {
+                    setShowDropDown(false);
+                    Logout();
+                  }}
+                >
+                  Logout
+                </Option>
+              </ListWrapper>
+            )
           )}
         </UserInfo>
       </RightWrapper>

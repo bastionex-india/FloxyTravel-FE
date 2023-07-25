@@ -100,7 +100,7 @@ export default function VendorGraphCheck() {
       method: "post",
       url: `${environmentVariables.apiUrl}/vendor/getgraphhotels/${vendorId}`,
       data: allData,
-      headers: { _token: authData.data.token },
+      headers: { _token: authData!==null && authData.data.token },
     })
       .then((response) => {
         const data = response.data.data;
@@ -135,7 +135,7 @@ export default function VendorGraphCheck() {
       method: "post",
       url: `${environmentVariables.apiUrl}/vendor/getgraphhotels/${vendorId}`,
       data: allData,
-      headers: { _token: authData.data.token },
+      headers: { _token: authData!==null && authData.data.token },
     })
       .then((response) => {
         const data = response.data.data;
@@ -158,7 +158,7 @@ export default function VendorGraphCheck() {
       method: "post",
       url: `${environmentVariables.apiUrl}/vendor/getgraphhotels/${vendorId}`,
       data: allData,
-      headers: { _token: authData.data.token },
+      headers: { _token: authData!==null &&  authData.data.token },
     })
       .then((response) => {
         console.log(response.data.data[0]);
@@ -207,7 +207,7 @@ export default function VendorGraphCheck() {
     setIsLoadingGraph(true);
     if (window !== undefined) {
       const param = window.location.href.split("/").pop();
-      const vendorid = authData.data.vendorId ? authData.data.vendorId : param;
+      const vendorid = authData!==null && (authData.data.vendorId ? authData.data.vendorId : param);
       console.log(vendorid, "floxy");
       setVendorId(vendorid);
     }
