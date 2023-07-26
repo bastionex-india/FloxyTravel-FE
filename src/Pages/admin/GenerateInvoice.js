@@ -591,9 +591,6 @@ const GenerateInvoice = () => {
                 <DetailContainer
                   style={{ padding: "6px 0" }}
                 >
-                  {
-                    console.log("state",state)
-                  }
                   <Detailkey> Currency </Detailkey>
                   <DetailValue>
                   {state.status === "pending" || state.status === "approved" ?
