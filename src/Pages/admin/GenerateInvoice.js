@@ -25,6 +25,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import moment from "moment";
 import logo from "../../Images/LogoDark.png";
+import Checkbox from '@mui/material/Checkbox';
 import { LoadingButton } from "@mui/lab";
 // import Box from '@mui/material/Box';
 import InputLabel from "@mui/material/InputLabel";
@@ -127,12 +128,17 @@ const GenerateInvoice = () => {
   const InputCheckIn = useRef(null);
   const InputCheckOut = useRef(null);
   const [numOfDays, setNumOfDays] = useState(0);
-  const [isSendInvoice,setIsSendInvoice] = useState(false);
+  const [isSendInvoice, setIsSendInvoice] = useState(false);
   const [noofpersons, setNoofPerons] = useState(state.adult);
   const [noofchildren, setNoofChildren] = useState(state.children);
   const [noofrooms, setNoofRooms] = useState(state.noOfRooms);
-  const [currency,setCurrency] = useState('INR');
+  const [currency, setCurrency] = useState('INR');
 
+  const [isBreakfast,setIsBreakfast] = useState(state.isBreakfast)
+  const [isLunch,setIsLinch] = useState(state.isLunch);
+  const [isDinner,setIsDinner] = useState(state.isDinner)
+
+  console.log("state ",state);
   const sendInvoice = () => {
     // console.log(checkIn,checkOut,noofpersons,Number(noofchildren),noofrooms,state._id,amount.toString(),Number(discountAmount),new Date(checkIn).getTime(),new Date(checkOut).getTime())
     if (hotelPrice && Number(hotelPrice) - Number(discountAmount) > 0) {
@@ -146,7 +152,10 @@ const GenerateInvoice = () => {
         persons: noofpersons,
         children: Number(noofchildren),
         rooms: noofrooms,
-        currency: currency
+        currency: currency,
+        isBreakfast,
+        isLunch,
+        isDinner
       };
       setIsSendInvoice(true)
       let config = {
@@ -346,7 +355,7 @@ const GenerateInvoice = () => {
       setDiscountAmount(e.target.value);
     }
   };
-
+  console.log({isDinner,isLunch,isBreakfast})
   return (
     <>
       <TextMainWrapper>
@@ -411,7 +420,7 @@ const GenerateInvoice = () => {
                   <Detailkey> CheckIn Date </Detailkey>
                   <DetailValue>
                     {
-                      state.status === "pending" || state.status === "approved" ? 
+                      state.status === "pending" || state.status === "approved" ?
                         <div style={{ position: "relative" }}>
                           <div
                             onClick={() => {
@@ -444,7 +453,7 @@ const GenerateInvoice = () => {
                         </div>
                         :
                         <>
-                        {moment(checkIn).format('DD/MM/YYYY')}
+                          {moment(checkIn).format('DD/MM/YYYY')}
                         </>
 
                     }
@@ -456,44 +465,44 @@ const GenerateInvoice = () => {
                   <DetailValue>
                     {
                       state.status === "pending" || state.status === "approved" ?
-                      <div style={{ position: "relative" }}>
-                        <div
-                          onClick={() => InputCheckOut.current.setOpen(true)}
-                          style={{
-                            top: "20%",
-                            right: "54%",
-                            zIndex: "99",
-                            fontSize: "20px",
-                            cursor: "pointer",
-                            position: "absolute",
-                          }}
-                        >
-                          <i class="fas fa-calendar-alt"></i>
+                        <div style={{ position: "relative" }}>
+                          <div
+                            onClick={() => InputCheckOut.current.setOpen(true)}
+                            style={{
+                              top: "20%",
+                              right: "54%",
+                              zIndex: "99",
+                              fontSize: "20px",
+                              cursor: "pointer",
+                              position: "absolute",
+                            }}
+                          >
+                            <i class="fas fa-calendar-alt"></i>
+                          </div>
+
+                          <DatePickerStyled2
+                            className=""
+                            placeholderText=" CheckOut"
+                            selected={checkOut}
+                            onChange={handleCheckOutChange}
+                            startDate={checkIn}
+                            endDate={checkOut}
+                            minDate={checkIn}
+                            ref={InputCheckOut}
+                          ></DatePickerStyled2>
+
                         </div>
-
-                        <DatePickerStyled2
-                          className=""
-                          placeholderText=" CheckOut"
-                          selected={checkOut}
-                          onChange={handleCheckOutChange}
-                          startDate={checkIn}
-                          endDate={checkOut}
-                          minDate={checkIn}
-                          ref={InputCheckOut}
-                        ></DatePickerStyled2>
-
-                      </div>
-                      :
-                      <>
-                        {moment(checkOut).format('DD/MM/YYYY')}
+                        :
+                        <>
+                          {moment(checkOut).format('DD/MM/YYYY')}
                         </>
 
                     }
                   </DetailValue>
                 </DetailContainer>
-                  {
-                    console.log("checkOut date",checkOut)
-                  }
+                {
+                  console.log("checkOut date", checkOut)
+                }
                 <DetailContainer>
                   <Detailkey> Number of Persons </Detailkey>
                   <DetailValue>
@@ -526,25 +535,25 @@ const GenerateInvoice = () => {
                   <Detailkey> Number of Children </Detailkey>
                   <DetailValue>
                     {
-                      state.status === "pending" || state.status === "approved"?
-                      <FormControl
-                        sx={{ width: "80px" }}
-                        variant="standard"
-                        className="pull-right"
-                      >
-                        <Input
-                          type="number"
-                          placeholder="Total Children*"
-                          name="noofchildren"
-                          value={noofchildren}
-                          onChange={handleChangeChildren}
-                          onKeyDown={handleKeyPress}
-                        />
-                      </FormControl>
-                      :
-                      <>
-                      {noofchildren}
-                      </>
+                      state.status === "pending" || state.status === "approved" ?
+                        <FormControl
+                          sx={{ width: "80px" }}
+                          variant="standard"
+                          className="pull-right"
+                        >
+                          <Input
+                            type="number"
+                            placeholder="Total Children*"
+                            name="noofchildren"
+                            value={noofchildren}
+                            onChange={handleChangeChildren}
+                            onKeyDown={handleKeyPress}
+                          />
+                        </FormControl>
+                        :
+                        <>
+                          {noofchildren}
+                        </>
 
                     }
 
@@ -556,31 +565,82 @@ const GenerateInvoice = () => {
                   <DetailValue>
                     {
                       state.status === "pending" || state.status === "approved" ?
-                      <FormControl
-                      sx={{ width: "80px" }}
-                      variant="standard"
-                      className="pull-right"
-                    >
-                      <Input
-
-                        type="number"
-                        placeholder="Total rooms*"
-                        name="noofrooms"
-                        value={noofrooms}
-                        onChange={handleChangeRooms}
-                        onKeyDown={handleKeyPress}
-                      />
-                    </FormControl>
-                    :
-                      <>{noofrooms}</>
+                        <FormControl
+                          sx={{ width: "80px" }}
+                          variant="standard"
+                          className="pull-right"
+                        >
+                          <Input
+                            type="number"
+                            placeholder="Total rooms*"
+                            name="noofrooms"
+                            value={noofrooms}
+                            onChange={handleChangeRooms}
+                            onKeyDown={handleKeyPress}
+                          />
+                        </FormControl>
+                        :
+                        <>{noofrooms}</>
                     }
-                    
-
-
                   </DetailValue>
                 </DetailContainer>
-
-
+                <DetailContainer>
+                  <Detailkey> Breakfast for all guests</Detailkey>
+                  <DetailValue>
+                    {
+                      state.status === "pending" || state.status === "approved" ?
+                        <FormControl
+                          sx={{ width: "80px" }}
+                          variant="standard"
+                          className="pull-right"
+                        >
+                          <Checkbox checked={isBreakfast} onChange={(e)=> setIsBreakfast(e.target.checked) } />
+                        </FormControl>
+                        :
+                        <>
+                        { isBreakfast ? "Yes":"No"}
+                        </>
+                    }
+                  </DetailValue>
+                </DetailContainer>
+                <DetailContainer>
+                  <Detailkey> Lunch for all guests</Detailkey>
+                  <DetailValue>
+                    {
+                      state.status === "pending" || state.status === "approved" ?
+                        <FormControl
+                          sx={{ width: "80px" }}
+                          variant="standard"
+                          className="pull-right"
+                        >
+                          <Checkbox checked={isLunch} onChange={(e)=> setIsLinch(e.target.checked) } />
+                        </FormControl>
+                        :
+                        <>
+                        { isLunch ? "Yes":"No"}
+                        </>
+                    }
+                  </DetailValue>
+                </DetailContainer>
+                <DetailContainer>
+                  <Detailkey> Dinner for all guests</Detailkey>
+                  <DetailValue>
+                    {
+                      state.status === "pending" || state.status === "approved" ?
+                        <FormControl
+                          sx={{ width: "80px" }}
+                          variant="standard"
+                          className="pull-right"
+                        >
+                          <Checkbox checked={isDinner} onChange={(e)=> setIsDinner(e.target.checked) } />
+                        </FormControl>
+                        :
+                        <>
+                        { isDinner ? "Yes":"No"}
+                        </>
+                    }
+                  </DetailValue>
+                </DetailContainer>
                 <DetailContainer
                   style={{ padding: "6px 0" }}
                 >
@@ -591,37 +651,35 @@ const GenerateInvoice = () => {
                 <DetailContainer
                   style={{ padding: "6px 0" }}
                 >
-                  {
-                    console.log("state",state)
-                  }
+
                   <Detailkey> Currency </Detailkey>
                   <DetailValue>
-                  {state.status === "pending" || state.status === "approved" ?
-                    <FormControl>
-                      <RadioGroup
-                        row
-                        aria-labelledby="demo-row-radio-buttons-group-label"
-                        name="row-radio-buttons-group"
-                      >
-                        <FormControlLabel checked={currency=='INR'?true:false} value="INR" onChange={()=>{ setCurrency('INR')}} control={<Radio
-                          sx={{
-                            '& .MuiSvgIcon-root': {
-                              fontSize: 13,
-                            },
-                          }} />} label="INR" />
-                          <FormControlLabel checked={currency=='INR'?false:true} value="USD" onChange={()=>{ setCurrency('USD')}} control={<Radio
+                    {state.status === "pending" || state.status === "approved" ?
+                      <FormControl>
+                        <RadioGroup
+                          row
+                          aria-labelledby="demo-row-radio-buttons-group-label"
+                          name="row-radio-buttons-group"
+                        >
+                          <FormControlLabel checked={currency == 'INR' ? true : false} value="INR" onChange={() => { setCurrency('INR') }} control={<Radio
+                            sx={{
+                              '& .MuiSvgIcon-root': {
+                                fontSize: 13,
+                              },
+                            }} />} label="INR" />
+                          <FormControlLabel checked={currency == 'INR' ? false : true} value="USD" onChange={() => { setCurrency('USD') }} control={<Radio
                             sx={{
                               '& .MuiSvgIcon-root': {
                                 fontSize: 13,
                               },
                             }} />} label="USD" />
-                      </RadioGroup>
-                    </FormControl>
-                    :
-                    <>
-                    {state.currency!=undefined? state.currency : 'INR'}
-                    </>
-                          }
+                        </RadioGroup>
+                      </FormControl>
+                      :
+                      <>
+                        {state.currency != undefined ? state.currency : 'INR'}
+                      </>
+                    }
                   </DetailValue>
                 </DetailContainer>
 
@@ -631,7 +689,7 @@ const GenerateInvoice = () => {
                   <Detailkey> Amount </Detailkey>
                   <DetailValue
                   >
-                    <span style={{fontSize:'14px',fontWeight: "bold",lineHeight: "37px",paddingRight: "10px"}}>{currency}</span>
+                    <span style={{ fontSize: '14px', fontWeight: "bold", lineHeight: "37px", paddingRight: "10px" }}>{currency}</span>
                     {state.status === "pending" || state.status === "approved" ? (
                       <FormControl
                         sx={{ width: "80px" }}
@@ -668,7 +726,7 @@ const GenerateInvoice = () => {
                   </Detailkey>
                   <DetailValue
                   >
-                    <span style={{fontSize:'14px',fontWeight: "bold",lineHeight: "37px",paddingRight: "10px"}}>{currency}</span>
+                    <span style={{ fontSize: '14px', fontWeight: "bold", lineHeight: "37px", paddingRight: "10px" }}>{currency}</span>
                     {state.status === "pending" || state.status === "approved" ? (
                       <FormControl
                         variant="standard"
@@ -731,11 +789,11 @@ const GenerateInvoice = () => {
             <Grid xs={8}></Grid>
             <Grid xs={4} className="pull-right">
               <LoadingButton
-                loading={ isSendInvoice }
-                disabled={(hotelPrice.length ||  !isSendInvoice) ? false : true}
+                loading={isSendInvoice}
+                disabled={(hotelPrice.length || !isSendInvoice) ? false : true}
                 variant="contained"
                 onClick={sendInvoiceHandler}
-                
+
               >
                 Send Invoice
               </LoadingButton>
