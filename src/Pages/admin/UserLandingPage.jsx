@@ -22,6 +22,7 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import WallpaperIcon from "@mui/icons-material/Wallpaper";
+import ArrowBackIosNewOutlinedIcon from '@mui/icons-material/ArrowBackIosNewOutlined';
 
 const Item = newStyle(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -31,6 +32,13 @@ const Item = newStyle(Paper)(({ theme }) => ({
   height: "120px",
   color: theme.palette.text.secondary,
 }));
+
+const SearchButtonWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 10px 0;
+`;
 
 const BootstrapDialog = newStyle(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -677,46 +685,43 @@ const UserLandingPage = () => {
   return (
     <Root>
       <HeadingWrapper>
-        {" "}
-        <i
-          style={{ position: "absolute", left: "0" }}
-          onClick={() => navigate(-1)}
-          class="fa-solid fa-chevron-left fa-2x"
-        ></i>
+        <IconButton title="Back" onClick={() => navigate(-1)} size="small" sx={{ backgroundColor: "#e1e1e1", color: "#01575c", marginTop: "4px" }}>
+          <ArrowBackIosNewOutlinedIcon />
+        </IconButton>
         <MainHeading>Manage State Landing Page</MainHeading>
       </HeadingWrapper>
       <StatesContainer>
         {/* <StateHeading>States : </StateHeading> */}
 
         <div
-          class="modal fade"
+          className="modal fade"
           id="staticBackdrop"
           data-bs-backdrop="static"
           data-bs-keyboard="false"
-          tabindex="-1"
+
           aria-labelledby="staticBackdropLabel"
           aria-hidden="true"
         >
-          <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h1 class="modal-title fs-5" id="staticBackdropLabel">
+          <div className="modal-dialog modal-dialog-centered modal-lg">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h1 className="modal-title fs-5" id="staticBackdropLabel">
                   Add State
                 </h1>
                 <button
                   type="button"
-                  class="btn-close"
+                  className="btn-close"
                   data-bs-dismiss="modal"
                   aria-label="Close"
                 ></button>
               </div>
-              <div class="modal-body">
-                <div class="input-group mb-3">
-                  <label class="input-group-text" for="inputGroupSelect01">
+              <div className="modal-body">
+                <div className="input-group mb-3">
+                  <label className="input-group-text" for="inputGroupSelect01">
                     State*:{" "}
                   </label>
                   <select
-                    class="form-select"
+                    className="form-select"
                     onChange={(e) => setChosenState(e.target.value)}
                     id="inputGroupSelect01"
                   >
@@ -727,13 +732,13 @@ const UserLandingPage = () => {
                   </select>
                 </div>
 
-                <div class="input-group mb-3">
-                  <label class="input-group-text" for="inputGroupFile01">
+                <div className="input-group mb-3">
+                  <label className="input-group-text" for="inputGroupFile01">
                     Background Image*:{" "}
                   </label>
                   <input
                     type="file"
-                    class="form-control"
+                    className="form-control"
                     onChange={(e) => addImage(e)}
                     id="inputGroupFile03"
                     aria-describedby="inputGroupFileAddon03"
@@ -741,10 +746,10 @@ const UserLandingPage = () => {
                   />
                 </div>
               </div>
-              <div class="modal-footer">
+              <div className="modal-footer">
                 <button
                   type="button"
-                  class="btn btn-secondary"
+                  className="btn btn-secondary"
                   data-bs-dismiss="modal"
                 >
                   Close
@@ -753,7 +758,7 @@ const UserLandingPage = () => {
                   type="button"
                   onClick={handleAddStateSubmit}
                   data-bs-dismiss="modal"
-                  class="btn btn-primary"
+                  className="btn btn-primary"
                 >
                   Submit
                 </button>
@@ -763,34 +768,33 @@ const UserLandingPage = () => {
         </div>
 
         <div
-          class="modal fade"
+          className="modal fade"
           id="staticBackdrop1"
           data-bs-backdrop="static"
           data-bs-keyboard="false"
-          tabindex="-1"
           aria-labelledby="staticBackdropLabel1"
           aria-hidden="true"
         >
-          <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h1 class="modal-title fs-5" id="staticBackdropLabel1">
+          <div className="modal-dialog modal-dialog-centered modal-lg">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h1 className="modal-title fs-5" id="staticBackdropLabel1">
                   Add Theme
                 </h1>
                 <button
                   type="button"
-                  class="btn-close"
+                  className="btn-close"
                   data-bs-dismiss="modal"
                   aria-label="Close"
                 ></button>
               </div>
-              <div class="modal-body">
-                <div class="input-group mb-3">
-                  <label class="input-group-text" for="inputGroupSelect01">
+              <div className="modal-body">
+                <div className="input-group mb-3">
+                  <label className="input-group-text" for="inputGroupSelect01">
                     Name*:{" "}
                   </label>
                   <select
-                    class="form-select"
+                    className="form-select"
                     id="inputGroupSelect01"
                     value={theme}
                     onChange={(e) => setTheme(e.target.value)}
@@ -804,24 +808,24 @@ const UserLandingPage = () => {
                   </select>
                 </div>
 
-                <div class="input-group mb-3">
-                  <span class="input-group-text" id="basic-addon1">
+                <div className="input-group mb-3">
+                  <span className="input-group-text" id="basic-addon1">
                     Title*:{" "}
                   </span>
                   <input
                     type="text"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
-                    class="form-control"
+                    className="form-control"
                     aria-label="Username"
                     aria-describedby="basic-addon1"
                   />
                 </div>
 
-                <div class="input-group">
-                  <span class="input-group-text">Description*: </span>
+                <div className="input-group">
+                  <span className="input-group-text">Description*: </span>
                   <textarea
-                    class="form-control"
+                    className="form-control"
                     aria-label="With textarea"
                     value={description}
                     onChange={handleDescriptionChange}
@@ -832,12 +836,12 @@ const UserLandingPage = () => {
 
                 {/* <br></br>
 
-                <div class="input-group mb-3">
-                  <span class="input-group-text" id="basic-addon1">
+                <div className="input-group mb-3">
+                  <span className="input-group-text" id="basic-addon1">
                     Priority*:{" "}
                   </span>
                   <input
-                    class="form-control"
+                    className="form-control"
                     aria-label="Username"
                     aria-describedby="basic-addon1"
                     value={priority}
@@ -848,7 +852,7 @@ const UserLandingPage = () => {
                   />
                 </div> */}
               </div>
-              <div class="modal-footer">
+              <div className="modal-footer">
                 <button
                   onClick={() => {
                     setTheme("");
@@ -856,14 +860,14 @@ const UserLandingPage = () => {
                     setTitle("");
                   }}
                   type="button"
-                  class="btn btn-secondary"
+                  className="btn btn-secondary"
                   data-bs-dismiss="modal"
                 >
                   Cancel
                 </button>
                 <button
                   type="button"
-                  class="btn btn-primary"
+                  className="btn btn-primary"
                   data-bs-dismiss="modal"
                   onClick={handleAddThemeSubmit}
                 >
@@ -874,23 +878,22 @@ const UserLandingPage = () => {
           </div>
         </div>
         <div
-          class="modal fade"
+          className="modal fade"
           id="staticBackdrop3"
           data-bs-backdrop="static"
           data-bs-keyboard="false"
-          tabindex="-1"
           aria-labelledby="staticBackdropLabel2"
           aria-hidden="true"
         >
-          <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h1 class="modal-title fs-5" id="staticBackdropLabel2">
+          <div className="modal-dialog modal-dialog-centered modal-lg">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h1 className="modal-title fs-5" id="staticBackdropLabel2">
                   Edit Theme
                 </h1>
                 <button
                   type="button"
-                  class="btn-close"
+                  className="btn-close"
                   data-bs-dismiss="modal"
                   aria-label="Close"
                   onClick={() => {
@@ -900,13 +903,13 @@ const UserLandingPage = () => {
                   }}
                 ></button>
               </div>
-              <div class="modal-body">
-                <div class="input-group mb-3">
-                  <label class="input-group-text" for="inputGroupSelect01">
+              <div className="modal-body">
+                <div className="input-group mb-3">
+                  <label className="input-group-text" for="inputGroupSelect01">
                     Name*:{" "}
                   </label>
                   <select
-                    class="form-select"
+                    className="form-select"
                     id="inputGroupSelect01"
                     value={theme}
                     onChange={(e) => setTheme(e.target.value)}
@@ -920,24 +923,24 @@ const UserLandingPage = () => {
                   </select>
                 </div>
 
-                <div class="input-group mb-3">
-                  <span class="input-group-text" id="basic-addon1">
+                <div className="input-group mb-3">
+                  <span className="input-group-text" id="basic-addon1">
                     Title*:{" "}
                   </span>
                   <input
                     type="text"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
-                    class="form-control"
+                    className="form-control"
                     aria-label="Username"
                     aria-describedby="basic-addon1"
                   />
                 </div>
 
-                <div class="input-group">
-                  <span class="input-group-text">Description*: </span>
+                <div className="input-group">
+                  <span className="input-group-text">Description*: </span>
                   <textarea
-                    class="form-control"
+                    className="form-control"
                     aria-label="With textarea"
                     value={description}
                     onChange={handleDescriptionChange}
@@ -948,12 +951,12 @@ const UserLandingPage = () => {
 
                 {/* <br></br>
 
-                <div class="input-group mb-3">
-                  <span class="input-group-text" id="basic-addon1">
+                <div className="input-group mb-3">
+                  <span className="input-group-text" id="basic-addon1">
                     Priority*:{" "}
                   </span>
                   <input
-                    class="form-control"
+                    className="form-control"
                     aria-label="Username"
                     aria-describedby="basic-addon1"
                     value={priority}
@@ -964,7 +967,7 @@ const UserLandingPage = () => {
                   />
                 </div> */}
               </div>
-              <div class="modal-footer">
+              <div className="modal-footer">
                 <button
                   onClick={() => {
                     setTheme("");
@@ -972,14 +975,14 @@ const UserLandingPage = () => {
                     setTitle("");
                   }}
                   type="button"
-                  class="btn btn-secondary"
+                  className="btn btn-secondary"
                   data-bs-dismiss="modal"
                 >
                   Cancel
                 </button>
                 <button
                   type="button"
-                  class="btn btn-primary"
+                  className="btn btn-primary"
                   data-bs-dismiss="modal"
                   onClick={handleEditThemeSubmit}
                 >
@@ -991,138 +994,150 @@ const UserLandingPage = () => {
         </div>
 
         <div
-          class="modal fade"
+          className="modal fade"
           id="staticBackdrop2"
           data-bs-backdrop="static"
           data-bs-keyboard="false"
-          tabindex="-1"
           aria-labelledby="staticBackdropLabel2"
           aria-hidden="true"
         >
-          <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h1 class="modal-title fs-5" id="staticBackdropLabel2"></h1>
+          <div className="modal-dialog modal-dialog-centered modal-lg">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h1 className="modal-title fs-5" id="staticBackdropLabel2"></h1>
                 <button
                   type="button"
-                  class="btn-close"
+                  className="btn-close"
                   data-bs-dismiss="modal"
                   aria-label="Close"
                 ></button>
               </div>
-              <div class="modal-body">
+              <div className="modal-body">
                 <BackgroundImage
                   style={{ width: "45rem" }}
                   src={`${environmentVariables.apiUrl}/uploadscitiesimages/${backgroundImage}`}
                 />
               </div>
-              <div class="modal-footer"></div>
+              <div className="modal-footer"></div>
             </div>
           </div>
         </div>
 
-        <StatesWrapper>
-          <SelectState
-            onChange={(e) => {
-              setStateSelected(e.target.value.split("-")[0]);
-              setStateId(e.target.value.split("-")[1]);
-            }}
-          >
-            {/* <SelectOption>Select City</SelectOption> */}
-            {allStates &&
-              allStates.map((val) => (
-                <SelectOption value={`${val.cityName}-${val._id}`}>
-                  {val.cityName}
-                </SelectOption>
-              ))}
-          </SelectState>
-        </StatesWrapper>
-        <div style={{ display: "flex" }}>
-          {" "}
-          <button
+        <SearchButtonWrapper>
+          <StatesWrapper>
+            <SelectState
+              onChange={(e) => {
+                setStateSelected(e.target.value.split("-")[0]);
+                setStateId(e.target.value.split("-")[1]);
+              }}
+            >
+              {/* <SelectOption>Select City</SelectOption> */}
+              {allStates &&
+                allStates.map((val) => (
+                  <SelectOption value={`${val.cityName}-${val._id}`}>
+                    {val.cityName}
+                  </SelectOption>
+                ))}
+            </SelectState>
+          </StatesWrapper>
+          <div style={{ display: "flex", margin: "0px 15px" }}>
+            {" "}
+            <button
+              type="button"
+              style={{ marginRight: "1rem" }}
+              className="btn btn-primary"
+              data-bs-toggle="modal"
+              data-bs-target="#staticBackdrop"
+            >
+              Add State
+            </button>
+            <button
+              type="button"
+              style={{ marginRight: "1rem" }}
+              className="btn btn-primary"
+              data-bs-toggle="modal"
+              data-bs-target="#staticBackdrop1"
+            >
+              Add Theme
+            </button>
+            {/* <button
             type="button"
-            style={{ marginRight: "1rem" }}
-            class="btn btn-primary"
-            data-bs-toggle="modal"
-            data-bs-target="#staticBackdrop"
-          >
-            Add State
-          </button>
-          <button
-            type="button"
-            style={{ marginRight: "1rem" }}
-            class="btn btn-primary"
-            data-bs-toggle="modal"
-            data-bs-target="#staticBackdrop1"
-          >
-            Add Theme
-          </button>
-          {/* <button
-            type="button"
-            class="btn btn-primary"
+            className="btn btn-primary"
             data-bs-toggle="modal"
             data-bs-target="#staticBackdrop2"
           >
             View Background Image
           </button> */}
-        </div>
+          </div>
+        </SearchButtonWrapper>
       </StatesContainer>
       <div style={{ backgroundColor: "#fff", marginBottom: "10px" }}>
-        <BacgroundContainer>
-          <Grid container spacing={2}>
-            <Grid item xs={5}>
-              <Item style={{ paddingTop: "35px" }}>
-                <h3>
-                  {stateSelected
-                    ? stateSelected.charAt(0).toUpperCase() +
-                      stateSelected.slice(1)
-                    : ""}
-                </h3>
-              </Item>
-            </Grid>
-            <Grid item xs={4}>
-              <Item>
-                <img
-                  height={100}
-                  width={250}
-                  src={`${environmentVariables.apiUrl}/uploadscitiesimages/${backgroundImage}`}
-                  type=""
-                />
-              </Item>
-            </Grid>
-            <Grid item xs={3}>
-              <Item style={{ paddingTop: "35px" }}>
-                <Button
-                  variant="contained"
-                  component="label"
-                  size="small"
-                  startIcon={<WallpaperIcon />}
-                >
-                  Change
-                  <input
-                    type="file"
-                    hidden
-                    onChange={(e) => setNewChangeImage(e)}
-                  />
-                </Button>
-                {selectNewBackground ? (
-                  <>
-                    <div>image selected </div>
+        {
+          isLoading === true ? (
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              <CircularLoader></CircularLoader>
+            </div>
+          ) :
+            <BacgroundContainer>
+              <Grid container spacing={2}>
+                <Grid item xs={5} >
+                  <Item style={{ paddingTop: "35px" }}>
+                    <h3>
+                      {stateSelected
+                        ? stateSelected.charAt(0).toUpperCase() +
+                        stateSelected.slice(1)
+                        : ""}
+                    </h3>
+                  </Item>
+                </Grid>
+                <Grid item xs={4}>
+                  <Item>
+                    {
+                      backgroundImage ?
+                        <img
+                          height={100}
+                          width={250}
+                          src={`${environmentVariables.apiUrl}/uploadscitiesimages/${backgroundImage}`}
+                          type=""
+                        />
+                        : null
+                    }
+                  </Item>
+                </Grid>
+                <Grid item xs={3}>
+                  <Item style={{ paddingTop: "35px" }}>
                     <Button
-                      color="secondary"
-                      type="button"
                       variant="contained"
+                      component="label"
                       size="small"
-                      onClick={() => updateImageHandler()}
+                      startIcon={<WallpaperIcon />}
                     >
-                      update image
+                      Change
+                      <input
+                        type="file"
+                        hidden
+                        onChange={(e) => setNewChangeImage(e)}
+                      />
                     </Button>
-                  </>
-                ) : null}
-              </Item>
-            </Grid>
-          </Grid>
-        </BacgroundContainer>
+                    {selectNewBackground ? (
+                      <>
+                        <div>image selected </div>
+                        <Button
+                          color="secondary"
+                          type="button"
+                          variant="contained"
+                          size="small"
+                          onClick={() => updateImageHandler()}
+                        >
+                          update image
+                        </Button>
+                      </>
+                    ) : null}
+                  </Item>
+                </Grid>
+              </Grid>
+            </BacgroundContainer>
+        }
         <ThemeContainer>
           <StateHeading>Themes :</StateHeading>
         </ThemeContainer>
@@ -1161,12 +1176,12 @@ const UserLandingPage = () => {
                             id={val?._id}
                             deleteConfirmation
                             onClick={(e) => deleteConfirmation(e)}
-                            className="fa-solid fa-trash"
+                            classNameName="fa-solid fa-trash"
                           />
                           <EditIcon
                             onClick={(e) => handleEditTheme(e)}
                             id={val?._id}
-                            className="fa-solid fa-pen-to-square"
+                            classNameName="fa-solid fa-pen-to-square"
                             data-bs-toggle="modal"
                             data-bs-target="#staticBackdrop3"
                           />
@@ -1176,7 +1191,7 @@ const UserLandingPage = () => {
                             <Modal.Title>Delete Confirmation</Modal.Title>
                           </Modal.Header>
                           <Modal.Body>
-                            <div className="alert alert-danger">
+                            <div classNameName="alert alert-danger">
                               Are you sure you want to delete ?
                             </div>
                           </Modal.Body>
@@ -1259,9 +1274,10 @@ const ThemeNameIconWrapper = styled.div`
 
 const HeadingWrapper = styled.div`
   position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  display: -webkit-box;
+  // display: flex;
+  // justify-content: center;
+  // align-items: center;
 `;
 const DeleteIcon = styled.i`
   color: #07515c;
@@ -1371,10 +1387,9 @@ const Root = styled.div`
 
 const MainHeading = styled.div`
   font-size: 1.75rem;
-  /* font-weight: 500; */
-  /* text-align: center; */
+  padding-left: 40px;
   color: #000;
-  margin: 0 5% 10px 5%;
+  // margin: 0 5% 10px 5%;
 `;
 
 const StatesContainer = styled.div`
@@ -1382,7 +1397,7 @@ const StatesContainer = styled.div`
   justify-content: space-between;
   align-items: flex-start;
   padding: 20px 0;
-  margin: 0 5%;
+  margin: 0;
   /* margin-bottom: 40px; */
 `;
 
@@ -1393,7 +1408,7 @@ const StateHeading = styled.div`
 `;
 const StatesWrapper = styled.div`
   display: flex;
-  width: 31vw;
+  /* width: 31vw; */
   height: 40px;
   flex-wrap: wrap;
   justify-content: space-around;

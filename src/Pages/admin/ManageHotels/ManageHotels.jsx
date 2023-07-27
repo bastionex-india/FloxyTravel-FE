@@ -19,9 +19,10 @@ import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
-import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import Typography from "@mui/material/Typography";
+import IconButton from "@mui/material/IconButton";
+import ArrowBackIosNewOutlinedIcon from '@mui/icons-material/ArrowBackIosNewOutlined';
 
 const BootstrapDialog = newStyle(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -63,9 +64,10 @@ BootstrapDialogTitle.propTypes = {
 
 const HeadingWrapper = styled.div`
   position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  // display: flex;
+  display: -webkit-box;
+  // justify-content: center;
+  // align-items: center;
 `;
 const HotelCardsWrapper = styled.div``;
 const HotelCard = styled.div`
@@ -141,6 +143,8 @@ const Root = styled.div`
 
 const Heading = styled.div`
   font-size: 1.75rem;
+
+  padding-left: 40px;
   /* ; */
   @media (max-width: 768px) {
     display: none;
@@ -154,10 +158,11 @@ const TextSelectField = styled.div`
   }
 `;
 const SelectVendor = styled.select`
-  width: 85%;
+  /* width: 85%; */
   font-size: 14px;
   border-radius: 5px;
-  padding: 0 10px;
+  min-width:400px;
+  padding: 10px;
 `;
 const SelectOption = styled.option`
   font-size: 14px;
@@ -172,8 +177,10 @@ const Select = styled.select`
 `;
 const TextWrapper = styled.div`
   display: flex;
-  justify-content: space-between;
-  margin-top: 20px;
+  justify-content: flex-start;
+  align-items:center;
+  margin-top: 40px;
+
   @media (max-width: 768px) {
     justify-content: flex-end;
   }
@@ -434,7 +441,7 @@ const ManageAdmin = () => {
               ? row.image[0]
               : "1675936089112-teanest1.jpg";
             return (
-             <> <HotelCardsWrapper><HotelCard key={index}>
+              <> <HotelCardsWrapper><HotelCard key={index}>
                 <HotelImageWrapper>
                   <HotelImage
                     src={`https://uat-travel-api.floxypay.com/uploads/${imageSrc}`}
@@ -503,17 +510,17 @@ const ManageAdmin = () => {
                 </BootstrapDialog>
               </HotelCard>
               </HotelCardsWrapper>
-          </>
+              </>
             );
           })} <TablePagination
-            component="div"
-            count={response?.totalrecords}
-            page={page}
-            onPageChange={handleChangePage}
-            rowsPerPage={rowsPerPage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          /></>)
-         
+              component="div"
+              count={response?.totalrecords}
+              page={page}
+              onPageChange={handleChangePage}
+              rowsPerPage={rowsPerPage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+            /></>)
+
         }
       }
     }
@@ -524,19 +531,16 @@ const ManageAdmin = () => {
         <TextRoot>
           <Root>
             <HeadingWrapper>
-              {" "}
-              <i
-                style={{ position: "absolute", left: "0" }}
-                onClick={() => navigate(-1)}
-                class="fa-solid fa-chevron-left fa-2x"
-              ></i>
+              <IconButton title="Back" onClick={() => navigate(-1)} size="small" sx={{ backgroundColor: "#e1e1e1", color: "#01575c", marginTop: "4px" }}>
+                <ArrowBackIosNewOutlinedIcon />
+              </IconButton>
               <Heading> Manage Hotels</Heading>
             </HeadingWrapper>
-            <Lable>Select Vendor</Lable>
+            {/* <Lable>Select Vendor</Lable> */}
             <TextWrapper>
               <SelectVendor onChange={vendorHandler}>
                 {/* <SelectOption value={"all"}>Select Vendor*</SelectOption> */}
-                <SelectOption value={"all"}>All</SelectOption>
+                <SelectOption value={"all"}>All Vendors</SelectOption>
                 {vendorlist &&
                   vendorlist.map((row, index) => {
                     return (

@@ -22,6 +22,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import CircularLoader from "../../Component/CircularLoader/CircularLoader";
+import { format, parse } from 'date-fns';
 
 const Item = newStyled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -63,6 +64,11 @@ const Heading = styled.div`
     display: none;
   }
 `;
+const HeadingDiv = styled.div`
+  display:flex;
+  justify-content: space-between;
+  align-items: flex-start;
+`;
 const BookingHistorybyOrderid = () => {
   const { state } = useLocation();
   const { authData } = useContext(AuthContext);
@@ -77,16 +83,13 @@ const BookingHistorybyOrderid = () => {
         { headers: { _token: authData.data.token } }
       )
       .then((response) => {
-        // console.log("response.data", response.data.data);
         setIsLoading(false);
         setData(response.data.data);
       })
       .catch((error) => {
         setIsLoading(false);
-        console.log("error", error);
       });
   };
-  console.log(state, "admin");
   useEffect(() => {
     setIsLoading(true);
     getAllUsers();
@@ -95,6 +98,36 @@ const BookingHistorybyOrderid = () => {
   const generateInvoiceHandler = () => {
     navigate("/generateInvoice", { state: data });
   };
+  function convertDateFormat(inputDate) {
+    const possibleFormats = [
+      'yyyy-MM-dd',
+      'MM-dd-yyyy',
+      'MM/dd/yyyy',
+      'dd/MM/yyyy',
+      'yyyy/MM/dd',
+      // Add more date formats as needed
+    ];
+  
+    let parsedDate;
+    for (const formatString of possibleFormats) {
+      parsedDate = parse(inputDate, formatString, new Date());
+      if (!isNaN(parsedDate)) {
+        break;
+      }
+    }
+  
+    if (isNaN(parsedDate)) {
+      return ''; // Return an empty string or handle the error as needed
+    }
+  
+    const formattedDate = format(parsedDate, 'dd/MM/yyyy');
+    return formattedDate;
+  }
+  function formatDate(timestamp) {
+    const options = { timeZone: 'Asia/Kolkata', day: '2-digit', month: '2-digit', year: 'numeric' };
+    const formattedDate = new Date(timestamp).toLocaleString('en-IN', options);
+    return formattedDate;
+  }
   return (
     <>
       <TextMainWrapper>
@@ -127,14 +160,31 @@ const BookingHistorybyOrderid = () => {
         ) : (
           <Grid container>
             <Grid xs={12}>
-              <Item>
-                <h4>Hotel Location</h4>
-                <h4>
+              <Item style={{ padding: "40px" }}>
+                {/* <h4>Hotel Location</h4> */}
+                <HeadingDiv>
+                <div>
+                  <h4>{data.hotelname}</h4>
+                  <p>
+                    {data.area} , {data.state}
+                  </p>
+                </div>
+                <Button
+                  variant="contained"
+                  onClick={generateInvoiceHandler}
+                  endIcon={<PictureAsPdfIcon />}
+                >
+                  {data.status === "pending" || data.status==="approved"
+                    ? "Generate Invoice"
+                    : "View Invoice"}
+                </Button>
+                </HeadingDiv>
+                {/* <h4>
                   <i>{data.hotelname}</i>
                 </h4>
                 <p>
                   {data.area} , {data.state}
-                </p>
+                </p> */}
                 <Grid container>
                   <Grid xs={6}>
                     <h4>Customer Details</h4>
@@ -181,15 +231,7 @@ const BookingHistorybyOrderid = () => {
                         </TableRow>
                       </TableBody>
                     </Table>
-                    <Button
-                      variant="contained"
-                      onClick={generateInvoiceHandler}
-                      endIcon={<PictureAsPdfIcon />}
-                    >
-                      {data.status === "pending"
-                        ? "Generate Invoice"
-                        : "View Invoice"}
-                    </Button>
+                   
                   </Grid>
                   <Grid xs={6}>
                     <h4>Booking Details</h4>
@@ -233,7 +275,7 @@ const BookingHistorybyOrderid = () => {
                           <TableCell component="th" scope="row">
                             CheckIn Date
                           </TableCell>
-                          <TableCell align="right">{data.checkIn}</TableCell>
+                          <TableCell align="right">{formatDate(data.checkIn)}</TableCell>
                         </TableRow>
                         <TableRow
                           sx={{
@@ -243,7 +285,7 @@ const BookingHistorybyOrderid = () => {
                           <TableCell component="th" scope="row">
                             CheckOut Date
                           </TableCell>
-                          <TableCell align="right">{data.checkOut}</TableCell>
+                          <TableCell align="right">{formatDate(data.checkOut)}</TableCell>
                         </TableRow>
                       </TableBody>
                     </Table>

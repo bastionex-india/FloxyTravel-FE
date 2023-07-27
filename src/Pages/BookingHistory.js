@@ -16,6 +16,8 @@ import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
 import SearchIcon from ".././Images/SearchIconNavbar.png";
 import Typography from "@mui/material/Typography";
+import IconButton from "@mui/material/IconButton";
+import ArrowBackIosNewOutlinedIcon from '@mui/icons-material/ArrowBackIosNewOutlined';
 
 import {
   Button,
@@ -52,19 +54,22 @@ const Root = styled.div`
 
 const Heading = styled.div`
   font-size: 1.75rem;
+  padding-left: 40px; 
   @media (max-width: 768px) {
     display: none;
   }
 `;
 
 const TextSelectField = styled.div`
-  // margin: 10px 0px 0px 10px;
+  /* margin: 10px 0px 0px 10px; */
   @media (max-width: 768px) {
     margin: 0;
   }
 `;
 
 const Select = styled.select`
+
+width: 100%;
   height: 30px;
   padding: 0px 10px;
   border-radius: 5px;
@@ -72,11 +77,14 @@ const Select = styled.select`
   border: none;
   box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px,
     rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+    height: 50px;
 `;
 const TextWrapper = styled.div`
   display: flex;
-  justify-content: space-between;
-  align-item: center;
+  justify-content: start;
+  align-items: center;
+  text-align:center;
+  margin-top: 25px;
 
   @media (max-width: 768px) {
     justify-content: flex-end;
@@ -138,7 +146,7 @@ const FilterWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0px 50px;
+  /* padding: 0px 50px; */
 `;
 const FilterComponent = styled.div`
   margin-left: 10px;
@@ -157,8 +165,8 @@ const DatePickerContainer = styled.div`
 `;
 const FromDateInput = styled.div`
   position: absolute;
-  top: -4%;
-  left: 82%;
+  top: 18%;
+  right: 35px;
   font-size: 20px;
   cursor: pointer;
   @media (max-width: 768px) {
@@ -166,6 +174,14 @@ const FromDateInput = styled.div`
     left: 90%;
     z-index: 1;
   }
+`;
+
+const HeadingWrapper = styled.div`
+  position: relative;
+  // display: flex;
+  display: -webkit-box;
+  // justify-content: center;
+  // align-items: center;
 `;
 
 const BookingHistory = () => {
@@ -265,7 +281,7 @@ const BookingHistory = () => {
       .request(config)
       .then((response) => {
         // setData(response.data.sort((a, b) => b.createdAt - a.createdAt));
-        console.log(response.data);
+        // console.log(response.data);
         const { totalItems, totalPages, currentPage, data } = response.data;
         setData(data);
         setTotalPages(totalPages);
@@ -323,6 +339,11 @@ const BookingHistory = () => {
   const refHandle1 = () => {
     InputEndDate.current.setOpen(true);
   };
+  function formatDate(timestamp) {
+    const options = { timeZone: 'Asia/Kolkata', day: '2-digit', month: '2-digit', year: 'numeric' };
+    const formattedDate = new Date(timestamp).toLocaleString('en-IN', options);
+    return formattedDate;
+  }
   // function convertToUnixTimestamp(dateString) {
   //   const [day, month, year] = dateString.split('/');
   //   const formattedDateString = `${month}/${day}/${year}`;
@@ -333,16 +354,12 @@ const BookingHistory = () => {
       <TextMainWrapper>
         <TextRoot>
           <Root>
-            <div style={{ display: "flex", alignItems: "center" }}>
-              {" "}
-              <i
-                style={{ cursor: "pointer", marginRight: "50px" }}
-                onClick={() => navigate(-1)}
-                class="fa-solid fa-chevron-left fa-2x"
-              ></i>
-              <Heading> Booking History</Heading>
-            </div>
-
+            <HeadingWrapper>
+              <IconButton title="Back" onClick={() => navigate(-1)} size="small" sx={{ backgroundColor: "#e1e1e1", color: "#01575c", marginTop: "4px" }}>
+                <ArrowBackIosNewOutlinedIcon />
+              </IconButton>
+              <Heading>Booking History</Heading>
+            </HeadingWrapper>
             <TextWrapper>
               {/* {
                 select!=="upcoming" && (
@@ -397,8 +414,8 @@ const BookingHistory = () => {
                   // onKeyDown={(e) => KeyDown(e)}
                   autoComplete="false"
                 /> */}
-              <TextSelectField 
-              style={{width:"20%"}}
+              <TextSelectField
+                style={{ width: "20%" }}
               >
                 <Select
                   onChange={(e) => {
@@ -406,7 +423,7 @@ const BookingHistory = () => {
                   }}
                   value={searchByName}
                   required
-                  style={{width:"100%"}}
+                  style={{ width: "100%" }}
                 >
                   <option value="" hidden>
                     Select Hotel
@@ -456,16 +473,14 @@ const BookingHistory = () => {
                 </FilterComponent>
               </FilterWrapper> */}
 
-              <div style={{display:'flex'}}>
+              <div style={{ display: 'flex' }}>
                 <DatePickerContainer>
-                  <div onClick={handleToggleDatePicker} style={{position:'relative'}}>
+                  <div onClick={handleToggleDatePicker} style={{ position: 'relative' }}>
                     <DatePicker
                       open={isDatePickerOpen}
                       onClickOutside={() => setIsDatePickerOpen(false)}
                       onFocus={() => setIsDatePickerOpen(true)}
                       // minDate={checkIn}
-                      
-
                       placeholderText="Start Date"
                       selected={fromDate}
                       onChange={handleStartDateChange}
@@ -473,6 +488,7 @@ const BookingHistory = () => {
                       startDate={fromDate}
                       endDate={toDate}
                       ref={InputStartsDate}
+
                     ></DatePicker>
                     <FromDateInput onClick={refHandle}>
                       <i class="fas fa-calendar-alt"></i>
@@ -480,13 +496,12 @@ const BookingHistory = () => {
                   </div>
                 </DatePickerContainer>
                 <DatePickerContainer>
-                <div onClick={handleToggleDatePicker2} style={{position:'relative'}}>
+                  <div onClick={handleToggleDatePicker2} style={{ position: 'relative' }}>
                     <DatePicker
                       open={isDatePickerOpen1}
                       onClickOutside={() => setIsDatePickerOpen1(false)}
                       onFocus={() => setIsDatePickerOpen1(true)}
                       // minDate={checkIn}
-                      
 
                       placeholderText="End Date"
                       selected={toDate}
@@ -504,8 +519,10 @@ const BookingHistory = () => {
                     </FromDateInput>
                   </div>
                 </DatePickerContainer>
-                </div>
-              <TextSelectField>
+              </div>
+              <TextSelectField
+                style={{ width: "20%" }}
+              >
                 <Select
                   onChange={(e) => {
                     setSelect(e.target.value);
@@ -518,7 +535,7 @@ const BookingHistory = () => {
                   </option>
                   <option value="">All</option>
                   <option value="completed">Completed Booking</option>
-                  <option value="approved">Upcoming Booking</option>
+                  <option value="confirmed">Upcoming Booking</option>
                 </Select>
               </TextSelectField>
             </TextWrapper>
@@ -539,19 +556,19 @@ const BookingHistory = () => {
                 <TableHead>
                   <TableRow>
                     <TableCell style={boldTextCss}>Hotel Name</TableCell>
-                    <TableCell style={boldTextCss} align="right">
+                    <TableCell style={boldTextCss} align="center">
                       CheckIn Date
                     </TableCell>
-                    <TableCell style={boldTextCss} align="right">
+                    <TableCell style={boldTextCss} align="center">
                       Checkout Date
                     </TableCell>
-                    <TableCell style={boldTextCss} align="right">
+                    <TableCell style={boldTextCss} align="center">
                       Creation date
                     </TableCell>
-                    <TableCell style={boldTextCss} align="right">
+                    <TableCell style={boldTextCss} align="center">
                       Status
                     </TableCell>
-                    <TableCell style={boldTextCss} align="right">
+                    <TableCell style={boldTextCss} align="center">
                       Action
                     </TableCell>
                   </TableRow>
@@ -570,17 +587,17 @@ const BookingHistory = () => {
                           <TableCell component="th" scope="row">
                             {item.hotelname}
                           </TableCell>
-                          <TableCell align="right">{item.checkIn}</TableCell>
-                          <TableCell align="right">{item.checkOut}</TableCell>
-                          <TableCell align="right">
+                          <TableCell align="center">{formatDate(item.checkIn)}</TableCell>
+                          <TableCell align="center">{formatDate(item.checkOut)}</TableCell>
+                          <TableCell align="center">
                             {bookingDate.toLocaleDateString()}
                           </TableCell>
-                          <TableCell align="right">
+                          <TableCell align="center">
                             {item.status === "completed"
                               ? "Completed"
-                              : item.status === "approved" && "Upcoming"}
+                              : item.status === "confirmed" && "Upcoming"}
                           </TableCell>
-                          <TableCell align="right">
+                          <TableCell align="center">
                             <Button
                               size="small"
                               variant="contained"
@@ -596,7 +613,7 @@ const BookingHistory = () => {
                   ) : (
                     <TableRow>
                       <TableCell colSpan={7}>
-                        <div style={{ display: "flex", justifyContent: "center", alignItems: "center"}}>
+                        <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
                           <Typography variant="body1">Data not found</Typography>
                         </div>
                       </TableCell>

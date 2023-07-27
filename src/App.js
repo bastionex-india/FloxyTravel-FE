@@ -3,8 +3,8 @@ import "./App.css";
 import Navigation from "./Component/Navigation";
 import SideBar from "./Component/SideBar";
 import Login from "./Pages/Login/Login";
-import { Route, Routes } from "react-router-dom";
-import { useContext, useState } from "react";
+import { Route, Routes, useLocation } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "./ContextApi/ContextApi";
 import Dashboard from "./Pages/Dashboard/Dashboard";
 import BookingHistory from "./Pages/BookingHistory";
@@ -28,6 +28,10 @@ import VendorDetails from "./Pages/admin/VendorDetails/VendorDetails";
 import Payouts from "./Pages/Payouts";
 import VendorEditHotel from "./Pages/VendorEditHotel";
 import ChatSupport from "./Pages/admin/ChatSupport";
+import PayoutRequest from "./Pages/admin/PayoutRequest";
+import PayoutHistory from "./Pages/PayoutHistory";
+import axios from "axios";
+import { environmentVariables } from "./config/config";
 
 const Root = styled.div``;
 const LeftWrapper = styled.div`
@@ -44,8 +48,44 @@ function App() {
   const { authData, setAuthData } = useContext(AuthContext);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showDropDown, setShowDropDown] = useState(false);
+  const location = useLocation();
+  const [loggedIn, setLoggedIn] = useState(false);
 
-  // console.log("authdata of app",authData.data)
+  useEffect(() => {
+    if(authData===null){
+      setLoggedIn(false)
+    }else{
+      console.log(authData)
+      const url = authData?.data?.isadmin
+      ? `${environmentVariables?.apiUrl}/auth/isadminlogged`
+      : `${environmentVariables?.apiUrl}/auth/isvendorlogged`;
+      const config = {
+        method: "get",
+        url: url,
+        headers: {
+          _token: authData.data.token,
+        },
+      };
+  
+      axios(config)
+        .then(function (response) {
+          if (response.data.success === true) {
+            setLoggedIn(true);
+          } else {
+            localStorage.removeItem("authdata");
+            setLoggedIn(false);
+          }
+        })
+        .catch(function (error) {
+          setLoggedIn(false);
+          localStorage.removeItem("authdata");
+          console.log(error);
+        });
+    }
+    
+  }, [location, authData, loggedIn]);
+
+ 
   return (
     <Root
       onClick={() => {
@@ -53,8 +93,8 @@ function App() {
         setShowDropDown(false);
       }}
     >
-      {!authData ? (
-        <Login />
+      {!loggedIn ? (
+        <Login loggedIn={loggedIn}/>
       ) : (
         <>
           <Navigation
@@ -62,6 +102,7 @@ function App() {
             setShowNotifications={setShowNotifications}
             showDropDown={showDropDown}
             setShowDropDown={setShowDropDown}
+            loggedIn={loggedIn}
           />
           <Container>
             <LeftWrapper>
@@ -69,7 +110,7 @@ function App() {
             </LeftWrapper>
             <RightWrapper>
               <Routes>
-                {authData.data.isadmin === "true" ? (
+                {authData!==null && authData.data.isadmin === "true" ? (
                   <>
                     <Route path="/" element={<Dashboard1 />} />
                     <Route path="/profile" element={<Profile />} />
@@ -113,6 +154,7 @@ function App() {
                       path="vendordetails/:id"
                       element={<VendorDetails />}
                     />
+                    <Route path="/payoutRequests" element={<PayoutRequest />} />
                     <Route
                       path="chatSupport"
                       element={<ChatSupport/>}
@@ -138,7 +180,8 @@ function App() {
                       element={<VendorManageHotels />}
                     />
                     <Route path="/payouts" element={<Payouts />} />
-
+                    <Route path="/payoutHistory" element={<PayoutHistory />} />
+                    
                     <Route path="/hoteldetails" element={<HotelDetails />} />
 
                     <Route path="/profile" element={<Profile />} />

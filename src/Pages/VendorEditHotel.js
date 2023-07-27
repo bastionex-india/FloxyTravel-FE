@@ -12,6 +12,8 @@ import Swal from "sweetalert2";
 import { FaTimes } from "react-icons/fa";
 import { useRef } from "react";
 import CircularLoader from "../Component/CircularLoader/CircularLoader";
+import IconButton from "@mui/material/IconButton";
+import ArrowBackIosNewOutlinedIcon from '@mui/icons-material/ArrowBackIosNewOutlined';
 
 const Root = styled.div`
   /* width: 967px; */
@@ -21,14 +23,16 @@ const Root = styled.div`
 
 const HeadingWrapper = styled.div`
   position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  display: -webkit-box;
+  // display: flex;
+  // justify-content: center;
+  // align-items: center;
 `;
 const MainHeading = styled.div`
   font-size: 1.75rem;
+  padding-left: 40px; 
   color: #000;
-  margin: 0 5% 10px 5%;
+  // margin: 0 5% 10px 5%;
 `;
 const MainContainer = styled.div`
   background-color: #fff;
@@ -199,6 +203,8 @@ const VendorEditHotel = () => {
     { label: "Romantic", value: "romantic" },
     { label: "Hill", value: "hill" },
     { label: "Heritage", value: "heritage" },
+    { label: "Yatch", value: "yatch" },
+    { label: "Desert", value: "desert" },
   ];
 
   const getVendorList = async () => {
@@ -329,19 +335,15 @@ const VendorEditHotel = () => {
         Swal.fire("Added", "Images inserted successfully", "success");
       })
       .catch((error) => {
-        console.log("///////////////", error);
         Swal.fire("Error", "Something went wrong", "error");
       });
   };
   return (
     <Root>
       <HeadingWrapper>
-        {" "}
-        <i
-          style={{ position: "absolute", left: "0" }}
-          onClick={() => navigate(-1)}
-          class="fa-solid fa-chevron-left fa-2x"
-        ></i>
+        <IconButton title="Back" onClick={() => navigate(-1)} size="small" sx={{ backgroundColor: "#e1e1e1", color: "#01575c", marginTop: "4px" }}>
+          <ArrowBackIosNewOutlinedIcon />
+        </IconButton>
         <MainHeading>{"Edit Hotel"}</MainHeading>
       </HeadingWrapper>
       <MainContainer>

@@ -19,10 +19,11 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import Swal from "sweetalert2";
 import Box from "@mui/material/Box";
-
+import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import moment from "moment";
 import CreateAdminVendor from "../CreateAdminVendor/CreateAdminVendor";
-
+import BorderColorOutlinedIcon from '@mui/icons-material/BorderColorOutlined';
+import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import PropTypes from "prop-types";
 import { styled as newStyle } from "@mui/material/styles";
 import Dialog from "@mui/material/Dialog";
@@ -34,6 +35,8 @@ import CloseIcon from "@mui/icons-material/Close";
 import Typography from "@mui/material/Typography";
 import TablePagination from "@mui/material/TablePagination";
 import EditVendor from "./../CreateAdminVendor/EditVendor";
+import ArrowBackIosNewOutlinedIcon from '@mui/icons-material/ArrowBackIosNewOutlined';
+import { makeStyles } from "@material-ui/core";
 
 const BootstrapDialog = newStyle(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -43,6 +46,53 @@ const BootstrapDialog = newStyle(Dialog)(({ theme }) => ({
     padding: theme.spacing(1),
   },
 }));
+
+const useStyles = makeStyles({
+//   customContainer: {
+// border: "1px solid #E0E0E0",
+// borderRadius:"20px !important",
+
+//   },
+  HeadingText:{
+    color:"#131313",
+    fontSize:"26px",
+    fontWeight:500
+    },
+    Table:{
+      width:"100%",
+      padding:"10px 20px",
+     
+    },
+    TableCell:{
+      // width:"100%",
+      justifyContent:"center",
+      alignItems:"center",
+      textAlign:"flex-start",
+      padding: "10px 30px !important",
+      fontWeight: "500 !important",
+      fontSize: "18px !important",
+      
+    },
+    TableDataCell:{
+      justifyContent:"center",
+      alignItems:"center",
+      textAlign:"flex-start",
+      padding:"22px 30px !important",
+      color:"#131313 !important",
+      fontWeight: "300 !important",
+      fontSize:"16px !important",
+    },
+    AddVendorButton:{
+      backgroundColor:"blue !important",
+      padding:"22px 35px !important",
+      fontSize:"16px !important",
+      fontWight:"400 !important"
+    },
+    Pagination:{
+      width:"88%"
+    }
+
+});
 
 function BootstrapDialogTitle(props) {
   const { children, onClose, ...other } = props;
@@ -87,6 +137,11 @@ const style = {
   pb: 3,
 };
 
+const RootWrapper = styled.div`
+width:100%;
+`;
+
+
 const TextRoot = styled.div`
   // background-color: #9f94942b;
   padding: 20px;
@@ -98,9 +153,10 @@ const TextRoot = styled.div`
 `;
 const HeadingWrapper = styled.div`
   position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  display: -webkit-box;
+  // display: flex;
+  // justify-content: center;
+  // align-items: center;
 `;
 const DocInfo = styled.div`
   // display: flex;
@@ -111,16 +167,21 @@ const DocName = styled.div`
 `;
 
 const Root = styled.div`
-  // margin: 0px 60px;
-  margin-bottom: 10px;
-  @media (max-width: 768px) {
+/* width:100%; */
+     display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+    margin: 20px 20px;
+    
+  /* @media (max-width: 768px) {
     margin: 0px 20px;
-  }
+  } */
 `;
 
 const Heading = styled.div`
   font-size: 1.75rem;
-  /* ; */
+  padding-left:40px;
   @media (max-width: 768px) {
     display: none;
   }
@@ -232,14 +293,21 @@ const DocImage = styled.img`
 const SideBar = styled.div`
   background-color: black;
 `;
+
+const Icon = styled.div`
+padding: 0 5px;
+cursor:pointer;
+`;
+
 const TextMainWrapper = styled.div`
   /* display: grid; 
   grid-template-columns: 20% 80%;  */
   @media (max-width: 768px) {
     display: flex;
-  }
+  }ButtonGroup
 `;
 const ManageAdmin = () => {
+  const classes = useStyles();
   const [isLoading, setIsLoading] = useState(false);
   const { authData, setAuthData } = useContext(AuthContext);
   const [addVendorPopUp, setAddVendorPopUp] = useState(false);
@@ -349,12 +417,9 @@ const ManageAdmin = () => {
         <TextRoot>
           <Root>
             <HeadingWrapper>
-              {" "}
-              <i
-                style={{ position: "absolute", left: "0" }}
-                onClick={() => navigate(-1)}
-                class="fa-solid fa-chevron-left fa-2x"
-              ></i>
+            <IconButton  title="Back" onClick={() => navigate(-1)} size="small" sx={{ backgroundColor: "#e1e1e1",color:"#01575c",marginTop:"4px" }}>
+                        <ArrowBackIosNewOutlinedIcon />
+              </IconButton>
               <Heading> Manage Vendors</Heading>
             </HeadingWrapper>
             <TextWrapper>
@@ -375,14 +440,15 @@ const ManageAdmin = () => {
             </div>
           ) : (
             <TableContainer component={Paper}>
-              <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                <TableHead>
-                  <TableRow>
-                    <TableCell style={boldTextCss}>Name</TableCell>
-                    <TableCell style={boldTextCss} align="left">
+              <Table className={classes.Table}>
+                <TableHead >
+              
+                  <TableRow >
+                    <TableCell style={boldTextCss} className={classes.TableCell}>Name</TableCell>
+                    <TableCell style={boldTextCss} className={classes.TableCell}>
                       Email
                     </TableCell>
-                    <TableCell style={boldTextCss} align="left">
+                    <TableCell style={boldTextCss} className={classes.TableCell}>
                       Contact Number
                     </TableCell>
                     {/* <TableCell style={boldTextCss} align="right">
@@ -391,7 +457,7 @@ const ManageAdmin = () => {
                     {/* <TableCell style={boldTextCss} align="right">
                     Status
                   </TableCell> */}
-                    <TableCell style={boldTextCss} align="right">
+                    <TableCell style={boldTextCss} className={classes.TableCell} >
                       Action
                     </TableCell>
                   </TableRow>
@@ -408,43 +474,43 @@ const ManageAdmin = () => {
                             "&:last-child td, &:last-child th": { border: 0 },
                           }}
                         >
-                          <TableCell component="th" scope="row">
+                          <TableCell component="th" scope="row" className={classes.TableDataCell}>
                             {item?.name}
                           </TableCell>
-                          <TableCell align="left">{item?.email}</TableCell>
+                          <TableCell className={classes.TableDataCell}>{item?.email}</TableCell>
                           {/* <TableCell align="right">{item.checkIn}</TableCell> */}
-                          <TableCell align="left">{item?.mobile}</TableCell>
+                          <TableCell className={classes.TableDataCell}>{item?.mobile}</TableCell>
                           {/* <TableCell align="right">{item.status}</TableCell> */}
-                          <TableCell align="right">
+                          <TableCell className={classes.TableDataCell}>
                             <ButtonGroup
                               size="small"
-                              type="button"
-                              variant="outlined"
                               aria-label="outlined button group"
+                              className={classes.ButtonGroup}
                             >
                               {/* <Button>View</Button> */}
-                              <Button
+                              <Icon
                                 onClick={() => {
                                   navigate(`/vendordetails/${item?.vendorId}`);
                                 }}
                               >
-                                View details
-                              </Button>
-                              <Button
+                                {/* View details */}
+                                <VisibilityOutlinedIcon />
+                              </Icon>
+                              <Icon
                                 onClick={() => {
                                   setEditVendorPopUp(true);
                                   setVendorDetails(item);
                                 }}
                               >
-                                Edit
-                              </Button>
-                              <Button
+                                <BorderColorOutlinedIcon />
+                              </Icon>
+                              <Icon
                                 onClick={() => {
                                   handleClickOpen(item);
                                 }}
                               >
-                                Delete
-                              </Button>
+                              <DeleteOutlineOutlinedIcon />
+                              </Icon>
                             </ButtonGroup>
                           </TableCell>
                         </TableRow>
@@ -453,6 +519,7 @@ const ManageAdmin = () => {
                 </TableBody>
               </Table>
               <TablePagination
+              className={classes.Pagination}
                 component="div"
                 count={response?.totalrecords}
                 page={page}

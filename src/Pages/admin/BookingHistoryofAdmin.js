@@ -23,11 +23,16 @@ import DatePicker from "react-datepicker";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import "react-datepicker/dist/react-datepicker.css";
+import { format, parse } from 'date-fns';
+import IconButton from "@mui/material/IconButton";
+import ArrowBackIosNewOutlinedIcon from '@mui/icons-material/ArrowBackIosNewOutlined';
+
 const HeadingWrapper = styled.div`
   position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  display: -webkit-box;
+  // display: flex;
+  // justify-content: center;
+  // align-items: center;
 `;
 const TextRoot = styled.div`
   // background-color: #9f94942b;
@@ -48,12 +53,14 @@ const Root = styled.div`
 
 const Heading = styled.div`
   font-size: 1.75rem;
+  padding-left: 40px;
   @media (max-width: 768px) {
     display: none;
   }
 `;
 
 const TextSelectField = styled.div`
+
   // margin: 10px 0px 0px 10px;
   @media (max-width: 768px) {
     margin: 0;
@@ -61,19 +68,28 @@ const TextSelectField = styled.div`
 `;
 
 const Select = styled.select`
-  height: 30px;
+width:15rem;
+  height: 50px;
   padding: 0px 10px;
   border-radius: 5px;
   outline: none;
   border: none;
   box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px,
     rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+
+    ::-ms-expand{
+      margin:"0 20px 0 10px";
+      padding:"0 20px 0 10px";
+    } 
 `;
 const TextWrapper = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
   text-align: center;
+  width:100%;
+
+
 
   @media (max-width: 768px) {
     justify-content: flex-end;
@@ -89,7 +105,7 @@ const TextMainWrapper = styled.div`
 `;
 const DatePickerContainer = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: center;  
   align-items: center;
   text-align: Center;
 `;
@@ -123,11 +139,11 @@ const Span = styled.span`
   left: 47%;
 `;
 const FromDateInput = styled.div`
-  position: absolute;
-  top: -4%;
-  left: 82%;
-  font-size: 20px;
-  cursor: pointer;
+     position: absolute;
+    right: 26px;
+    font-size: 20px;
+    cursor: pointer;
+    top: 10px;
   @media (max-width: 768px) {
     top: 14%;
     left: 90%;
@@ -140,6 +156,17 @@ const DateIcon = styled.div`
   z-index: 1;
 `;
 
+const DatePickerStyled1 = styled(DatePicker)`
+ height: 50px;
+  padding: 0px 10px;
+  border-radius: 5px;
+  outline: none;
+  border: none;
+  box-shadow: rgba(50,50,93,0.25) 0px 6px 12px -2px, rgba(0,0,0,0.3) 0px 0px 7px -3px !important;
+  background-color: #EFEFEF;
+  margin: 0 10px;
+`;
+
 const BookingHistoryofAdmin = () => {
   const [select, setSelect] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -148,6 +175,7 @@ const BookingHistoryofAdmin = () => {
   const { authData, setAuthData } = useContext(AuthContext);
   const [data, setData] = useState([]);
   const navigation = useNavigate();
+  const navigate = useNavigate();
   const [fromDate, setFromDate] = useState(null);
   const [toDate, setToDate] = useState(null);
   const [search, setSearch] = useState();
@@ -273,6 +301,7 @@ const BookingHistoryofAdmin = () => {
   }, []);
 
   const handleStartDateChange = (date) => {
+    setSearch("")
     setFromDate(date);
     if (toDate && date > toDate) {
       setToDate(null);
@@ -294,17 +323,48 @@ const BookingHistoryofAdmin = () => {
   const refHandle1 = () => {
     InputEndDate.current.setOpen(true);
   };
+  function convertDateFormat(inputDate) {
+    const possibleFormats = [
+      'yyyy-MM-dd',
+      'MM-dd-yyyy',
+      'MM/dd/yyyy',
+      'dd/MM/yyyy',
+      'yyyy/MM/dd',
+      // Add more date formats as needed
+    ];
+  
+    let parsedDate;
+    for (const formatString of possibleFormats) {
+      parsedDate = parse(inputDate, formatString, new Date());
+      if (!isNaN(parsedDate)) {
+        break;
+      }
+    }
+  
+    if (isNaN(parsedDate)) {
+      return ''; // Return an empty string or handle the error as needed
+    }
+  
+    const formattedDate = format(parsedDate, 'dd/MM/yyyy');
+    return formattedDate;
+  }
+  function formatDate(timestamp) {
+    const options = { timeZone: 'Asia/Kolkata', day: '2-digit', month: '2-digit', year: 'numeric' };
+    const formattedDate = new Date(timestamp).toLocaleString('en-IN', options);
+    return formattedDate;
+  }
+  
+  // const formattedCheckInDate = formatDate(checkIn);
+  // const formattedCheckOutDate = formatDate(checkOut);
   return (
     <>
       <TextMainWrapper>
         <TextRoot>
           <Root>
             <HeadingWrapper>
-              <i
-                style={{ position: "absolute", left: "0" }}
-                onClick={() => navigation(-1)}
-                class="fa-solid fa-chevron-left fa-2x"
-              ></i>
+            <IconButton  title="Back" onClick={() => navigate(-1)} size="small" sx={{ backgroundColor: "#e1e1e1",color:"#01575c",marginTop:"4px" }}>
+                        <ArrowBackIosNewOutlinedIcon />
+              </IconButton>
               <Heading> Booking History</Heading>
             </HeadingWrapper>
             <SearchContainerWrapper>
@@ -324,12 +384,16 @@ const BookingHistoryofAdmin = () => {
                   <Select
                     onChange={(e) => {
                       setSelect1(e.target.value);
+                      setSearch("")
                     }}
                     value={select1}
                     required
                   >
                     <option value="" hidden>
                       Select Vendor
+                    </option>
+                    <option value="">
+                      All
                     </option>
                     {allVendors.map((item, index) => {
                       return (
@@ -362,13 +426,11 @@ const BookingHistoryofAdmin = () => {
                     ref={InputEndDate}
                   /> */}
                   <div onClick={handleToggleDatePicker} style={{position:'relative'}}>
-                    <DatePicker
+                    <DatePickerStyled1
                       open={isDatePickerOpen}
                       onClickOutside={() => setIsDatePickerOpen(false)}
                       onFocus={() => setIsDatePickerOpen(true)}
                       // minDate={checkIn}
-                      
-
                       placeholderText="Start Date"
                       selected={fromDate}
                       onChange={handleStartDateChange}
@@ -376,7 +438,7 @@ const BookingHistoryofAdmin = () => {
                       startDate={fromDate}
                       endDate={toDate}
                       ref={InputStartsDate}
-                    ></DatePicker>
+                    ></DatePickerStyled1>
                     <FromDateInput onClick={refHandle}>
                       <i class="fas fa-calendar-alt"></i>
                     </FromDateInput>
@@ -384,7 +446,7 @@ const BookingHistoryofAdmin = () => {
                 </DatePickerContainer>
                 <DatePickerContainer>
                 <div onClick={handleToggleDatePicker2} style={{position:'relative'}}>
-                    <DatePicker
+                    <DatePickerStyled1
                       open={isDatePickerOpen1}
                       onClickOutside={() => setIsDatePickerOpen1(false)}
                       onFocus={() => setIsDatePickerOpen1(true)}
@@ -401,7 +463,7 @@ const BookingHistoryofAdmin = () => {
                       minDate={fromDate}
                       ref={InputEndDate}
                       style={{ padding: "10px" }}
-                    ></DatePicker>
+                    ></DatePickerStyled1>
                     <FromDateInput onClick={refHandle1}>
                       <i class="fas fa-calendar-alt"></i>
                     </FromDateInput>
@@ -431,6 +493,7 @@ const BookingHistoryofAdmin = () => {
                   <Select
                     onChange={(e) => {
                       setSelect(e.target.value);
+                      setSearch("")
                     }}
                     value={select}
                     required
@@ -438,11 +501,12 @@ const BookingHistoryofAdmin = () => {
                     <option value="" hidden>
                       Select Status
                     </option>
-                    {/* <option value="all" onClick={ApprovedData}>
+                    <option value="">
                     All
-                  </option> */}
+                  </option>
                     <option value="pending">Pending Booking</option>
-                    <option value="approved">Confirmed Booking</option>
+                    <option value="approved">Approved Booking</option>
+                    <option value="confirmed">Confirmed Booking</option>
                     <option value="cancelled">Cancelled Booking</option>
                     <option value="completed">Completed Booking</option>
                     {/* <option value="cancelled" onClick={CancelledData}>
@@ -490,7 +554,6 @@ const BookingHistoryofAdmin = () => {
                 <TableBody >
                   {data && data.length !== 0 ? (
                     data.map((item, index) => {
-                      const bookingDate = new Date(item.createdAt);
                       return (
                         <TableRow
                           key={index}
@@ -504,10 +567,10 @@ const BookingHistoryofAdmin = () => {
                           <TableCell align="left">
                             {item.vendorData.name}
                           </TableCell>
-                          <TableCell align="right">{item.checkIn}</TableCell>
-                          <TableCell align="right">{item.checkOut}</TableCell>
+                          <TableCell align="right">{formatDate(item.checkIn)}</TableCell>
+                          <TableCell align="right">{formatDate(item.checkOut)}</TableCell>
                           <TableCell align="right">
-                            {bookingDate.toLocaleDateString()}
+                            {formatDate(item.createdAt)}
                           </TableCell>
                           <TableCell align="right">
                             {item.status === "pending"
@@ -516,7 +579,9 @@ const BookingHistoryofAdmin = () => {
                               ? "Cancelled"
                               : item.status === "completed"
                               ? "Completed"
-                              : item.status === "approved" && "Confirmed"}
+                              : item.status === "approved" ? "Approved"
+                              : item.status === "confirmed" && "Confirmed"
+                            }
                           </TableCell>
                           <TableCell align="right">
                             <Button

@@ -83,6 +83,12 @@ const CheckinoutButton = styled.div`
     background-color: #0056b3;
   }
 `;
+const HeadingDiv = styled.div`
+  display:flex;
+  justify-content: space-between;
+  align-items: flex-start;
+`;
+
 
 const BookingHotelById = () => {
   const { state } = useLocation();
@@ -145,6 +151,16 @@ const BookingHotelById = () => {
         });
     }
   };
+  function formatDate(timestamp) {
+    const options = {
+      timeZone: "Asia/Kolkata",
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    };
+    const formattedDate = new Date(timestamp).toLocaleString("en-IN", options);
+    return formattedDate;
+  }
 
   return (
     <>
@@ -167,14 +183,23 @@ const BookingHotelById = () => {
       <Container maxWidth="lg">
         <Grid container>
           <Grid xs={12}>
-            <Item>
-              <h4>Hotel Location</h4>
-              <h4>
-                <i>{data.hotelname}</i>
-              </h4>
-              <p>
-                {data.area} , {data.state}
-              </p>
+            <Item style={{ padding: "40px" }}>
+              {/* <h4>Hotel Location</h4> */}
+              <HeadingDiv>
+                <div>
+                  <h4>{data.hotelname}</h4>
+                  <p>
+                    {data.area} , {data.state}
+                  </p>
+                </div>
+                <Button
+                  variant="contained"
+                  onClick={generateInvoiceHandler}
+                  endIcon={<PictureAsPdfIcon />}
+                >
+                  View Invoice{" "}
+                </Button>
+              </HeadingDiv>
               <Grid container>
                 <Grid xs={6}>
                   <h4>Customer Details</h4>
@@ -221,13 +246,6 @@ const BookingHotelById = () => {
                       </TableRow>
                     </TableBody>
                   </Table>
-                  <Button
-                    variant="contained"
-                    onClick={generateInvoiceHandler}
-                    endIcon={<PictureAsPdfIcon />}
-                  >
-                    View Invoice{" "}
-                  </Button>
                 </Grid>
                 <Grid xs={6}>
                   <h4>Booking Details</h4>
@@ -271,7 +289,9 @@ const BookingHotelById = () => {
                         <TableCell component="th" scope="row">
                           CheckIn Date
                         </TableCell>
-                        <TableCell align="right">{data.checkIn}</TableCell>
+                        <TableCell align="right">
+                          {formatDate(data.checkIn)}
+                        </TableCell>
                       </TableRow>
                       <TableRow
                         sx={{
@@ -281,7 +301,9 @@ const BookingHotelById = () => {
                         <TableCell component="th" scope="row">
                           CheckOut Date
                         </TableCell>
-                        <TableCell align="right">{data.checkOut}</TableCell>
+                        <TableCell align="right">
+                          {formatDate(data.checkOut)}
+                        </TableCell>
                       </TableRow>
                     </TableBody>
                   </Table>

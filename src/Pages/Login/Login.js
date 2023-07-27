@@ -321,7 +321,7 @@ function ChildModal({ open, setOpen, email, setParentClose }) {
   );
 }
 
-const Login = () => {
+const Login = ({loggedIn}) => {
   const navigate = useNavigate();
 
   const [userName, setUserName] = useState();
@@ -343,25 +343,7 @@ const Login = () => {
     setOpen(false);
   };
   const [open1, setOpen1] = React.useState(false);
-  // const handleOpen1 = () => {
-  //   setOpen1(true);
-  // };
-  // const handleClose1 = () => {
-  //   setOpen1(false);
-  // };
 
-  useEffect(() => {
-    //  axios({
-    //   method:'get',
-    //   url:'https://geolocation-db.com/json/'
-    //  }).then((response) =>{
-    //   console.log(response.data)
-    //    setIpv4(response.data.IPv4);
-    //    setLatitude(response.data.latitude);
-    //    setLongitude(response.data.longitude);
-    //  }).catch((error) =>{
-    //  })
-  }, []);
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -372,7 +354,7 @@ const Login = () => {
 
     axios({
       method: "post",
-      url: `${environmentVariables.apiUrl}/auth/admin/login`,
+      url: `${environmentVariables?.apiUrl}/auth/admin/login`,
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
@@ -384,21 +366,15 @@ const Login = () => {
       },
     })
       .then((response) => {
-        console.log(response.data.data.isadmin, "0000000000000");
-        // if(response.data.data.isadmin==="true"){
+       
         localStorage.setItem("authdata", JSON.stringify(response.data));
         setAuthData(JSON.parse(localStorage.getItem("authdata")));
         navigate("/");
-        // }else{
-
-        // }
       })
       .catch((error) => {
-        // console.log("admin error",error)
-        // setError('Details are not valid');
         axios({
           method: "post",
-          url: `${environmentVariables.apiUrl}/auth/vendor/login`,
+          url: `${environmentVariables?.apiUrl}/auth/vendor/login`,
           headers: {
             Accept: "application/json",
             "Content-Type": "application/json",

@@ -19,6 +19,26 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import axios from "axios";
 import CircularLoader from "../../Component/CircularLoader/CircularLoader";
 
+import Grid from '@mui/material/Grid';
+import Box from '@mui/material/Box';
+import AttachMoneyOutlinedIcon from '@mui/icons-material/AttachMoneyOutlined';
+import ApartmentOutlinedIcon from '@mui/icons-material/ApartmentOutlined';
+import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
+import BedroomChildOutlinedIcon from '@mui/icons-material/BedroomChildOutlined';
+import RequestQuoteOutlinedIcon from '@mui/icons-material/RequestQuoteOutlined';
+import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalanceWalletOutlined';
+import { IconButton } from '@mui/material';
+import { styled as newStyle } from '@mui/material/styles';
+const Item = newStyle(Paper)(({ theme }) => ({
+  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+  ...theme.typography.body2,
+  // padding: theme.spacing(1),
+  textAlign: 'center',
+  color: theme.palette.text.secondary,
+}));
+
+
+
 const LeftCardWrapper = styled.div`
   width: calc(60% - 10px);
   /* height: 100%; */
@@ -65,7 +85,7 @@ export default function LeaveRecord({ vendorId }) {
     navigate("/hoteldetails", { state: item });
   };
   const getSummaryData = () => {
-    const vendorid = authData.data.vendorId || vendorId;
+    const vendorid = authData!==null && (authData.data.vendorId || vendorId);
 
     axios
       .get(`${environmentVariables.apiUrl}/admin/getVendorSummary/${vendorid}`)
@@ -104,57 +124,91 @@ export default function LeaveRecord({ vendorId }) {
       ) : (
         <CardsWrapper>
           <CardWrapper>
-            <Card style={{ padding: "50px 0px", marginRight: "20px" }}>
-              <h6 style={{ textAlign: "center" }} class="card-title">
-                EARNINGS
-              </h6>
-              <h1
-                style={{ textAlign: "center", color: "#008080" }}
-                class="card-text"
-              >
-                ₹ {summaryData?.totalEarnings}
-              </h1>
+            <Card elevation={0} style={{ padding: "50px 0px", marginRight: "20px" }}>
+              <Box sx={{ flexGrow: 1 }}>
+                <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }} sx={{display:"flex",alignItems:"center"}}>
+                  <Grid item xs={12} sm={6} md={6} lg={6} sx={{display:"flex",justifyContent:"flex-end",alignItems:"center"}}>
+                    <Item elevation={0}>
+                      <IconButton size="medium" sx={{ backgroundColor: "#E1F6F8" }}>
+                        <AttachMoneyOutlinedIcon fontSize="inherit" />
+                      </IconButton>
+                    </Item >
+                  </Grid>
+                  <Grid item xs={12} sm={6} md={6} lg={6} sx={{paddingLeft:"10px !important"}}>
+                    <Item elevation={0}>
+                      <p style={{ textAlign: "left",margin:"0 !important" }} className="card-title"><b>Earnings</b></p>
+                      <p style={{ textAlign: "left", color: "#008080", margin:"0" }}>₹ {summaryData?.totalEarnings.toFixed(2)}</p>
+                    </Item>
+                  </Grid>
+                </Grid>
+              </Box>
+            </Card>
+          </CardWrapper>
+
+          <CardWrapper>
+            <Card elevation={0} style={{ padding: "50px 0px", marginRight: "20px" }}>
+              <Box sx={{ flexGrow: 1 }}>
+                <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }} sx={{display:"flex",alignItems:"center"}}>
+                  <Grid item xs={12} sm={6} md={6} lg={6} sx={{display:"flex",justifyContent:"flex-end",alignItems:"center"}}>
+                    <Item elevation={0}>
+                      <IconButton size="medium" sx={{ backgroundColor: "#E1F6F8" }}>
+                        <AccountBalanceWalletOutlinedIcon fontSize="inherit" />
+                      </IconButton>
+                    </Item >
+                  </Grid>
+                  <Grid item xs={12} sm={6} md={6} lg={6} sx={{paddingLeft:"10px !important"}}>
+                    <Item elevation={0}>
+                      <p style={{ textAlign: "left",margin:"0 !important" }} className="card-title"><b>Payouts</b></p>
+                      <p style={{ textAlign: "left", color: "#008080", margin:"0" }}>₹ {summaryData?.allPayoutAmount.toFixed(2)}</p>
+                    </Item>
+                  </Grid>
+                </Grid>
+              </Box>
             </Card>
           </CardWrapper>
           <CardWrapper>
-            <Card style={{ padding: "50px 0px", marginRight: "20px" }}>
-              <h6 style={{ textAlign: "center" }} class="card-title">
-                PAYOUT
-              </h6>
-              <h1
-                style={{ textAlign: "center", color: "#008080" }}
-                class="card-text"
-              >
-                ₹ {summaryData?.allPayoutAmount}
-              </h1>
+            <Card elevation={0} style={{ padding: "50px 0px", marginRight: "20px" }}>
+              <Box sx={{ flexGrow: 1 }}>
+                <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }} sx={{display:"flex",alignItems:"center"}}>
+                  <Grid item xs={12} sm={6} md={6} lg={6} sx={{display:"flex",justifyContent:"flex-end",alignItems:"center"}}>
+                    <Item elevation={0}>
+                      <IconButton size="medium" sx={{ backgroundColor: "#E1F6F8" }}>
+                        <BedroomChildOutlinedIcon fontSize="inherit" />
+                      </IconButton>
+                    </Item >
+                  </Grid>
+                  <Grid item xs={12} sm={6} md={6} lg={6} sx={{paddingLeft:"10px !important"}}>
+                    <Item elevation={0}>
+                      <p style={{ textAlign: "left",margin:"0 !important" }} className="card-title"><b>Hotels</b></p>
+                      <p style={{ textAlign: "left", color: "#008080", margin:"0" }}>{summaryData?.totalHotels}</p>
+                    </Item>
+                  </Grid>
+                </Grid>
+              </Box>
             </Card>
           </CardWrapper>
           <CardWrapper>
-            <Card style={{ padding: "50px 0px", marginRight: "20px" }}>
-              <h6 style={{ textAlign: "center" }} class="card-title">
-                HOTELS
-              </h6>
-              <h1
-                style={{ textAlign: "center", color: "#008080" }}
-                class="card-text"
-              >
-                {summaryData?.totalHotels}
-              </h1>
+            <Card elevation={0} style={{ padding: "50px 0px", marginRight: "20px" }}>
+              <Box sx={{ flexGrow: 1 }}>
+                <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }} sx={{display:"flex",alignItems:"center"}}>
+                  <Grid item xs={12} sm={6} md={6} lg={6} sx={{display:"flex",justifyContent:"flex-end",alignItems:"center"}}>
+                    <Item elevation={0}>
+                      <IconButton size="medium" sx={{ backgroundColor: "#E1F6F8" }}>
+                        <RequestQuoteOutlinedIcon fontSize="inherit" />
+                      </IconButton>
+                    </Item >
+                  </Grid>
+                  <Grid item xs={12} sm={6} md={6} lg={6} sx={{paddingLeft:"10px !important"}}>
+                    <Item elevation={0}>
+                      <p style={{ textAlign: "left",margin:"0 !important" }} className="card-title"><b>Bookings</b></p>
+                      <p style={{ textAlign: "left", color: "#008080", margin:"0" }}>{summaryData?.totalBookings}</p>
+                    </Item>
+                  </Grid>
+                </Grid>
+              </Box>
             </Card>
           </CardWrapper>
-          <CardWrapper>
-            <Card style={{ padding: "50px 0px" }}>
-              <h6 style={{ textAlign: "center" }} class="card-title">
-                BOOKINGS
-              </h6>
-              <h1
-                style={{ textAlign: "center", color: "#008080" }}
-                class="card-text"
-              >
-                {summaryData?.totalBookings}
-              </h1>
-            </Card>
-          </CardWrapper>
+          
         </CardsWrapper>
       )}
       <VendorGraphCheck />

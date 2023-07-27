@@ -68,7 +68,13 @@ function SideBar(props) {
         window.location.href.split("/").pop() === "payouts"
       ) {
         setselected("payouts");
-      } else if (
+      } 
+      else if (
+        window.location.href.split("/").pop() === "payoutRequests"
+      ) {
+        setselected("payoutRequests");
+      }
+      else if (
         window.location.href.split("/").pop() === "chatSupport"
       ) {
         setselected("chatSupport");
@@ -80,7 +86,7 @@ function SideBar(props) {
   // console.log("authdata of sidebar",authData.data)
   return (
     <Root>
-      {authData.data.isadmin === "true" ? (
+      {authData!==null && authData.data.isadmin === "true" ? (
         <>
           <LinkWrapper
             select={selected === "Dashboard"}
@@ -145,7 +151,15 @@ function SideBar(props) {
           >
             <Link>Upcoming Bookings</Link>
           </LinkWrapper> */}
-
+          <LinkWrapper
+            select={selected === "payoutRequests"}
+            onClick={() => {
+              setselected("payoutRequests");
+              navigate("/payoutRequests");
+            }}
+          >
+            <Link>Payout Requests</Link>
+          </LinkWrapper>
           <LinkWrapper
             select={selected === "chatSupport"}
             onClick={() => {

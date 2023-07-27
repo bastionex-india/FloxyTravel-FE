@@ -4,7 +4,7 @@ import { AuthContext } from "../../ContextApi/ContextApi";
 
 const Root = styled.div``;
 const P = styled.div`
-  color: #012e31;
+  color: #01575c;
   font-size: 26px;
   font-weight: bold;
 `;
