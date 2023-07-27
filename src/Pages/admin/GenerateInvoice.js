@@ -403,9 +403,9 @@ const GenerateInvoice = () => {
               <Grid container>
                 <Grid xs={12}>
                   <h5>Billing To</h5>
-                  <p>{state.customer.name}</p>
+                  <p>{state.customer.title}. {state.customer.name}</p>
                   <p>{state.customer.email}</p>
-                  <p>{state.customer.mobile}</p>
+                  <p>{state.customer.countryCode}-{state.customer.mobile}</p>
                 </Grid>
               </Grid>
               <hr />
