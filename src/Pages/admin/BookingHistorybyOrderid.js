@@ -146,6 +146,7 @@ const BookingHistorybyOrderid = () => {
           </Root>
         </TextRoot>
       </TextMainWrapper>
+      
       <Container maxWidth="lg">
         {isLoading === true ? (
           <div
@@ -200,7 +201,7 @@ const BookingHistorybyOrderid = () => {
                           </TableCell>
                           <TableCell align="right">
                             {" "}
-                            {data.customer && data.customer.name}{" "}
+                            {(data.customer!=undefined && data.customer.title!=undefined && data.customer.title) ? data.customer.title+'.' : ``} {data.customer && data.customer.name}{" "}
                           </TableCell>
                         </TableRow>
                         <TableRow
@@ -226,7 +227,7 @@ const BookingHistorybyOrderid = () => {
                           </TableCell>
                           <TableCell align="right">
                             {" "}
-                            {data.customer && data.customer.mobile}{" "}
+                            {(data.customer!=undefined && data.customer.countryCode != undefined && data.customer.countryCode) ? data.customer.countryCode+'-' : ''}{data.customer && data.customer.mobile}{" "}
                           </TableCell>
                         </TableRow>
                       </TableBody>
