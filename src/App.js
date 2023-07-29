@@ -30,6 +30,8 @@ import VendorEditHotel from "./Pages/VendorEditHotel";
 import ChatSupport from "./Pages/admin/ChatSupport";
 import PayoutRequest from "./Pages/admin/PayoutRequest";
 import PayoutHistory from "./Pages/PayoutHistory";
+import ManageActivities from "./Pages/admin/Activities/ManageActivities";
+import AddActivity from "./Pages/admin/Activities/AddActivity";
 
 const Root = styled.div``;
 const LeftWrapper = styled.div`
@@ -111,6 +113,9 @@ function App() {
                     {/* <Route path="/bookinghistory" element={<BookingHistory />} />
                     <Route path="/hoteldetails" element={<HotelDetails />} />
                     <Route path="/profile" element={<Profile />} /> */}
+                    <Route path="manageActivities" element={<ManageActivities />} />
+                    <Route path="/addActivity" element={<AddActivity />} />
+                    <Route path="/addActivity/:id" element={<AddActivity />} />
                     <Route
                       path="vendordetails/:id"
                       element={<VendorDetails />}
