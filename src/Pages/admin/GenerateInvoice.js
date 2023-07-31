@@ -183,7 +183,7 @@ const GenerateInvoice = () => {
               title: "Invoice sent successfully",
               timer: "800",
             });
-            let redirect = (state.type!=undefined &&  state.type=='activity') ? 'activityBookings' : "bookinghistoryofadmin"
+            let redirect = (state.type!=undefined &&  state.type=='activity') ? '/activityBookings' : "/bookinghistoryofadmin"
             navigate(redirect);
           } else {
             Swal.fire({
