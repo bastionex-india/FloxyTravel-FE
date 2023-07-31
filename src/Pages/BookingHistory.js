@@ -358,7 +358,7 @@ const BookingHistory = () => {
               <IconButton title="Back" onClick={() => navigate(-1)} size="small" sx={{ backgroundColor: "#e1e1e1", color: "#01575c", marginTop: "4px" }}>
                 <ArrowBackIosNewOutlinedIcon />
               </IconButton>
-              <Heading>Booking History</Heading>
+              <Heading>Hotel Booking History</Heading>
             </HeadingWrapper>
             <TextWrapper>
               {/* {

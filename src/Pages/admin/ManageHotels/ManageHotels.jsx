@@ -305,9 +305,14 @@ const ManageAdmin = () => {
   const getAllListData = async () => {
     await axios
       .get(
-        `${environmentVariables.apiUrl}/admin/getallhotels?page=${page}&limit=${rowsPerPage}`,
+        `${environmentVariables.apiUrl}/admin/getallhotels`,
         {
           headers: { _token: authData.data.token },
+          params: {
+            page: page,
+            limit: rowsPerPage,
+            type: "hotel"
+          }
         }
       )
       .then((response) => {
