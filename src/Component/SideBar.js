@@ -75,6 +75,11 @@ function SideBar(props) {
         setselected("payoutRequests");
       }
       else if (
+        window.location.href.split("/").pop() === "manageActivities"
+      ) {
+        setselected("manageActivities");
+      }
+      else if (
         window.location.href.split("/").pop() === "chatSupport"
       ) {
         setselected("chatSupport");
@@ -114,6 +119,15 @@ function SideBar(props) {
             }}
           >
             <Link>Manage Hotels</Link>
+          </LinkWrapper>
+          <LinkWrapper
+            select={selected === "manageActivities"}
+            onClick={() => {
+              setselected("manageActivities");
+              navigate("/manageActivities");
+            }}
+          >
+            <Link>Manage Activities</Link>
           </LinkWrapper>
           <LinkWrapper
             select={selected === "user homepage slider"}
