@@ -242,6 +242,7 @@ const BookingHistoryofAdmin = () => {
       id: select1,
       calenderStartDate: fromDate,
       calenderEndDate: toDate,
+      type : "hotel"
     };
 
     data.page = page + 1;
@@ -365,7 +366,7 @@ const BookingHistoryofAdmin = () => {
             <IconButton  title="Back" onClick={() => navigate(-1)} size="small" sx={{ backgroundColor: "#e1e1e1",color:"#01575c",marginTop:"4px" }}>
                         <ArrowBackIosNewOutlinedIcon />
               </IconButton>
-              <Heading> Booking History</Heading>
+              <Heading> Hotel Booking History</Heading>
             </HeadingWrapper>
             <SearchContainerWrapper>
               <SearchFilterContainer>

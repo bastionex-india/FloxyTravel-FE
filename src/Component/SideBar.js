@@ -80,13 +80,18 @@ function SideBar(props) {
         setselected("manageActivities");
       }
       else if (
+        window.location.href.split("/").pop() === "activityBookings"
+      ) {
+        setselected("activityBookings");
+      }
+      else if (
         window.location.href.split("/").pop() === "chatSupport"
       ) {
         setselected("chatSupport");
       } else {
         setselected("Dashboard");
       }
-    }
+    } 
   }, [selected]);
   // console.log("authdata of sidebar",authData.data)
   return (
@@ -154,7 +159,16 @@ function SideBar(props) {
               navigate("/bookinghistoryofadmin");
             }}
           >
-            <Link>Booking History</Link>
+            <Link>Hotel Bookings</Link>
+          </LinkWrapper>
+          <LinkWrapper
+            select={selected === "activityBookings"}
+            onClick={() => {
+              setselected("activityBookings");
+              navigate("/activityBookings");
+            }}
+          >
+            <Link>Activity Bookings</Link>
           </LinkWrapper>
           {/* <LinkWrapper
             select={selected === "Upcoming Bookings"}

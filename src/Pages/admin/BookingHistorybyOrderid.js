@@ -139,7 +139,7 @@ const BookingHistorybyOrderid = () => {
               onClick={() => navigate(-1)}
               class="fa-solid fa-chevron-left fa-2x"
             ></i>
-            <Heading> Booking Details</Heading>
+            <Heading> {data.type=='activity' ? 'Activity' : "Hotel"} Booking Details</Heading>
           </div>
           <Root>
             <TextWrapper></TextWrapper>
@@ -170,6 +170,7 @@ const BookingHistorybyOrderid = () => {
                     {data.area} , {data.state}
                   </p>
                 </div>
+                
                 <Button
                   variant="contained"
                   onClick={generateInvoiceHandler}
@@ -258,36 +259,45 @@ const BookingHistorybyOrderid = () => {
                           </TableCell>
                           <TableCell align="right">{data.children}</TableCell>
                         </TableRow>
+                        {
+                          data.type == 'activity' ? 
+                          null
+                          :
+                          <TableRow
+                            sx={{
+                              "&:last-child td, &:last-child th": { border: 0 },
+                            }}
+                          >
+                            <TableCell component="th" scope="row">
+                              Rooms
+                            </TableCell>
+                            <TableCell align="right">{data.noOfRooms}</TableCell>
+                          </TableRow>
+
+                        }
                         <TableRow
                           sx={{
                             "&:last-child td, &:last-child th": { border: 0 },
                           }}
                         >
                           <TableCell component="th" scope="row">
-                            Rooms
-                          </TableCell>
-                          <TableCell align="right">{data.noOfRooms}</TableCell>
-                        </TableRow>
-                        <TableRow
-                          sx={{
-                            "&:last-child td, &:last-child th": { border: 0 },
-                          }}
-                        >
-                          <TableCell component="th" scope="row">
-                            CheckIn Date
+                            {data.type == 'activity' ? 'Activity Date' : 'CheckIn Date'}
                           </TableCell>
                           <TableCell align="right">{formatDate(data.checkIn)}</TableCell>
                         </TableRow>
-                        <TableRow
-                          sx={{
-                            "&:last-child td, &:last-child th": { border: 0 },
-                          }}
-                        >
-                          <TableCell component="th" scope="row">
-                            CheckOut Date
-                          </TableCell>
-                          <TableCell align="right">{formatDate(data.checkOut)}</TableCell>
-                        </TableRow>
+                        {
+                          data.type == 'activity' ? null : 
+                          <TableRow
+                            sx={{
+                              "&:last-child td, &:last-child th": { border: 0 },
+                            }}
+                          >
+                            <TableCell component="th" scope="row">
+                              CheckOut Date
+                            </TableCell>
+                            <TableCell align="right">{formatDate(data.checkOut)}</TableCell>
+                          </TableRow>
+                        }
                       </TableBody>
                     </Table>
                   </Grid>

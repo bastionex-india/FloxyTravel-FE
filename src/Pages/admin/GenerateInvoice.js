@@ -122,7 +122,7 @@ const GenerateInvoice = () => {
   const [amount, setAmount] = useState(0);
   const [discount, setDiscount] = useState(0);
   const [totalAmount, setTotalAmount] = useState(0);
-  const [payMethod, setPayMethod] = useState("online");
+  const [payMethod, setPayMethod] = useState("upi");
   const [checkIn, setCheckIn] = useState(null);
   const [checkOut, setCheckOut] = useState(null);
   const InputCheckIn = useRef(null);
@@ -138,7 +138,6 @@ const GenerateInvoice = () => {
   const [isLunch,setIsLinch] = useState(state.isLunch);
   const [isDinner,setIsDinner] = useState(state.isDinner)
 
-  console.log("state ",state);
   const sendInvoice = () => {
     // console.log(checkIn,checkOut,noofpersons,Number(noofchildren),noofrooms,state._id,amount.toString(),Number(discountAmount),new Date(checkIn).getTime(),new Date(checkOut).getTime())
     if (hotelPrice && Number(hotelPrice) - Number(discountAmount) > 0) {
@@ -148,15 +147,21 @@ const GenerateInvoice = () => {
         amount: amount.toString(),
         discount: Number(discountAmount),
         checkIn: new Date(checkIn).getTime(),
-        checkOut: new Date(checkOut).getTime(),
         persons: noofpersons,
         children: Number(noofchildren),
-        rooms: noofrooms,
         currency: currency,
-        isBreakfast,
-        isLunch,
-        isDinner
+        isBreakfast : false,
+        isLunch: false,
+        isDinner : false,
+        type : state.type!=undefined ? state.type : "hotel",
       };
+      if(state.type=='hotel'){
+        data.checkOut = new Date(checkOut).getTime();
+        data.rooms = noofrooms;
+        data.isBreakfast = false;
+        data.isLunch = false;
+        data.isDinner = false;
+      }
       setIsSendInvoice(true)
       let config = {
         method: "post",
@@ -178,7 +183,8 @@ const GenerateInvoice = () => {
               title: "Invoice sent successfully",
               timer: "800",
             });
-            navigate("/bookinghistoryofadmin");
+            let redirect = (state.type!=undefined &&  state.type=='activity') ? 'activityBookings' : "bookinghistoryofadmin"
+            navigate(redirect);
           } else {
             Swal.fire({
               icon: "error",
@@ -417,7 +423,7 @@ const GenerateInvoice = () => {
                 </DetailContainer>
 
                 <DetailContainer>
-                  <Detailkey> CheckIn Date </Detailkey>
+                  <Detailkey> {state.type =='activity' ? 'Activity Date' : 'CheckIn Date'} </Detailkey>
                   <DetailValue>
                     {
                       state.status === "pending" || state.status === "approved" ?
@@ -459,50 +465,54 @@ const GenerateInvoice = () => {
                     }
                   </DetailValue>
                 </DetailContainer>
-
-                <DetailContainer>
-                  <Detailkey> CheckOut Date  </Detailkey>
-                  <DetailValue>
-                    {
-                      state.status === "pending" || state.status === "approved" ?
-                        <div style={{ position: "relative" }}>
-                          <div
-                            onClick={() => InputCheckOut.current.setOpen(true)}
-                            style={{
-                              top: "20%",
-                              right: "54%",
-                              zIndex: "99",
-                              fontSize: "20px",
-                              cursor: "pointer",
-                              position: "absolute",
-                            }}
-                          >
-                            <i class="fas fa-calendar-alt"></i>
-                          </div>
-
-                          <DatePickerStyled2
-                            className=""
-                            placeholderText=" CheckOut"
-                            selected={checkOut}
-                            onChange={handleCheckOutChange}
-                            startDate={checkIn}
-                            endDate={checkOut}
-                            minDate={checkIn}
-                            ref={InputCheckOut}
-                          ></DatePickerStyled2>
-
-                        </div>
-                        :
-                        <>
-                          {moment(checkOut).format('DD/MM/YYYY')}
-                        </>
-
-                    }
-                  </DetailValue>
-                </DetailContainer>
                 {
-                  console.log("checkOut date", checkOut)
+                  state.type =='activity' ? 
+                  null
+                  :
+                  <>
+                  <DetailContainer>
+                    <Detailkey> CheckOut Date  </Detailkey>
+                    <DetailValue>
+                      {
+                        state.status === "pending" || state.status === "approved" ?
+                          <div style={{ position: "relative" }}>
+                            <div
+                              onClick={() => InputCheckOut.current.setOpen(true)}
+                              style={{
+                                top: "20%",
+                                right: "54%",
+                                zIndex: "99",
+                                fontSize: "20px",
+                                cursor: "pointer",
+                                position: "absolute",
+                              }}
+                            >
+                              <i class="fas fa-calendar-alt"></i>
+                            </div>
+
+                            <DatePickerStyled2
+                              className=""
+                              placeholderText=" CheckOut"
+                              selected={checkOut}
+                              onChange={handleCheckOutChange}
+                              startDate={checkIn}
+                              endDate={checkOut}
+                              minDate={checkIn}
+                              ref={InputCheckOut}
+                            ></DatePickerStyled2>
+
+                          </div>
+                          :
+                          <>
+                            {moment(checkOut).format('DD/MM/YYYY')}
+                          </>
+
+                      }
+                    </DetailValue>
+                  </DetailContainer>
+                  </>
                 }
+                
                 <DetailContainer>
                   <Detailkey> Number of Persons </Detailkey>
                   <DetailValue>
@@ -559,95 +569,101 @@ const GenerateInvoice = () => {
 
                   </DetailValue>
                 </DetailContainer>
-
-                <DetailContainer>
-                  <Detailkey> Number of Rooms </Detailkey>
-                  <DetailValue>
-                    {
-                      state.status === "pending" || state.status === "approved" ?
-                        <FormControl
-                          sx={{ width: "80px" }}
-                          variant="standard"
-                          className="pull-right"
-                        >
-                          <Input
-                            type="number"
-                            placeholder="Total rooms*"
-                            name="noofrooms"
-                            value={noofrooms}
-                            onChange={handleChangeRooms}
-                            onKeyDown={handleKeyPress}
-                          />
-                        </FormControl>
-                        :
-                        <>{noofrooms}</>
-                    }
-                  </DetailValue>
-                </DetailContainer>
-                <DetailContainer>
-                  <Detailkey> Breakfast for all guests</Detailkey>
-                  <DetailValue>
-                    {
-                      state.status === "pending" || state.status === "approved" ?
-                        <FormControl
-                          sx={{ width: "80px" }}
-                          variant="standard"
-                          className="pull-right"
-                        >
-                          <Checkbox checked={isBreakfast} onChange={(e)=> setIsBreakfast(e.target.checked) } />
-                        </FormControl>
-                        :
-                        <>
-                        { isBreakfast ? "Yes":"No"}
-                        </>
-                    }
-                  </DetailValue>
-                </DetailContainer>
-                <DetailContainer>
-                  <Detailkey> Lunch for all guests</Detailkey>
-                  <DetailValue>
-                    {
-                      state.status === "pending" || state.status === "approved" ?
-                        <FormControl
-                          sx={{ width: "80px" }}
-                          variant="standard"
-                          className="pull-right"
-                        >
-                          <Checkbox checked={isLunch} onChange={(e)=> setIsLinch(e.target.checked) } />
-                        </FormControl>
-                        :
-                        <>
-                        { isLunch ? "Yes":"No"}
-                        </>
-                    }
-                  </DetailValue>
-                </DetailContainer>
-                <DetailContainer>
-                  <Detailkey> Dinner for all guests</Detailkey>
-                  <DetailValue>
-                    {
-                      state.status === "pending" || state.status === "approved" ?
-                        <FormControl
-                          sx={{ width: "80px" }}
-                          variant="standard"
-                          className="pull-right"
-                        >
-                          <Checkbox checked={isDinner} onChange={(e)=> setIsDinner(e.target.checked) } />
-                        </FormControl>
-                        :
-                        <>
-                        { isDinner ? "Yes":"No"}
-                        </>
-                    }
-                  </DetailValue>
-                </DetailContainer>
-                <DetailContainer
-                  style={{ padding: "6px 0" }}
-                >
-                  <Detailkey> Days </Detailkey>
-                  <DetailValue
-                  >{numOfDays}</DetailValue>
-                </DetailContainer>
+                {
+                  state.type=='activity' ? 
+                  null
+                  :
+                  <>
+                  <DetailContainer>
+                    <Detailkey> Number of Rooms </Detailkey>
+                    <DetailValue>
+                      {
+                        state.status === "pending" || state.status === "approved" ?
+                          <FormControl
+                            sx={{ width: "80px" }}
+                            variant="standard"
+                            className="pull-right"
+                          >
+                            <Input
+                              type="number"
+                              placeholder="Total rooms*"
+                              name="noofrooms"
+                              value={noofrooms}
+                              onChange={handleChangeRooms}
+                              onKeyDown={handleKeyPress}
+                            />
+                          </FormControl>
+                          :
+                          <>{noofrooms}</>
+                      }
+                    </DetailValue>
+                  </DetailContainer>
+                  <DetailContainer>
+                    <Detailkey> Breakfast for all guests</Detailkey>
+                    <DetailValue>
+                      {
+                        state.status === "pending" || state.status === "approved" ?
+                          <FormControl
+                            sx={{ width: "80px" }}
+                            variant="standard"
+                            className="pull-right"
+                          >
+                            <Checkbox checked={isBreakfast} onChange={(e)=> setIsBreakfast(e.target.checked) } />
+                          </FormControl>
+                          :
+                          <>
+                          { isBreakfast ? "Yes":"No"}
+                          </>
+                      }
+                    </DetailValue>
+                  </DetailContainer>
+                  <DetailContainer>
+                    <Detailkey> Lunch for all guests</Detailkey>
+                    <DetailValue>
+                      {
+                        state.status === "pending" || state.status === "approved" ?
+                          <FormControl
+                            sx={{ width: "80px" }}
+                            variant="standard"
+                            className="pull-right"
+                          >
+                            <Checkbox checked={isLunch} onChange={(e)=> setIsLinch(e.target.checked) } />
+                          </FormControl>
+                          :
+                          <>
+                          { isLunch ? "Yes":"No"}
+                          </>
+                      }
+                    </DetailValue>
+                  </DetailContainer>
+                  <DetailContainer>
+                    <Detailkey> Dinner for all guests</Detailkey>
+                    <DetailValue>
+                      {
+                        state.status === "pending" || state.status === "approved" ?
+                          <FormControl
+                            sx={{ width: "80px" }}
+                            variant="standard"
+                            className="pull-right"
+                          >
+                            <Checkbox checked={isDinner} onChange={(e)=> setIsDinner(e.target.checked) } />
+                          </FormControl>
+                          :
+                          <>
+                          { isDinner ? "Yes":"No"}
+                          </>
+                      }
+                    </DetailValue>
+                  </DetailContainer>
+                  <DetailContainer
+                    style={{ padding: "6px 0" }}
+                  >
+                    <Detailkey> Days </Detailkey>
+                    <DetailValue
+                    >{numOfDays}</DetailValue>
+                  </DetailContainer>
+                  </>
+                }
                 <DetailContainer
                   style={{ padding: "6px 0" }}
                 >

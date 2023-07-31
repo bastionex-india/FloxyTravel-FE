@@ -32,6 +32,7 @@ import PayoutRequest from "./Pages/admin/PayoutRequest";
 import PayoutHistory from "./Pages/PayoutHistory";
 import ManageActivities from "./Pages/admin/Activities/ManageActivities";
 import AddActivity from "./Pages/admin/Activities/AddActivity";
+import ActivityBookingHistory from "./Pages/admin/ActivityBookingHistory";
 
 const Root = styled.div``;
 const LeftWrapper = styled.div`
@@ -92,6 +93,11 @@ function App() {
                       path="/bookinghistoryofadmin"
                       element={<BookingHistoryofAdmin />}
                     />
+                    <Route
+                      path="/activityBookings"
+                      element={<ActivityBookingHistory/>}
+                    />
+                    
                     <Route
                       path="/generateInvoice"
                       element={<GenerateInvoice />}
