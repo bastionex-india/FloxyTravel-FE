@@ -184,6 +184,19 @@ const HeadingWrapper = styled.div`
   // align-items: center;
 `;
 
+
+const DatePickerStyled1 = styled(DatePicker)`
+height: 50px;
+padding: 0px 10px;
+border-radius: 5px;
+outline: none;
+border: none;
+box-shadow: rgba(50,50,93,0.25) 0px 6px 12px -2px, rgba(0,0,0,0.3) 0px 3px 7px -3px;
+background-color: white;
+margin: 0 10px;
+`;
+
+
 const VendorActivityHistory = () => {
   const { authData, setAuthData } = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState(false);
@@ -285,18 +298,25 @@ const VendorActivityHistory = () => {
       });
   };
   const getAllHotels = async () => {
-    try {
-      const response = await axios.get(
-        `${environmentVariables.apiUrl}/vendor/getallhotelsbyvendorid/${authData.data.vendorId}`,
+    await axios
+      .get(
+        `${environmentVariables.apiUrl}/vendor/vendorget`,
         {
           headers: { _token: authData.data.token },
+          params:{
+            page : 1,
+            limit : 10000,
+            type: "activity"
+          }
         }
-      );
-      setAllHotels(response.data.data);
-    } catch (error) {
-      // Handle the error here
-      console.error(error);
-    }
+      )
+      .then((response) => {
+        setAllHotels(response.data.data.records);
+      })
+      .catch((err) => {
+        console.log("error", err);
+      });
+
   };
   useEffect(() => {
     setIsLoading(true);
@@ -372,7 +392,7 @@ const VendorActivityHistory = () => {
               <div style={{ display: 'flex' }}>
                 <DatePickerContainer>
                   <div onClick={handleToggleDatePicker} style={{ position: 'relative' }}>
-                    <DatePicker
+                    <DatePickerStyled1
                       open={isDatePickerOpen}
                       onClickOutside={() => setIsDatePickerOpen(false)}
                       onFocus={() => setIsDatePickerOpen(true)}
@@ -385,7 +405,7 @@ const VendorActivityHistory = () => {
                       endDate={toDate}
                       ref={InputStartsDate}
 
-                    ></DatePicker>
+                    ></DatePickerStyled1>
                     <FromDateInput onClick={refHandle}>
                       <i class="fas fa-calendar-alt"></i>
                     </FromDateInput>
@@ -393,7 +413,7 @@ const VendorActivityHistory = () => {
                 </DatePickerContainer>
                 <DatePickerContainer>
                   <div onClick={handleToggleDatePicker2} style={{ position: 'relative' }}>
-                    <DatePicker
+                    <DatePickerStyled1
                       open={isDatePickerOpen1}
                       onClickOutside={() => setIsDatePickerOpen1(false)}
                       onFocus={() => setIsDatePickerOpen1(true)}
@@ -409,7 +429,7 @@ const VendorActivityHistory = () => {
                       minDate={fromDate}
                       ref={InputEndDate}
                       style={{ padding: "10px" }}
-                    ></DatePicker>
+                    ></DatePickerStyled1>
                     <FromDateInput onClick={refHandle1}>
                       <i class="fas fa-calendar-alt"></i>
                     </FromDateInput>

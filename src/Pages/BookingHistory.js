@@ -296,18 +296,24 @@ const BookingHistory = () => {
       });
   };
   const getAllHotels = async () => {
-    try {
-      const response = await axios.get(
-        `${environmentVariables.apiUrl}/vendor/getallhotelsbyvendorid/${authData.data.vendorId}`,
+    await axios
+      .get(
+        `${environmentVariables.apiUrl}/vendor/vendorget`,
         {
           headers: { _token: authData.data.token },
+          params:{
+            page : 1,
+            limit : 10000,
+            type: "hotel"
+          }
         }
-      );
-      setAllHotels(response.data.data);
-    } catch (error) {
-      // Handle the error here
-      console.error(error);
-    }
+      )
+      .then((response) => {
+        setAllHotels(response.data.data.records);
+      })
+      .catch((err) => {
+        console.log("error", err);
+      });
   };
   useEffect(() => {
     setIsLoading(true);
