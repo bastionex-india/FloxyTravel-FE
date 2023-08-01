@@ -321,7 +321,7 @@ export default function GraphCheck() {
           style={{
             display: "flex",
             justifyContent: "space-around",
-            margin: "20px 0  65px 0",
+            margin: "65px 0  65px 0",
           }}
         >
           <ButtonGroup>
