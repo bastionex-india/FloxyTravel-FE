@@ -200,7 +200,8 @@ const Payouts = () => {
   const [activityList, setActivityList] = useState([]);
   const [selectHotel, setSelectHotel] = useState("all");
   const [selectCity, setSelectCity] = useState("all");
-
+  const [selectedHotel, setSelectedHotel] = useState('all'); 
+  const [selectedActivity, setSelectedActivity] = useState('all');
   const navigate = useNavigate();
 
   const handleClick = (item) => {
@@ -504,9 +505,20 @@ const Payouts = () => {
     console.log(city);
     setSelectCity(city);
   };
+  
+
   const handleHotelChange = (hotel) => {
     setSelectHotel(hotel);
+    // reset data of another dropdown 
+    setSelectedHotel(hotel)
+    setSelectedActivity('all');
   };
+  const handleActivityChange = (activity)=>{
+    setSelectHotel(activity);
+    // reset data of another dropdown 
+    setSelectedHotel('all')
+    setSelectedActivity(activity);
+  }
 
   useEffect(() => {
     setIsLoading(true);
@@ -555,46 +567,54 @@ const Payouts = () => {
               p={1}
               columnSpacing={{ xs: 1, sm: 2, md: 3 }}
             >
-              <Grid item xs={3}>
-                <FormControl fullWidth>
-                  <label>
-                    Hotels
-                  </label>
-                  <select
-                    style={{ height: '45px', border: "1px solid #cccc", marginTop: "10px", borderRadius: "6px" }}
-                    onChange={(event) => handleHotelChange(event.target.value)}
-                  >
-                    <option value={"all"}>All</option>
-                    {hotelList.map((row, index) => {
-                      return (
-                        <option key={index} value={row.hotelname}>
-                          {row.hotelname}
-                        </option>
-                      );
-                    })}
-                  </select>
-                </FormControl>
-              </Grid>
-              <Grid item xs={3}>
-                <FormControl fullWidth>
-                  <label>
-                    Activity
-                  </label>
-                  <select
-                    style={{ height: '45px', border: "1px solid #cccc", marginTop: "10px", borderRadius: "6px" }}
-                    onChange={(event) => handleHotelChange(event.target.value)}
-                  >
-                    <option value={"all"}>All</option>
-                    {activityList.map((row, index) => {
-                      return (
-                        <option key={index} value={row.hotelname}>
-                          {row.hotelname}
-                        </option>
-                      );
-                    })}
-                  </select>
-                </FormControl>
-              </Grid>
+              {
+                hotelList.length ?
+                <Grid item xs={3}>
+                  <FormControl fullWidth>
+                    <label>
+                      Hotels
+                    </label>
+                    <select
+                      style={{ height: '45px', border: "1px solid #cccc", marginTop: "10px", borderRadius: "6px" }}
+                     value={selectedHotel} onChange={(event) => handleHotelChange(event.target.value)}
+                    >
+                      <option value={"all"}>All</option>
+                      {hotelList.map((row, index) => {
+                        return (
+                          <option key={index} value={row.hotelname}>
+                            {row.hotelname}
+                          </option>
+                        );
+                      })}
+                    </select>
+                  </FormControl>
+                </Grid>
+                : null
+              }
+              {
+                activityList.length ? 
+                <Grid item xs={3}>
+                  <FormControl fullWidth>
+                    <label>
+                      Activity
+                    </label>
+                    <select
+                      style={{ height: '45px', border: "1px solid #cccc", marginTop: "10px", borderRadius: "6px" }}
+                      value={selectedActivity} onChange={(event) => handleActivityChange(event.target.value)}
+                    >
+                      <option value={"all"}>All</option>
+                      {activityList.map((row, index) => {
+                        return (
+                          <option key={index} value={row.hotelname}>
+                            {row.hotelname}
+                          </option>
+                        );
+                      })}
+                    </select>
+                  </FormControl>
+                </Grid>
+                : null
+              }
               <Grid item xs={3}>
                 <FormControl fullWidth>
                   <label>
