@@ -24,6 +24,10 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 
+import IconButton from "@mui/material/IconButton";
+import ArrowBackIosNewOutlinedIcon from '@mui/icons-material/ArrowBackIosNewOutlined';
+
+
 const Item = newStyled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
   ...theme.typography.body2,
@@ -60,6 +64,7 @@ const TextRoot = styled.div`
 `;
 const Heading = styled.div`
   font-size: 1.75rem;
+  padding-left: 40px;
   @media (max-width: 768px) {
     display: none;
   }
@@ -88,7 +93,10 @@ const HeadingDiv = styled.div`
   justify-content: space-between;
   align-items: flex-start;
 `;
-
+const HeadingWrapper = styled.div`
+  position: relative;
+  display: -webkit-box;
+`;
 
 const BookingHotelById = () => {
   const { state } = useLocation();
@@ -165,16 +173,19 @@ const BookingHotelById = () => {
   return (
     <>
       <TextMainWrapper>
+
+
+
         <TextRoot>
-          <div style={{ display: "flex", alignItems: "center" }}>
-            {" "}
-            <i
-              style={{ cursor: "pointer", marginRight: "50px" }}
-              onClick={() => navigate(-1)}
-              class="fa-solid fa-chevron-left fa-2x"
-            ></i>
-            <Heading> Booking Details</Heading>
-          </div>
+          <Root>
+            <HeadingWrapper>
+              <IconButton title="Back" onClick={() => navigate(-1)} size="small" sx={{ backgroundColor: "#e1e1e1", color: "#01575c", marginTop: "4px" }}>
+                <ArrowBackIosNewOutlinedIcon />
+              </IconButton>
+              <Heading> {data.type=='activity' ? 'Activity' : "Hotel"} Booking Details</Heading>
+            </HeadingWrapper>
+          </Root>
+
           <Root>
             <TextWrapper></TextWrapper>
           </Root>
@@ -271,40 +282,47 @@ const BookingHotelById = () => {
                         </TableCell>
                         <TableCell align="right">{data.children}</TableCell>
                       </TableRow>
+                      {
+                          data.type == 'activity' ? 
+                          null
+                          :
+                          <TableRow
+                            sx={{
+                              "&:last-child td, &:last-child th": { border: 0 },
+                            }}
+                          >
+                            <TableCell component="th" scope="row">
+                              Rooms
+                            </TableCell>
+                            <TableCell align="right">{data.noOfRooms}</TableCell>
+                          </TableRow>
+
+                        }
                       <TableRow
                         sx={{
                           "&:last-child td, &:last-child th": { border: 0 },
                         }}
                       >
                         <TableCell component="th" scope="row">
-                          Rooms
-                        </TableCell>
-                        <TableCell align="right">{data.noOfRooms}</TableCell>
-                      </TableRow>
-                      <TableRow
-                        sx={{
-                          "&:last-child td, &:last-child th": { border: 0 },
-                        }}
-                      >
-                        <TableCell component="th" scope="row">
-                          CheckIn Date
+                        {data.type == 'activity' ? 'Activity Date' : 'CheckIn Date'}
                         </TableCell>
                         <TableCell align="right">
                           {formatDate(data.checkIn)}
                         </TableCell>
                       </TableRow>
-                      <TableRow
-                        sx={{
-                          "&:last-child td, &:last-child th": { border: 0 },
-                        }}
-                      >
-                        <TableCell component="th" scope="row">
-                          CheckOut Date
-                        </TableCell>
-                        <TableCell align="right">
-                          {formatDate(data.checkOut)}
-                        </TableCell>
-                      </TableRow>
+                      {
+                          data.type == 'activity' ? null : 
+                          <TableRow
+                            sx={{
+                              "&:last-child td, &:last-child th": { border: 0 },
+                            }}
+                          >
+                            <TableCell component="th" scope="row">
+                              CheckOut Date
+                            </TableCell>
+                            <TableCell align="right">{formatDate(data.checkOut)}</TableCell>
+                          </TableRow>
+                        }
                     </TableBody>
                   </Table>
                 </Grid>
@@ -321,7 +339,7 @@ const BookingHotelById = () => {
                 data !== "" && data.checkInStatus ? "not-allowed" : "pointer",
             }}
           >
-            CheckIn
+            { data.type == 'activity' ? 'Activity attended' : "CheckIn"}
           </CheckinoutButton>
           <CheckinoutButton
             style={{
@@ -332,7 +350,8 @@ const BookingHotelById = () => {
             }}
             onClick={() => checkOut()}
           >
-            CheckOut
+            
+            { data.type == 'activity' ? 'Activity completed' : "CheckOut"}
           </CheckinoutButton>
         </Container2>
       </Container>

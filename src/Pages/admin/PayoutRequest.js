@@ -417,7 +417,7 @@ const PayoutRequest = () => {
             <HotelCard>
               <HotelImageWrapper>
                 <HotelImage
-                  src={`https://uat-travel-api.floxypay.com/uploads/${imageSrc}`}
+                  src={`${environmentVariables.apiUrl}/uploads/${imageSrc}`} height={244}
                 />
               </HotelImageWrapper>
               <HotelInfoWrapper>
@@ -429,12 +429,31 @@ const PayoutRequest = () => {
                   <HotelInfoText>City : {row.hotelsData.city}</HotelInfoText>
                   <HotelInfoText>State : {row.hotelsData.state}</HotelInfoText>
                   <HotelInfoText>
-                    Country : {row.hotelsData.country}
+                    Country : {row.hotelsData.country ? row.hotelsData.country : "NA"}
                   </HotelInfoText>
-                  <HotelInfoText>Theme : {row.hotelsData.theme}</HotelInfoText>
-                  <HotelInfoText>
-                    Category : {row.hotelsData.hotelCategory}
+                  {
+                    (row.hotelsData.type == undefined || row.hotelsData.type != 'activity') ?
+                      <>
+                        <HotelInfoText>Theme : {row.hotelsData.theme ? row.hotelsData.theme : 'NA'}</HotelInfoText>
+                        <HotelInfoText>
+                          Category : {row.hotelsData.hotelCategory ? row.hotelsData.hotelCategory: 'NA'}
+                        </HotelInfoText>
+                      </>
+                      : null
+                  }
+                  <HotelInfoText> Type : 
+                    {
+                      (row.hotelsData.type == undefined || row.hotelsData.type == 'hotel') ? 
+                      <>
+                      <span className="text-primary fw-bold"> Hotel</span>
+                      </>
+                      :
+                      <>
+                      <span className="text-primary fw-bold"> Activity</span>
+                      </>
+                    }
                   </HotelInfoText>
+
                 </HotelIconWrapper>
               </HotelInfoWrapper>
               <PayOutInfoWrapper>

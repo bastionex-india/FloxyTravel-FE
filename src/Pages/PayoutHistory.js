@@ -199,6 +199,7 @@ const PayoutHistory = () => {
   const [isButtonLoading, setIsButtonLoading] = useState(false);
   const [cityList, setCityList] = useState([]);
   const [hotelList, setHotelList] = useState([]);
+  const [activityList, setActivityList] = useState([]);
   const [selectHotel, setSelectHotel] = useState("all");
   const [selectCity, setSelectCity] = useState("all");
   const [selectVendor, setSelectVendor] = useState('all')
@@ -365,7 +366,7 @@ const PayoutHistory = () => {
             <HotelCard>
               <HotelImageWrapper>
                 <HotelImage
-                  src={`https://uat-travel-api.floxypay.com/uploads/${imageSrc}`}
+                  src={`${environmentVariables.apiUrl}/uploads/${imageSrc}`}
                 />
               </HotelImageWrapper>
               <HotelInfoWrapper>
@@ -377,16 +378,35 @@ const PayoutHistory = () => {
                   <HotelInfoText>City : {row.hotelsData.city}</HotelInfoText>
                   <HotelInfoText>State : {row.hotelsData.state}</HotelInfoText>
                   <HotelInfoText>
-                    Country : {row.hotelsData.country}
+                    Country : {row.hotelsData.country ? row.hotelsData.country : "NA"}
                   </HotelInfoText>
-                  <HotelInfoText>Theme : {row.hotelsData.theme}</HotelInfoText>
-                  <HotelInfoText>
-                    Category : {row.hotelsData.hotelCategory}
+                  {
+                    (row.hotelsData.type == undefined || row.hotelsData.type != 'activity') ?
+                      <>
+                        <HotelInfoText>Theme : {row.hotelsData.theme}</HotelInfoText>
+                        <HotelInfoText>
+                          Category : {row.hotelsData.hotelCategory}
+                        </HotelInfoText>
+                      </>
+                      :
+                      null
+                  }
+                  <HotelInfoText> Type : 
+                    {
+                      (row.hotelsData.type == undefined || row.hotelsData.type == 'hotel') ? 
+                      <>
+                      <span className="text-primary fw-bold"> Hotel</span>
+                      </>
+                      :
+                      <>
+                      <span className="text-primary fw-bold"> Activity</span>
+                      </>
+                    }
                   </HotelInfoText>
                 </HotelIconWrapper>
               </HotelInfoWrapper>
               <PayOutInfoWrapper>
-                
+
                 <ul style={{ listStyle: "none" }}>
                   <li><b>Vendor Name : </b> {row.vendorData.name}</li>
                   <li><b>Status : </b> <Chip
@@ -394,7 +414,6 @@ const PayoutHistory = () => {
                       borderRadius: "3px",
                       border: "1px solid black"
                     }}
-
                     label={row.status} color={row.status === 'pending' ? 'warning' : 'success'} /></li>
                   <li><b>Payout amount : </b> {row.payoutAmount.toFixed(2)} INR</li>
                   <li><b>Requested Date : </b> {moment(row.createdAt).format('LL')}</li>
@@ -425,9 +444,14 @@ const PayoutHistory = () => {
   const getHotelListData = async () => {
     await axios
       .get(
-        `${environmentVariables.apiUrl}/vendor/vendorget?page=1&limit=3000`,
+        `${environmentVariables.apiUrl}/vendor/vendorget`,
         {
           headers: { _token: authData.data.token },
+          params:{
+            page : 1,
+            limit : 10000,
+            type: "hotel"
+          }
         }
       )
       .then((response) => {
@@ -437,6 +461,27 @@ const PayoutHistory = () => {
         console.log("error", err);
       });
   };
+  const getActivitiesListData = async ()=>{
+    await axios
+      .get(
+        `${environmentVariables.apiUrl}/vendor/vendorget`,
+        {
+          headers: { _token: authData.data.token },
+          params:{
+            page : 1,
+            limit : 10000,
+            type: "activity"
+          }
+        }
+      )
+      .then((response) => {
+        // console.log("response.data.  ",response.data);
+        setActivityList(response.data.data.records);
+      })
+      .catch((err) => {
+        console.log("error", err);
+      });
+  }
   const handleCityChange = (city) => {
     setSelectCity(city);
   };
@@ -455,6 +500,7 @@ const PayoutHistory = () => {
 
   useEffect(() => {
     getHotelListData();
+    getActivitiesListData();
     getAllCities();
   }, []);
   // console.log({selectCity,selectHotel});
@@ -487,12 +533,28 @@ const PayoutHistory = () => {
               p={1}
               columnSpacing={{ xs: 1, sm: 2, md: 3 }}
             >
-              <Grid item xs={6}>
+              <Grid item xs={3}>
                 <FormControl fullWidth>
                   <label>Hotels</label>
                   <select style={{ height: '45px', border: "1px solid #cccc", marginTop: "10px", borderRadius: "6px" }} onChange={(event) => handleHotelChange(event.target.value)} >
                     <option value="all" selected >All</option>
                     {hotelList.map((row, index) => {
+                      return (
+                        <option key={index} value={row._id}>
+                          {row.hotelname}
+                        </option>
+                      );
+                    })}
+                  </select>
+                </FormControl>
+                
+              </Grid>
+              <Grid item xs={3}>
+              <FormControl fullWidth>
+                  <label>Activity</label>
+                  <select style={{ height: '45px', border: "1px solid #cccc", marginTop: "10px", borderRadius: "6px" }} onChange={(event) => handleHotelChange(event.target.value)} >
+                    <option value="all" selected >All</option>
+                    {activityList.map((row, index) => {
                       return (
                         <option key={index} value={row._id}>
                           {row.hotelname}

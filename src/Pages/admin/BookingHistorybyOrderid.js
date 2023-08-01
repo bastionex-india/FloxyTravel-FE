@@ -23,6 +23,8 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import CircularLoader from "../../Component/CircularLoader/CircularLoader";
 import { format, parse } from 'date-fns';
+import IconButton from "@mui/material/IconButton";
+import ArrowBackIosNewOutlinedIcon from '@mui/icons-material/ArrowBackIosNewOutlined';
 
 const Item = newStyled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -60,6 +62,7 @@ const TextRoot = styled.div`
 `;
 const Heading = styled.div`
   font-size: 1.75rem;
+  padding-left: 40px;
   @media (max-width: 768px) {
     display: none;
   }
@@ -69,6 +72,11 @@ const HeadingDiv = styled.div`
   justify-content: space-between;
   align-items: flex-start;
 `;
+const HeadingWrapper = styled.div`
+  position: relative;
+  display: -webkit-box;
+`;
+
 const BookingHistorybyOrderid = () => {
   const { state } = useLocation();
   const { authData } = useContext(AuthContext);
@@ -132,17 +140,13 @@ const BookingHistorybyOrderid = () => {
     <>
       <TextMainWrapper>
         <TextRoot>
-          <div style={{ display: "flex", alignItems: "center" }}>
-            {" "}
-            <i
-              style={{ cursor: "pointer", marginRight: "50px" }}
-              onClick={() => navigate(-1)}
-              class="fa-solid fa-chevron-left fa-2x"
-            ></i>
-            <Heading> {data.type=='activity' ? 'Activity' : "Hotel"} Booking Details</Heading>
-          </div>
           <Root>
-            <TextWrapper></TextWrapper>
+            <HeadingWrapper>
+              <IconButton title="Back" onClick={() => navigate(-1)} size="small" sx={{ backgroundColor: "#e1e1e1", color: "#01575c", marginTop: "4px" }}>
+                <ArrowBackIosNewOutlinedIcon />
+              </IconButton>
+              <Heading> {data.type=='activity' ? 'Activity' : "Hotel"} Booking Details</Heading>
+            </HeadingWrapper>
           </Root>
         </TextRoot>
       </TextMainWrapper>

@@ -349,6 +349,19 @@ const BookingHistory = () => {
   //   const formattedDateString = `${month}/${day}/${year}`;
   //   return new Date(formattedDateString).getTime();
   // }
+
+  const DatePickerStyled1 = styled(DatePicker)`
+  height: 50px;
+  padding: 0px 10px;
+  border-radius: 5px;
+  outline: none;
+  border: none;
+  box-shadow: rgba(50,50,93,0.25) 0px 6px 12px -2px, rgba(0,0,0,0.3) 0px 3px 7px -3px;
+  background-color: white;
+  margin: 0 10px;
+`;
+
+
   return (
     <>
       <TextMainWrapper>
@@ -476,7 +489,7 @@ const BookingHistory = () => {
               <div style={{ display: 'flex' }}>
                 <DatePickerContainer>
                   <div onClick={handleToggleDatePicker} style={{ position: 'relative' }}>
-                    <DatePicker
+                    <DatePickerStyled1
                       open={isDatePickerOpen}
                       onClickOutside={() => setIsDatePickerOpen(false)}
                       onFocus={() => setIsDatePickerOpen(true)}
@@ -489,7 +502,7 @@ const BookingHistory = () => {
                       endDate={toDate}
                       ref={InputStartsDate}
 
-                    ></DatePicker>
+                    ></DatePickerStyled1>
                     <FromDateInput onClick={refHandle}>
                       <i class="fas fa-calendar-alt"></i>
                     </FromDateInput>
@@ -497,7 +510,7 @@ const BookingHistory = () => {
                 </DatePickerContainer>
                 <DatePickerContainer>
                   <div onClick={handleToggleDatePicker2} style={{ position: 'relative' }}>
-                    <DatePicker
+                    <DatePickerStyled1
                       open={isDatePickerOpen1}
                       onClickOutside={() => setIsDatePickerOpen1(false)}
                       onFocus={() => setIsDatePickerOpen1(true)}
@@ -513,7 +526,7 @@ const BookingHistory = () => {
                       minDate={fromDate}
                       ref={InputEndDate}
                       style={{ padding: "10px" }}
-                    ></DatePicker>
+                    ></DatePickerStyled1>
                     <FromDateInput onClick={refHandle1}>
                       <i class="fas fa-calendar-alt"></i>
                     </FromDateInput>
