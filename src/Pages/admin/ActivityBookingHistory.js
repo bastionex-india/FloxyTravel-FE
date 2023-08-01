@@ -23,9 +23,9 @@ import DatePicker from "react-datepicker";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import "react-datepicker/dist/react-datepicker.css";
-import { format, parse } from 'date-fns';
+import { format, parse } from "date-fns";
 import IconButton from "@mui/material/IconButton";
-import ArrowBackIosNewOutlinedIcon from '@mui/icons-material/ArrowBackIosNewOutlined';
+import ArrowBackIosNewOutlinedIcon from "@mui/icons-material/ArrowBackIosNewOutlined";
 
 const HeadingWrapper = styled.div`
   position: relative;
@@ -60,7 +60,6 @@ const Heading = styled.div`
 `;
 
 const TextSelectField = styled.div`
-
   // margin: 10px 0px 0px 10px;
   @media (max-width: 768px) {
     margin: 0;
@@ -68,7 +67,7 @@ const TextSelectField = styled.div`
 `;
 
 const Select = styled.select`
-width:15rem;
+  width: 15rem;
   height: 50px;
   padding: 0px 10px;
   border-radius: 5px;
@@ -77,19 +76,17 @@ width:15rem;
   box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px,
     rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
 
-    ::-ms-expand{
-      margin:"0 20px 0 10px";
-      padding:"0 20px 0 10px";
-    } 
+  ::-ms-expand {
+    margin: "0 20px 0 10px";
+    padding: "0 20px 0 10px";
+  }
 `;
 const TextWrapper = styled.div`
   display: flex;
   justify-content: flex-start;
   align-items: center;
   text-align: center;
-  width:100%;
-
-
+  width: 100%;
 
   @media (max-width: 768px) {
     justify-content: flex-end;
@@ -105,7 +102,7 @@ const TextMainWrapper = styled.div`
 `;
 const DatePickerContainer = styled.div`
   display: flex;
-  justify-content: center;  
+  justify-content: center;
   align-items: center;
   text-align: Center;
 `;
@@ -139,11 +136,11 @@ const Span = styled.span`
   left: 47%;
 `;
 const FromDateInput = styled.div`
-     position: absolute;
-    right: 26px;
-    font-size: 20px;
-    cursor: pointer;
-    top: 10px;
+  position: absolute;
+  right: 26px;
+  font-size: 20px;
+  cursor: pointer;
+  top: 10px;
   @media (max-width: 768px) {
     top: 14%;
     left: 90%;
@@ -157,13 +154,14 @@ const DateIcon = styled.div`
 `;
 
 const DatePickerStyled1 = styled(DatePicker)`
- height: 50px;
+  height: 50px;
   padding: 0px 10px;
   border-radius: 5px;
   outline: none;
   border: none;
-  box-shadow: rgba(50,50,93,0.25) 0px 6px 12px -2px, rgba(0,0,0,0.3) 0px 0px 7px -3px !important;
-  background-color: #EFEFEF;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px,
+    rgba(0, 0, 0, 0.3) 0px 0px 7px -3px !important;
+  background-color: #efefef;
   margin: 0 10px;
 `;
 
@@ -174,6 +172,10 @@ const ActivityBookingHistory = () => {
   const [response, setResponse] = useState({});
   const { authData, setAuthData } = useContext(AuthContext);
   const [data, setData] = useState([]);
+  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
+  const [isDatePickerOpen1, setIsDatePickerOpen1] = useState(false);
+  const [fromDate, setFromDate] = useState(null);
+  const [toDate, setToDate] = useState(null);
   const navigation = useNavigate();
   const navigate = useNavigate();
 
@@ -200,10 +202,12 @@ const ActivityBookingHistory = () => {
 
   const handleChange = (event) => {
     const data = event.target.value;
+    setSelect("");
+    setSelect1("");
+    setFromDate(null);
+    setToDate(null);
     if (data.length >= 3) {
       setSearch(data);
-      setSelect("");
-      setSelect1("");
     } else {
       setSearch();
     }
@@ -236,9 +240,9 @@ const ActivityBookingHistory = () => {
       search: search,
       status: select,
       id: select1,
-      calenderStartDate: null,
-      calenderEndDate: null,
-      type: "activity"
+      calenderStartDate: fromDate,
+      calenderEndDate: toDate,
+      type: "activity",
     };
 
     data.page = page + 1;
@@ -271,10 +275,10 @@ const ActivityBookingHistory = () => {
   useEffect(() => {
     setIsLoading(true);
     getAllUsers();
-  }, [select, select1, page, rowsPerPage, search]);
+  }, [select, select1, page, rowsPerPage, search, fromDate, toDate]);
 
-  const ApprovedData = () => { };
-  const PendingData = () => { };
+  const ApprovedData = () => {};
+  const PendingData = () => {};
   const boldTextCss = {
     fontWeight: 700,
   };
@@ -297,16 +301,13 @@ const ActivityBookingHistory = () => {
     getAllVendors();
   }, []);
 
-
-
-
   function convertDateFormat(inputDate) {
     const possibleFormats = [
-      'yyyy-MM-dd',
-      'MM-dd-yyyy',
-      'MM/dd/yyyy',
-      'dd/MM/yyyy',
-      'yyyy/MM/dd',
+      "yyyy-MM-dd",
+      "MM-dd-yyyy",
+      "MM/dd/yyyy",
+      "dd/MM/yyyy",
+      "yyyy/MM/dd",
       // Add more date formats as needed
     ];
 
@@ -319,18 +320,45 @@ const ActivityBookingHistory = () => {
     }
 
     if (isNaN(parsedDate)) {
-      return ''; // Return an empty string or handle the error as needed
+      return ""; // Return an empty string or handle the error as needed
     }
 
-    const formattedDate = format(parsedDate, 'dd/MM/yyyy');
+    const formattedDate = format(parsedDate, "dd/MM/yyyy");
     return formattedDate;
   }
   function formatDate(timestamp) {
-    const options = { timeZone: 'Asia/Kolkata', day: '2-digit', month: '2-digit', year: 'numeric' };
-    const formattedDate = new Date(timestamp).toLocaleString('en-IN', options);
+    const options = {
+      timeZone: "Asia/Kolkata",
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    };
+    const formattedDate = new Date(timestamp).toLocaleString("en-IN", options);
     return formattedDate;
   }
+  const handleStartDateChange = (date) => {
+    setSearch("");
+    setFromDate(date);
+    if (toDate && date > toDate) {
+      setToDate(null);
+    }
 
+    if (!date) {
+      setToDate(null);
+    }
+  };
+  const handleToggleDatePicker = () => {
+    setIsDatePickerOpen(!isDatePickerOpen);
+  };
+  const handleToggleDatePicker2 = () => {
+    setIsDatePickerOpen1(!isDatePickerOpen1);
+  };
+  const refHandle = () => {
+    InputStartsDate.current.setOpen(true);
+  };
+  const refHandle1 = () => {
+    InputEndDate.current.setOpen(true);
+  };
   // const formattedCheckInDate = formatDate(checkIn);
   // const formattedCheckOutDate = formatDate(checkOut);
   return (
@@ -339,7 +367,16 @@ const ActivityBookingHistory = () => {
         <TextRoot>
           <Root>
             <HeadingWrapper>
-              <IconButton title="Back" onClick={() => navigate(-1)} size="small" sx={{ backgroundColor: "#e1e1e1", color: "#01575c", marginTop: "4px" }}>
+              <IconButton
+                title="Back"
+                onClick={() => navigate(-1)}
+                size="small"
+                sx={{
+                  backgroundColor: "#e1e1e1",
+                  color: "#01575c",
+                  marginTop: "4px",
+                }}
+              >
                 <ArrowBackIosNewOutlinedIcon />
               </IconButton>
               <Heading> Activity Booking History</Heading>
@@ -361,7 +398,7 @@ const ActivityBookingHistory = () => {
                   <Select
                     onChange={(e) => {
                       setSelect1(e.target.value);
-                      setSearch("")
+                      setSearch("");
                     }}
                     value={select1}
                     required
@@ -369,9 +406,7 @@ const ActivityBookingHistory = () => {
                     <option value="" hidden>
                       Select Vendor
                     </option>
-                    <option value="">
-                      All
-                    </option>
+                    <option value="">All</option>
                     {allVendors.map((item, index) => {
                       return (
                         <option key={index} value={item._id}>
@@ -381,11 +416,82 @@ const ActivityBookingHistory = () => {
                     })}
                   </Select>
                 </TextSelectField>
+                <div style={{ display: "flex" }}>
+                  <DatePickerContainer>
+                    {/* <DateIcon>
+                    <BsCalendarDay
+                      size="1.5rem"
+                      onClick={() => InputEndDate.current.setOpen(true)}
+                    />
+                  </DateIcon>
+
+                  <DatePicker
+                    placeholderText="End Date"
+                    selected={toDate}
+                    onChange={(date) => setToDate(date)}
+                    selectsStart
+                    startDate={fromDate}
+                    endDate={toDate}
+                    disabled={fromDate ? false : true}
+                    minDate={fromDate}
+                    style={{ padding: "10px" }}
+                    ref={InputEndDate}
+                  /> */}
+                    <div
+                      onClick={handleToggleDatePicker}
+                      style={{ position: "relative" }}
+                    >
+                      <DatePickerStyled1
+                        open={isDatePickerOpen}
+                        onClickOutside={() => setIsDatePickerOpen(false)}
+                        onFocus={() => setIsDatePickerOpen(true)}
+                        // minDate={checkIn}
+                        placeholderText="Start Date"
+                        selected={fromDate}
+                        onChange={handleStartDateChange}
+                        selectsStart
+                        startDate={fromDate}
+                        endDate={toDate}
+                        ref={InputStartsDate}
+                      ></DatePickerStyled1>
+                      <FromDateInput onClick={refHandle}>
+                        <i class="fas fa-calendar-alt"></i>
+                      </FromDateInput>
+                    </div>
+                  </DatePickerContainer>
+                  <DatePickerContainer>
+                    <div
+                      onClick={handleToggleDatePicker2}
+                      style={{ position: "relative" }}
+                    >
+                      <DatePickerStyled1
+                        open={isDatePickerOpen1}
+                        onClickOutside={() => setIsDatePickerOpen1(false)}
+                        onFocus={() => setIsDatePickerOpen1(true)}
+                        // minDate={checkIn}
+
+                        placeholderText="End Date"
+                        selected={toDate}
+                        onChange={(date) => setToDate(date)}
+                        selectsStart
+                        startDate={fromDate}
+                        endDate={toDate}
+                        disabled={fromDate ? false : true}
+                        minDate={fromDate}
+                        ref={InputEndDate}
+                        style={{ padding: "10px" }}
+                      ></DatePickerStyled1>
+                      <FromDateInput onClick={refHandle1}>
+                        <i class="fas fa-calendar-alt"></i>
+                      </FromDateInput>
+                    </div>
+                  </DatePickerContainer>
+                </div>
                 <TextSelectField>
                   <Select
                     onChange={(e) => {
                       setSelect(e.target.value);
-                      setSearch("")
+                      setSearch("");
                     }}
                     value={select}
                     required
@@ -393,9 +499,7 @@ const ActivityBookingHistory = () => {
                     <option value="" hidden>
                       Select Status
                     </option>
-                    <option value="">
-                      All
-                    </option>
+                    <option value="">All</option>
                     <option value="pending">Pending Booking</option>
                     <option value="approved">Approved Booking</option>
                     <option value="confirmed">Confirmed Booking</option>
@@ -424,13 +528,10 @@ const ActivityBookingHistory = () => {
               <Table aria-label="simple table">
                 <TableHead>
                   <TableRow>
-                    <TableCell style={boldTextCss}>Hotel Name</TableCell>
+                    <TableCell style={boldTextCss}>Activity Name</TableCell>
                     <TableCell style={boldTextCss}>Vendor Name</TableCell>
                     <TableCell style={boldTextCss} align="right">
-                      CheckIn Date
-                    </TableCell>
-                    <TableCell style={boldTextCss} align="right">
-                      Checkout Date
+                      Activity Date
                     </TableCell>
                     <TableCell style={boldTextCss} align="right">
                       Creation date
@@ -443,7 +544,7 @@ const ActivityBookingHistory = () => {
                     </TableCell>
                   </TableRow>
                 </TableHead>
-                <TableBody >
+                <TableBody>
                   {data && data.length !== 0 ? (
                     data.map((item, index) => {
                       return (
@@ -459,8 +560,9 @@ const ActivityBookingHistory = () => {
                           <TableCell align="left">
                             {item.vendorData.name}
                           </TableCell>
-                          <TableCell align="right">{formatDate(item.checkIn)}</TableCell>
-                          <TableCell align="right">{formatDate(item.checkOut)}</TableCell>
+                          <TableCell align="right">
+                            {formatDate(item.checkIn)}
+                          </TableCell>
                           <TableCell align="right">
                             {formatDate(item.createdAt)}
                           </TableCell>
@@ -468,12 +570,12 @@ const ActivityBookingHistory = () => {
                             {item.status === "pending"
                               ? "Pending"
                               : item.status === "cancelled"
-                                ? "Cancelled"
-                                : item.status === "completed"
-                                  ? "Completed"
-                                  : item.status === "approved" ? "Approved"
-                                    : item.status === "confirmed" && "Confirmed"
-                            }
+                              ? "Cancelled"
+                              : item.status === "completed"
+                              ? "Completed"
+                              : item.status === "approved"
+                              ? "Approved"
+                              : item.status === "confirmed" && "Confirmed"}
                           </TableCell>
                           <TableCell align="right">
                             <Button
@@ -491,8 +593,16 @@ const ActivityBookingHistory = () => {
                   ) : (
                     <TableRow>
                       <TableCell colSpan={7}>
-                        <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-                          <Typography variant="body1">Data not found</Typography>
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }}
+                        >
+                          <Typography variant="body1">
+                            Data not found
+                          </Typography>
                         </div>
                       </TableCell>
                     </TableRow>
@@ -516,4 +626,4 @@ const ActivityBookingHistory = () => {
   );
 };
 
-export default ActivityBookingHistory
+export default ActivityBookingHistory;

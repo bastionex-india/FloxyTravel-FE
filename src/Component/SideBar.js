@@ -85,6 +85,11 @@ function SideBar(props) {
         setselected("activityBookings");
       }
       else if (
+        window.location.href.split("/").pop() === "vendoractivityBookings"
+      ) {
+        setselected("vendoractivityBookings");
+      }
+      else if (
         window.location.href.split("/").pop() === "chatSupport"
       ) {
         setselected("chatSupport");
@@ -228,7 +233,16 @@ function SideBar(props) {
               navigate("/bookinghistory");
             }}
           >
-            <Link>Booking History</Link>
+            <Link>Hotel Booking</Link>
+          </LinkWrapper>
+          <LinkWrapper
+            select={selected === "vendoractivityBookings"}
+            onClick={() => {
+              setselected("vendoractivityBookings");
+              navigate("/vendoractivityBookings");
+            }}
+          >
+            <Link>Activity Bookings</Link>
           </LinkWrapper>
           <LinkWrapper
             select={selected === "payouts"}

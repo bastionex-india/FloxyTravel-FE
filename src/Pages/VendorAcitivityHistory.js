@@ -184,7 +184,7 @@ const HeadingWrapper = styled.div`
   // align-items: center;
 `;
 
-const BookingHistory = () => {
+const VendorActivityHistory = () => {
   const { authData, setAuthData } = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState([]);
@@ -252,7 +252,7 @@ const BookingHistory = () => {
   const getAllUsers = async () => {
     let data = {
       status: select,
-      type:'hotel',
+      type:'activity',
       // startDate:new Date(),
       // endDate:select1,
       calenderStartDate: fromDate,
@@ -261,17 +261,6 @@ const BookingHistory = () => {
     };
     data.page = page + 1;
     data.pageSize = rowsPerPage;
-    // if (select1 !== "") {
-    //   data = {
-    //     status: select,
-    //     startDate: new Date(),
-    //     endDate: select1,
-    //   };
-    // } else {
-    //   data = {
-    //     status: select,
-    //   };
-    // }
     const config = {
       method: "post",
       url: `${environmentVariables.apiUrl}/vendor/getallbooking/${authData.data.vendorId}`,
@@ -345,24 +334,6 @@ const BookingHistory = () => {
     const formattedDate = new Date(timestamp).toLocaleString('en-IN', options);
     return formattedDate;
   }
-  // function convertToUnixTimestamp(dateString) {
-  //   const [day, month, year] = dateString.split('/');
-  //   const formattedDateString = `${month}/${day}/${year}`;
-  //   return new Date(formattedDateString).getTime();
-  // }
-
-  const DatePickerStyled1 = styled(DatePicker)`
-  height: 50px;
-  padding: 0px 10px;
-  border-radius: 5px;
-  outline: none;
-  border: none;
-  box-shadow: rgba(50,50,93,0.25) 0px 6px 12px -2px, rgba(0,0,0,0.3) 0px 3px 7px -3px;
-  background-color: white;
-  margin: 0 10px;
-`;
-
-
   return (
     <>
       <TextMainWrapper>
@@ -372,62 +343,9 @@ const BookingHistory = () => {
               <IconButton title="Back" onClick={() => navigate(-1)} size="small" sx={{ backgroundColor: "#e1e1e1", color: "#01575c", marginTop: "4px" }}>
                 <ArrowBackIosNewOutlinedIcon />
               </IconButton>
-              <Heading>Hotel Booking History</Heading>
+              <Heading>Activity Booking History</Heading>
             </HeadingWrapper>
             <TextWrapper>
-              {/* {
-                select!=="upcoming" && (
-                  <TextSelectField>
-                    <Select
-                      onChange={(e) => {
-                        setSelect1(e.target.value);
-                      }}
-                      //   value={select1}
-                      required
-                    >
-                      <option value="" hidden>
-                        Select Range
-                      </option>
-                      <option value="">All</option>
-                      <option
-                        value={
-                          new Date(new Date().getTime() - 2 * 24 * 60 * 60 * 1000)
-                        }
-                      >
-                        Past Two days
-                      </option>
-                      <option
-                        value={
-                          new Date(new Date().getTime() - 7 * 24 * 60 * 60 * 1000)
-                        }
-                      >
-                        Past one week
-                      </option>
-                      <option
-                        value={
-                          new Date(new Date().getTime() - 30 * 24 * 60 * 60 * 1000)
-                        }
-                      >
-                        Past one month
-                      </option>
-                    </Select>
-                  </TextSelectField>
-                )
-              } */}
-
-              {/* <IconSearch>
-                  <img src={SearchIcon} />
-                </IconSearch>
-                <Input
-                  type="search"
-                  placeholder={"Search by City"}
-                  value={search}
-                  onChange={(e) => {
-                    setSearchByName(e.target.value);
-                  }}
-                  // onKeyDown={(e) => KeyDown(e)}
-                  autoComplete="false"
-                /> */}
               <TextSelectField
                 style={{ width: "20%" }}
               >
@@ -440,7 +358,7 @@ const BookingHistory = () => {
                   style={{ width: "100%" }}
                 >
                   <option value="" hidden>
-                    Select Hotel
+                    Select Activity
                   </option>
                   {allHotels.map((item, index) => {
                     return (
@@ -451,46 +369,10 @@ const BookingHistory = () => {
                   })}
                 </Select>
               </TextSelectField>
-
-              {/* <FilterWrapper>
-                <FilterComponent>
-                  <DateIcon>
-                    <BsCalendarDay size="1.5rem" />
-                  </DateIcon>
-                  <DatePicker
-                    placeholderText="Start Date"
-                    selected={fromDate}
-                    onChange={(date) => {
-                      setFromDate(date);
-                    }}
-                    selectsStart
-                    startDate={fromDate}
-                    endDate={toDate}
-                  />
-                </FilterComponent>
-                <FilterComponent>
-                  <DateIcon>
-                    <BsCalendarDay size="1.5rem" />
-                  </DateIcon>
-
-                  <DatePicker
-                    placeholderText="End Date"
-                    selected={toDate}
-                    onChange={(date) => setToDate(date)}
-                    selectsStart
-                    startDate={fromDate}
-                    endDate={toDate}
-                    disabled={fromDate ? false : true}
-                    minDate={fromDate}
-                    style={{ padding: "10px" }}
-                  />
-                </FilterComponent>
-              </FilterWrapper> */}
-
               <div style={{ display: 'flex' }}>
                 <DatePickerContainer>
                   <div onClick={handleToggleDatePicker} style={{ position: 'relative' }}>
-                    <DatePickerStyled1
+                    <DatePicker
                       open={isDatePickerOpen}
                       onClickOutside={() => setIsDatePickerOpen(false)}
                       onFocus={() => setIsDatePickerOpen(true)}
@@ -503,7 +385,7 @@ const BookingHistory = () => {
                       endDate={toDate}
                       ref={InputStartsDate}
 
-                    ></DatePickerStyled1>
+                    ></DatePicker>
                     <FromDateInput onClick={refHandle}>
                       <i class="fas fa-calendar-alt"></i>
                     </FromDateInput>
@@ -511,7 +393,7 @@ const BookingHistory = () => {
                 </DatePickerContainer>
                 <DatePickerContainer>
                   <div onClick={handleToggleDatePicker2} style={{ position: 'relative' }}>
-                    <DatePickerStyled1
+                    <DatePicker
                       open={isDatePickerOpen1}
                       onClickOutside={() => setIsDatePickerOpen1(false)}
                       onFocus={() => setIsDatePickerOpen1(true)}
@@ -527,7 +409,7 @@ const BookingHistory = () => {
                       minDate={fromDate}
                       ref={InputEndDate}
                       style={{ padding: "10px" }}
-                    ></DatePickerStyled1>
+                    ></DatePicker>
                     <FromDateInput onClick={refHandle1}>
                       <i class="fas fa-calendar-alt"></i>
                     </FromDateInput>
@@ -569,12 +451,9 @@ const BookingHistory = () => {
               <Table sx={{ minWidth: 650 }} aria-label="simple table">
                 <TableHead>
                   <TableRow>
-                    <TableCell style={boldTextCss}>Hotel Name</TableCell>
+                    <TableCell style={boldTextCss}>Activity Name</TableCell>
                     <TableCell style={boldTextCss} align="center">
-                      CheckIn Date
-                    </TableCell>
-                    <TableCell style={boldTextCss} align="center">
-                      Checkout Date
+                      Activity Date
                     </TableCell>
                     <TableCell style={boldTextCss} align="center">
                       Creation date
@@ -602,7 +481,6 @@ const BookingHistory = () => {
                             {item.hotelname}
                           </TableCell>
                           <TableCell align="center">{formatDate(item.checkIn)}</TableCell>
-                          <TableCell align="center">{formatDate(item.checkOut)}</TableCell>
                           <TableCell align="center">
                             {bookingDate.toLocaleDateString()}
                           </TableCell>
@@ -652,4 +530,4 @@ const BookingHistory = () => {
   );
 };
 
-export default BookingHistory;
+export default VendorActivityHistory;

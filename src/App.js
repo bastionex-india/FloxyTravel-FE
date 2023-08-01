@@ -35,6 +35,7 @@ import { environmentVariables } from "./config/config";
 import ManageActivities from "./Pages/admin/Activities/ManageActivities";
 import AddActivity from "./Pages/admin/Activities/AddActivity";
 import ActivityBookingHistory from "./Pages/admin/ActivityBookingHistory";
+import VendorActivityHistory from "./Pages/VendorAcitivityHistory";
 
 const Root = styled.div``;
 const LeftWrapper = styled.div`
@@ -177,6 +178,10 @@ function App() {
                     <Route
                       path="/bookinghistory"
                       element={<BookingHistory />}
+                    />
+                    <Route
+                      path="/vendoractivityBookings"
+                      element={<VendorActivityHistory />}
                     />
                     <Route
                       path="/generateInvoice"
