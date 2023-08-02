@@ -201,8 +201,11 @@ const PayoutRequest = () => {
   const [open, setOpen] = useState(false);
   const [payoutRequestData, setPayoutRequestData] = useState(null);
   const [isButtonLoading, setIsButtonLoading] = useState(false);
+  const [selectedHotel, setSelectedHotel] = useState('all'); 
+  const [selectedActivity, setSelectedActivity] = useState('all'); 
   const [cityList, setCityList] = useState([]);
   const [hotelList, setHotelList] = useState([]);
+  const [activityList, setActivityList] = useState([]);
   const [selectHotel, setSelectHotel] = useState("all");
   const [selectCity, setSelectCity] = useState("all");
   const [selectVendor, setSelectVendor] = useState('all')
@@ -357,7 +360,7 @@ const PayoutRequest = () => {
       });
   }
   const handleChangeStatus = (e, item) => {
-    console.log("target", item)
+    // console.log("target", item)
 
     updatePayoutRequest(e.target.value, item._id)
   }
@@ -521,9 +524,14 @@ const PayoutRequest = () => {
   const getHotelListData = async () => {
     await axios
       .get(
-        `${environmentVariables.apiUrl}/admin/getallhotels?page=1&limit=10000`,
+        `${environmentVariables.apiUrl}/admin/getallhotels`,
         {
           headers: { _token: authData.data.token },
+          params:{
+            page : 1,
+            limit : 10000,
+            type: "hotel"
+          }
         }
       )
       .then((response) => {
@@ -533,6 +541,26 @@ const PayoutRequest = () => {
         console.log("error", err);
       });
   };
+  const getActivitiesListData = async ()=>{
+    await axios
+      .get(
+        `${environmentVariables.apiUrl}/admin/getallhotels`,
+        {
+          headers: { _token: authData.data.token },
+          params:{
+            page : 1,
+            limit : 10000,
+            type: "activity"
+          }
+        }
+      )
+      .then((response) => {
+        setActivityList(response.data.data.records);
+      })
+      .catch((err) => {
+        console.log("error", err);
+      });
+  }
   const handleCityChange = (city) => {
     setSelectCity(city);
   };
@@ -541,7 +569,16 @@ const PayoutRequest = () => {
   }
   const handleHotelChange = (hotel) => {
     setSelectHotel(hotel);
+    // reset data of another dropdown 
+    setSelectedHotel(hotel)
+    setSelectedActivity('all');
   };
+  const handleActivityChange = (activity)=>{
+    setSelectHotel(activity);
+    // reset data of another dropdown 
+    setSelectedHotel('all')
+    setSelectedActivity(activity);
+  }
   const handleVendorChange = (vendor) => {
     setSelectVendor(vendor);
   };
@@ -553,6 +590,7 @@ const PayoutRequest = () => {
 
   useEffect(() => {
     getHotelListData();
+    getActivitiesListData();
     getAllCities();
     getAllVendors();
   }, []);
@@ -586,22 +624,45 @@ const PayoutRequest = () => {
               p={1}
               columnSpacing={{ xs: 1, sm: 2, md: 3 }}
             >
-              <Grid item xs={3}>
-                <FormControl fullWidth>
-                  <label>Hotels</label>
-                  <select style={{ height: '45px', border: "1px solid #cccc", marginTop: "10px", borderRadius: "6px" }} onChange={(event) => handleHotelChange(event.target.value)} >
-                    <option value="all" selected >All</option>
-                    {hotelList.map((row, index) => {
-                      return (
-                        <option key={index} value={row._id}>
-                          {row.hotelname}
-                        </option>
-                      );
-                    })}
-                  </select>
-                </FormControl>
-              </Grid>
-              <Grid item xs={3}>
+              {
+                hotelList.length ?
+                <Grid item xs={3}>
+                  <FormControl fullWidth>
+                    <label>Hotels</label>
+                    <select style={{ height: '45px', border: "1px solid #cccc", marginTop: "10px", borderRadius: "6px" }} value={selectedHotel} onChange={(event) => handleHotelChange(event.target.value)} >
+                      <option value="all">All</option>
+                      {hotelList.map((row, index) => {
+                        return (
+                          <option key={index} value={row._id}>
+                            {row.hotelname}
+                          </option>
+                        );
+                      })}
+                    </select>
+                  </FormControl>
+                </Grid>
+                : null
+              }
+              {
+                activityList.length ?
+                <Grid item xs={3}>
+                  <FormControl fullWidth>
+                    <label>Activity</label>
+                    <select style={{ height: '45px', border: "1px solid #cccc", marginTop: "10px", borderRadius: "6px" }} value={selectedActivity} onChange={(event) => handleActivityChange(event.target.value)} >
+                      <option value="all">All</option>
+                      {activityList.map((row, index) => {
+                        return (
+                          <option key={index} value={row._id}>
+                            {row.hotelname}
+                          </option>
+                        );
+                      })}
+                    </select>
+                  </FormControl>
+                </Grid>
+                :null
+              }
+              <Grid item xs={2}>
                 <FormControl fullWidth>
                   <label>
                     Vendor
@@ -619,7 +680,7 @@ const PayoutRequest = () => {
                   </select>
                 </FormControl>
               </Grid>
-              <Grid item xs={3}>
+              <Grid item xs={2}>
                 <FormControl fullWidth>
                   <label>
                     City
@@ -639,7 +700,7 @@ const PayoutRequest = () => {
                   </select>
                 </FormControl>
               </Grid>
-              <Grid item xs={3}>
+              <Grid item xs={2}>
                 <FormControl fullWidth>
                   <label>
                     Status
