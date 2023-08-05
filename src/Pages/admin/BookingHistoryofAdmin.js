@@ -575,7 +575,7 @@ const BookingHistoryofAdmin = () => {
                           }}
                         >
                           <TableCell component="th" scope="row">
-                            {item.hotelname}
+                            {item.hotelname} {item.isCombined ? "(With Activity)" : ""}
                           </TableCell>
                           <TableCell align="left">
                             {item.vendorData.name}

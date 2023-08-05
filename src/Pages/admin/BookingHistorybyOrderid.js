@@ -22,9 +22,9 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import CircularLoader from "../../Component/CircularLoader/CircularLoader";
-import { format, parse } from 'date-fns';
+import { format, parse } from "date-fns";
 import IconButton from "@mui/material/IconButton";
-import ArrowBackIosNewOutlinedIcon from '@mui/icons-material/ArrowBackIosNewOutlined';
+import ArrowBackIosNewOutlinedIcon from "@mui/icons-material/ArrowBackIosNewOutlined";
 
 const Item = newStyled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -68,13 +68,59 @@ const Heading = styled.div`
   }
 `;
 const HeadingDiv = styled.div`
-  display:flex;
+  display: flex;
   justify-content: space-between;
   align-items: flex-start;
 `;
 const HeadingWrapper = styled.div`
   position: relative;
   display: -webkit-box;
+`;
+const RecentlyUploadedHeader = styled.div`
+  display: grid;
+  grid-template-columns: 30% 20% 25% 25%;
+  margin: 15px 2%;
+  padding: 14px 15px;
+  @media (max-width: 768px) {
+    display: none;
+  }
+`;
+const RecentlyUploadedHeaderElem = styled.div`
+  color: #6c7074;
+  padding-left: 4px;
+`;
+const RecentlyUploaded = styled.div`
+  background: #fff;
+  display: grid;
+  grid-template-columns: 30% 20% 25% 25%;
+  -webkit-box-align: center;
+  align-items: center;
+  margin: 15px 2%;
+  padding: 14px 15px;
+  box-shadow: 0px 0px 5px 5px #0000;
+  border-radius: 5px;
+  @media (max-width: 768px) {
+    display: flex;
+    justify-content: space-between;
+  }
+`;
+const DocInfo = styled.div`
+  display: flex;
+`;
+const DocName = styled.div`
+  margin-left: 4px;
+  // font-weight: 600;
+`;
+const RecentlyUploadedDate = styled.div`
+  @media (max-width: 768px) {
+    display: none;
+  }
+`;
+const Line = styled.div`
+  width: 100%;
+  height: 1px;
+  background-color: #a5a5a5;
+  margin: 23px 0px;
 `;
 
 const BookingHistorybyOrderid = () => {
@@ -86,10 +132,9 @@ const BookingHistorybyOrderid = () => {
 
   const getAllUsers = async () => {
     await axios
-      .get(
-        `${environmentVariables.apiUrl}/admin/getallbookingbyorderid/${state._id}`,
-        { headers: { _token: authData.data.token } }
-      )
+      .get(`http://localhost:4000/admin/getallbookingbyorderid/${state._id}`, {
+        headers: { _token: authData.data.token },
+      })
       .then((response) => {
         setIsLoading(false);
         setData(response.data.data);
@@ -108,14 +153,14 @@ const BookingHistorybyOrderid = () => {
   };
   function convertDateFormat(inputDate) {
     const possibleFormats = [
-      'yyyy-MM-dd',
-      'MM-dd-yyyy',
-      'MM/dd/yyyy',
-      'dd/MM/yyyy',
-      'yyyy/MM/dd',
+      "yyyy-MM-dd",
+      "MM-dd-yyyy",
+      "MM/dd/yyyy",
+      "dd/MM/yyyy",
+      "yyyy/MM/dd",
       // Add more date formats as needed
     ];
-  
+
     let parsedDate;
     for (const formatString of possibleFormats) {
       parsedDate = parse(inputDate, formatString, new Date());
@@ -123,34 +168,52 @@ const BookingHistorybyOrderid = () => {
         break;
       }
     }
-  
+
     if (isNaN(parsedDate)) {
-      return ''; // Return an empty string or handle the error as needed
+      return ""; // Return an empty string or handle the error as needed
     }
-  
-    const formattedDate = format(parsedDate, 'dd/MM/yyyy');
+
+    const formattedDate = format(parsedDate, "dd/MM/yyyy");
     return formattedDate;
   }
   function formatDate(timestamp) {
-    const options = { timeZone: 'Asia/Kolkata', day: '2-digit', month: '2-digit', year: 'numeric' };
-    const formattedDate = new Date(timestamp).toLocaleString('en-IN', options);
+    const options = {
+      timeZone: "Asia/Kolkata",
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    };
+    const formattedDate = new Date(timestamp).toLocaleString("en-IN", options);
     return formattedDate;
   }
+  // console.log(data, ";;;;");
   return (
     <>
       <TextMainWrapper>
         <TextRoot>
           <Root>
             <HeadingWrapper>
-              <IconButton title="Back" onClick={() => navigate(-1)} size="small" sx={{ backgroundColor: "#e1e1e1", color: "#01575c", marginTop: "4px" }}>
+              <IconButton
+                title="Back"
+                onClick={() => navigate(-1)}
+                size="small"
+                sx={{
+                  backgroundColor: "#e1e1e1",
+                  color: "#01575c",
+                  marginTop: "4px",
+                }}
+              >
                 <ArrowBackIosNewOutlinedIcon />
               </IconButton>
-              <Heading> {data.type=='activity' ? 'Activity' : "Hotel"} Booking Details</Heading>
+              <Heading>
+                {" "}
+                {data.type == "activity" ? "Activity" : "Hotel"} Booking Details
+              </Heading>
             </HeadingWrapper>
           </Root>
         </TextRoot>
       </TextMainWrapper>
-      
+
       <Container maxWidth="lg">
         {isLoading === true ? (
           <div
@@ -168,22 +231,22 @@ const BookingHistorybyOrderid = () => {
               <Item style={{ padding: "40px" }}>
                 {/* <h4>Hotel Location</h4> */}
                 <HeadingDiv>
-                <div>
-                  <h4>{data.hotelname}</h4>
-                  <p>
-                    {data.area} , {data.state}
-                  </p>
-                </div>
-                
-                <Button
-                  variant="contained"
-                  onClick={generateInvoiceHandler}
-                  endIcon={<PictureAsPdfIcon />}
-                >
-                  {data.status === "pending" || data.status==="approved"
-                    ? "Generate Invoice"
-                    : "View Invoice"}
-                </Button>
+                  <div>
+                    <h4>{data.hotelname}</h4>
+                    <p>
+                      {data.area} , {data.state}
+                    </p>
+                  </div>
+
+                  <Button
+                    variant="contained"
+                    onClick={generateInvoiceHandler}
+                    endIcon={<PictureAsPdfIcon />}
+                  >
+                    {data.status === "pending" || data.status === "approved"
+                      ? "Generate Invoice"
+                      : "View Invoice"}
+                  </Button>
                 </HeadingDiv>
                 {/* <h4>
                   <i>{data.hotelname}</i>
@@ -206,7 +269,12 @@ const BookingHistorybyOrderid = () => {
                           </TableCell>
                           <TableCell align="right">
                             {" "}
-                            {(data.customer!=undefined && data.customer.title!=undefined && data.customer.title) ? data.customer.title+'.' : ``} {data.customer && data.customer.name}{" "}
+                            {data.customer != undefined &&
+                            data.customer.title != undefined &&
+                            data.customer.title
+                              ? data.customer.title + "."
+                              : ``}{" "}
+                            {data.customer && data.customer.name}{" "}
                           </TableCell>
                         </TableRow>
                         <TableRow
@@ -232,12 +300,16 @@ const BookingHistorybyOrderid = () => {
                           </TableCell>
                           <TableCell align="right">
                             {" "}
-                            {(data.customer!=undefined && data.customer.countryCode != undefined && data.customer.countryCode) ? data.customer.countryCode+'-' : ''}{data.customer && data.customer.mobile}{" "}
+                            {data.customer != undefined &&
+                            data.customer.countryCode != undefined &&
+                            data.customer.countryCode
+                              ? data.customer.countryCode + "-"
+                              : ""}
+                            {data.customer && data.customer.mobile}{" "}
                           </TableCell>
                         </TableRow>
                       </TableBody>
                     </Table>
-                   
                   </Grid>
                   <Grid xs={6}>
                     <h4>Booking Details</h4>
@@ -263,10 +335,7 @@ const BookingHistorybyOrderid = () => {
                           </TableCell>
                           <TableCell align="right">{data.children}</TableCell>
                         </TableRow>
-                        {
-                          data.type == 'activity' ? 
-                          null
-                          :
+                        {data.type == "activity" ? null : (
                           <TableRow
                             sx={{
                               "&:last-child td, &:last-child th": { border: 0 },
@@ -275,22 +344,26 @@ const BookingHistorybyOrderid = () => {
                             <TableCell component="th" scope="row">
                               Rooms
                             </TableCell>
-                            <TableCell align="right">{data.noOfRooms}</TableCell>
+                            <TableCell align="right">
+                              {data.noOfRooms}
+                            </TableCell>
                           </TableRow>
-
-                        }
+                        )}
                         <TableRow
                           sx={{
                             "&:last-child td, &:last-child th": { border: 0 },
                           }}
                         >
                           <TableCell component="th" scope="row">
-                            {data.type == 'activity' ? 'Activity Date' : 'CheckIn Date'}
+                            {data.type == "activity"
+                              ? "Activity Date"
+                              : "CheckIn Date"}
                           </TableCell>
-                          <TableCell align="right">{formatDate(data.checkIn)}</TableCell>
+                          <TableCell align="right">
+                            {formatDate(data.checkIn)}
+                          </TableCell>
                         </TableRow>
-                        {
-                          data.type == 'activity' ? null : 
+                        {data.type == "activity" ? null : (
                           <TableRow
                             sx={{
                               "&:last-child td, &:last-child th": { border: 0 },
@@ -299,12 +372,55 @@ const BookingHistorybyOrderid = () => {
                             <TableCell component="th" scope="row">
                               CheckOut Date
                             </TableCell>
-                            <TableCell align="right">{formatDate(data.checkOut)}</TableCell>
+                            <TableCell align="right">
+                              {formatDate(data.checkOut)}
+                            </TableCell>
                           </TableRow>
-                        }
+                        )}
                       </TableBody>
                     </Table>
                   </Grid>
+                  {data.isCombined && (
+                    <>
+                      <Line />
+                      <Grid xs={8}>
+                        <h4>Activity Details</h4>
+                        <RecentlyUploadedHeader>
+                          <RecentlyUploadedHeaderElem>
+                            Acitivity Name
+                          </RecentlyUploadedHeaderElem>
+                          <RecentlyUploadedHeaderElem>
+                            Activity Date
+                          </RecentlyUploadedHeaderElem>
+                          <RecentlyUploadedHeaderElem>
+                            Number of Members
+                          </RecentlyUploadedHeaderElem>
+                          <RecentlyUploadedHeaderElem>
+                            Number of Children
+                          </RecentlyUploadedHeaderElem>
+                        </RecentlyUploadedHeader>
+                        {data.activities &&
+                          data.activities.map((item, key) => {
+                            return (
+                              <RecentlyUploaded key={key}>
+                                <DocInfo>
+                                  <DocName>{item.hotelname}</DocName>
+                                </DocInfo>
+                                <RecentlyUploadedDate>
+                                  {formatDate(item.checkIn)}
+                                </RecentlyUploadedDate>
+                                <RecentlyUploadedDate>
+                                  {item.adult}
+                                </RecentlyUploadedDate>
+                                <RecentlyUploadedDate>
+                                  {item.children}
+                                </RecentlyUploadedDate>
+                              </RecentlyUploaded>
+                            );
+                          })}
+                      </Grid>
+                    </>
+                  )}
                 </Grid>
               </Item>
             </Grid>
