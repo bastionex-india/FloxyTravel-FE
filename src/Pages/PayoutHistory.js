@@ -502,8 +502,7 @@ const PayoutHistory = () => {
     setSelectedHotel('all')
     setSelectedActivity(activity);
   }
-
-
+  
   useEffect(() => {
     setIsLoading(true);
     getAllListData();
