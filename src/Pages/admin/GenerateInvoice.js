@@ -254,7 +254,7 @@ const GenerateInvoice = () => {
   const [data, setData] = useState("");
   const navigate = useNavigate();
   const [discountAmount, setDiscountAmount] = useState(0);
-  const [hotelPrice, setHotelPrice] = useState("");
+  const [hotelPrice, setHotelPrice] = useState(0);
   // api data
   const [amount, setAmount] = useState(0);
   const [discount, setDiscount] = useState(0);
@@ -276,15 +276,33 @@ const GenerateInvoice = () => {
   const [isDinner, setIsDinner] = useState(state.isDinner);
   const [activitiesData, setActivitiesData] = useState(state.activities);
   const [activityAdult, setActivityAdult] = useState("");
+  const [totalActivitiesAmount, setTotalActivitiesAmount] = useState(0);
+  const [totalDiscountAmount, setTotalDiscountAmount] = useState(0);
+  const [totalPayableAmount, setTotalPayableAmount] = useState(0);
+  const [allActivitiesData, setAllActivitiesData] = useState([]);
 
   const sendInvoice = () => {
     // console.log(checkIn,checkOut,noofpersons,Number(noofchildren),noofrooms,state._id,amount.toString(),Number(discountAmount),new Date(checkIn).getTime(),new Date(checkOut).getTime())
+    // console.log(state._id,totalPayableAmount,Number(totalDiscountAmount),new Date(checkIn).getTime(),noofpersons,Number(noofchildren),currency,state.type !== undefined ? state.type : "hotel",new Date(checkOut).getTime(),noofrooms,activitiesData)
+    const limitedFieldsArray = activitiesData.map(
+      ({ _id, checkIn, adult, children, price }) => ({
+        _id,
+        checkIn: Number(checkIn),
+        adult,
+        children,
+        price,
+        includeWithHotel: true,
+        discount: "0",
+      })
+    );
+
+    console.log(limitedFieldsArray);
     if (hotelPrice && Number(hotelPrice) - Number(discountAmount) > 0) {
       let amount = Number(hotelPrice) - Number(discountAmount);
       let data = {
         bookingID: state._id,
-        amount: amount.toString(),
-        discount: Number(discountAmount),
+        amount: totalPayableAmount.toString(),
+        discount: Number(totalDiscountAmount),
         checkIn: new Date(checkIn).getTime(),
         persons: noofpersons,
         children: Number(noofchildren),
@@ -292,14 +310,18 @@ const GenerateInvoice = () => {
         isBreakfast: false,
         isLunch: false,
         isDinner: false,
-        type: state.type != undefined ? state.type : "hotel",
+        type: state.type !== undefined ? state.type : "hotel",
       };
-      if (state.type == "hotel") {
+      if (state.type === "hotel") {
         data.checkOut = new Date(checkOut).getTime();
         data.rooms = noofrooms;
         data.isBreakfast = false;
         data.isLunch = false;
         data.isDinner = false;
+      }
+      if (limitedFieldsArray) {
+        data.activities = limitedFieldsArray;
+        data.isCombined = true;
       }
       setIsSendInvoice(true);
       let config = {
@@ -360,6 +382,9 @@ const GenerateInvoice = () => {
     // setAmount(20)
     // setDiscount(2)
     // setTotalAmount(18)
+    const limitedFieldsArray = activitiesData.map(({ _id }) => ({
+      _id,
+    }));
     let url =
       authData.data.isadmin === "true"
         ? `${environmentVariables.apiUrl}/admin/getPaymentdetail`
@@ -367,6 +392,10 @@ const GenerateInvoice = () => {
     let requestBody = {
       bookingID: state._id,
     };
+    if (limitedFieldsArray) {
+      requestBody.activities = limitedFieldsArray;
+    }
+    // console.log("[[",limitedFieldsArray,"}}",requestBody)
     let config = {
       method: "post",
       url: url,
@@ -382,9 +411,21 @@ const GenerateInvoice = () => {
       .then((response) => {
         if (response.data.status) {
           let responsedata = response.data.data;
-          setAmount(+responsedata.payAmount + +responsedata.discount);
-          setDiscount(+responsedata.discount);
-          setTotalAmount(+responsedata.payAmount);
+          console.log(responsedata);
+          const totalActivitiesAmountAmount =
+            responsedata.activitiesPaymentDetails.reduce(
+              (total, payment) => total + payment.payAmount,
+              0
+            );
+          setAllActivitiesData(responsedata.activitiesPaymentDetails);
+          setTotalActivitiesAmount(totalActivitiesAmountAmount);
+          setHotelPrice(responsedata.hotelPaymentDetail.payAmount);
+          setTotalDiscountAmount(+responsedata.hotelPaymentDetail.discount);
+          setTotalPayableAmount(
+            responsedata.hotelPaymentDetail.payAmount +
+              totalActivitiesAmountAmount -
+              responsedata.hotelPaymentDetail.discount
+          );
           setPayMethod(responsedata.paymentStatus[0].method);
         } else {
           Swal.fire({
@@ -406,7 +447,25 @@ const GenerateInvoice = () => {
     if (state.status !== "pending") {
       getPaymentdetail();
     }
-  });
+  }, [state]);
+  useEffect(() => {
+    // console.log(activitiesData)
+    const sum = activitiesData.reduce(
+      (acc, item) => acc + Number(item.price),
+      0
+    );
+    setTotalActivitiesAmount(sum);
+  }, [activitiesData]);
+  useEffect(() => {
+    if (state.status === "pending" || state.status === "approved") {
+      setTotalPayableAmount(
+        Number(hotelPrice) +
+          Number(totalActivitiesAmount) -
+          Number(totalDiscountAmount)
+      );
+    }
+  }, [hotelPrice, totalActivitiesAmount, totalDiscountAmount]);
+
   const handleCheckInChange = (date) => {
     setCheckIn(date);
 
@@ -436,6 +495,7 @@ const GenerateInvoice = () => {
       if (element._id === item._id) {
         element.adult = event.target.value;
       }
+
       collectAllActivities.push(element);
     }
     setActivitiesData(collectAllActivities);
@@ -583,7 +643,7 @@ const GenerateInvoice = () => {
     const formattedDate = new Date(timestamp).toLocaleString("en-IN", options);
     return formattedDate;
   }
-  console.log({ isDinner, isLunch, isBreakfast, state });
+  console.log({ isDinner, isLunch, isBreakfast, state, allActivitiesData });
   return (
     <>
       <TextMainWrapper>
@@ -941,181 +1001,332 @@ const GenerateInvoice = () => {
               </DetailValue>
             </DetailContainer>
           </HotelInputPrice> */}
-          <ChildContainer4>
-            <HeadingText>Activity Details : </HeadingText>
-            <TabularData>
-              <TableContainer component={Paper}>
-                <Table aria-label="simple table">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell style={boldTextCss}>Activity Name</TableCell>
-                      <TableCell style={boldTextCss} align="left">
-                        Activity Date
-                      </TableCell>
-                      <TableCell style={boldTextCss} align="left">
-                        Total Adults
-                      </TableCell>
-                      <TableCell style={boldTextCss} align="left">
-                        Total Children
-                      </TableCell>
-                      <TableCell style={boldTextCss} align="left">
-                        Price
-                      </TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {activitiesData &&
-                      activitiesData.map((item, key) => {
-                        console.log(item.checkIn);
-                        return (
-                          <TableRow
-                            key={key}
-                            sx={{
-                              "&:last-child td, &:last-child th": { border: 0 },
-                            }}
-                          >
-                            <TableCell component="th" scope="row">
-                              {item.hotelname}
-                            </TableCell>
-                            <TableCell align="left">
-                              {state.status === "pending" ||
-                              state.status === "approved" ? (
-                                <div style={{ position: "relative" }}>
-                                  <div
-                                    onClick={() => {
-                                      InputCheckIn.current.setOpen(true);
-                                    }}
-                                    style={{
-                                      position: "absolute",
-                                      top: "20%",
-                                      left: "10%",
-                                      zIndex: "99",
-                                      fontSize: "20px",
-                                      cursor: "pointer",
-                                    }}
-                                  >
-                                    <i class="fas fa-calendar-alt"></i>
-                                  </div>
-                                  <DatePickerStyled2
-                                    className=""
-                                    placeholderText=" CheckIn"
-                                    selected={new Date(item.checkIn)}
-                                    onChange={(event) =>
-                                      handleActiveDateChange(event, item)
-                                    }
-                                    selectsStartcheckIn
-                                    startDate={checkIn}
-                                    endDate={checkOut}
-                                    ref={InputCheckIn}
-                                    minDate={checkIn}
-                                  ></DatePickerStyled2>
-                                </div>
-                              ) : (
-                                <>{formatDate(item.checkIn)}</>
-                              )}
-                            </TableCell>
-                            <TableCell align="left">
-                              {" "}
-                              {state.status === "pending" ||
-                              state.status === "approved" ? (
-                                <FormControl
-                                  sx={{ width: "71%" }}
-                                  variant="standard"
-                                  className="pull-right"
-                                >
-                                  <Input
-                                    type="number"
-                                    placeholder="Total Adults*"
-                                    name="adults"
-                                    value={item.adult}
-                                    onChange={(event) =>
-                                      handleChangeActivityAdult(event, item)
-                                    }
-                                    onKeyDown={handleKeyPress}
-                                  />
-                                </FormControl>
-                              ) : (
-                                <>{item.adult}</>
-                              )}
-                            </TableCell>
-                            <TableCell align="left">
-                              {" "}
-                              {state.status === "pending" ||
-                              state.status === "approved" ? (
-                                <FormControl
-                                  sx={{ width: "71%" }}
-                                  variant="standard"
-                                  className="pull-right"
-                                >
-                                  <Input
-                                    type="number"
-                                    placeholder="Total Children*"
-                                    name="children"
-                                    value={item.children}
-                                    onChange={(event) =>
-                                      handleChangeActivityChildren(event, item)
-                                    }
-                                    onKeyDown={handleKeyPress}
-                                  />
-                                </FormControl>
-                              ) : (
-                                <>{item.children}</>
-                              )}
-                            </TableCell>
-                            <TableCell align="left">
-                              {state.status === "pending" ||
-                              state.status === "approved" ? (
-                                <FormControl
-                                  sx={{ width: "71%" }}
-                                  variant="standard"
-                                  className="pull-right"
-                                >
-                                  <Input
-                                    type="number"
-                                    placeholder="Price*"
-                                    name="price"
-                                    value={item.price || ""}
-                                    onChange={(event) =>
-                                      handleChangeActivityPrice(event, item)
-                                    }
-                                    onKeyDown={handleKeyPress}
-                                  />
-                                </FormControl>
-                              ) : (
-                                <>{item.children}</>
-                              )}
-                            </TableCell>
-                            {/* <TableCell align="right">
-                              <FormControl
-                                sx={{ width: "70%" }}
-                                variant="standard"
-                                className="pull-right"
+          {state.isCombined && (
+            <ChildContainer4>
+              <HeadingText>Activity Details : </HeadingText>
+              <TabularData>
+                <TableContainer component={Paper}>
+                  <Table aria-label="simple table">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell style={boldTextCss}>Activity Name</TableCell>
+                        <TableCell style={boldTextCss} align="left">
+                          Activity Date
+                        </TableCell>
+                        <TableCell style={boldTextCss} align="left">
+                          Total Adults
+                        </TableCell>
+                        <TableCell style={boldTextCss} align="left">
+                          Total Children
+                        </TableCell>
+                        <TableCell style={boldTextCss} align="left">
+                          Price
+                        </TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {state.status === "pending" || state.status === "approved"
+                        ? activitiesData &&
+                          activitiesData.map((item, key) => {
+                            console.log(item.checkIn);
+                            return (
+                              <TableRow
+                                key={key}
+                                sx={{
+                                  "&:last-child td, &:last-child th": {
+                                    border: 0,
+                                  },
+                                }}
                               >
-                                <Checkbox
-                                  checked={item.isChecked}
-                                  onChange={(event) =>
-                                    handleActiveCheckedIn(event, item)
-                                  }
-                                />
-                              </FormControl>
-                            </TableCell> */}
-                          </TableRow>
-                        );
-                      })}
-                  </TableBody>
-                </Table>
-                {/* <TablePagination
-                rowsPerPageOptions={[1, 3, 10]}
-                component="div"
-                count={totalItems}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-              /> */}
-              </TableContainer>
-            </TabularData>
-          </ChildContainer4>
+                                <TableCell component="th" scope="row">
+                                  {item.hotelname}
+                                </TableCell>
+                                <TableCell align="left">
+                                  {state.status === "pending" ||
+                                  state.status === "approved" ? (
+                                    <div style={{ position: "relative" }}>
+                                      <div
+                                        onClick={() => {
+                                          InputCheckIn.current.setOpen(true);
+                                        }}
+                                        style={{
+                                          position: "absolute",
+                                          top: "20%",
+                                          left: "10%",
+                                          zIndex: "99",
+                                          fontSize: "20px",
+                                          cursor: "pointer",
+                                        }}
+                                      >
+                                        <i class="fas fa-calendar-alt"></i>
+                                      </div>
+                                      <DatePickerStyled2
+                                        className=""
+                                        placeholderText=" CheckIn"
+                                        selected={new Date(item.checkIn)}
+                                        onChange={(event) =>
+                                          handleActiveDateChange(event, item)
+                                        }
+                                        selectsStartcheckIn
+                                        startDate={checkIn}
+                                        endDate={checkOut}
+                                        ref={InputCheckIn}
+                                        minDate={checkIn}
+                                      ></DatePickerStyled2>
+                                    </div>
+                                  ) : (
+                                    <>{formatDate(item.checkIn)}</>
+                                  )}
+                                </TableCell>
+                                <TableCell align="left">
+                                  {" "}
+                                  {state.status === "pending" ||
+                                  state.status === "approved" ? (
+                                    <FormControl
+                                      sx={{ width: "71%" }}
+                                      variant="standard"
+                                      className="pull-right"
+                                    >
+                                      <Input
+                                        type="number"
+                                        placeholder="Total Adults*"
+                                        name="adults"
+                                        value={item.adult}
+                                        onChange={(event) =>
+                                          handleChangeActivityAdult(event, item)
+                                        }
+                                        onKeyDown={handleKeyPress}
+                                      />
+                                    </FormControl>
+                                  ) : (
+                                    <>{item.adult}</>
+                                  )}
+                                </TableCell>
+                                <TableCell align="left">
+                                  {" "}
+                                  {state.status === "pending" ||
+                                  state.status === "approved" ? (
+                                    <FormControl
+                                      sx={{ width: "71%" }}
+                                      variant="standard"
+                                      className="pull-right"
+                                    >
+                                      <Input
+                                        type="number"
+                                        placeholder="Total Children*"
+                                        name="children"
+                                        value={item.children}
+                                        onChange={(event) =>
+                                          handleChangeActivityChildren(
+                                            event,
+                                            item
+                                          )
+                                        }
+                                        onKeyDown={handleKeyPress}
+                                      />
+                                    </FormControl>
+                                  ) : (
+                                    <>{item.children}</>
+                                  )}
+                                </TableCell>
+                                <TableCell align="left">
+                                  {state.status === "pending" ||
+                                  state.status === "approved" ? (
+                                    <FormControl
+                                      sx={{ width: "71%" }}
+                                      variant="standard"
+                                      className="pull-right"
+                                    >
+                                      <Input
+                                        type="number"
+                                        placeholder="Price*"
+                                        name="price"
+                                        value={item.price || ""}
+                                        onChange={(event) =>
+                                          handleChangeActivityPrice(event, item)
+                                        }
+                                        onKeyDown={handleKeyPress}
+                                      />
+                                    </FormControl>
+                                  ) : (
+                                    <>{item.children}</>
+                                  )}
+                                </TableCell>
+                                {/* <TableCell align="right">
+                                <FormControl
+                                  sx={{ width: "70%" }}
+                                  variant="standard"
+                                  className="pull-right"
+                                >
+                                  <Checkbox
+                                    checked={item.isChecked}
+                                    onChange={(event) =>
+                                      handleActiveCheckedIn(event, item)
+                                    }
+                                  />
+                                </FormControl>
+                              </TableCell> */}
+                              </TableRow>
+                            );
+                          })
+                        : allActivitiesData &&
+                          allActivitiesData.map((item, key) => {
+                            console.log(item.checkIn);
+                            return (
+                              <TableRow
+                                key={key}
+                                sx={{
+                                  "&:last-child td, &:last-child th": {
+                                    border: 0,
+                                  },
+                                }}
+                              >
+                                <TableCell component="th" scope="row">
+                                  {item.bookinghistory.hotelname}
+                                </TableCell>
+                                <TableCell align="left">
+                                  {state.status === "pending" ||
+                                  state.status === "approved" ? (
+                                    <div style={{ position: "relative" }}>
+                                      <div
+                                        onClick={() => {
+                                          InputCheckIn.current.setOpen(true);
+                                        }}
+                                        style={{
+                                          position: "absolute",
+                                          top: "20%",
+                                          left: "10%",
+                                          zIndex: "99",
+                                          fontSize: "20px",
+                                          cursor: "pointer",
+                                        }}
+                                      >
+                                        <i class="fas fa-calendar-alt"></i>
+                                      </div>
+                                      <DatePickerStyled2
+                                        className=""
+                                        placeholderText=" CheckIn"
+                                        selected={new Date(item.checkIn)}
+                                        onChange={(event) =>
+                                          handleActiveDateChange(event, item)
+                                        }
+                                        selectsStartcheckIn
+                                        startDate={checkIn}
+                                        endDate={checkOut}
+                                        ref={InputCheckIn}
+                                        minDate={checkIn}
+                                      ></DatePickerStyled2>
+                                    </div>
+                                  ) : (
+                                    <>{formatDate(item.bookinghistory.checkIn)}</>
+                                  )}
+                                </TableCell>
+                                <TableCell align="left">
+                                  {" "}
+                                  {state.status === "pending" ||
+                                  state.status === "approved" ? (
+                                    <FormControl
+                                      sx={{ width: "71%" }}
+                                      variant="standard"
+                                      className="pull-right"
+                                    >
+                                      <Input
+                                        type="number"
+                                        placeholder="Total Adults*"
+                                        name="adults"
+                                        value={item.adult}
+                                        onChange={(event) =>
+                                          handleChangeActivityAdult(event, item)
+                                        }
+                                        onKeyDown={handleKeyPress}
+                                      />
+                                    </FormControl>
+                                  ) : (
+                                    <>{item.bookinghistory.adult}</>
+                                  )}
+                                </TableCell>
+                                <TableCell align="left">
+                                  {" "}
+                                  {state.status === "pending" ||
+                                  state.status === "approved" ? (
+                                    <FormControl
+                                      sx={{ width: "71%" }}
+                                      variant="standard"
+                                      className="pull-right"
+                                    >
+                                      <Input
+                                        type="number"
+                                        placeholder="Total Children*"
+                                        name="children"
+                                        value={item.children}
+                                        onChange={(event) =>
+                                          handleChangeActivityChildren(
+                                            event,
+                                            item
+                                          )
+                                        }
+                                        onKeyDown={handleKeyPress}
+                                      />
+                                    </FormControl>
+                                  ) : (
+                                    <>{item.bookinghistory.children}</>
+                                  )}
+                                </TableCell>
+                                <TableCell align="left">
+                                  {state.status === "pending" ||
+                                  state.status === "approved" ? (
+                                    <FormControl
+                                      sx={{ width: "71%" }}
+                                      variant="standard"
+                                      className="pull-right"
+                                    >
+                                      <Input
+                                        type="number"
+                                        placeholder="Price*"
+                                        name="price"
+                                        value={item.price || ""}
+                                        onChange={(event) =>
+                                          handleChangeActivityPrice(event, item)
+                                        }
+                                        onKeyDown={handleKeyPress}
+                                      />
+                                    </FormControl>
+                                  ) : (
+                                    <>{item.payAmount}</>
+                                  )}
+                                </TableCell>
+                                {/* <TableCell align="right">
+                                <FormControl
+                                  sx={{ width: "70%" }}
+                                  variant="standard"
+                                  className="pull-right"
+                                >
+                                  <Checkbox
+                                    checked={item.isChecked}
+                                    onChange={(event) =>
+                                      handleActiveCheckedIn(event, item)
+                                    }
+                                  />
+                                </FormControl>
+                              </TableCell> */}
+                              </TableRow>
+                            );
+                          })}
+                    </TableBody>
+                  </Table>
+                  {/* <TablePagination
+                  rowsPerPageOptions={[1, 3, 10]}
+                  component="div"
+                  count={totalItems}
+                  rowsPerPage={rowsPerPage}
+                  page={page}
+                  onPageChange={handleChangePage}
+                  onRowsPerPageChange={handleChangeRowsPerPage}
+                /> */}
+                </TableContainer>
+              </TabularData>
+            </ChildContainer4>
+          )}
           <ChildContainer5>
             <HotelInputPrice>
               <HotelInputPriceHeading>Hotel Amount</HotelInputPriceHeading>
@@ -1143,42 +1354,46 @@ const GenerateInvoice = () => {
                     />
                   </FormControl>
                 ) : (
-                  amount.toFixed(2)
+                  Number(hotelPrice).toFixed(2)
                 )}
               </HotelInputPriceValue>
             </HotelInputPrice>
-            <TotalActivitiesPrice>
-              <HotelInputPriceHeading>
-                Total Activities Amount
-              </HotelInputPriceHeading>
-              <HotelInputPriceValue>
-                {" "}
-                <span
-                  style={{
-                    fontSize: "14px",
-                    fontWeight: "bold",
-                    lineHeight: "37px",
-                    paddingRight: "10px",
-                  }}
-                >
-                  {currency}
-                </span>
-                {state.status === "pending" || state.status === "approved" ? (
-                  <FormControl variant="standard" className="pull-right">
-                    <Input
-                      type="number"
-                      onKeyDown={handleKeyPress}
-                      id="standard-adornment-amount"
-                      size="small"
-                      onChange={(e) => setHotelPrice(e.target.value)}
-                      value={hotelPrice}
-                    />
-                  </FormControl>
-                ) : (
-                  amount.toFixed(2)
-                )}
-              </HotelInputPriceValue>
-            </TotalActivitiesPrice>
+            {state.isCombined && (
+              <TotalActivitiesPrice>
+                <HotelInputPriceHeading>
+                  Total Activities Amount
+                </HotelInputPriceHeading>
+                <HotelInputPriceValue>
+                  {" "}
+                  <span
+                    style={{
+                      fontSize: "14px",
+                      fontWeight: "bold",
+                      lineHeight: "37px",
+                      paddingRight: "10px",
+                    }}
+                  >
+                    {currency}
+                  </span>
+                  {state.status === "pending" || state.status === "approved" ? (
+                    <FormControl variant="standard" className="pull-right">
+                      <Input
+                        type="number"
+                        onKeyDown={handleKeyPress}
+                        id="standard-adornment-amount"
+                        size="small"
+                        onChange={(e) =>
+                          setTotalActivitiesAmount(e.target.value)
+                        }
+                        value={totalActivitiesAmount}
+                      />
+                    </FormControl>
+                  ) : (
+                    totalActivitiesAmount.toFixed(2)
+                  )}
+                </HotelInputPriceValue>
+              </TotalActivitiesPrice>
+            )}
             <TotalDiscountPrice>
               <HotelInputPriceHeading>
                 Total Discount Amount
@@ -1202,12 +1417,12 @@ const GenerateInvoice = () => {
                       onKeyDown={handleKeyPress}
                       id="standard-adornment-amount"
                       size="small"
-                      onChange={(e) => setHotelPrice(e.target.value)}
-                      value={hotelPrice}
+                      onChange={(e) => setTotalDiscountAmount(e.target.value)}
+                      value={totalDiscountAmount}
                     />
                   </FormControl>
                 ) : (
-                  amount.toFixed(2)
+                  totalDiscountAmount.toFixed(2)
                 )}
               </HotelInputPriceValue>
             </TotalDiscountPrice>
@@ -1234,27 +1449,29 @@ const GenerateInvoice = () => {
                       onKeyDown={handleKeyPress}
                       id="standard-adornment-amount"
                       size="small"
-                      onChange={(e) => setHotelPrice(e.target.value)}
-                      value={hotelPrice}
+                      onChange={(e) => setTotalPayableAmount(e.target.value)}
+                      value={totalPayableAmount}
                     />
                   </FormControl>
                 ) : (
-                  amount.toFixed(2)
+                  totalPayableAmount.toFixed(2)
                 )}
               </HotelInputPriceValue>
             </TotalPayblePrice>
           </ChildContainer5>
-          <ChildContainer6>
-            <LoadingButton
-              loading={isSendInvoice}
-              disabled={hotelPrice.length || !isSendInvoice ? false : true}
-              variant="contained"
-              onClick={sendInvoiceHandler}
-              style={{backgroundColor: "#01575c"}}
-            >
-              Send Invoice
-            </LoadingButton>
-          </ChildContainer6>
+          {state.status === "pending" || state.status === "approved" ? (
+            <ChildContainer6>
+              <LoadingButton
+                loading={isSendInvoice}
+                disabled={hotelPrice.length || !isSendInvoice ? false : true}
+                variant="contained"
+                onClick={sendInvoiceHandler}
+                style={{ backgroundColor: "#01575c" }}
+              >
+                Send Invoice
+              </LoadingButton>
+            </ChildContainer6>
+          ) : null}
         </MainContainer1>
       </MainContainer>
       {/* <Container maxWidth="lg">

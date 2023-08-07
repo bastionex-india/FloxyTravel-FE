@@ -132,7 +132,7 @@ const BookingHistorybyOrderid = () => {
 
   const getAllUsers = async () => {
     await axios
-      .get(`http://localhost:4000/admin/getallbookingbyorderid/${state._id}`, {
+      .get(`${environmentVariables.apiUrl}/admin/getallbookingbyorderid/${state._id}`, {
         headers: { _token: authData.data.token },
       })
       .then((response) => {
