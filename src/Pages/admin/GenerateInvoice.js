@@ -318,6 +318,7 @@ const GenerateInvoice = () => {
         isBreakfast: false,
         isLunch: false,
         isDinner: false,
+        isCombined:false,
         type: state.type !== undefined ? state.type : "hotel",
       };
       if (state.type === "hotel") {
