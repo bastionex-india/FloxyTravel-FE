@@ -237,7 +237,7 @@ const BookingHistorybyOrderid = () => {
                     </p>
                   </div>
                   {data.isCombined && data.bookingObjectId && (
-                    <p className="text-danger" style={{width:"30%"}}>This invoice is attached with hotel, You should generate this invoice with respective hotel</p>
+                    <p className="text-danger" style={{width:"30%"}}>This invoice is attached with hotel, You can generate this invoice with respective hotel.</p>
                   )}
                   <Button
                     variant="contained"

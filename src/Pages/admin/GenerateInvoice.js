@@ -117,14 +117,14 @@ const MainContainer1 = styled.div`
   display: flex;
   flex-direction: column;
   width: 90%;
-  background-color:white;
+  background-color: white;
   padding: 3% 5%;
 `;
 const ChildContainer0 = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom:20px;
+  margin-bottom: 20px;
 `;
 const ChildContainer1 = styled.div`
   display: flex;
@@ -187,6 +187,12 @@ const CheckInHeading = styled.div`
   // padding: 0px 10px;
   font-size: 15px;
   font-weight: 600;
+  line-height: normal;
+  ${(p) =>
+    p.xyz &&
+    `
+  margin-left:5px;
+  `}
 `;
 const CheckInValue = styled.div``;
 const Wrapper2 = styled.div`
@@ -318,7 +324,7 @@ const GenerateInvoice = () => {
         isBreakfast: false,
         isLunch: false,
         isDinner: false,
-        isCombined:false,
+        isCombined: false,
         type: state.type !== undefined ? state.type : "hotel",
       };
       if (state.type === "hotel") {
@@ -397,12 +403,12 @@ const GenerateInvoice = () => {
     }));
     let url =
       authData.data.isadmin === "true"
-        ? `${environmentVariables.apiUrl}/admin/getPaymentdetail`
+        ? `http://localhost:4000/admin/getPaymentdetail`
         : `${environmentVariables.apiUrl}/vendor/getPaymentdetail`;
     let requestBody = {
       bookingID: state._id,
     };
-    if (limitedFieldsArray) {
+    if (limitedFieldsArray.length !== 0) {
       requestBody.activities = limitedFieldsArray;
     }
     // console.log("[[",limitedFieldsArray,"}}",requestBody)
@@ -422,20 +428,27 @@ const GenerateInvoice = () => {
         if (response.data.status) {
           let responsedata = response.data.data;
           console.log(responsedata);
-          const totalActivitiesAmountAmount =
-            responsedata.activitiesPaymentDetails.reduce(
-              (total, payment) => total + payment.payAmount,
-              0
+          if (responsedata.activitiesPaymentDetails) {
+            const totalActivitiesAmountAmount =
+              responsedata.activitiesPaymentDetails.reduce(
+                (total, payment) => total + payment.payAmount,
+                0
+              );
+            setAllActivitiesData(responsedata.activitiesPaymentDetails);
+            setTotalActivitiesAmount(totalActivitiesAmountAmount);
+            setHotelPrice(
+              responsedata.hotelPaymentDetail.payAmount +
+                responsedata.hotelPaymentDetail.discount -
+                totalActivitiesAmountAmount
             );
-          setAllActivitiesData(responsedata.activitiesPaymentDetails);
-          setTotalActivitiesAmount(totalActivitiesAmountAmount);
-          setHotelPrice(responsedata.hotelPaymentDetail.payAmount);
+          } else {
+            setHotelPrice(
+              responsedata.hotelPaymentDetail.payAmount +
+                responsedata.hotelPaymentDetail.discount
+            );
+          }
           setTotalDiscountAmount(+responsedata.hotelPaymentDetail.discount);
-          setTotalPayableAmount(
-            responsedata.hotelPaymentDetail.payAmount +
-              totalActivitiesAmountAmount -
-              responsedata.hotelPaymentDetail.discount
-          );
+          setTotalPayableAmount(responsedata.hotelPaymentDetail.payAmount);
           setPayMethod(responsedata.paymentStatus[0].method);
         } else {
           Swal.fire({
@@ -672,7 +685,7 @@ const GenerateInvoice = () => {
               class="fa-solid fa-chevron-left fa-2x"
             ></i>
             {state.status === "pending" || state.status === "approved" ? (
-              <Heading>Generate Invoice,,,</Heading>
+              <Heading>Generate Invoice</Heading>
             ) : (
               <Heading>View Invoice</Heading>
             )}
@@ -681,9 +694,9 @@ const GenerateInvoice = () => {
       </TextMainWrapper>
       <MainContainer>
         <MainContainer1>
-        <ChildContainer0>
+          <ChildContainer0>
             <First>
-            <img src={logo} height={100} />
+              <img src={logo} height={100} />
             </First>
           </ChildContainer0>
           <ChildContainer1>
@@ -695,7 +708,9 @@ const GenerateInvoice = () => {
             <Second>
               <InvoiceNo>
                 <InvoiceNoHeading>Invoice No:</InvoiceNoHeading>
-                <InvoiceNoText>{state.invoiceNumber.toString().padStart(9, 0)}</InvoiceNoText>
+                <InvoiceNoText>
+                  INV-{state.invoiceNumber.toString().padStart(9, 0)}
+                </InvoiceNoText>
               </InvoiceNo>
               {/* <InvoiceDate>
                 <InvoiceNoHeading>Invoice :</InvoiceNoHeading>
@@ -895,7 +910,8 @@ const GenerateInvoice = () => {
                 </Wrapper2>
                 <Wrapper3>
                   <CheckBoxWrapper>
-                    <CheckInHeading>
+                    <CheckInValue>Breakfast </CheckInValue>
+                    <CheckInHeading xyz>
                       {" "}
                       {state.status === "pending" ||
                       state.status === "approved" ? (
@@ -913,10 +929,10 @@ const GenerateInvoice = () => {
                         <>{isBreakfast ? "Yes" : "No"}</>
                       )}{" "}
                     </CheckInHeading>
-                    <CheckInValue>Breakfast for all guests</CheckInValue>
                   </CheckBoxWrapper>
                   <CheckBoxWrapper>
-                    <CheckInHeading>
+                    <CheckInValue>Lunch </CheckInValue>
+                    <CheckInHeading xyz>
                       {state.status === "pending" ||
                       state.status === "approved" ? (
                         <FormControl
@@ -933,10 +949,10 @@ const GenerateInvoice = () => {
                         <>{isLunch ? "Yes" : "No"}</>
                       )}
                     </CheckInHeading>
-                    <CheckInValue>Lunch for all guests</CheckInValue>
                   </CheckBoxWrapper>
                   <CheckBoxWrapper>
-                    <CheckInHeading>
+                    <CheckInValue>Dinner </CheckInValue>
+                    <CheckInHeading xyz>
                       {state.status === "pending" ||
                       state.status === "approved" ? (
                         <FormControl
@@ -953,7 +969,6 @@ const GenerateInvoice = () => {
                         <>{isDinner ? "Yes" : "No"}</>
                       )}
                     </CheckInHeading>
-                    <CheckInValue>Dinner for all guests</CheckInValue>
                   </CheckBoxWrapper>
                 </Wrapper3>
               </HotelDetailsWrapper>
@@ -1497,17 +1512,6 @@ const GenerateInvoice = () => {
               <HotelInputPrice>
                 <HotelInputPriceHeading>Hotel Amount</HotelInputPriceHeading>
                 <HotelInputPriceValue>
-                  {" "}
-                  <span
-                    style={{
-                      fontSize: "14px",
-                      fontWeight: "bold",
-                      lineHeight: "37px",
-                      paddingRight: "10px",
-                    }}
-                  >
-                    {currency}
-                  </span>
                   {state.status === "pending" || state.status === "approved" ? (
                     <FormControl variant="standard" className="pull-right">
                       <Input
@@ -1521,7 +1525,17 @@ const GenerateInvoice = () => {
                     </FormControl>
                   ) : (
                     Number(hotelPrice).toFixed(2)
-                  )}
+                  )}{" "}
+                  <span
+                    style={{
+                      fontSize: "14px",
+                      fontWeight: "bold",
+                      lineHeight: "37px",
+                      paddingRight: "10px",
+                    }}
+                  >
+                    {currency}
+                  </span>
                 </HotelInputPriceValue>
               </HotelInputPrice>
             )}
@@ -1530,16 +1544,6 @@ const GenerateInvoice = () => {
                 <HotelInputPriceHeading>Total Amount</HotelInputPriceHeading>
                 <HotelInputPriceValue>
                   {" "}
-                  <span
-                    style={{
-                      fontSize: "14px",
-                      fontWeight: "bold",
-                      lineHeight: "37px",
-                      paddingRight: "10px",
-                    }}
-                  >
-                    {currency}
-                  </span>
                   {state.status === "pending" || state.status === "approved" ? (
                     <FormControl variant="standard" className="pull-right">
                       <Input
@@ -1553,7 +1557,17 @@ const GenerateInvoice = () => {
                     </FormControl>
                   ) : (
                     Number(hotelPrice).toFixed(2)
-                  )}
+                  )}{" "}
+                  <span
+                    style={{
+                      fontSize: "14px",
+                      fontWeight: "bold",
+                      lineHeight: "37px",
+                      paddingRight: "10px",
+                    }}
+                  >
+                    {currency}
+                  </span>
                 </HotelInputPriceValue>
               </TotalActivitiesPrice>
             )}
@@ -1564,16 +1578,6 @@ const GenerateInvoice = () => {
                 </HotelInputPriceHeading>
                 <HotelInputPriceValue>
                   {" "}
-                  <span
-                    style={{
-                      fontSize: "14px",
-                      fontWeight: "bold",
-                      lineHeight: "37px",
-                      paddingRight: "10px",
-                    }}
-                  >
-                    {currency}
-                  </span>
                   {state.status === "pending" || state.status === "approved" ? (
                     <FormControl variant="standard" className="pull-right">
                       <Input
@@ -1590,7 +1594,17 @@ const GenerateInvoice = () => {
                     </FormControl>
                   ) : (
                     totalActivitiesAmount.toFixed(2)
-                  )}
+                  )}{" "}
+                  <span
+                    style={{
+                      fontSize: "14px",
+                      fontWeight: "bold",
+                      lineHeight: "37px",
+                      paddingRight: "10px",
+                    }}
+                  >
+                    {currency}
+                  </span>
                 </HotelInputPriceValue>
               </TotalActivitiesPrice>
             )}
@@ -1600,16 +1614,6 @@ const GenerateInvoice = () => {
               </HotelInputPriceHeading>
               <HotelInputPriceValue>
                 {" "}
-                <span
-                  style={{
-                    fontSize: "14px",
-                    fontWeight: "bold",
-                    lineHeight: "37px",
-                    paddingRight: "10px",
-                  }}
-                >
-                  {currency}
-                </span>
                 {state.status === "pending" || state.status === "approved" ? (
                   <FormControl variant="standard" className="pull-right">
                     <Input
@@ -1623,15 +1627,7 @@ const GenerateInvoice = () => {
                   </FormControl>
                 ) : (
                   totalDiscountAmount.toFixed(2)
-                )}
-              </HotelInputPriceValue>
-            </TotalDiscountPrice>
-            <TotalPayblePrice>
-              <HotelInputPriceHeading>
-                Total Payable Amount
-              </HotelInputPriceHeading>
-              <HotelInputPriceValue>
-                {" "}
+                )}{" "}
                 <span
                   style={{
                     fontSize: "14px",
@@ -1642,6 +1638,14 @@ const GenerateInvoice = () => {
                 >
                   {currency}
                 </span>
+              </HotelInputPriceValue>
+            </TotalDiscountPrice>
+            <TotalPayblePrice>
+              <HotelInputPriceHeading>
+                Total Payable Amount
+              </HotelInputPriceHeading>
+              <HotelInputPriceValue>
+                {" "}
                 {state.status === "pending" || state.status === "approved" ? (
                   <FormControl variant="standard" className="pull-right">
                     <Input
@@ -1655,7 +1659,17 @@ const GenerateInvoice = () => {
                   </FormControl>
                 ) : (
                   totalPayableAmount.toFixed(2)
-                )}
+                )}{" "}
+                <span
+                  style={{
+                    fontSize: "14px",
+                    fontWeight: "bold",
+                    lineHeight: "37px",
+                    paddingRight: "10px",
+                  }}
+                >
+                  {currency}
+                </span>
               </HotelInputPriceValue>
             </TotalPayblePrice>
           </ChildContainer5>
