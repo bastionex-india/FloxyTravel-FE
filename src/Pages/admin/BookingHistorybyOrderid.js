@@ -186,7 +186,6 @@ const BookingHistorybyOrderid = () => {
     const formattedDate = new Date(timestamp).toLocaleString("en-IN", options);
     return formattedDate;
   }
-  // console.log(data, ";;;;");
   return (
     <>
       <TextMainWrapper>
@@ -237,11 +236,14 @@ const BookingHistorybyOrderid = () => {
                       {data.area} , {data.state}
                     </p>
                   </div>
-
+                  {data.isCombined && data.bookingObjectId && (
+                    <p className="text-danger" style={{width:"30%"}}>This invoice is attached with hotel, You should generate this invoice with respective hotel</p>
+                  )}
                   <Button
                     variant="contained"
                     onClick={generateInvoiceHandler}
                     endIcon={<PictureAsPdfIcon />}
+                    disabled={(data.isCombined && data.bookingObjectId) }
                   >
                     {data.status === "pending" || data.status === "approved"
                       ? "Generate Invoice"
@@ -380,7 +382,7 @@ const BookingHistorybyOrderid = () => {
                       </TableBody>
                     </Table>
                   </Grid>
-                  {data.isCombined && (
+                  {data.isCombined && data.type==="hotel" && (
                     <>
                       <Line />
                       <Grid xs={8}>

@@ -116,7 +116,15 @@ const MainContainer = styled.div`
 const MainContainer1 = styled.div`
   display: flex;
   flex-direction: column;
-  width: 80%;
+  width: 90%;
+  background-color:white;
+  padding: 3% 5%;
+`;
+const ChildContainer0 = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom:20px;
 `;
 const ChildContainer1 = styled.div`
   display: flex;
@@ -315,14 +323,15 @@ const GenerateInvoice = () => {
       if (state.type === "hotel") {
         data.checkOut = new Date(checkOut).getTime();
         data.rooms = noofrooms;
-        data.isBreakfast = false;
-        data.isLunch = false;
-        data.isDinner = false;
+        data.isBreakfast = isBreakfast;
+        data.isLunch = isLunch;
+        data.isDinner = isDinner;
       }
-      if (limitedFieldsArray) {
+      if (limitedFieldsArray.length !== 0) {
         data.activities = limitedFieldsArray;
         data.isCombined = true;
       }
+      console.log(data);
       setIsSendInvoice(true);
       let config = {
         method: "post",
@@ -457,12 +466,18 @@ const GenerateInvoice = () => {
     setTotalActivitiesAmount(sum);
   }, [activitiesData]);
   useEffect(() => {
-    if (state.status === "pending" || state.status === "approved") {
-      setTotalPayableAmount(
-        Number(hotelPrice) +
-          Number(totalActivitiesAmount) -
-          Number(totalDiscountAmount)
-      );
+    if (state.isCombined) {
+      if (state.status === "pending" || state.status === "approved") {
+        setTotalPayableAmount(
+          Number(hotelPrice) +
+            Number(totalActivitiesAmount) -
+            Number(totalDiscountAmount)
+        );
+      }
+    } else {
+      if (state.status === "pending" || state.status === "approved") {
+        setTotalPayableAmount(Number(hotelPrice) - Number(totalDiscountAmount));
+      }
     }
   }, [hotelPrice, totalActivitiesAmount, totalDiscountAmount]);
 
@@ -665,6 +680,11 @@ const GenerateInvoice = () => {
       </TextMainWrapper>
       <MainContainer>
         <MainContainer1>
+        <ChildContainer0>
+            <First>
+            <img src={logo} height={100} />
+            </First>
+          </ChildContainer0>
           <ChildContainer1>
             <First>
               <Address>B2 Sec-4, Noida, Uttar Pradesh 201301, India</Address>
@@ -674,7 +694,7 @@ const GenerateInvoice = () => {
             <Second>
               <InvoiceNo>
                 <InvoiceNoHeading>Invoice No:</InvoiceNoHeading>
-                <InvoiceNoText>{state._id}</InvoiceNoText>
+                <InvoiceNoText>{state.invoiceNumber.toString().padStart(9, 0)}</InvoiceNoText>
               </InvoiceNo>
               {/* <InvoiceDate>
                 <InvoiceNoHeading>Invoice :</InvoiceNoHeading>
@@ -697,245 +717,247 @@ const GenerateInvoice = () => {
               </First>
             </ChildContainer1>
           </ChildContainer2>
-          <ChildContainer3>
-            <HeadingText>Hotel Details : </HeadingText>
-            <HotelDetailsWrapper>
-              <Wrapper1>
-                <CheckInWrapper>
-                  <CheckInHeading>
-                    {state.type === "activity"
-                      ? "Activity Date"
-                      : "CheckIn Date"}
-                  </CheckInHeading>
-                  <CheckInValue>
-                    {state.status === "pending" ||
-                    state.status === "approved" ? (
-                      <div style={{ position: "relative" }}>
-                        <div
-                          onClick={() => {
-                            InputCheckIn.current.setOpen(true);
-                          }}
-                          style={{
-                            position: "absolute",
-                            top: "20%",
-                            left: "10%",
-                            zIndex: "99",
-                            fontSize: "20px",
-                            cursor: "pointer",
-                          }}
-                        >
-                          <i class="fas fa-calendar-alt"></i>
-                        </div>
-                        <DatePickerStyled2
-                          className=""
-                          placeholderText=" CheckIn"
-                          selected={checkIn}
-                          onChange={handleCheckInChange}
-                          selectsStartcheckIn
-                          startDate={checkIn}
-                          endDate={checkOut}
-                          ref={InputCheckIn}
-                          minDate={checkIn}
-                        ></DatePickerStyled2>
-                      </div>
-                    ) : (
-                      <>{moment(checkIn).format("DD/MM/YYYY")}</>
-                    )}
-                  </CheckInValue>
-                </CheckInWrapper>
-                {state.type === "activity" ? null : (
-                  <>
-                    <CheckInWrapper>
-                      <CheckInHeading> CheckOut Date </CheckInHeading>
-                      <CheckInValue>
-                        {state.status === "pending" ||
-                        state.status === "approved" ? (
-                          <div style={{ position: "relative" }}>
-                            <div
-                              onClick={() =>
-                                InputCheckOut.current.setOpen(true)
-                              }
-                              style={{
-                                top: "20%",
-                                left: "10%",
-                                zIndex: "99",
-                                fontSize: "20px",
-                                cursor: "pointer",
-                                position: "absolute",
-                              }}
-                            >
-                              <i class="fas fa-calendar-alt"></i>
-                            </div>
-
-                            <DatePickerStyled2
-                              className=""
-                              placeholderText=" CheckOut"
-                              selected={checkOut}
-                              onChange={handleCheckOutChange}
-                              startDate={checkIn}
-                              endDate={checkOut}
-                              minDate={checkIn}
-                              ref={InputCheckOut}
-                            ></DatePickerStyled2>
-                          </div>
-                        ) : (
-                          <>{moment(checkOut).format("DD/MM/YYYY")}</>
-                        )}
-                      </CheckInValue>
-                    </CheckInWrapper>
-                  </>
-                )}
-                <CheckInWrapper>
-                  <CheckInHeading>Days</CheckInHeading>
-                  <CheckInValue style={{ fontWeight: 600 }}>
-                    {numOfDays}
-                  </CheckInValue>
-                </CheckInWrapper>
-              </Wrapper1>
-              <Wrapper2>
-                {state.type === "activity" ? null : (
-                  <>
-                    <CheckInWrapper>
-                      <CheckInHeading> Number of Rooms </CheckInHeading>
-                      <CheckInValue>
-                        {state.status === "pending" ||
-                        state.status === "approved" ? (
-                          <FormControl
-                            sx={{ width: "71%" }}
-                            variant="standard"
-                            className="pull-right"
+          {state.type === "hotel" && (
+            <ChildContainer3>
+              <HeadingText>Hotel Details : </HeadingText>
+              <HotelDetailsWrapper>
+                <Wrapper1>
+                  <CheckInWrapper>
+                    <CheckInHeading>
+                      {state.type === "activity"
+                        ? "Activity Date"
+                        : "CheckIn Date"}
+                    </CheckInHeading>
+                    <CheckInValue>
+                      {state.status === "pending" ||
+                      state.status === "approved" ? (
+                        <div style={{ position: "relative" }}>
+                          <div
+                            onClick={() => {
+                              InputCheckIn.current.setOpen(true);
+                            }}
+                            style={{
+                              position: "absolute",
+                              top: "20%",
+                              left: "10%",
+                              zIndex: "99",
+                              fontSize: "20px",
+                              cursor: "pointer",
+                            }}
                           >
-                            <Input
-                              type="number"
-                              placeholder="Total rooms*"
-                              name="noofrooms"
-                              value={noofrooms}
-                              onChange={handleChangeRooms}
-                              onKeyDown={handleKeyPress}
-                            />
-                          </FormControl>
-                        ) : (
-                          <>{noofrooms}</>
-                        )}
-                      </CheckInValue>
-                    </CheckInWrapper>
-                  </>
-                )}
-                <CheckInWrapper>
-                  <CheckInHeading> Number of Persons </CheckInHeading>
-                  <CheckInValue>
-                    {state.status === "pending" ||
-                    state.status === "approved" ? (
-                      <FormControl
-                        sx={{ width: "71%" }}
-                        variant="standard"
-                        className="pull-right"
-                      >
-                        <Input
-                          type="number"
-                          placeholder="Total persons*"
-                          name="noofpersons"
-                          value={noofpersons}
-                          onChange={handleChangePerson}
-                          onKeyDown={handleKeyPress}
-                        />
-                      </FormControl>
-                    ) : (
-                      <>{noofpersons}</>
-                    )}
-                  </CheckInValue>
-                </CheckInWrapper>
+                            <i class="fas fa-calendar-alt"></i>
+                          </div>
+                          <DatePickerStyled2
+                            className=""
+                            placeholderText=" CheckIn"
+                            selected={checkIn}
+                            onChange={handleCheckInChange}
+                            selectsStartcheckIn
+                            startDate={checkIn}
+                            endDate={checkOut}
+                            ref={InputCheckIn}
+                            minDate={checkIn}
+                          ></DatePickerStyled2>
+                        </div>
+                      ) : (
+                        <>{moment(checkIn).format("DD/MM/YYYY")}</>
+                      )}
+                    </CheckInValue>
+                  </CheckInWrapper>
+                  {state.type === "activity" ? null : (
+                    <>
+                      <CheckInWrapper>
+                        <CheckInHeading> CheckOut Date </CheckInHeading>
+                        <CheckInValue>
+                          {state.status === "pending" ||
+                          state.status === "approved" ? (
+                            <div style={{ position: "relative" }}>
+                              <div
+                                onClick={() =>
+                                  InputCheckOut.current.setOpen(true)
+                                }
+                                style={{
+                                  top: "20%",
+                                  left: "10%",
+                                  zIndex: "99",
+                                  fontSize: "20px",
+                                  cursor: "pointer",
+                                  position: "absolute",
+                                }}
+                              >
+                                <i class="fas fa-calendar-alt"></i>
+                              </div>
 
-                <CheckInWrapper>
-                  <CheckInHeading> Number of Children </CheckInHeading>
-                  <CheckInValue>
-                    {state.status === "pending" ||
-                    state.status === "approved" ? (
-                      <FormControl
-                        sx={{ width: "71%" }}
-                        variant="standard"
-                        className="pull-right"
-                      >
-                        <Input
-                          type="number"
-                          placeholder="Total Children*"
-                          name="noofchildren"
-                          value={noofchildren}
-                          onChange={handleChangeChildren}
-                          onKeyDown={handleKeyPress}
-                        />
-                      </FormControl>
-                    ) : (
-                      <>{noofchildren}</>
-                    )}
-                  </CheckInValue>
-                </CheckInWrapper>
-              </Wrapper2>
-              <Wrapper3>
-                <CheckBoxWrapper>
-                  <CheckInHeading>
-                    {" "}
-                    {state.status === "pending" ||
-                    state.status === "approved" ? (
-                      <FormControl
-                        sx={{ width: "70%" }}
-                        variant="standard"
-                        className="pull-right"
-                      >
-                        <Checkbox
-                          checked={isBreakfast}
-                          onChange={(e) => setIsBreakfast(e.target.checked)}
-                        />
-                      </FormControl>
-                    ) : (
-                      <>{isBreakfast ? "Yes" : "No"}</>
-                    )}{" "}
-                  </CheckInHeading>
-                  <CheckInValue>Breakfast for all guests</CheckInValue>
-                </CheckBoxWrapper>
-                <CheckBoxWrapper>
-                  <CheckInHeading>
-                    {state.status === "pending" ||
-                    state.status === "approved" ? (
-                      <FormControl
-                        sx={{ width: "70%" }}
-                        variant="standard"
-                        className="pull-right"
-                      >
-                        <Checkbox
-                          checked={isLunch}
-                          onChange={(e) => setIsLinch(e.target.checked)}
-                        />
-                      </FormControl>
-                    ) : (
-                      <>{isLunch ? "Yes" : "No"}</>
-                    )}
-                  </CheckInHeading>
-                  <CheckInValue>Lunch for all guests</CheckInValue>
-                </CheckBoxWrapper>
-                <CheckBoxWrapper>
-                  <CheckInHeading>
-                    {state.status === "pending" ||
-                    state.status === "approved" ? (
-                      <FormControl
-                        sx={{ width: "70%" }}
-                        variant="standard"
-                        className="pull-right"
-                      >
-                        <Checkbox
-                          checked={isDinner}
-                          onChange={(e) => setIsDinner(e.target.checked)}
-                        />
-                      </FormControl>
-                    ) : (
-                      <>{isDinner ? "Yes" : "No"}</>
-                    )}
-                  </CheckInHeading>
-                  <CheckInValue>Dinner for all guests</CheckInValue>
-                </CheckBoxWrapper>
-              </Wrapper3>
-            </HotelDetailsWrapper>
-          </ChildContainer3>
+                              <DatePickerStyled2
+                                className=""
+                                placeholderText=" CheckOut"
+                                selected={checkOut}
+                                onChange={handleCheckOutChange}
+                                startDate={checkIn}
+                                endDate={checkOut}
+                                minDate={checkIn}
+                                ref={InputCheckOut}
+                              ></DatePickerStyled2>
+                            </div>
+                          ) : (
+                            <>{moment(checkOut).format("DD/MM/YYYY")}</>
+                          )}
+                        </CheckInValue>
+                      </CheckInWrapper>
+                    </>
+                  )}
+                  <CheckInWrapper>
+                    <CheckInHeading>Days</CheckInHeading>
+                    <CheckInValue style={{ fontWeight: 600 }}>
+                      {numOfDays}
+                    </CheckInValue>
+                  </CheckInWrapper>
+                </Wrapper1>
+                <Wrapper2>
+                  {state.type === "activity" ? null : (
+                    <>
+                      <CheckInWrapper>
+                        <CheckInHeading> Number of Rooms </CheckInHeading>
+                        <CheckInValue>
+                          {state.status === "pending" ||
+                          state.status === "approved" ? (
+                            <FormControl
+                              sx={{ width: "71%" }}
+                              variant="standard"
+                              className="pull-right"
+                            >
+                              <Input
+                                type="number"
+                                placeholder="Total rooms*"
+                                name="noofrooms"
+                                value={noofrooms}
+                                onChange={handleChangeRooms}
+                                onKeyDown={handleKeyPress}
+                              />
+                            </FormControl>
+                          ) : (
+                            <>{noofrooms}</>
+                          )}
+                        </CheckInValue>
+                      </CheckInWrapper>
+                    </>
+                  )}
+                  <CheckInWrapper>
+                    <CheckInHeading> Number of Persons </CheckInHeading>
+                    <CheckInValue>
+                      {state.status === "pending" ||
+                      state.status === "approved" ? (
+                        <FormControl
+                          sx={{ width: "71%" }}
+                          variant="standard"
+                          className="pull-right"
+                        >
+                          <Input
+                            type="number"
+                            placeholder="Total persons*"
+                            name="noofpersons"
+                            value={noofpersons}
+                            onChange={handleChangePerson}
+                            onKeyDown={handleKeyPress}
+                          />
+                        </FormControl>
+                      ) : (
+                        <>{noofpersons}</>
+                      )}
+                    </CheckInValue>
+                  </CheckInWrapper>
+
+                  <CheckInWrapper>
+                    <CheckInHeading> Number of Children </CheckInHeading>
+                    <CheckInValue>
+                      {state.status === "pending" ||
+                      state.status === "approved" ? (
+                        <FormControl
+                          sx={{ width: "71%" }}
+                          variant="standard"
+                          className="pull-right"
+                        >
+                          <Input
+                            type="number"
+                            placeholder="Total Children*"
+                            name="noofchildren"
+                            value={noofchildren}
+                            onChange={handleChangeChildren}
+                            onKeyDown={handleKeyPress}
+                          />
+                        </FormControl>
+                      ) : (
+                        <>{noofchildren}</>
+                      )}
+                    </CheckInValue>
+                  </CheckInWrapper>
+                </Wrapper2>
+                <Wrapper3>
+                  <CheckBoxWrapper>
+                    <CheckInHeading>
+                      {" "}
+                      {state.status === "pending" ||
+                      state.status === "approved" ? (
+                        <FormControl
+                          sx={{ width: "70%" }}
+                          variant="standard"
+                          className="pull-right"
+                        >
+                          <Checkbox
+                            checked={isBreakfast}
+                            onChange={(e) => setIsBreakfast(e.target.checked)}
+                          />
+                        </FormControl>
+                      ) : (
+                        <>{isBreakfast ? "Yes" : "No"}</>
+                      )}{" "}
+                    </CheckInHeading>
+                    <CheckInValue>Breakfast for all guests</CheckInValue>
+                  </CheckBoxWrapper>
+                  <CheckBoxWrapper>
+                    <CheckInHeading>
+                      {state.status === "pending" ||
+                      state.status === "approved" ? (
+                        <FormControl
+                          sx={{ width: "70%" }}
+                          variant="standard"
+                          className="pull-right"
+                        >
+                          <Checkbox
+                            checked={isLunch}
+                            onChange={(e) => setIsLinch(e.target.checked)}
+                          />
+                        </FormControl>
+                      ) : (
+                        <>{isLunch ? "Yes" : "No"}</>
+                      )}
+                    </CheckInHeading>
+                    <CheckInValue>Lunch for all guests</CheckInValue>
+                  </CheckBoxWrapper>
+                  <CheckBoxWrapper>
+                    <CheckInHeading>
+                      {state.status === "pending" ||
+                      state.status === "approved" ? (
+                        <FormControl
+                          sx={{ width: "70%" }}
+                          variant="standard"
+                          className="pull-right"
+                        >
+                          <Checkbox
+                            checked={isDinner}
+                            onChange={(e) => setIsDinner(e.target.checked)}
+                          />
+                        </FormControl>
+                      ) : (
+                        <>{isDinner ? "Yes" : "No"}</>
+                      )}
+                    </CheckInHeading>
+                    <CheckInValue>Dinner for all guests</CheckInValue>
+                  </CheckBoxWrapper>
+                </Wrapper3>
+              </HotelDetailsWrapper>
+            </ChildContainer3>
+          )}
           {/* <HotelInputPrice>
             <DetailContainer style={{ padding: "10px 0" }}>
               <Detailkey> Hotel Amount </Detailkey>
@@ -1001,6 +1023,146 @@ const GenerateInvoice = () => {
               </DetailValue>
             </DetailContainer>
           </HotelInputPrice> */}
+          {state.type === "activity" && (
+            <ChildContainer4>
+              <HeadingText>Activity Details : </HeadingText>
+              <TabularData>
+                <TableContainer component={Paper}>
+                  <Table aria-label="simple table">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell style={boldTextCss}>Activity Name</TableCell>
+                        <TableCell style={boldTextCss} align="left">
+                          Activity Date
+                        </TableCell>
+                        <TableCell style={boldTextCss} align="left">
+                          Total Adults
+                        </TableCell>
+                        <TableCell style={boldTextCss} align="left">
+                          Total Children
+                        </TableCell>
+                        <TableCell style={boldTextCss} align="left">
+                          Price
+                        </TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      <TableRow
+                        sx={{
+                          "&:last-child td, &:last-child th": {
+                            border: 0,
+                          },
+                        }}
+                      >
+                        <TableCell component="th" scope="row">
+                          {state.hotelname}
+                        </TableCell>
+                        <TableCell align="left">
+                          {state.status === "pending" ||
+                          state.status === "approved" ? (
+                            <div style={{ position: "relative" }}>
+                              <div
+                                onClick={() => {
+                                  InputCheckIn.current.setOpen(true);
+                                }}
+                                style={{
+                                  position: "absolute",
+                                  top: "20%",
+                                  left: "10%",
+                                  zIndex: "99",
+                                  fontSize: "20px",
+                                  cursor: "pointer",
+                                }}
+                              >
+                                <i class="fas fa-calendar-alt"></i>
+                              </div>
+                              <DatePickerStyled2
+                                className=""
+                                placeholderText=" CheckIn"
+                                selected={checkIn}
+                                onChange={handleCheckInChange}
+                                selectsStartcheckIn
+                                startDate={checkIn}
+                                endDate={checkOut}
+                                ref={InputCheckIn}
+                                minDate={checkIn}
+                              ></DatePickerStyled2>
+                            </div>
+                          ) : (
+                            <>{formatDate(checkIn)}</>
+                          )}
+                        </TableCell>
+                        <TableCell align="left">
+                          {" "}
+                          {state.status === "pending" ||
+                          state.status === "approved" ? (
+                            <FormControl
+                              sx={{ width: "71%" }}
+                              variant="standard"
+                              className="pull-right"
+                            >
+                              <Input
+                                type="number"
+                                placeholder="Total persons*"
+                                name="noofpersons"
+                                value={noofpersons}
+                                onChange={handleChangePerson}
+                                onKeyDown={handleKeyPress}
+                              />
+                            </FormControl>
+                          ) : (
+                            <>{noofpersons}</>
+                          )}
+                        </TableCell>
+                        <TableCell align="left">
+                          {" "}
+                          {state.status === "pending" ||
+                          state.status === "approved" ? (
+                            <FormControl
+                              sx={{ width: "71%" }}
+                              variant="standard"
+                              className="pull-right"
+                            >
+                              <Input
+                                type="number"
+                                placeholder="Total Children*"
+                                name="noofchildren"
+                                value={noofchildren}
+                                onChange={handleChangeChildren}
+                                onKeyDown={handleKeyPress}
+                              />
+                            </FormControl>
+                          ) : (
+                            <>{noofchildren}</>
+                          )}
+                        </TableCell>
+                        <TableCell align="left">
+                          {state.status === "pending" ||
+                          state.status === "approved" ? (
+                            <FormControl
+                              sx={{ width: "71%" }}
+                              variant="standard"
+                              className="pull-right"
+                            >
+                              <Input
+                                type="number"
+                                placeholder="Price*"
+                                name="price"
+                                onChange={(e) => setHotelPrice(e.target.value)}
+                                value={hotelPrice}
+                              />
+                            </FormControl>
+                          ) : (
+                            <>{Number(hotelPrice).toFixed(2)}</>
+                          )}
+                        </TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </TabularData>
+            </ChildContainer4>
+          )}
           {state.isCombined && (
             <ChildContainer4>
               <HeadingText>Activity Details : </HeadingText>
@@ -1218,7 +1380,9 @@ const GenerateInvoice = () => {
                                       ></DatePickerStyled2>
                                     </div>
                                   ) : (
-                                    <>{formatDate(item.bookinghistory.checkIn)}</>
+                                    <>
+                                      {formatDate(item.bookinghistory.checkIn)}
+                                    </>
                                   )}
                                 </TableCell>
                                 <TableCell align="left">
@@ -1328,36 +1492,70 @@ const GenerateInvoice = () => {
             </ChildContainer4>
           )}
           <ChildContainer5>
-            <HotelInputPrice>
-              <HotelInputPriceHeading>Hotel Amount</HotelInputPriceHeading>
-              <HotelInputPriceValue>
-                {" "}
-                <span
-                  style={{
-                    fontSize: "14px",
-                    fontWeight: "bold",
-                    lineHeight: "37px",
-                    paddingRight: "10px",
-                  }}
-                >
-                  {currency}
-                </span>
-                {state.status === "pending" || state.status === "approved" ? (
-                  <FormControl variant="standard" className="pull-right">
-                    <Input
-                      type="number"
-                      onKeyDown={handleKeyPress}
-                      id="standard-adornment-amount"
-                      size="small"
-                      onChange={(e) => setHotelPrice(e.target.value)}
-                      value={hotelPrice}
-                    />
-                  </FormControl>
-                ) : (
-                  Number(hotelPrice).toFixed(2)
-                )}
-              </HotelInputPriceValue>
-            </HotelInputPrice>
+            {state.type === "hotel" && (
+              <HotelInputPrice>
+                <HotelInputPriceHeading>Hotel Amount</HotelInputPriceHeading>
+                <HotelInputPriceValue>
+                  {" "}
+                  <span
+                    style={{
+                      fontSize: "14px",
+                      fontWeight: "bold",
+                      lineHeight: "37px",
+                      paddingRight: "10px",
+                    }}
+                  >
+                    {currency}
+                  </span>
+                  {state.status === "pending" || state.status === "approved" ? (
+                    <FormControl variant="standard" className="pull-right">
+                      <Input
+                        type="number"
+                        onKeyDown={handleKeyPress}
+                        id="standard-adornment-amount"
+                        size="small"
+                        onChange={(e) => setHotelPrice(e.target.value)}
+                        value={hotelPrice}
+                      />
+                    </FormControl>
+                  ) : (
+                    Number(hotelPrice).toFixed(2)
+                  )}
+                </HotelInputPriceValue>
+              </HotelInputPrice>
+            )}
+            {state.type === "activity" && (
+              <TotalActivitiesPrice>
+                <HotelInputPriceHeading>Total Amount</HotelInputPriceHeading>
+                <HotelInputPriceValue>
+                  {" "}
+                  <span
+                    style={{
+                      fontSize: "14px",
+                      fontWeight: "bold",
+                      lineHeight: "37px",
+                      paddingRight: "10px",
+                    }}
+                  >
+                    {currency}
+                  </span>
+                  {state.status === "pending" || state.status === "approved" ? (
+                    <FormControl variant="standard" className="pull-right">
+                      <Input
+                        type="number"
+                        onKeyDown={handleKeyPress}
+                        id="standard-adornment-amount"
+                        size="small"
+                        onChange={(e) => setHotelPrice(e.target.value)}
+                        value={hotelPrice}
+                      />
+                    </FormControl>
+                  ) : (
+                    Number(hotelPrice).toFixed(2)
+                  )}
+                </HotelInputPriceValue>
+              </TotalActivitiesPrice>
+            )}
             {state.isCombined && (
               <TotalActivitiesPrice>
                 <HotelInputPriceHeading>
@@ -1386,6 +1584,7 @@ const GenerateInvoice = () => {
                           setTotalActivitiesAmount(e.target.value)
                         }
                         value={totalActivitiesAmount}
+                        readOnly
                       />
                     </FormControl>
                   ) : (
