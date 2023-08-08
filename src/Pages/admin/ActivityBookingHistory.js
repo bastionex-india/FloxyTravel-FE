@@ -159,9 +159,8 @@ const DatePickerStyled1 = styled(DatePicker)`
   border-radius: 5px;
   outline: none;
   border: none;
-  box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px,
-    rgba(0, 0, 0, 0.3) 0px 0px 7px -3px !important;
-  background-color: #efefef;
+  box-shadow: rgba(50,50,93,0.25) 0px 6px 12px -2px, rgba(0,0,0,0.3) 0px 3px 7px -3px;
+  background-color: white;
   margin: 0 10px;
 `;
 
