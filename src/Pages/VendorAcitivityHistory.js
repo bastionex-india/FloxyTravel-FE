@@ -498,7 +498,7 @@ const VendorActivityHistory = () => {
                           }}
                         >
                           <TableCell component="th" scope="row">
-                            {item.hotelname}
+                            {item.hotelname} {(item.isCombined && item.type=='hotel') ? " + activities ": (item.isCombined && item.type=='activity')  ? " + hotel": ''}
                           </TableCell>
                           <TableCell align="center">{formatDate(item.checkIn)}</TableCell>
                           <TableCell align="center">
