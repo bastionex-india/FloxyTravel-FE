@@ -295,6 +295,12 @@ const GenerateInvoice = () => {
   const [totalPayableAmount, setTotalPayableAmount] = useState(0);
   const [allActivitiesData, setAllActivitiesData] = useState([]);
 
+  console.log(
+    hotelPrice,
+    totalActivitiesAmount,
+    totalDiscountAmount,
+    totalPayableAmount
+  );
   const sendInvoice = () => {
     // console.log(checkIn,checkOut,noofpersons,Number(noofchildren),noofrooms,state._id,amount.toString(),Number(discountAmount),new Date(checkIn).getTime(),new Date(checkOut).getTime())
     // console.log(state._id,totalPayableAmount,Number(totalDiscountAmount),new Date(checkIn).getTime(),noofpersons,Number(noofchildren),currency,state.type !== undefined ? state.type : "hotel",new Date(checkOut).getTime(),noofrooms,activitiesData)
@@ -310,7 +316,7 @@ const GenerateInvoice = () => {
       })
     );
 
-    console.log(limitedFieldsArray);
+    // console.log(limitedFieldsArray);
     if (hotelPrice && Number(hotelPrice) - Number(discountAmount) > 0) {
       let amount = Number(hotelPrice) - Number(discountAmount);
       let data = {
@@ -337,7 +343,7 @@ const GenerateInvoice = () => {
       if (limitedFieldsArray.length !== 0) {
         data.activities = limitedFieldsArray;
         data.isCombined = true;
-        data.totalActivitiesAmount=totalActivitiesAmount
+        data.totalActivitiesAmount = totalActivitiesAmount;
       }
       console.log(data);
       setIsSendInvoice(true);
@@ -673,7 +679,7 @@ const GenerateInvoice = () => {
     const formattedDate = new Date(timestamp).toLocaleString("en-IN", options);
     return formattedDate;
   }
-  console.log({ isDinner, isLunch, isBreakfast, state, allActivitiesData });
+  // console.log({ isDinner, isLunch, isBreakfast, state, allActivitiesData });
   return (
     <>
       <TextMainWrapper>
@@ -1207,7 +1213,7 @@ const GenerateInvoice = () => {
                       {state.status === "pending" || state.status === "approved"
                         ? activitiesData &&
                           activitiesData.map((item, key) => {
-                            console.log(item.checkIn);
+                            console.log(1);
                             return (
                               <TableRow
                                 key={key}
@@ -1348,9 +1354,9 @@ const GenerateInvoice = () => {
                               </TableRow>
                             );
                           })
-                        : allActivitiesData &&
+                        : allActivitiesData.length !== 0 &&
                           allActivitiesData.map((item, key) => {
-                            console.log(item.checkIn);
+                            console.log(2);
                             return (
                               <TableRow
                                 key={key}
@@ -1495,15 +1501,6 @@ const GenerateInvoice = () => {
                           })}
                     </TableBody>
                   </Table>
-                  {/* <TablePagination
-                  rowsPerPageOptions={[1, 3, 10]}
-                  component="div"
-                  count={totalItems}
-                  rowsPerPage={rowsPerPage}
-                  page={page}
-                  onPageChange={handleChangePage}
-                  onRowsPerPageChange={handleChangeRowsPerPage}
-                /> */}
                 </TableContainer>
               </TabularData>
             </ChildContainer4>
@@ -1656,6 +1653,7 @@ const GenerateInvoice = () => {
                       size="small"
                       onChange={(e) => setTotalPayableAmount(e.target.value)}
                       value={totalPayableAmount}
+                      readOnly
                     />
                   </FormControl>
                 ) : (
@@ -1678,10 +1676,13 @@ const GenerateInvoice = () => {
             <ChildContainer6>
               <LoadingButton
                 loading={isSendInvoice}
-                disabled={hotelPrice.length || !isSendInvoice ? false : true}
+                disabled={!totalPayableAmount}
                 variant="contained"
                 onClick={sendInvoiceHandler}
-                style={{ backgroundColor: "#01575c" }}
+                // sx={{cursor: "not-allowed"}}
+                style={{
+                  backgroundColor: totalPayableAmount > 0 && "#01575c",
+                }}
               >
                 Send Invoice
               </LoadingButton>
