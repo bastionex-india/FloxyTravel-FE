@@ -203,10 +203,16 @@ const BookingHotelById = () => {
                     {data.area} , {data.state}
                   </p>
                 </div>
+                {
+                  (data.isCombined && data.type=='activity') ? 
+                  <p className="text-danger" style={{width:"30%"}}>This invoice is attached with hotel, You can generate this invoice with respective hotel.</p>
+                  : null
+                }
                 <Button
                   variant="contained"
                   onClick={generateInvoiceHandler}
                   endIcon={<PictureAsPdfIcon />}
+                  disabled={(data.isCombined && data.type=='activity')}
                 >
                   View Invoice{" "}
                 </Button>
@@ -330,30 +336,34 @@ const BookingHotelById = () => {
             </Item>
           </Grid>
         </Grid>
-        <Container2>
-          <CheckinoutButton
-            onClick={() => checkIn()}
-            style={{
-              opacity: data !== "" && data.checkInStatus ? 0.5 : 1,
-              cursor:
-                data !== "" && data.checkInStatus ? "not-allowed" : "pointer",
-            }}
-          >
-            { data.type == 'activity' ? 'Activity attended' : "CheckIn"}
-          </CheckinoutButton>
-          <CheckinoutButton
-            style={{
-              margin: "0 10px",
-              opacity: data !== "" && data.checkOutStatus ? 0.5 : 1,
-              cursor:
-                data !== "" && data.checkOutStatus ? "not-allowed" : "pointer",
-            }}
-            onClick={() => checkOut()}
-          >
-            
-            { data.type == 'activity' ? 'Activity completed' : "CheckOut"}
-          </CheckinoutButton>
-        </Container2>
+        {
+          !(data.isCombined && data.type=='activity') ? 
+            <Container2>
+              <CheckinoutButton
+                onClick={() => checkIn()}
+                style={{
+                  opacity: data !== "" && data.checkInStatus ? 0.5 : 1,
+                  cursor:
+                    data !== "" && data.checkInStatus ? "not-allowed" : "pointer",
+                }}
+              >
+                { data.type == 'activity' ? 'Activity attended' : "CheckIn"}
+              </CheckinoutButton>
+              <CheckinoutButton
+                style={{
+                  margin: "0 10px",
+                  opacity: data !== "" && data.checkOutStatus ? 0.5 : 1,
+                  cursor:
+                    data !== "" && data.checkOutStatus ? "not-allowed" : "pointer",
+                }}
+                onClick={() => checkOut()}
+              >
+                
+                { data.type == 'activity' ? 'Activity completed' : "CheckOut"}
+              </CheckinoutButton>
+            </Container2>
+            : null
+        }
       </Container>
     </>
   );
