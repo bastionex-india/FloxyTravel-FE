@@ -59,7 +59,7 @@ function App() {
     if(authData===null){
       setLoggedIn(false)
     }else{
-      console.log(authData)
+      // console.log(authData)
       const url = authData?.data?.isadmin
       ? `${environmentVariables?.apiUrl}/auth/isadminlogged`
       : `${environmentVariables?.apiUrl}/auth/isvendorlogged`;

@@ -345,7 +345,6 @@ const GenerateInvoice = () => {
         data.isCombined = true;
         data.totalActivitiesAmount = totalActivitiesAmount;
       }
-      console.log(data);
       setIsSendInvoice(true);
       let config = {
         method: "post",
@@ -418,7 +417,6 @@ const GenerateInvoice = () => {
     if (limitedFieldsArray.length !== 0) {
       requestBody.activities = limitedFieldsArray;
     }
-    // console.log("[[",limitedFieldsArray,"}}",requestBody)
     let config = {
       method: "post",
       url: url,
@@ -434,7 +432,7 @@ const GenerateInvoice = () => {
       .then((response) => {
         if (response.data.status) {
           let responsedata = response.data.data;
-          console.log(responsedata);
+          // console.log(responsedata);
           if (responsedata.activitiesPaymentDetails) {
             const totalActivitiesAmountAmount =
               responsedata.activitiesPaymentDetails.reduce(
@@ -1213,7 +1211,6 @@ const GenerateInvoice = () => {
                       {state.status === "pending" || state.status === "approved"
                         ? activitiesData &&
                           activitiesData.map((item, key) => {
-                            console.log(1);
                             return (
                               <TableRow
                                 key={key}
@@ -1356,7 +1353,6 @@ const GenerateInvoice = () => {
                           })
                         : allActivitiesData.length !== 0 &&
                           allActivitiesData.map((item, key) => {
-                            console.log(2);
                             return (
                               <TableRow
                                 key={key}
