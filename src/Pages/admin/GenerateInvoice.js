@@ -315,7 +315,7 @@ const GenerateInvoice = () => {
       let amount = Number(hotelPrice) - Number(discountAmount);
       let data = {
         bookingID: state._id,
-        amount: totalPayableAmount.toString(),
+        amount: hotelPrice.toString(),
         discount: Number(totalDiscountAmount),
         checkIn: new Date(checkIn).getTime(),
         persons: noofpersons,
@@ -337,6 +337,7 @@ const GenerateInvoice = () => {
       if (limitedFieldsArray.length !== 0) {
         data.activities = limitedFieldsArray;
         data.isCombined = true;
+        data.totalActivitiesAmount=totalActivitiesAmount
       }
       console.log(data);
       setIsSendInvoice(true);
