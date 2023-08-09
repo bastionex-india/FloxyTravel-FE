@@ -14,6 +14,7 @@ import { useFormik } from "formik";
 import Password from "../../Images/lock.png";
 import { ForgetPasswordSchema } from "../admin/schemas/ForgetPasswordSchemaAdmin";
 import { VerifyPasswordSchema } from "../admin/schemas/VerifyPasswordSchemaAdmin";
+
 import Swal from "sweetalert2";
 import Timer from "./timer/Timer";
 
@@ -126,6 +127,7 @@ function ChildModal({ open, setOpen, email, setParentClose }) {
   // console.log(open,email,"//")
   const [error, setError] = useState("");
   const [timer, setTimer] = useState(10);
+  
   const handleOpen = () => {
     setOpen(true);
   };
@@ -334,7 +336,6 @@ const Login = ({loggedIn}) => {
   const [longitude, setLongitude] = useState();
   const [email, setEmail] = useState();
   const [enableChild, setEnableChild] = useState(false);
-
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => {
     setOpen(true);
@@ -343,15 +344,14 @@ const Login = ({loggedIn}) => {
     setOpen(false);
   };
   const [open1, setOpen1] = React.useState(false);
-
-
+  
   const onSubmit = (e) => {
     e.preventDefault();
     if (!userName || !Password) {
       setError("Please enter all details correctly.");
       return;
     }
-
+    
     axios({
       method: "post",
       url: `${environmentVariables?.apiUrl}/auth/admin/login`,
@@ -366,7 +366,7 @@ const Login = ({loggedIn}) => {
       },
     })
       .then((response) => {
-       
+        
         localStorage.setItem("authdata", JSON.stringify(response.data));
         setAuthData(JSON.parse(localStorage.getItem("authdata")));
         navigate("/");
@@ -385,11 +385,13 @@ const Login = ({loggedIn}) => {
           },
         })
           .then((res) => {
+            
             localStorage.setItem("authdata", JSON.stringify(res.data));
             setAuthData(JSON.parse(localStorage.getItem("authdata")));
             navigate("/");
           })
           .catch((error) => {
+            
             console.log("vendor error", error);
             setError("Details are not valid");
           });
@@ -447,6 +449,8 @@ const Login = ({loggedIn}) => {
           });
       },
     });
+
+    
   return (
     <Root>
       <Form>
@@ -488,6 +492,9 @@ const Login = ({loggedIn}) => {
         </p>
 
         {error && <ErrorMessage>{error}</ErrorMessage>}
+
+        
+
         <Button1 onClick={onSubmit}>Submit</Button1>
 
         <div>
