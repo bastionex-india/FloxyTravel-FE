@@ -406,15 +406,15 @@ const PayoutRequest = () => {
           // lastPayoutDate
           // payoutInterval
           let dayCount =
-            row.payoutInterval != undefined ? row.payoutInterval : 0;
+          row.hotelsData.payoutInterval != undefined ? row.hotelsData.payoutInterval : 0;
           let payoutInterval =
-            row.payoutInterval != undefined ? row.payoutInterval : 0;
+            row.hotelsData.payoutInterval != undefined ? row.hotelsData.payoutInterval : 0;
           let lastPayoutDate =
-            row.lastPayoutDate != undefined ? row.lastPayoutDate : 0;
+            row.hotelsData.lastPayoutDate != undefined ? row.hotelsData.lastPayoutDate : 0;
           if (lastPayoutDate) {
             let a = moment(new Date(lastPayoutDate));
             var b = moment(new Date());
-            dayCount = Number(a.diff(b, "days")); // 1
+            dayCount = Number(b.diff(a, "days")); // 1
           }
           return (
             <HotelCard>
@@ -473,8 +473,10 @@ const PayoutRequest = () => {
                   <li><b>Requested Date : </b> {moment(row.createdAt).format('LL')}</li>
                   <li><b>Payout Time periods : </b> {moment(row.payoutFrom).format('LL')} to {moment(row.payoutTo).format('LL')}</li>
                   <li>
+                    
                     <FormControl sx={{ m: 1, minWidth: 120 }}>
                       <Select
+                        disabled={row.status==='approved'}
                         defaultValue={row.status}
                         onChange={(e) => handleChangeStatus(e, row)}
                         displayEmpty

@@ -319,22 +319,24 @@ const Payouts = () => {
 
           let payLinkObjectIds = row.objectIds;
           let hotelIds = [row.hotelId];
-
           let imageSrc = row.hotelsData.image.length
             ? row.hotelsData.image[0]
             : "1675936089112-teanest1.jpg";
-          // lastPayoutDate
-          // payoutInterval
+          // row.hotelsData.lastPayoutDate
+          // row.hotelsData.payoutInterval
           let dayCount =
-            row.payoutInterval != undefined ? row.payoutInterval : 0;
+            row.hotelsData.payoutInterval != undefined ? row.hotelsData.payoutInterval : 0;
           let payoutInterval =
-            row.payoutInterval != undefined ? row.payoutInterval : 0;
+            row.hotelsData.payoutInterval != undefined ? row.hotelsData.payoutInterval : 0;
           let lastPayoutDate =
-            row.lastPayoutDate != undefined ? row.lastPayoutDate : 0;
-          if (lastPayoutDate) {
+            row.hotelsData.lastPayoutDate != undefined ? row.hotelsData.lastPayoutDate : 0;
+          if (lastPayoutDate){
             let a = moment(new Date(lastPayoutDate));
             var b = moment(new Date());
-            dayCount = Number(a.diff(b, "days")); // 1
+            dayCount = Number(b.diff(a, "days")); // 1
+            // console.log("dayCount",dayCount);
+            // console.log("a",a.format('YYYY-MM-DD'))
+            // console.log("b",b.format('YYYY-MM-DD'))
           }
           // console.log("lastPayoutDate",lastPayoutDate);
           let payoutFrom = lastPayoutDate ? moment(new Date(lastPayoutDate)).format('YYYY-MM-DD') : '1950-01-19';
@@ -342,7 +344,7 @@ const Payouts = () => {
 
           // console.log("payoutFrom",payoutFrom);
           // console.log("currentDate",currentDate)
-
+          // payoutInterval = -1
           // console.log("dayCount",dayCount);
           // console.log("payoutInterval",payoutInterval)
           // console.log("row",row)
@@ -395,11 +397,11 @@ const Payouts = () => {
                   <li><b>Payout amount : </b> {payOutAmount.toFixed(2)} INR</li>
                   <li><b>Payout Time periods : </b> {moment(payoutFrom).format('LL')} to {moment(payoutTo).format('LL')}</li>
                   <li>
-                    {dayCount >= payoutInterval ? (
                       <Button
                         variant="contained"
                         size="small"
                         loading={true}
+                        disabled={!(dayCount >= payoutInterval)}
                         onClick={() =>
                           payoutRequestHandler(
                             payLinkObjectIds,
@@ -412,7 +414,11 @@ const Payouts = () => {
                       >
                         Request Payout
                       </Button>
-                    ) : null}
+                      {
+                        !(dayCount >= payoutInterval) ? 
+                        <p className="text-warning">if you complete {payoutInterval}  days from last payout date of  this {row.hotelsData.type}. then you  can make new Payout Request to admin.</p>
+                        :null
+                      }
                   </li>
                 </ul>
 
@@ -494,7 +500,7 @@ const Payouts = () => {
         }
       )
       .then((response) => {
-        console.log("response.data.  ",response.data);
+        // console.log("response.data.  ",response.data);
         setActivityList(response.data.data.records);
       })
       .catch((err) => {
@@ -636,7 +642,7 @@ const Payouts = () => {
                 </FormControl>
               </Grid>
               <Grid item xs={3} mt={3}>
-                <b>Total Payout amount :</b>
+                <b>Total Payout: </b>
                 <span>{(mainResponse.allHotelPayoutAmount) ? mainResponse.allHotelPayoutAmount.toFixed(2) : '0.00'} INR</span>{" "}
                 {/* <Button variant="contained" size="small" onClick={() => payoutRequestHandler(mainResponse.payLinkIds, mainResponse.hotelIds, mainResponse.allHotelPayoutAmount)}>Payout</Button> */}
               </Grid>
