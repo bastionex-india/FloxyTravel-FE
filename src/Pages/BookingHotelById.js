@@ -437,7 +437,6 @@ const BookingHotelById = () => {
             </Item>
           </Grid>
         </Grid>
-        {!(data.isCombined && data.type == "activity") ? (
           <Container2>
             <CheckinoutButton
               onClick={() => checkIn()}
@@ -463,7 +462,6 @@ const BookingHotelById = () => {
               {data.type == "activity" ? "Activity completed" : "CheckOut"}
             </CheckinoutButton>
           </Container2>
-        ) : null}
       </Container>
     </>
   );
