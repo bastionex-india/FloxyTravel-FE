@@ -344,7 +344,7 @@ const VendorEditHotel = () => {
         <IconButton title="Back" onClick={() => navigate(-1)} size="small" sx={{ backgroundColor: "#e1e1e1", color: "#01575c", marginTop: "4px" }}>
           <ArrowBackIosNewOutlinedIcon />
         </IconButton>
-        <MainHeading>{"Edit Hotel"}</MainHeading>
+        <MainHeading>Edit {hotelData.type!='activity' ? "Hotel":"Activity"}</MainHeading>
       </HeadingWrapper>
       <MainContainer>
         <HotelAddForm>

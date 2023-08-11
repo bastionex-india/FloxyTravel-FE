@@ -272,7 +272,7 @@ const HeadingWrapper = styled.div`
 `;
 
 
-const ManageAdmin = () => {
+const VendorManageActivities = () => {
   const [select, setSelect] = useState("");
   const [select1, setSelect1] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -285,7 +285,7 @@ const ManageAdmin = () => {
   const [hotelDetails, setHotelDetails] = useState();
   const navigate = useNavigate();
 
-
+  
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
@@ -354,15 +354,14 @@ const ManageAdmin = () => {
                 </HotelIconWrapper>
               </HotelInfoWrapper>
               <HotelButtonWrapper>
-                <HotelActionButtons
+                {/* <HotelActionButtons
                   onClick={() => navigate(`/edithotels/${row._id}`)}
                 >
                   Edit
-                </HotelActionButtons>
-                <HotelActionButtons onClick={() => handleClickOpen(row)}>
+                </HotelActionButtons> */}
+                {/* <HotelActionButtons onClick={() => handleClickOpen(row)}>
                   Delete
-                </HotelActionButtons>
-                {/* <HotelActionButtons>Hide</HotelActionButtons> */}
+                </HotelActionButtons> */}
               </HotelButtonWrapper>
             </HotelCard>
           );
@@ -376,10 +375,10 @@ const ManageAdmin = () => {
         `${environmentVariables.apiUrl}/vendor/vendorget`,
         {
           headers: { _token: authData.data.token },
-          params: {
-            page: page + 1,
+          params:{
+            page : page + 1,
             limit: rowsPerPage,
-            type: 'hotel'
+            type : 'activity'
           }
         }
       )
@@ -446,9 +445,9 @@ const ManageAdmin = () => {
       <TextMainWrapper>
         <TextRoot>
           <Root>
-            <HeadingWrapper>
-              <IconButton title="Back" onClick={() => navigate(-1)} size="small" sx={{ backgroundColor: "#e1e1e1", color: "#01575c", marginTop: "4px" }}>
-                <ArrowBackIosNewOutlinedIcon />
+          <HeadingWrapper>
+              <IconButton  title="Back" onClick={() => navigate(-1)} size="small" sx={{ backgroundColor: "#e1e1e1",color:"#01575c",marginTop:"4px" }}>
+                        <ArrowBackIosNewOutlinedIcon />
               </IconButton>
               <Heading> Manage Hotels</Heading>
             </HeadingWrapper>
@@ -502,4 +501,4 @@ const ManageAdmin = () => {
   );
 };
 
-export default ManageAdmin;
+export default VendorManageActivities;

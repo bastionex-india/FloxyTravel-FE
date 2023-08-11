@@ -90,6 +90,11 @@ function SideBar(props) {
         setselected("vendoractivityBookings");
       }
       else if (
+        window.location.href.split("/").pop() === "vendorManageActivities"
+      ) {
+        setselected("vendorManageActivities");
+      }
+      else if (
         window.location.href.split("/").pop() === "chatSupport"
       ) {
         setselected("chatSupport");
@@ -224,6 +229,15 @@ function SideBar(props) {
             }}
           >
             <Link>Manage Hotels</Link>
+          </LinkWrapper>
+          <LinkWrapper
+            select={selected === "vendorManageActivities"}
+            onClick={() => {
+              setselected("vendorManageActivities");
+              navigate("/vendorManageActivities");
+            }}
+          >
+            <Link>Manage Activities</Link>
           </LinkWrapper>
 
           <LinkWrapper

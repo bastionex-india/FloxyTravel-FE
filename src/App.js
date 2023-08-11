@@ -23,6 +23,7 @@ import ManageAdmin from "./Pages/admin/ManageAdmin/ManageAdmin";
 import ManageHotels from "./Pages/admin/ManageHotels/ManageHotels";
 import AddHotels from "./Pages/admin/AddHotels/AddHotels";
 import VendorManageHotels from "./Pages/VendorManageHotels";
+import VendorManageActivities from "./Pages/VendorManageActivities";
 import GenerateInvoice from "./Pages/admin/GenerateInvoice";
 import VendorDetails from "./Pages/admin/VendorDetails/VendorDetails";
 import Payouts from "./Pages/Payouts";
@@ -195,6 +196,7 @@ function App() {
                       path="/vendormanagehotels"
                       element={<VendorManageHotels />}
                     />
+                    <Route path="vendorManageActivities" element={<VendorManageActivities />} />
                     <Route path="/payouts" element={<Payouts />} />
                     <Route path="/payoutHistory" element={<PayoutHistory />} />
                     

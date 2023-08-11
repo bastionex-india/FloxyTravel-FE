@@ -127,7 +127,7 @@ function ChildModal({ open, setOpen, email, setParentClose }) {
   // console.log(open,email,"//")
   const [error, setError] = useState("");
   const [timer, setTimer] = useState(10);
-  
+
   const handleOpen = () => {
     setOpen(true);
   };
@@ -323,7 +323,7 @@ function ChildModal({ open, setOpen, email, setParentClose }) {
   );
 }
 
-const Login = ({loggedIn}) => {
+const Login = ({ loggedIn }) => {
   const navigate = useNavigate();
 
   const [userName, setUserName] = useState();
@@ -337,6 +337,7 @@ const Login = ({loggedIn}) => {
   const [email, setEmail] = useState();
   const [enableChild, setEnableChild] = useState(false);
   const [open, setOpen] = React.useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const handleOpen = () => {
     setOpen(true);
   };
@@ -344,14 +345,15 @@ const Login = ({loggedIn}) => {
     setOpen(false);
   };
   const [open1, setOpen1] = React.useState(false);
-  
+
   const onSubmit = (e) => {
+
     e.preventDefault();
     if (!userName || !Password) {
       setError("Please enter all details correctly.");
       return;
     }
-    
+    setIsLoading(true)
     axios({
       method: "post",
       url: `${environmentVariables?.apiUrl}/auth/admin/login`,
@@ -366,7 +368,7 @@ const Login = ({loggedIn}) => {
       },
     })
       .then((response) => {
-        
+        setIsLoading(false)
         localStorage.setItem("authdata", JSON.stringify(response.data));
         setAuthData(JSON.parse(localStorage.getItem("authdata")));
         navigate("/");
@@ -385,13 +387,13 @@ const Login = ({loggedIn}) => {
           },
         })
           .then((res) => {
-            
+            setIsLoading(false)
             localStorage.setItem("authdata", JSON.stringify(res.data));
             setAuthData(JSON.parse(localStorage.getItem("authdata")));
             navigate("/");
           })
           .catch((error) => {
-            
+            setIsLoading(false)
             console.log("vendor error", error);
             setError("Details are not valid");
           });
@@ -450,7 +452,7 @@ const Login = ({loggedIn}) => {
       },
     });
 
-    
+
   return (
     <Root>
       <Form>
@@ -494,8 +496,18 @@ const Login = ({loggedIn}) => {
         {error && <ErrorMessage>{error}</ErrorMessage>}
 
         
-        
-        <Button1 onClick={onSubmit}>Submit</Button1>
+        <Button1 onClick={onSubmit}>
+          {
+            isLoading ?
+              <div class="d-flex justify-content-center">
+                <div class="spinner-border text-light" style={{height:"24px",width:"24px"}} role="status">
+                  <span class="visually-hidden">Loading...</span>
+                </div>
+              </div>
+              :
+              'Submit'
+          }
+        </Button1>
 
         <div>
           <Modal
