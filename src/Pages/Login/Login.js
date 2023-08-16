@@ -368,9 +368,9 @@ const Login = ({ loggedIn }) => {
       },
     })
       .then((response) => {
-        setIsLoading(false)
         localStorage.setItem("authdata", JSON.stringify(response.data));
         setAuthData(JSON.parse(localStorage.getItem("authdata")));
+        setIsLoading(false)
         navigate("/");
       })
       .catch((error) => {
@@ -387,9 +387,9 @@ const Login = ({ loggedIn }) => {
           },
         })
           .then((res) => {
-            setIsLoading(false)
             localStorage.setItem("authdata", JSON.stringify(res.data));
             setAuthData(JSON.parse(localStorage.getItem("authdata")));
+            setIsLoading(false)
             navigate("/");
           })
           .catch((error) => {
