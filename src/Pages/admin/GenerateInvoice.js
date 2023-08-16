@@ -432,7 +432,7 @@ const GenerateInvoice = () => {
       .then((response) => {
         if (response.data.status) {
           let responsedata = response.data.data;
-          // console.log(responsedata);
+          // console.log({responsedata.hotelPaymentDetail});
           if (responsedata.activitiesPaymentDetails) {
             const totalActivitiesAmountAmount =
               responsedata.activitiesPaymentDetails.reduce(
@@ -441,19 +441,23 @@ const GenerateInvoice = () => {
               );
             setAllActivitiesData(responsedata.activitiesPaymentDetails);
             setTotalActivitiesAmount(totalActivitiesAmountAmount);
+            
             setHotelPrice(
               responsedata.hotelPaymentDetail.payAmount +
-                responsedata.hotelPaymentDetail.discount -
-                totalActivitiesAmountAmount
+                responsedata.hotelPaymentDetail.discount
+                
             );
+            setTotalPayableAmount(responsedata.hotelPaymentDetail.payAmount + totalActivitiesAmountAmount);
+
           } else {
             setHotelPrice(
               responsedata.hotelPaymentDetail.payAmount +
                 responsedata.hotelPaymentDetail.discount
             );
+            setTotalPayableAmount(responsedata.hotelPaymentDetail.payAmount);
           }
           setTotalDiscountAmount(+responsedata.hotelPaymentDetail.discount);
-          setTotalPayableAmount(responsedata.hotelPaymentDetail.payAmount);
+          
           setPayMethod(responsedata.paymentStatus[0].method);
         } else {
           Swal.fire({

@@ -370,8 +370,8 @@ const Login = ({ loggedIn }) => {
       .then((response) => {
         localStorage.setItem("authdata", JSON.stringify(response.data));
         setAuthData(JSON.parse(localStorage.getItem("authdata")));
-        setIsLoading(false)
         navigate("/");
+        // setIsLoading(false)
       })
       .catch((error) => {
         axios({
@@ -389,8 +389,8 @@ const Login = ({ loggedIn }) => {
           .then((res) => {
             localStorage.setItem("authdata", JSON.stringify(res.data));
             setAuthData(JSON.parse(localStorage.getItem("authdata")));
-            setIsLoading(false)
             navigate("/");
+            // setIsLoading(false)
           })
           .catch((error) => {
             setIsLoading(false)
