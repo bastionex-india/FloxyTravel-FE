@@ -93,6 +93,13 @@ const Input = styled.input`
   text-align: left;
 `;
 
+const TableCellStyle = styled(TableCell)`
+  width: 30% !important;
+  font-weight: 700 !important;
+  background-color: #01575c !important;
+  color: white !important;
+`;
+
 const BilingDetailsContainer = styled.div``;
 const DetailContainer = styled.div`
   display: flex;
@@ -260,6 +267,7 @@ const boldTextCss = {
   fontWeight: 700,
   backgroundColor: "#01575c",
   color: "white",
+  width: "20%",
 };
 
 const GenerateInvoice = () => {
@@ -1052,19 +1060,17 @@ const GenerateInvoice = () => {
                   <Table aria-label="simple table">
                     <TableHead>
                       <TableRow>
-                        <TableCell style={boldTextCss}>Activity Name</TableCell>
-                        <TableCell style={boldTextCss} align="left">
+                        <TableCellStyle>Activity Name</TableCellStyle>
+                        <TableCellStyle align="left">
                           Activity Date
-                        </TableCell>
-                        <TableCell style={boldTextCss} align="left">
+                        </TableCellStyle>
+                        <TableCellStyle align="left">
                           Total Adults
-                        </TableCell>
-                        <TableCell style={boldTextCss} align="left">
+                        </TableCellStyle>
+                        <TableCellStyle align="left">
                           Total Children
-                        </TableCell>
-                        <TableCell style={boldTextCss} align="left">
-                          Price
-                        </TableCell>
+                        </TableCellStyle>
+                        <TableCellStyle align="left">Price</TableCellStyle>
                       </TableRow>
                     </TableHead>
                     <TableBody>
@@ -1192,19 +1198,17 @@ const GenerateInvoice = () => {
                   <Table aria-label="simple table">
                     <TableHead>
                       <TableRow>
-                        <TableCell style={boldTextCss}>Activity Name</TableCell>
-                        <TableCell style={boldTextCss} align="left">
+                        <TableCellStyle>Activity Name</TableCellStyle>
+                        <TableCellStyle align="left">
                           Activity Date
-                        </TableCell>
-                        <TableCell style={boldTextCss} align="left">
+                        </TableCellStyle>
+                        <TableCellStyle align="left">
                           Total Adults
-                        </TableCell>
-                        <TableCell style={boldTextCss} align="left">
+                        </TableCellStyle>
+                        <TableCellStyle align="left">
                           Total Children
-                        </TableCell>
-                        <TableCell style={boldTextCss} align="left">
-                          Price
-                        </TableCell>
+                        </TableCellStyle>
+                        <TableCellStyle align="left">Price</TableCellStyle>
                       </TableRow>
                     </TableHead>
                     <TableBody>
@@ -1254,6 +1258,7 @@ const GenerateInvoice = () => {
                                         endDate={checkOut}
                                         ref={InputCheckIn}
                                         minDate={checkIn}
+                                        maxDate={checkOut}
                                       ></DatePickerStyled2>
                                     </div>
                                   ) : (
@@ -1396,6 +1401,7 @@ const GenerateInvoice = () => {
                                         endDate={checkOut}
                                         ref={InputCheckIn}
                                         minDate={checkIn}
+                                        maxDate={checkOut}
                                       ></DatePickerStyled2>
                                     </div>
                                   ) : (
