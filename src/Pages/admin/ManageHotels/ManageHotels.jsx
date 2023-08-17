@@ -328,9 +328,14 @@ const ManageAdmin = () => {
   const getHotelByVendorId = async () => {
     await axios
       .get(
-        `${environmentVariables.apiUrl}/admin/gethoteldetailbyvendorid/${vendorId}?page=${page}&limit=${rowsPerPage}`,
+        `${environmentVariables.apiUrl}/admin/gethoteldetailbyvendorid/${vendorId}`,
         {
           headers: { _token: authData.data.token },
+          params:{
+            page,
+            limit: rowsPerPage,
+            type: 'hotel'
+          }
         }
       )
       .then((response) => {
@@ -372,7 +377,7 @@ const ManageAdmin = () => {
     setPage(0);
     setRowsPerPage(10);
     if (e.target.value === "all") {
-      setVendorId(null);
+      setVendorId('all');
     } else {
       setVendorId(e.target.value);
     }

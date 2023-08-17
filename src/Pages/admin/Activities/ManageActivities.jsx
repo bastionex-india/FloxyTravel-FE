@@ -336,7 +336,7 @@ const ManageActivities = () => {
           params: {
             page,
             limit: rowsPerPage,
-            type: "activity"
+            type: 'activity'
           }
         }
       )
@@ -379,7 +379,7 @@ const ManageActivities = () => {
     setPage(0);
     setRowsPerPage(10);
     if (e.target.value === "all") {
-      setVendorId(null);
+      setVendorId(e.target.value);
     } else {
       setVendorId(e.target.value);
     }
@@ -448,7 +448,7 @@ const ManageActivities = () => {
           );
         } else {
           return (<>{data.map((row, index) => {
-            
+
             let imageSrc = row.image.length
               ? row.image[0]
               : "1675936089112-teanest1.jpg";
@@ -470,7 +470,7 @@ const ManageActivities = () => {
                     <HotelInfoText>Country : {row.country}</HotelInfoText> */}
                     <HotelInfoText>{`Address : ${row?.city}, ${row?.state} - ${row?.country}
                   `}</HotelInfoText>
-                    
+
                   </HotelIconWrapper>
                 </HotelInfoWrapper>
                 <HotelButtonWrapper>

@@ -26,6 +26,7 @@ import TableRow from "@mui/material/TableRow";
 
 import IconButton from "@mui/material/IconButton";
 import ArrowBackIosNewOutlinedIcon from "@mui/icons-material/ArrowBackIosNewOutlined";
+import CircularLoader from "../Component/CircularLoader/CircularLoader";
 
 const Item = newStyled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -148,8 +149,11 @@ const BookingHotelById = () => {
   const { authData } = useContext(AuthContext);
 
   const [data, setData] = useState("");
+  const [alertMessage,setAlertMessage] =  useState('');
   const [arr, setArr] = useState([]);
   const [btnState, setBtnState] = useState(false);
+  const [isLoadingCheckIn,setIsLoadingCheckIn] = useState(false);
+  const [isLoadingCheckOut,setIsLoadingCheckOut] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const generateInvoiceHandler = () => {
@@ -177,30 +181,46 @@ const BookingHotelById = () => {
   }, [data.checkInStatus, data.checkOutStatus]);
   const checkIn = () => {
     if (data !== "" && !data.checkInStatus) {
+      setIsLoadingCheckIn(true)
       axios({
         method: "post",
         url: `${environmentVariables.apiUrl}/vendor/checkinpermissionbyvendor/${state._id}`,
         headers: { _token: authData.data.token },
       })
-        .then((response) => {
-          getAllUsers();
-        })
-        .catch((error) => {
+      .then((response) => {
+        
+        setIsLoadingCheckIn(false)
+        setAlertMessage(data.type!='activity' ? 'Hotel checkIn.' : "Activity attended.")
+        setTimeout(()=>{
+          setAlertMessage('')
+        },2000)
+        getAllUsers();
+      })
+      .catch((error) => {
+          setIsLoadingCheckIn(false)
           console.log("Error ", error);
         });
     }
   };
   const checkOut = () => {
     if (data !== "" && !data.checkOutStatus) {
+      
+      setIsLoadingCheckOut(true);
       axios({
         method: "post",
         url: `${environmentVariables.apiUrl}/vendor/checkoutpermissionbyvendor/${state._id}`,
         headers: { _token: authData.data.token },
       })
         .then((response) => {
+          setIsLoadingCheckOut(false);
+          setAlertMessage(data.type!='activity' ? 'Hotel checkOut.' : "Activity completed.")
+          setTimeout(()=>{
+            setAlertMessage('')
+          },2000)
           getAllUsers();
         })
         .catch((error) => {
+          setIsLoadingCheckOut(false);
           console.log("Error", error);
         });
     }
@@ -446,7 +466,17 @@ const BookingHotelById = () => {
                   data !== "" && data.checkInStatus ? "not-allowed" : "pointer",
               }}
             >
-              {data.type == "activity" ? "Activity attended" : "CheckIn"}
+              {
+                isLoadingCheckIn ? 
+                <div class="d-flex justify-content-center">
+                  <div class="spinner-border text-light" style={{height:"24px",width:"24px"}} role="status">
+                    <span class="visually-hidden">Loading...</span>
+                  </div>
+                </div>
+                :
+                data.type == "activity" ? "Activity attended" : "CheckIn"
+              }
+
             </CheckinoutButton>
             <CheckinoutButton
               style={{
@@ -459,8 +489,18 @@ const BookingHotelById = () => {
               }}
               onClick={() => checkOut()}
             >
-              {data.type == "activity" ? "Activity completed" : "CheckOut"}
+              {
+                isLoadingCheckOut ? 
+                <div class="d-flex justify-content-center">
+                  <div class="spinner-border text-light" style={{height:"24px",width:"24px"}} role="status">
+                    <span class="visually-hidden">Loading...</span>
+                  </div>
+                </div>
+                :
+                data.type == "activity" ? "Activity completed" : "CheckOut"
+              }
             </CheckinoutButton>
+            <span className="text-success"><b>{alertMessage}</b></span>
           </Container2>
       </Container>
     </>
