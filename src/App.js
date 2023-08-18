@@ -37,7 +37,8 @@ import ManageActivities from "./Pages/admin/Activities/ManageActivities";
 import AddActivity from "./Pages/admin/Activities/AddActivity";
 import ActivityBookingHistory from "./Pages/admin/ActivityBookingHistory";
 import VendorActivityHistory from "./Pages/VendorAcitivityHistory";
-
+import  { isExpired } from 'react-jwt';
+ 
 const Root = styled.div``;
 const LeftWrapper = styled.div`
   width: 300px;
@@ -55,37 +56,44 @@ function App() {
   const [showDropDown, setShowDropDown] = useState(false);
   const location = useLocation();
   const [loggedIn, setLoggedIn] = useState(false);
-
+  
   useEffect(() => {
     if(authData===null){
       setLoggedIn(false)
     }else{
-      // console.log(authData)
       const url = authData?.data?.isadmin
       ? `${environmentVariables?.apiUrl}/auth/isadminlogged`
       : `${environmentVariables?.apiUrl}/auth/isvendorlogged`;
-      const config = {
-        method: "get",
-        url: url,
-        headers: {
-          _token: authData.data.token,
-        },
-      };
-  
-      axios(config)
-        .then(function (response) {
-          if (response.data.success === true) {
-            setLoggedIn(true);
-          } else {
-            localStorage.removeItem("authdata");
-            setLoggedIn(false);
-          }
-        })
-        .catch(function (error) {
-          setLoggedIn(false);
-          localStorage.removeItem("authdata");
-          console.log(error);
-        });
+
+      if(isExpired(authData.data.token)){
+        setLoggedIn(false);
+        localStorage.removeItem("authdata");
+      }
+      else{
+        setLoggedIn(true);
+      }
+
+      // const config = {
+      //   method: "get",
+      //   url: url,
+      //   headers: {
+      //     _token: authData.data.token,
+      //   },
+      // };
+      // axios(config)
+      //   .then(function (response) {
+      //     if (response.data.success === true) {
+      //       setLoggedIn(true);
+      //     } else {
+      //       localStorage.removeItem("authdata");
+      //       setLoggedIn(false);
+      //     }
+      //   })
+      //   .catch(function (error) {
+      //     setLoggedIn(false);
+      //     localStorage.removeItem("authdata");
+      //     console.log(error);
+      //   });
     }
     
   }, [location, authData, loggedIn]);
@@ -100,6 +108,7 @@ function App() {
     >
       {!loggedIn ? (
         <Login loggedIn={loggedIn}/>
+        
       ) : (
         <>
           <Navigation
@@ -163,10 +172,7 @@ function App() {
                     <Route path="manageActivities" element={<ManageActivities />} />
                     <Route path="/addActivity" element={<AddActivity />} />
                     <Route path="/addActivity/:id" element={<AddActivity />} />
-                    <Route
-                      path="vendordetails/:id"
-                      element={<VendorDetails />}
-                    />
+                    <Route path="vendordetails/:id" element={<VendorDetails />} />
                     <Route path="/payoutRequests" element={<PayoutRequest />} />
                     <Route
                       path="chatSupport"
