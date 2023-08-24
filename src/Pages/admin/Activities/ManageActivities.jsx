@@ -22,7 +22,7 @@ import DialogActions from "@mui/material/DialogActions";
 import CloseIcon from "@mui/icons-material/Close";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
-import ArrowBackIosNewOutlinedIcon from '@mui/icons-material/ArrowBackIosNewOutlined';
+import ArrowBackIosNewOutlinedIcon from "@mui/icons-material/ArrowBackIosNewOutlined";
 
 const BootstrapDialog = newStyle(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -161,7 +161,7 @@ const SelectVendor = styled.select`
   /* width: 85%; */
   font-size: 14px;
   border-radius: 5px;
-  min-width:400px;
+  min-width: 400px;
   padding: 10px;
 `;
 const SelectOption = styled.option`
@@ -178,7 +178,7 @@ const Select = styled.select`
 const TextWrapper = styled.div`
   display: flex;
   justify-content: flex-start;
-  align-items:center;
+  align-items: center;
   margin-top: 40px;
 
   @media (max-width: 768px) {
@@ -304,22 +304,18 @@ const ManageActivities = () => {
   };
   // console.log("environmentVariables",environmentVariables)
   const getAllListData = async () => {
-
     await axios
-      .get(
-        `${environmentVariables.apiUrl}/admin/getallhotels`,
-        {
-          headers: { _token: authData.data.token },
-          params: {
-            page: page,
-            limit: rowsPerPage,
-            type: "activity"
-          }
-        }
-      )
+      .get(`${environmentVariables.apiUrl}/admin/getallhotels`, {
+        headers: { _token: authData.data.token },
+        params: {
+          page: page + 1,
+          limit: rowsPerPage,
+          type: "activity",
+        },
+      })
       .then((response) => {
         setResponse(response.data.data);
-        setData(response.data.data.records);
+        setData(response.data.data.totalrecords);
         setIsLoading(false);
       })
       .catch((err) => {
@@ -334,10 +330,10 @@ const ManageActivities = () => {
         {
           headers: { _token: authData.data.token },
           params: {
-            page,
+            page: page + 1,
             limit: rowsPerPage,
-            type: 'activity'
-          }
+            type: "activity",
+          },
         }
       )
       .then((response) => {
@@ -447,89 +443,96 @@ const ManageActivities = () => {
             </TextCenter>
           );
         } else {
-          return (<>{data.map((row, index) => {
-
-            let imageSrc = row.image.length
-              ? row.image[0]
-              : "1675936089112-teanest1.jpg";
-            return (
-              <> <HotelCardsWrapper><HotelCard key={index}>
-                <HotelImageWrapper>
-                  <HotelImage
-                    src={`${environmentVariables.apiUrl}/uploads/${imageSrc}`}
-                  />
-                </HotelImageWrapper>
-                <HotelInfoWrapper>
-                  <HotelBigText>{row.hotelname}</HotelBigText>
-
-                  <HotelIconWrapper>
+          return (
+            <>
+              {data.map((row, index) => {
+                let imageSrc = row.image.length
+                  ? row.image[0]
+                  : "1675936089112-teanest1.jpg";
+                return (
+                  <>
                     {" "}
-                    <HotelIcon></HotelIcon>
-                    {/* <HotelInfoText>City : {row.city}</HotelInfoText>
+                    <HotelCardsWrapper>
+                      <HotelCard key={index}>
+                        <HotelImageWrapper>
+                          <HotelImage
+                            src={`${environmentVariables.apiUrl}/uploads/${imageSrc}`}
+                          />
+                        </HotelImageWrapper>
+                        <HotelInfoWrapper>
+                          <HotelBigText>{row.hotelname}</HotelBigText>
+
+                          <HotelIconWrapper>
+                            {" "}
+                            <HotelIcon></HotelIcon>
+                            {/* <HotelInfoText>City : {row.city}</HotelInfoText>
                     <HotelInfoText>State : {row.state}</HotelInfoText>
                     <HotelInfoText>Country : {row.country}</HotelInfoText> */}
-                    <HotelInfoText>{`Address : ${row?.city}, ${row?.state} - ${row?.country}
+                            <HotelInfoText>{`Address : ${row?.city}, ${row?.state} - ${row?.country}
                   `}</HotelInfoText>
-
-                  </HotelIconWrapper>
-                </HotelInfoWrapper>
-                <HotelButtonWrapper>
-                  <HotelActionButtons
-                    onClick={() => navigate(`/addActivity/${row._id}`)}
-                  >
-                    Edit
-                  </HotelActionButtons>
-                  <HotelActionButtons onClick={() => handleClickOpen(row)}>
-                    Delete
-                  </HotelActionButtons>
-                  {/* <HotelActionButtons>Hide</HotelActionButtons> */}
-                </HotelButtonWrapper>
-                <BootstrapDialog
-                  onClose={handleClose}
-                  aria-labelledby="customized-dialog-title"
-                  open={open}
-                >
-                  <BootstrapDialogTitle
-                    id="customized-dialog-title"
-                    onClose={handleClose}
-                  >
-                    Delete
-                  </BootstrapDialogTitle>
-                  <DialogContent dividers>
-                    <Typography gutterBottom>
-                      Are you sure you want to delete this?
-                    </Typography>
-                  </DialogContent>
-                  <DialogActions>
-                    <Button
-                      variant="contained"
-                      color="success"
-                      onClick={handleClose}
-                    >
-                      Cancel
-                    </Button>
-                    <Button
-                      variant="contained"
-                      color="error"
-                      onClick={() => deleteRecord(hotelDetails)}
-                    >
-                      Delete
-                    </Button>
-                  </DialogActions>
-                </BootstrapDialog>
-              </HotelCard>
-              </HotelCardsWrapper>
-              </>
-            );
-          })} <TablePagination
-              component="div"
-              count={response?.totalrecords}
-              page={page}
-              onPageChange={handleChangePage}
-              rowsPerPage={rowsPerPage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-            /></>)
-
+                          </HotelIconWrapper>
+                        </HotelInfoWrapper>
+                        <HotelButtonWrapper>
+                          <HotelActionButtons
+                            onClick={() => navigate(`/addActivity/${row._id}`)}
+                          >
+                            Edit
+                          </HotelActionButtons>
+                          <HotelActionButtons
+                            onClick={() => handleClickOpen(row)}
+                          >
+                            Delete
+                          </HotelActionButtons>
+                          {/* <HotelActionButtons>Hide</HotelActionButtons> */}
+                        </HotelButtonWrapper>
+                        <BootstrapDialog
+                          onClose={handleClose}
+                          aria-labelledby="customized-dialog-title"
+                          open={open}
+                        >
+                          <BootstrapDialogTitle
+                            id="customized-dialog-title"
+                            onClose={handleClose}
+                          >
+                            Delete
+                          </BootstrapDialogTitle>
+                          <DialogContent dividers>
+                            <Typography gutterBottom>
+                              Are you sure you want to delete this?
+                            </Typography>
+                          </DialogContent>
+                          <DialogActions>
+                            <Button
+                              variant="contained"
+                              color="success"
+                              onClick={handleClose}
+                            >
+                              Cancel
+                            </Button>
+                            <Button
+                              variant="contained"
+                              color="error"
+                              onClick={() => deleteRecord(hotelDetails)}
+                            >
+                              Delete
+                            </Button>
+                          </DialogActions>
+                        </BootstrapDialog>
+                      </HotelCard>
+                    </HotelCardsWrapper>
+                  </>
+                );
+              })}{" "}
+              <TablePagination
+                component="div"
+                count={response?.records}
+                page={page}
+                onPageChange={handleChangePage}
+                rowsPerPage={rowsPerPage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+              />
+            </>
+          );
         }
       }
     }
@@ -540,7 +543,16 @@ const ManageActivities = () => {
         <TextRoot>
           <Root>
             <HeadingWrapper>
-              <IconButton title="Back" onClick={() => navigate(-1)} size="small" sx={{ backgroundColor: "#e1e1e1", color: "#01575c", marginTop: "4px" }}>
+              <IconButton
+                title="Back"
+                onClick={() => navigate(-1)}
+                size="small"
+                sx={{
+                  backgroundColor: "#e1e1e1",
+                  color: "#01575c",
+                  marginTop: "4px",
+                }}
+              >
                 <ArrowBackIosNewOutlinedIcon />
               </IconButton>
               <Heading> Manage Activities</Heading>
