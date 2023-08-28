@@ -12,7 +12,7 @@ import Swal from "sweetalert2";
 import { FaTimes } from "react-icons/fa";
 import { useRef } from "react";
 import CircularLoader from "../../../Component/CircularLoader/CircularLoader";
-
+import Editor from "./Editor";
 
 const Root = styled.div`
   /* width: 967px; */
@@ -61,7 +61,9 @@ const HotelAddForm = styled.div`
 const FormWrapper = styled.div`
   margin: 10px;
 `;
-const FormLabel = styled.div``;
+const FormLabel = styled.div`
+  margin-top: 25px;
+`;
 
 const FormInput = styled.input`
   width: 100%;
@@ -120,13 +122,13 @@ const FormTextArea = styled.textarea`
   border: 1px solid #c4c4c4;
 `;
 const SelectVendor = styled.select`
-font-size: 14px;
-border-radius: 5px;
-margin-left: 10px;
-margin-top: 11px;
-height: 30px;
-width: 40%;
-border: 1px solid #c4c4c4;
+  font-size: 14px;
+  border-radius: 5px;
+  margin-left: 10px;
+  margin-top: 11px;
+  height: 30px;
+  width: 40%;
+  border: 1px solid #c4c4c4;
 `;
 const SelectOption = styled.option`
   font-size: 14px;
@@ -192,7 +194,7 @@ const AddActivity = () => {
   const [cityName, setCityName] = useState("");
   const [vendorlist, setVendorList] = useState(null);
   const [vendorId, setVendorId] = useState("");
-  const [type,setType] = useState('activity');
+  const [type, setType] = useState("activity");
   const [name, setName] = useState("");
   const [area, setArea] = useState("");
   const [address, setAddress] = useState("");
@@ -211,6 +213,10 @@ const AddActivity = () => {
   const [arr, setArr] = useState([]);
   const [updatedHotelData, setUpdatedHotelData] = useState([]);
   const navigate = useNavigate();
+  const [editorLoadedAboutActivity, setEditorLoadedAboutActivity] =
+    useState(false);
+  const [editorLoadedHighlights, setEditorLoadedHighlights] = useState(false);
+  const [editorLoadedOverview, setEditorLoadedOverview] = useState(false);
 
   const options = [
     { label: "Beach", value: "beach" },
@@ -219,8 +225,6 @@ const AddActivity = () => {
     { label: "Hill", value: "hill" },
     { label: "Heritage", value: "heritage" },
   ];
-
-
 
   const getVendorList = async () => {
     await axios
@@ -237,7 +241,7 @@ const AddActivity = () => {
   };
 
   const getHotelDetailById = async () => {
-    if(id){
+    if (id) {
       try {
         const url = `${environmentVariables.apiUrl}/admin/gethoteldetailbyid/${id}`;
         const response = await axios.get(url, {
@@ -246,9 +250,9 @@ const AddActivity = () => {
         // console.log("noOfRooms", response.data.data.payoutInterval);
         setHotelData(response.data.data);
         setName(response.data.data.hotelname);
-  
+
         setPayoutInterval(response.data.data.payoutInterval);
-  
+
         setHotelFee(response.data.data.adminFee);
         setGeneral(response.data.data.facilities[0].general);
         setServices(response.data.data.facilities[0].services);
@@ -280,7 +284,7 @@ const AddActivity = () => {
   }, []);
 
   useEffect(() => {
-    if(countryCode){
+    if (countryCode) {
       let config = {
         method: "post",
         url: `${environmentVariables.apiUrl}/admin/getstatesofcountry`,
@@ -299,7 +303,7 @@ const AddActivity = () => {
   }, [countryCode]);
 
   useEffect(() => {
-    if(countryCode && stateCode){
+    if (countryCode && stateCode) {
       let config = {
         method: "post",
         url: `${environmentVariables.apiUrl}/admin/getcitiesofcountry`,
@@ -360,7 +364,7 @@ const AddActivity = () => {
     formdata.append("internet", internet);
     formdata.append("parking", parking);
     formdata.append("overview", overview);
-    formdata.append('type',type);
+    formdata.append("type", type);
     formdata.append(`adminFee`, hotelFee);
     formdata.append(`payoutInterval`, payoutInterval);
     formdata.append("lat", lat);
@@ -438,7 +442,7 @@ const AddActivity = () => {
         // setError('Details are not valid');
       });
   };
-  
+
   const getHotelLatLong = (e) => {
     e.preventDefault();
     // console.log("fdgfdgfdgdf",lat,long)
@@ -446,7 +450,7 @@ const AddActivity = () => {
       method: "get",
       url: "https://geolocation-db.com/json/",
     })
-      .then((response) => {     
+      .then((response) => {
         // console.log(response.data)
         setLat(response.data.latitude);
         setLong(response.data.longitude);
@@ -504,6 +508,12 @@ const AddActivity = () => {
         Swal.fire("Error", "Something went wrong", "error");
       });
   };
+
+  useEffect(() => {
+    setEditorLoadedAboutActivity(true);
+    setEditorLoadedHighlights(true);
+    setEditorLoadedOverview(true);
+  }, []);
   return (
     <Root>
       <HeadingWrapper>
@@ -585,11 +595,9 @@ const AddActivity = () => {
                     onChange={(e) => setArea(e.target.value)}
                   />
                 </div>
-
               </LocationWrapper>
             )}
             <LocationWrapper>
-
               <div>
                 <FormLabel>Fee* (in percentage)</FormLabel>
                 <FormInput
@@ -617,8 +625,6 @@ const AddActivity = () => {
               </div>
             </LocationWrapper>
             <ThemeWrapper>
-
-
               {id === undefined && (
                 <>
                   <div>
@@ -632,7 +638,7 @@ const AddActivity = () => {
                       Get Coordinates
                     </GetLocationText>
                   </div>
-                  <div style={{marginLeft:"10px"}}>
+                  <div style={{ marginLeft: "10px" }}>
                     <FormLabel>Longitude*</FormLabel>
                     <FormInput
                       type="text"
@@ -640,7 +646,6 @@ const AddActivity = () => {
                       onChange={(e) => setLong(e.target.value)}
                     />
                   </div>
-
 
                   <SelectVendor onChange={(e) => setVendorId(e.target.value)}>
                     <SelectOption>Select Vendor*</SelectOption>
@@ -657,16 +662,29 @@ const AddActivity = () => {
               )}
             </ThemeWrapper>
 
-            <FormLabel>About  Activity *</FormLabel>
-            <FormTextArea
+            <FormLabel>About Activity *</FormLabel>
+            {/* <FormTextArea
               value={general}
               onChange={(e) => setGeneral(e.target.value)}
+            /> */}
+            <Editor
+              value={general}
+              onChange={(data) => {
+                setGeneral(data);
+              }}
+              editorLoaded={editorLoadedAboutActivity}
             />
-            
             <FormLabel>Highlights*</FormLabel>
-            <FormTextArea
+            {/* <FormTextArea
               value={services}
               onChange={(e) => setServices(e.target.value)}
+            /> */}
+            <Editor
+              value={services}
+              onChange={(data) => {
+                setServices(data);
+              }}
+              editorLoaded={editorLoadedHighlights}
             />
             {id !== undefined &&
               hotelData.facilities !== undefined &&
@@ -693,9 +711,12 @@ const AddActivity = () => {
                 </>
               )}
             <FormLabel>Overview*</FormLabel>
-            <FormTextArea
+            <Editor
               value={overview}
-              onChange={(e) => setOverview(e.target.value)}
+              onChange={(data) => {
+                setOverview(data);
+              }}
+              editorLoaded={editorLoadedOverview}
             />
             {id === undefined && (
               <>

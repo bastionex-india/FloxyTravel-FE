@@ -12,6 +12,7 @@ import Swal from "sweetalert2";
 import { FaTimes } from "react-icons/fa";
 import { useRef } from "react";
 import CircularLoader from "../../../Component/CircularLoader/CircularLoader";
+import Editor from "../Activities/Editor";
 
 const Root = styled.div`
   /* width: 967px; */
@@ -60,7 +61,9 @@ const HotelAddForm = styled.div`
 const FormWrapper = styled.div`
   margin: 10px;
 `;
-const FormLabel = styled.div``;
+const FormLabel = styled.div`
+  margin-top: 25px;
+`;
 
 const FormInput = styled.input`
   width: 100%;
@@ -207,6 +210,9 @@ const AddHotels = () => {
   const [list, setList] = useState([]);
   const [arr, setArr] = useState([]);
   const [updatedHotelData, setUpdatedHotelData] = useState([]);
+  const [editorLoadedGeneral, setEditorLoadedGeneral] = useState(false);
+  const [editorLoadedServices, setEditorLoadedServices] = useState(false);
+  const [editorLoadedOverview, setEditorLoadedOverview] = useState(false);
 
   const navigate = useNavigate();
   const options = [
@@ -516,6 +522,11 @@ const AddHotels = () => {
         Swal.fire("Error", "Something went wrong", "error");
       });
   };
+  useEffect(() => {
+    setEditorLoadedServices(true);
+    setEditorLoadedGeneral(true);
+    setEditorLoadedOverview(true);
+  }, []);
   return (
     <Root>
       <HeadingWrapper>
@@ -692,17 +703,21 @@ const AddHotels = () => {
                 onChange={(e) => setTotalRooms(e.target.value)}
               />
             </div>
-            <FormLabel>General Info*</FormLabel>
-            <FormInput
-              type="text"
+            <FormLabel>Local Attractions*</FormLabel>
+            <Editor
               value={general}
-              onChange={(e) => setGeneral(e.target.value)}
+              onChange={(data) => {
+                setGeneral(data);
+              }}
+              editorLoaded={editorLoadedGeneral}
             />
             <FormLabel>Services*</FormLabel>
-            <FormInput
-              type="text"
+            <Editor
               value={services}
-              onChange={(e) => setServices(e.target.value)}
+              onChange={(data) => {
+                setServices(data);
+              }}
+              editorLoaded={editorLoadedServices}
             />
             {id !== undefined &&
               hotelData.facilities !== undefined &&
@@ -729,9 +744,12 @@ const AddHotels = () => {
                 </>
               )}
             <FormLabel>Overview*</FormLabel>
-            <FormTextArea
+            <Editor
               value={overview}
-              onChange={(e) => setOverview(e.target.value)}
+              onChange={(data) => {
+                setOverview(data);
+              }}
+              editorLoaded={editorLoadedOverview}
             />
             {id === undefined && (
               <>
