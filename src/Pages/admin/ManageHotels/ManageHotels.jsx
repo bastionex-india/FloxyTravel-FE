@@ -330,7 +330,7 @@ const ManageAdmin = () => {
         {
           headers: { _token: authData.data.token },
           params: {
-            page:page + 1,
+            page: page + 1,
             limit: rowsPerPage,
             type: "hotel",
           },

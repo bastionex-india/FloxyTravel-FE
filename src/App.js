@@ -38,6 +38,7 @@ import AddActivity from "./Pages/admin/Activities/AddActivity";
 import ActivityBookingHistory from "./Pages/admin/ActivityBookingHistory";
 import VendorActivityHistory from "./Pages/VendorAcitivityHistory";
 import  { isExpired } from 'react-jwt';
+import VendorEditActivities from "./Pages/VendorEditActivities";
  
 const Root = styled.div``;
 const LeftWrapper = styled.div`
@@ -212,6 +213,10 @@ function App() {
                     <Route
                       path="/edithotels/:id"
                       element={<VendorEditHotel />}
+                    />
+                    <Route
+                      path="/editactivities/:id"
+                      element={<VendorEditActivities />}
                     />
                   </>
                 )}
