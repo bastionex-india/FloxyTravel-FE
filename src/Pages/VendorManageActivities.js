@@ -336,7 +336,7 @@ const VendorManageActivities = () => {
             <HotelCard key={index}>
               <HotelImageWrapper>
                 <HotelImage
-                  src={`https://uat-travel-api.floxypay.com/uploads/${imageSrc}`}
+                  src={`${environmentVariables.apiUrl}/uploads/${imageSrc}`}
                 />
               </HotelImageWrapper>
               <HotelInfoWrapper>
