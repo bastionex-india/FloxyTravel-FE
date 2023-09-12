@@ -49,6 +49,7 @@ export default function GraphCheck() {
   const [toDate, setToDate] = useState(null);
   const [xLabel, setXLabel] = useState("Year");
   const [customData, setCustomData] = useState(null);
+  const [type, setType] = useState('hotel');
   const ButtonGroup = styled.div`
     display: flex;
   `;
@@ -57,7 +58,7 @@ export default function GraphCheck() {
     position: absolute;
     justify-content: flex-start;
     align-items: center;
-    top: 60px;
+    top: 110px;
     left: 30px;
     padding: 20px 50px;
   `;
@@ -90,7 +91,6 @@ export default function GraphCheck() {
 
   function planUpdate(e) {
     const value = e.target.value;
-    console.log(value);
     if (value === "yeardata") {
       setGraphData(yeardata);
       setXLabel("Year");
@@ -110,6 +110,7 @@ export default function GraphCheck() {
       year: 2023,
       fromDate: fromDate,
       toDate: toDate,
+      type:type
     };
     //https://uat-travel-api.floxypay.com/vendor/getgraphhotels/a8c99f2a-9622-417a-b72e-aef09da04ba6
 
@@ -128,6 +129,15 @@ export default function GraphCheck() {
             let mergedata = {};
             mergedata.Name = val._id;
             mergedata.Hotels = val.count;
+            mergedatas.push(mergedata);
+          });
+          setGraphData(mergedatas);
+        }else if (tab === "Activities") {
+          const activityData = response.data.data[0]?.activityCount;
+          activityData.forEach((val) => {
+            let mergedata = {};
+            mergedata.Name = val._id;
+            mergedata.Activities = val.count;
             mergedatas.push(mergedata);
           });
           setGraphData(mergedatas);
@@ -159,6 +169,7 @@ export default function GraphCheck() {
     const allData = {
       query: "year",
       year: 2023,
+      type:type
     };
 
     await axios({
@@ -170,12 +181,12 @@ export default function GraphCheck() {
       .then((response) => {
         const data = response.data.data;
         const mergedata = [
-          { Name: 2018, Bookings: 0, Hotels: 0, Earnings: 0 },
-          { Name: 2019, Bookings: 0, Hotels: 0, Earnings: 0 },
-          { Name: 2020, Bookings: 0, Hotels: 0, Earnings: 0 },
-          { Name: 2021, Bookings: 0, Hotels: 0, Earnings: 0 },
-          { Name: 2022, Bookings: 0, Hotels: 0, Earnings: 0 },
-          { Name: 2023, Bookings: 0, Hotels: 0, Earnings: 0 },
+          { Name: 2018, Bookings: 0, Hotels: 0, Earnings: 0, Activities:0 },
+          { Name: 2019, Bookings: 0, Hotels: 0, Earnings: 0, Activities:0 },
+          { Name: 2020, Bookings: 0, Hotels: 0, Earnings: 0, Activities:0 },
+          { Name: 2021, Bookings: 0, Hotels: 0, Earnings: 0, Activities:0 },
+          { Name: 2022, Bookings: 0, Hotels: 0, Earnings: 0, Activities:0 },
+          { Name: 2023, Bookings: 0, Hotels: 0, Earnings: 0, Activities:0 },
         ];
 
         // for (let i = 0; i < mergedata.length; i++) {
@@ -185,8 +196,9 @@ export default function GraphCheck() {
         //     }
         //   }
         // }
-        mergedata[5].Bookings = data[1].bookingCount;
+        mergedata[5].Bookings = data[2].bookingCount;
         mergedata[5].Hotels = data[0].hotelCount;
+        mergedata[5].Activities = data[1].activityCount;
         for (let i = 0; i < mergedata.length; i++) {
           for (let j = 0; j < data.length; j++) {
             if (mergedata[i].Name === 2023) {
@@ -207,6 +219,7 @@ export default function GraphCheck() {
     const allData = {
       query: "month",
       year: 2023,
+      type:type
     };
 
     await axios({
@@ -217,22 +230,23 @@ export default function GraphCheck() {
     })
       .then((response) => {
         const mergedata = [
-          { Name: 1, Bookings: 0, Hotels: 0, Earnings: 0 },
-          { Name: 2, Bookings: 0, Hotels: 0, Earnings: 0 },
-          { Name: 3, Bookings: 0, Hotels: 0, Earnings: 0 },
-          { Name: 4, Bookings: 0, Hotels: 0, Earnings: 0 },
-          { Name: 5, Bookings: 0, Hotels: 0, Earnings: 0 },
-          { Name: 6, Bookings: 0, Hotels: 0, Earnings: 0 },
-          { Name: 7, Bookings: 0, Hotels: 0, Earnings: 0 },
-          { Name: 8, Bookings: 0, Hotels: 0, Earnings: 0 },
-          { Name: 9, Bookings: 0, Hotels: 0, Earnings: 0 },
-          { Name: 10, Bookings: 0, Hotels: 0, Earnings: 0 },
-          { Name: 11, Bookings: 0, Hotels: 0, Earnings: 0 },
-          { Name: 12, Bookings: 0, Hotels: 0, Earnings: 0 },
+          { Name: 1, Bookings: 0, Hotels: 0, Earnings: 0, Activities:0  },
+          { Name: 2, Bookings: 0, Hotels: 0, Earnings: 0, Activities:0  },
+          { Name: 3, Bookings: 0, Hotels: 0, Earnings: 0, Activities:0  },
+          { Name: 4, Bookings: 0, Hotels: 0, Earnings: 0, Activities:0  },
+          { Name: 5, Bookings: 0, Hotels: 0, Earnings: 0, Activities:0  },
+          { Name: 6, Bookings: 0, Hotels: 0, Earnings: 0, Activities:0  },
+          { Name: 7, Bookings: 0, Hotels: 0, Earnings: 0, Activities:0  },
+          { Name: 8, Bookings: 0, Hotels: 0, Earnings: 0, Activities:0  },
+          { Name: 9, Bookings: 0, Hotels: 0, Earnings: 0, Activities:0  },
+          { Name: 10, Bookings: 0, Hotels: 0, Earnings: 0, Activities:0  },
+          { Name: 11, Bookings: 0, Hotels: 0, Earnings: 0, Activities:0  },
+          { Name: 12, Bookings: 0, Hotels: 0, Earnings: 0, Activities:0  },
         ];
 
         const bookingdata = response.data.data[0].bookingCount;
         const hoteldata = response.data.data[0].hotelCount;
+        const activitydata = response.data.data[0].activityCount;
         const earnings = response.data.data[0].earnings;
         for (let i = 0; i < mergedata.length; i++) {
           for (let j = 0; j < bookingdata.length; j++) {
@@ -246,6 +260,13 @@ export default function GraphCheck() {
           for (let j = 0; j < hoteldata.length; j++) {
             if (mergedata[i].Name === hoteldata[j].month) {
               mergedata[i].Hotels = hoteldata[j].count;
+            }
+          }
+        }
+        for (let i = 0; i < mergedata.length; i++) {
+          for (let j = 0; j < activitydata.length; j++) {
+            if (mergedata[i].Name === activitydata[j].month) {
+              mergedata[i].Activities = activitydata[j].count;
             }
           }
         }
@@ -296,7 +317,6 @@ export default function GraphCheck() {
         }
 
         setAlldata(mergedata);
-        console.log(alldata);
       })
       .catch((err) => {
         console.log(err.message);
@@ -321,7 +341,7 @@ export default function GraphCheck() {
           style={{
             display: "flex",
             justifyContent: "space-around",
-            margin: "20px 0  65px 0",
+            margin: "65px 0  65px 0",
           }}
         >
           <ButtonGroup>
@@ -332,10 +352,19 @@ export default function GraphCheck() {
                 borderRight: "1px dashed black",
                 borderLeft: "1px solid black",
               }}
-              onClick={() => setTab("Hotels")}
+              onClick={() => {setTab("Hotels");setType('hotel')}}
               active={tab === "Hotels"}
             >
               Hotels
+            </TabButton>
+            <TabButton
+              onClick={() => {setTab("Activities");setType('activity')}}
+              active={tab === "Activities"}
+              style={{
+                borderRight: "1px dashed black",
+              }}
+            >
+              Acitivities
             </TabButton>
             <TabButton
               onClick={() => setTab("Bookings")}

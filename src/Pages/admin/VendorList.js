@@ -32,8 +32,8 @@ import { VendorRegisterSchema } from "./schemas/VendorRegisterSchems";
 import Check from "./Check.js";
 import { Modal } from "react-bootstrap";
 import { BarChart, Bar, CartesianGrid, XAxis, YAxis } from "recharts";
-import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
+import Grid from "@mui/material/Grid";
+import Box from "@mui/material/Box";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -44,35 +44,32 @@ import Paper from "@mui/material/Paper";
 import GraphCheck from "./GraphCheck";
 import CircularLoader from "../../Component/CircularLoader/CircularLoader";
 
+// Money
+import AttachMoneyOutlinedIcon from "@mui/icons-material/AttachMoneyOutlined";
 
-// Money 
-import AttachMoneyOutlinedIcon from '@mui/icons-material/AttachMoneyOutlined';
+// apartment
+import ApartmentOutlinedIcon from "@mui/icons-material/ApartmentOutlined";
 
-// apartment 
-import ApartmentOutlinedIcon from '@mui/icons-material/ApartmentOutlined';
-
-// Vendor 
-import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
-// Hotel 
-import BedroomChildOutlinedIcon from '@mui/icons-material/BedroomChildOutlined';
+// Vendor
+import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
+// Hotel
+import BedroomChildOutlinedIcon from "@mui/icons-material/BedroomChildOutlined";
 // Total Booking
-import RequestQuoteOutlinedIcon from '@mui/icons-material/RequestQuoteOutlined';
+import RequestQuoteOutlinedIcon from "@mui/icons-material/RequestQuoteOutlined";
 
+import AccountBalanceWalletOutlinedIcon from "@mui/icons-material/AccountBalanceWalletOutlined";
 
-import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalanceWalletOutlined';
+import { IconButton } from "@mui/material";
 
-import { IconButton } from '@mui/material';
-
-import { styled as newStyle } from '@mui/material/styles';
+import { styled as newStyle } from "@mui/material/styles";
 
 const Item = newStyle(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+  backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
   ...theme.typography.body2,
   // padding: theme.spacing(1),
-  textAlign: 'center',
+  textAlign: "center",
   color: theme.palette.text.secondary,
 }));
-
 
 const Root = styled.div`
   width: 90%;
@@ -84,6 +81,7 @@ const CardWrapper = styled.div`
 
 const CardsWrapper = styled.div`
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
   margin-bottom: 20px;
 `;
@@ -92,6 +90,10 @@ const ErrorMessage = styled.div`
   color: red;
   font-size: 12px;
   margin-bottom: 20px;
+`;
+const CardsWrapper1 = styled.div`
+  display: flex;
+  margin-top: 20px;
 `;
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -119,6 +121,8 @@ const VendorList = () => {
   const [error, setError] = useState("");
   const [showModal, setShowModel] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [summaryData, setSummaryData] = useState(null);
 
   const getAllListData = async () => {
     await axios
@@ -134,7 +138,7 @@ const VendorList = () => {
   };
   const getSummaryData = () => {
     axios
-      .get(`${environmentVariables?.apiUrl}/admin/getSummaryData`)
+      .get(`${environmentVariables.apiUrl}/admin/getSummaryData`)
       .then((res) => {
         setSummaryData(res.data.data);
         setIsLoading(false);
@@ -150,8 +154,6 @@ const VendorList = () => {
   const getAnotherComponent = (item) => {
     navigate("/gethotelsbyvendorid", { state: item });
   };
-  const [open, setOpen] = useState(false);
-  const [summaryData, setSummaryData] = useState(null);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -349,111 +351,388 @@ const VendorList = () => {
         </div>
       ) : (
         <CardsWrapper>
-          <CardWrapper>
-            <Card elevation={0} style={{ padding: "50px 0px", marginRight: "20px" }}>
-              <Box sx={{ flexGrow: 1 }}>
-                <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }} sx={{display:"flex",alignItems:"center"}}>
-                  <Grid item xs={12} sm={6} md={6} lg={6} sx={{display:"flex",justifyContent:"flex-end",alignItems:"center"}}>
-                    <Item elevation={0}>
-                      <IconButton size="medium" sx={{ backgroundColor: "#E1F6F8" }}>
-                        <AttachMoneyOutlinedIcon fontSize="inherit" />
-                      </IconButton>
-                    </Item >
+          <CardsWrapper1>
+            <CardWrapper>
+              <Card
+                elevation={0}
+                style={{ padding: "50px 0px", marginRight: "20px" }}
+              >
+                <Box sx={{ flexGrow: 1 }}>
+                  <Grid
+                    container
+                    rowSpacing={1}
+                    columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+                    sx={{ display: "flex", alignItems: "center" }}
+                  >
+                    <Grid
+                      item
+                      xs={12}
+                      sm={6}
+                      md={6}
+                      lg={6}
+                      sx={{
+                        display: "flex",
+                        justifyContent: "flex-end",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Item elevation={0}>
+                        <IconButton
+                          size="medium"
+                          sx={{ backgroundColor: "#E1F6F8" }}
+                        >
+                          <AttachMoneyOutlinedIcon fontSize="inherit" />
+                        </IconButton>
+                      </Item>
+                    </Grid>
+                    <Grid
+                      item
+                      xs={12}
+                      sm={6}
+                      md={6}
+                      lg={6}
+                      sx={{ paddingLeft: "10px !important" }}
+                    >
+                      <Item elevation={0}>
+                        <p
+                          style={{ textAlign: "left", margin: "0 !important" }}
+                          className="card-title"
+                        >
+                          <b>Earnings</b>
+                        </p>
+                        <p
+                          style={{
+                            textAlign: "left",
+                            color: "#008080",
+                            margin: "0",
+                          }}
+                        >
+                          ₹ {summaryData?.totalEarnings.toFixed(2)}
+                        </p>
+                      </Item>
+                    </Grid>
                   </Grid>
-                  <Grid item xs={12} sm={6} md={6} lg={6} sx={{paddingLeft:"10px !important"}}>
-                    <Item elevation={0}>
-                      <p style={{ textAlign: "left",margin:"0 !important" }} className="card-title"><b>Earnings</b></p>
-                      <p style={{ textAlign: "left", color: "#008080", margin:"0" }}>₹ {summaryData?.totalEarnings.toFixed(2)}</p>
-                    </Item>
+                </Box>
+              </Card>
+            </CardWrapper>
+            <CardWrapper>
+              <Card
+                elevation={0}
+                style={{ padding: "50px 0px", marginRight: "20px" }}
+              >
+                <Box sx={{ flexGrow: 1 }}>
+                  <Grid
+                    container
+                    rowSpacing={1}
+                    columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+                    sx={{ display: "flex", alignItems: "center" }}
+                  >
+                    <Grid
+                      item
+                      xs={12}
+                      sm={6}
+                      md={6}
+                      lg={6}
+                      sx={{
+                        display: "flex",
+                        justifyContent: "flex-end",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Item elevation={0}>
+                        <IconButton
+                          size="medium"
+                          sx={{ backgroundColor: "#E1F6F8" }}
+                        >
+                          <AccountBalanceWalletOutlinedIcon fontSize="inherit" />
+                        </IconButton>
+                      </Item>
+                    </Grid>
+                    <Grid
+                      item
+                      xs={12}
+                      sm={6}
+                      md={6}
+                      lg={6}
+                      sx={{ paddingLeft: "10px !important" }}
+                    >
+                      <Item elevation={0}>
+                        <p
+                          style={{ textAlign: "left", margin: "0 !important" }}
+                          className="card-title"
+                        >
+                          <b>Payouts</b>
+                        </p>
+                        <p
+                          style={{
+                            textAlign: "left",
+                            color: "#008080",
+                            margin: "0",
+                          }}
+                        >
+                          ₹ {summaryData?.allPayoutAmount.toFixed(2)}
+                        </p>
+                      </Item>
+                    </Grid>
                   </Grid>
-                </Grid>
-              </Box>
-            </Card>
-          </CardWrapper>
-          <CardWrapper>
-            <Card elevation={0} style={{ padding: "50px 0px", marginRight: "20px" }}>
-              <Box sx={{ flexGrow: 1 }}>
-                <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }} sx={{display:"flex",alignItems:"center"}}>
-                  <Grid item xs={12} sm={6} md={6} lg={6} sx={{display:"flex",justifyContent:"flex-end",alignItems:"center"}}>
-                    <Item elevation={0}>
-                      <IconButton size="medium" sx={{ backgroundColor: "#E1F6F8" }}>
-                        <AccountBalanceWalletOutlinedIcon fontSize="inherit" />
-                      </IconButton>
-                    </Item >
+                </Box>
+              </Card>
+            </CardWrapper>
+            <CardWrapper>
+              <Card
+                elevation={0}
+                style={{ padding: "50px 0px", marginRight: "20px" }}
+              >
+                <Box sx={{ flexGrow: 1 }}>
+                  <Grid
+                    container
+                    rowSpacing={1}
+                    columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+                    sx={{ display: "flex", alignItems: "center" }}
+                  >
+                    <Grid
+                      item
+                      xs={12}
+                      sm={6}
+                      md={6}
+                      lg={6}
+                      sx={{
+                        display: "flex",
+                        justifyContent: "flex-end",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Item elevation={0}>
+                        <IconButton
+                          size="medium"
+                          sx={{ backgroundColor: "#E1F6F8" }}
+                        >
+                          <AccountCircleOutlinedIcon fontSize="inherit" />
+                        </IconButton>
+                      </Item>
+                    </Grid>
+                    <Grid
+                      item
+                      xs={12}
+                      sm={6}
+                      md={6}
+                      lg={6}
+                      sx={{ paddingLeft: "10px !important" }}
+                    >
+                      <Item elevation={0}>
+                        <p
+                          style={{ textAlign: "left", margin: "0 !important" }}
+                          className="card-title"
+                        >
+                          <b>Vendors</b>
+                        </p>
+                        <p
+                          style={{
+                            textAlign: "left",
+                            color: "#008080",
+                            margin: "0",
+                          }}
+                        >
+                          {summaryData?.totalVendors}
+                        </p>
+                      </Item>
+                    </Grid>
                   </Grid>
-                  <Grid item xs={12} sm={6} md={6} lg={6} sx={{paddingLeft:"10px !important"}}>
-                    <Item elevation={0}>
-                      <p style={{ textAlign: "left",margin:"0 !important" }} className="card-title"><b>Payouts</b></p>
-                      <p style={{ textAlign: "left", color: "#008080", margin:"0" }}>₹ {summaryData?.allPayoutAmount.toFixed(2)}</p>
-                    </Item>
+                </Box>
+              </Card>
+            </CardWrapper>
+          </CardsWrapper1>
+          <CardsWrapper1>
+            <CardWrapper>
+              <Card
+                elevation={0}
+                style={{ padding: "50px 0px", marginRight: "20px" }}
+              >
+                <Box sx={{ flexGrow: 1 }}>
+                  <Grid
+                    container
+                    rowSpacing={1}
+                    columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+                    sx={{ display: "flex", alignItems: "center" }}
+                  >
+                    <Grid
+                      item
+                      xs={12}
+                      sm={6}
+                      md={6}
+                      lg={6}
+                      sx={{
+                        display: "flex",
+                        justifyContent: "flex-end",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Item elevation={0}>
+                        <IconButton
+                          size="medium"
+                          sx={{ backgroundColor: "#E1F6F8" }}
+                        >
+                          <BedroomChildOutlinedIcon fontSize="inherit" />
+                        </IconButton>
+                      </Item>
+                    </Grid>
+                    <Grid
+                      item
+                      xs={12}
+                      sm={6}
+                      md={6}
+                      lg={6}
+                      sx={{ paddingLeft: "10px !important" }}
+                    >
+                      <Item elevation={0}>
+                        <p
+                          style={{ textAlign: "left", margin: "0 !important" }}
+                          className="card-title"
+                        >
+                          <b>Hotels</b>
+                        </p>
+                        <p
+                          style={{
+                            textAlign: "left",
+                            color: "#008080",
+                            margin: "0",
+                          }}
+                        >
+                          {summaryData?.totalHotels}
+                        </p>
+                      </Item>
+                    </Grid>
                   </Grid>
-                </Grid>
-              </Box>
-            </Card>
-          </CardWrapper>
-          <CardWrapper>
-            <Card elevation={0} style={{ padding: "50px 0px", marginRight: "20px" }}>
-              <Box sx={{ flexGrow: 1 }}>
-                <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }} sx={{display:"flex",alignItems:"center"}}>
-                  <Grid item xs={12} sm={6} md={6} lg={6} sx={{display:"flex",justifyContent:"flex-end",alignItems:"center"}}>
-                    <Item elevation={0}>
-                      <IconButton size="medium" sx={{ backgroundColor: "#E1F6F8" }}>
-                        <AccountCircleOutlinedIcon fontSize="inherit" />
-                      </IconButton>
-                    </Item >
+                </Box>
+              </Card>
+            </CardWrapper>
+            <CardWrapper>
+              <Card
+                elevation={0}
+                style={{ padding: "50px 0px", marginRight: "20px" }}
+              >
+                <Box sx={{ flexGrow: 1 }}>
+                  <Grid
+                    container
+                    rowSpacing={1}
+                    columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+                    sx={{ display: "flex", alignItems: "center" }}
+                  >
+                    <Grid
+                      item
+                      xs={12}
+                      sm={6}
+                      md={6}
+                      lg={6}
+                      sx={{
+                        display: "flex",
+                        justifyContent: "flex-end",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Item elevation={0}>
+                        <IconButton
+                          size="medium"
+                          sx={{ backgroundColor: "#E1F6F8" }}
+                        >
+                          <RequestQuoteOutlinedIcon fontSize="inherit" />
+                        </IconButton>
+                      </Item>
+                    </Grid>
+                    <Grid
+                      item
+                      xs={12}
+                      sm={6}
+                      md={6}
+                      lg={6}
+                      sx={{ paddingLeft: "10px !important" }}
+                    >
+                      <Item elevation={0}>
+                        <p
+                          style={{ textAlign: "left", margin: "0 !important" }}
+                          className="card-title"
+                        >
+                          <b>Activities</b>
+                        </p>
+                        <p
+                          style={{
+                            textAlign: "left",
+                            color: "#008080",
+                            margin: "0",
+                          }}
+                        >
+                          {summaryData?.totalActivity}
+                        </p>
+                      </Item>
+                    </Grid>
                   </Grid>
-                  <Grid item xs={12} sm={6} md={6} lg={6} sx={{paddingLeft:"10px !important"}}>
-                    <Item elevation={0}>
-                      <p style={{ textAlign: "left",margin:"0 !important" }} className="card-title"><b>Vendors</b></p>
-                      <p style={{ textAlign: "left", color: "#008080", margin:"0" }}>{summaryData?.totalVendors}</p>
-                    </Item>
+                </Box>
+              </Card>
+            </CardWrapper>
+            <CardWrapper>
+              <Card
+                elevation={0}
+                style={{ padding: "50px 0px", marginRight: "20px" }}
+              >
+                <Box sx={{ flexGrow: 1 }}>
+                  <Grid
+                    container
+                    rowSpacing={1}
+                    columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+                    sx={{ display: "flex", alignItems: "center" }}
+                  >
+                    <Grid
+                      item
+                      xs={12}
+                      sm={6}
+                      md={6}
+                      lg={6}
+                      sx={{
+                        display: "flex",
+                        justifyContent: "flex-end",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Item elevation={0}>
+                        <IconButton
+                          size="medium"
+                          sx={{ backgroundColor: "#E1F6F8" }}
+                        >
+                          <RequestQuoteOutlinedIcon fontSize="inherit" />
+                        </IconButton>
+                      </Item>
+                    </Grid>
+                    <Grid
+                      item
+                      xs={12}
+                      sm={6}
+                      md={6}
+                      lg={6}
+                      sx={{ paddingLeft: "10px !important" }}
+                    >
+                      <Item elevation={0}>
+                        <p
+                          style={{ textAlign: "left", margin: "0 !important" }}
+                          className="card-title"
+                        >
+                          <b>Bookings</b>
+                        </p>
+                        <p
+                          style={{
+                            textAlign: "left",
+                            color: "#008080",
+                            margin: "0",
+                          }}
+                        >
+                          {summaryData?.totalBookings}
+                        </p>
+                      </Item>
+                    </Grid>
                   </Grid>
-                </Grid>
-              </Box>
-            </Card>
-          </CardWrapper>
-          <CardWrapper>
-            <Card elevation={0} style={{ padding: "50px 0px", marginRight: "20px" }}>
-              <Box sx={{ flexGrow: 1 }}>
-                <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }} sx={{display:"flex",alignItems:"center"}}>
-                  <Grid item xs={12} sm={6} md={6} lg={6} sx={{display:"flex",justifyContent:"flex-end",alignItems:"center"}}>
-                    <Item elevation={0}>
-                      <IconButton size="medium" sx={{ backgroundColor: "#E1F6F8" }}>
-                        <BedroomChildOutlinedIcon fontSize="inherit" />
-                      </IconButton>
-                    </Item >
-                  </Grid>
-                  <Grid item xs={12} sm={6} md={6} lg={6} sx={{paddingLeft:"10px !important"}}>
-                    <Item elevation={0}>
-                      <p style={{ textAlign: "left",margin:"0 !important" }} className="card-title"><b>Hotels</b></p>
-                      <p style={{ textAlign: "left", color: "#008080", margin:"0" }}>{summaryData?.totalHotels}</p>
-                    </Item>
-                  </Grid>
-                </Grid>
-              </Box>
-            </Card>
-          </CardWrapper>
-          <CardWrapper>
-            <Card elevation={0} style={{ padding: "50px 0px", marginRight: "20px" }}>
-              <Box sx={{ flexGrow: 1 }}>
-                <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }} sx={{display:"flex",alignItems:"center"}}>
-                  <Grid item xs={12} sm={6} md={6} lg={6} sx={{display:"flex",justifyContent:"flex-end",alignItems:"center"}}>
-                    <Item elevation={0}>
-                      <IconButton size="medium" sx={{ backgroundColor: "#E1F6F8" }}>
-                        <RequestQuoteOutlinedIcon fontSize="inherit" />
-                      </IconButton>
-                    </Item >
-                  </Grid>
-                  <Grid item xs={12} sm={6} md={6} lg={6} sx={{paddingLeft:"10px !important"}}>
-                    <Item elevation={0}>
-                      <p style={{ textAlign: "left",margin:"0 !important" }} className="card-title"><b>Bookings</b></p>
-                      <p style={{ textAlign: "left", color: "#008080", margin:"0" }}>{summaryData?.totalBookings}</p>
-                    </Item>
-                  </Grid>
-                </Grid>
-              </Box>
-            </Card>
-          </CardWrapper>
+                </Box>
+              </Card>
+            </CardWrapper>
+          </CardsWrapper1>
         </CardsWrapper>
       )}
 

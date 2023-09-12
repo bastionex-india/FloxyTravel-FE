@@ -1,29 +1,29 @@
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
-.css-1yuq9pa-MuiPaper-root-MuiCard-root{
+.css-1yuq9pa-MuiPaper-root-MuiCard-root {
   overflow: visible !important;
 }
-.css-1qvr50w-MuiTypography-root{
+.css-1qvr50w-MuiTypography-root {
   font-size: 16px !important;
   font-weight: 500 !important;
 }
 
-.css-pdct74-MuiTablePagination-selectLabel{
+.css-pdct74-MuiTablePagination-selectLabel {
   margin: 0 !important;
 }
 
-.css-levciy-MuiTablePagination-displayedRows{
+.css-levciy-MuiTablePagination-displayedRows {
   margin: 0 !important;
 }
 input[type="number"]::-webkit-inner-spin-button,
@@ -34,4 +34,7 @@ input[type="number"]::-webkit-outer-spin-button {
 
 input[type="number"] {
   -moz-appearance: textfield;
+}
+.css-11xur9t-MuiPaper-root-MuiTableContainer-root {
+  overflow-x: inherit !important;
 }

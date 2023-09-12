@@ -281,7 +281,7 @@ const TextCenter = styled.div`
   text-align: center;
 `;
 
-const ManageAdmin = () => {
+const ManageActivities = () => {
   const [isLoading, setIsLoading] = useState(true);
   const { authData, setAuthData } = useContext(AuthContext);
   const [addVendorPopUp, setAddVendorPopUp] = useState(false);
@@ -302,6 +302,7 @@ const ManageAdmin = () => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
+  // console.log("environmentVariables",environmentVariables)
   const getAllListData = async () => {
     await axios
       .get(`${environmentVariables.apiUrl}/admin/getallhotels`, {
@@ -309,12 +310,11 @@ const ManageAdmin = () => {
         params: {
           page: page + 1,
           limit: rowsPerPage,
-          type: "hotel",
+          type: "activity",
         },
       })
       .then((response) => {
         setResponse(response.data.data);
-        // setPage(response.data.data.currentpage - 1);
         setData(response.data.data.totalrecords);
         setIsLoading(false);
       })
@@ -332,7 +332,7 @@ const ManageAdmin = () => {
           params: {
             page: page + 1,
             limit: rowsPerPage,
-            type: "hotel",
+            type: "activity",
           },
         }
       )
@@ -375,7 +375,7 @@ const ManageAdmin = () => {
     setPage(0);
     setRowsPerPage(10);
     if (e.target.value === "all") {
-      setVendorId("all");
+      setVendorId(e.target.value);
     } else {
       setVendorId(e.target.value);
     }
@@ -388,10 +388,9 @@ const ManageAdmin = () => {
         _token: authData.data.token,
       },
     };
-
     axios(config)
       .then(function (response) {
-        Swal.fire("Deleted", "Hotel Deleted Successfully", "success");
+        Swal.fire("Deleted", "Deleted Successfully", "success");
         setOpen(false);
         getHotelByVendorId();
         getAllListData();
@@ -440,7 +439,7 @@ const ManageAdmin = () => {
         if (data.length === 0) {
           return (
             <TextCenter>
-              <span>No hotels Found</span>
+              <span>No records found</span>
             </TextCenter>
           );
         } else {
@@ -457,7 +456,7 @@ const ManageAdmin = () => {
                       <HotelCard key={index}>
                         <HotelImageWrapper>
                           <HotelImage
-                            src={`https://uat-travel-api.floxypay.com/uploads/${imageSrc}`}
+                            src={`${environmentVariables.apiUrl}/uploads/${imageSrc}`}
                           />
                         </HotelImageWrapper>
                         <HotelInfoWrapper>
@@ -471,15 +470,11 @@ const ManageAdmin = () => {
                     <HotelInfoText>Country : {row.country}</HotelInfoText> */}
                             <HotelInfoText>{`Address : ${row?.city}, ${row?.state} - ${row?.country}
                   `}</HotelInfoText>
-                            <HotelInfoText>Theme : {row.theme}</HotelInfoText>
-                            <HotelInfoText>
-                              Category : {row.hotelCategory}
-                            </HotelInfoText>
                           </HotelIconWrapper>
                         </HotelInfoWrapper>
                         <HotelButtonWrapper>
                           <HotelActionButtons
-                            onClick={() => navigate(`/addhotels/${row._id}`)}
+                            onClick={() => navigate(`/addActivity/${row._id}`)}
                           >
                             Edit
                           </HotelActionButtons>
@@ -503,7 +498,7 @@ const ManageAdmin = () => {
                           </BootstrapDialogTitle>
                           <DialogContent dividers>
                             <Typography gutterBottom>
-                              Are you sure you want to delete the Hotel?
+                              Are you sure you want to delete this?
                             </Typography>
                           </DialogContent>
                           <DialogActions>
@@ -560,7 +555,7 @@ const ManageAdmin = () => {
               >
                 <ArrowBackIosNewOutlinedIcon />
               </IconButton>
-              <Heading> Manage Hotels</Heading>
+              <Heading> Manage Activities</Heading>
             </HeadingWrapper>
             {/* <Lable>Select Vendor</Lable> */}
             <TextWrapper>
@@ -576,8 +571,8 @@ const ManageAdmin = () => {
                     );
                   })}
               </SelectVendor>
-              <AddButton onClick={() => navigate("/addhotels")}>
-                Add Hotel
+              <AddButton onClick={() => navigate("/addActivity")}>
+                Add Activity
               </AddButton>
             </TextWrapper>
           </Root>
@@ -588,4 +583,4 @@ const ManageAdmin = () => {
   );
 };
 
-export default ManageAdmin;
+export default ManageActivities;

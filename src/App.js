@@ -23,6 +23,7 @@ import ManageAdmin from "./Pages/admin/ManageAdmin/ManageAdmin";
 import ManageHotels from "./Pages/admin/ManageHotels/ManageHotels";
 import AddHotels from "./Pages/admin/AddHotels/AddHotels";
 import VendorManageHotels from "./Pages/VendorManageHotels";
+import VendorManageActivities from "./Pages/VendorManageActivities";
 import GenerateInvoice from "./Pages/admin/GenerateInvoice";
 import VendorDetails from "./Pages/admin/VendorDetails/VendorDetails";
 import Payouts from "./Pages/Payouts";
@@ -32,7 +33,13 @@ import PayoutRequest from "./Pages/admin/PayoutRequest";
 import PayoutHistory from "./Pages/PayoutHistory";
 import axios from "axios";
 import { environmentVariables } from "./config/config";
-
+import ManageActivities from "./Pages/admin/Activities/ManageActivities";
+import AddActivity from "./Pages/admin/Activities/AddActivity";
+import ActivityBookingHistory from "./Pages/admin/ActivityBookingHistory";
+import VendorActivityHistory from "./Pages/VendorAcitivityHistory";
+import  { isExpired } from 'react-jwt';
+import VendorEditActivities from "./Pages/VendorEditActivities";
+ 
 const Root = styled.div``;
 const LeftWrapper = styled.div`
   width: 300px;
@@ -50,37 +57,44 @@ function App() {
   const [showDropDown, setShowDropDown] = useState(false);
   const location = useLocation();
   const [loggedIn, setLoggedIn] = useState(false);
-
+  
   useEffect(() => {
     if(authData===null){
       setLoggedIn(false)
     }else{
-      console.log(authData)
       const url = authData?.data?.isadmin
       ? `${environmentVariables?.apiUrl}/auth/isadminlogged`
       : `${environmentVariables?.apiUrl}/auth/isvendorlogged`;
-      const config = {
-        method: "get",
-        url: url,
-        headers: {
-          _token: authData.data.token,
-        },
-      };
-  
-      axios(config)
-        .then(function (response) {
-          if (response.data.success === true) {
-            setLoggedIn(true);
-          } else {
-            localStorage.removeItem("authdata");
-            setLoggedIn(false);
-          }
-        })
-        .catch(function (error) {
-          setLoggedIn(false);
-          localStorage.removeItem("authdata");
-          console.log(error);
-        });
+
+      if(isExpired(authData.data.token)){
+        setLoggedIn(false);
+        localStorage.removeItem("authdata");
+      }
+      else{
+        setLoggedIn(true);
+      }
+
+      // const config = {
+      //   method: "get",
+      //   url: url,
+      //   headers: {
+      //     _token: authData.data.token,
+      //   },
+      // };
+      // axios(config)
+      //   .then(function (response) {
+      //     if (response.data.success === true) {
+      //       setLoggedIn(true);
+      //     } else {
+      //       localStorage.removeItem("authdata");
+      //       setLoggedIn(false);
+      //     }
+      //   })
+      //   .catch(function (error) {
+      //     setLoggedIn(false);
+      //     localStorage.removeItem("authdata");
+      //     console.log(error);
+      //   });
     }
     
   }, [location, authData, loggedIn]);
@@ -95,6 +109,7 @@ function App() {
     >
       {!loggedIn ? (
         <Login loggedIn={loggedIn}/>
+        
       ) : (
         <>
           <Navigation
@@ -130,6 +145,11 @@ function App() {
                       element={<BookingHistoryofAdmin />}
                     />
                     <Route
+                      path="/activityBookings"
+                      element={<ActivityBookingHistory/>}
+                    />
+                    
+                    <Route
                       path="/generateInvoice"
                       element={<GenerateInvoice />}
                     />
@@ -150,10 +170,10 @@ function App() {
                     {/* <Route path="/bookinghistory" element={<BookingHistory />} />
                     <Route path="/hoteldetails" element={<HotelDetails />} />
                     <Route path="/profile" element={<Profile />} /> */}
-                    <Route
-                      path="vendordetails/:id"
-                      element={<VendorDetails />}
-                    />
+                    <Route path="manageActivities" element={<ManageActivities />} />
+                    <Route path="/addActivity" element={<AddActivity />} />
+                    <Route path="/addActivity/:id" element={<AddActivity />} />
+                    <Route path="vendordetails/:id" element={<VendorDetails />} />
                     <Route path="/payoutRequests" element={<PayoutRequest />} />
                     <Route
                       path="chatSupport"
@@ -168,6 +188,10 @@ function App() {
                       element={<BookingHistory />}
                     />
                     <Route
+                      path="/vendoractivityBookings"
+                      element={<VendorActivityHistory />}
+                    />
+                    <Route
                       path="/generateInvoice"
                       element={<GenerateInvoice />}
                     />
@@ -179,6 +203,7 @@ function App() {
                       path="/vendormanagehotels"
                       element={<VendorManageHotels />}
                     />
+                    <Route path="vendorManageActivities" element={<VendorManageActivities />} />
                     <Route path="/payouts" element={<Payouts />} />
                     <Route path="/payoutHistory" element={<PayoutHistory />} />
                     
@@ -188,6 +213,10 @@ function App() {
                     <Route
                       path="/edithotels/:id"
                       element={<VendorEditHotel />}
+                    />
+                    <Route
+                      path="/editactivities/:id"
+                      element={<VendorEditActivities />}
                     />
                   </>
                 )}

@@ -14,6 +14,7 @@ import { useFormik } from "formik";
 import Password from "../../Images/lock.png";
 import { ForgetPasswordSchema } from "../admin/schemas/ForgetPasswordSchemaAdmin";
 import { VerifyPasswordSchema } from "../admin/schemas/VerifyPasswordSchemaAdmin";
+
 import Swal from "sweetalert2";
 import Timer from "./timer/Timer";
 
@@ -126,6 +127,7 @@ function ChildModal({ open, setOpen, email, setParentClose }) {
   // console.log(open,email,"//")
   const [error, setError] = useState("");
   const [timer, setTimer] = useState(10);
+
   const handleOpen = () => {
     setOpen(true);
   };
@@ -321,7 +323,7 @@ function ChildModal({ open, setOpen, email, setParentClose }) {
   );
 }
 
-const Login = ({loggedIn}) => {
+const Login = ({ loggedIn }) => {
   const navigate = useNavigate();
 
   const [userName, setUserName] = useState();
@@ -334,8 +336,8 @@ const Login = ({loggedIn}) => {
   const [longitude, setLongitude] = useState();
   const [email, setEmail] = useState();
   const [enableChild, setEnableChild] = useState(false);
-
   const [open, setOpen] = React.useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const handleOpen = () => {
     setOpen(true);
   };
@@ -344,14 +346,14 @@ const Login = ({loggedIn}) => {
   };
   const [open1, setOpen1] = React.useState(false);
 
-
   const onSubmit = (e) => {
+
     e.preventDefault();
     if (!userName || !Password) {
       setError("Please enter all details correctly.");
       return;
     }
-
+    setIsLoading(true)
     axios({
       method: "post",
       url: `${environmentVariables?.apiUrl}/auth/admin/login`,
@@ -366,10 +368,10 @@ const Login = ({loggedIn}) => {
       },
     })
       .then((response) => {
-       
         localStorage.setItem("authdata", JSON.stringify(response.data));
         setAuthData(JSON.parse(localStorage.getItem("authdata")));
         navigate("/");
+        // setIsLoading(false)
       })
       .catch((error) => {
         axios({
@@ -388,8 +390,10 @@ const Login = ({loggedIn}) => {
             localStorage.setItem("authdata", JSON.stringify(res.data));
             setAuthData(JSON.parse(localStorage.getItem("authdata")));
             navigate("/");
+            // setIsLoading(false)
           })
           .catch((error) => {
+            setIsLoading(false)
             console.log("vendor error", error);
             setError("Details are not valid");
           });
@@ -447,6 +451,8 @@ const Login = ({loggedIn}) => {
           });
       },
     });
+
+
   return (
     <Root>
       <Form>
@@ -488,7 +494,20 @@ const Login = ({loggedIn}) => {
         </p>
 
         {error && <ErrorMessage>{error}</ErrorMessage>}
-        <Button1 onClick={onSubmit}>Submit</Button1>
+
+        
+        <Button1 onClick={onSubmit}>
+          {
+            isLoading ?
+              <div class="d-flex justify-content-center">
+                <div class="spinner-border text-light" style={{height:"24px",width:"24px"}} role="status">
+                  <span class="visually-hidden">Loading...</span>
+                </div>
+              </div>
+              :
+              'Submit'
+          }
+        </Button1>
 
         <div>
           <Modal

@@ -19,8 +19,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import Typography from "@mui/material/Typography";
 import Swal from "sweetalert2";
 import IconButton from "@mui/material/IconButton";
-import ArrowBackIosNewOutlinedIcon from '@mui/icons-material/ArrowBackIosNewOutlined';
-
+import ArrowBackIosNewOutlinedIcon from "@mui/icons-material/ArrowBackIosNewOutlined";
 
 const BootstrapDialog = newStyle(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -66,10 +65,12 @@ const HotelCard = styled.div`
   margin-bottom: 20px;
   border: 1px solid #aec5c5;
   border-radius: 5px;
+  height: 150px;
 `;
 
 const HotelImage = styled.img`
   width: 280px;
+  height: 100%;
 `;
 
 const HotelBigText = styled.div`
@@ -134,7 +135,7 @@ const Root = styled.div`
 
 const Heading = styled.div`
   font-size: 1.75rem;
-  padding-left: 40px; 
+  padding-left: 40px;
   @media (max-width: 768px) {
     display: none;
   }
@@ -271,8 +272,7 @@ const HeadingWrapper = styled.div`
   // align-items: center;
 `;
 
-
-const ManageAdmin = () => {
+const VendorManageActivities = () => {
   const [select, setSelect] = useState("");
   const [select1, setSelect1] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -284,7 +284,6 @@ const ManageAdmin = () => {
   const [open, setOpen] = useState(false);
   const [hotelDetails, setHotelDetails] = useState();
   const navigate = useNavigate();
-
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -334,7 +333,7 @@ const ManageAdmin = () => {
             ? row.image[0]
             : "1675936089112-teanest1.jpg";
           return (
-            <HotelCard>
+            <HotelCard key={index}>
               <HotelImageWrapper>
                 <HotelImage
                   src={`https://uat-travel-api.floxypay.com/uploads/${imageSrc}`}
@@ -349,20 +348,17 @@ const ManageAdmin = () => {
                   <HotelInfoText>City : {row.city}</HotelInfoText>
                   <HotelInfoText>State : {row.state}</HotelInfoText>
                   <HotelInfoText>Country : {row.country}</HotelInfoText>
-                  <HotelInfoText>Theme : {row.theme}</HotelInfoText>
-                  <HotelInfoText>Category : {row.hotelCategory}</HotelInfoText>
                 </HotelIconWrapper>
               </HotelInfoWrapper>
               <HotelButtonWrapper>
                 <HotelActionButtons
-                  onClick={() => navigate(`/edithotels/${row._id}`)}
+                  onClick={() => navigate(`/editactivities/${row._id}`)}
                 >
                   Edit
                 </HotelActionButtons>
                 <HotelActionButtons onClick={() => handleClickOpen(row)}>
                   Delete
                 </HotelActionButtons>
-                {/* <HotelActionButtons>Hide</HotelActionButtons> */}
               </HotelButtonWrapper>
             </HotelCard>
           );
@@ -372,17 +368,14 @@ const ManageAdmin = () => {
   };
   const getAllListData = async () => {
     await axios
-      .get(
-        `${environmentVariables.apiUrl}/vendor/vendorget`,
-        {
-          headers: { _token: authData.data.token },
-          params: {
-            page: page + 1,
-            limit: rowsPerPage,
-            type: 'hotel'
-          }
-        }
-      )
+      .get(`${environmentVariables.apiUrl}/vendor/vendorget`, {
+        headers: { _token: authData.data.token },
+        params: {
+          page: page + 1,
+          limit: rowsPerPage,
+          type: "activity",
+        },
+      })
       .then((response) => {
         console.log(response.data.data);
         setResponse(response.data.data);
@@ -447,10 +440,19 @@ const ManageAdmin = () => {
         <TextRoot>
           <Root>
             <HeadingWrapper>
-              <IconButton title="Back" onClick={() => navigate(-1)} size="small" sx={{ backgroundColor: "#e1e1e1", color: "#01575c", marginTop: "4px" }}>
+              <IconButton
+                title="Back"
+                onClick={() => navigate(-1)}
+                size="small"
+                sx={{
+                  backgroundColor: "#e1e1e1",
+                  color: "#01575c",
+                  marginTop: "4px",
+                }}
+              >
                 <ArrowBackIosNewOutlinedIcon />
               </IconButton>
-              <Heading> Manage Hotels</Heading>
+              <Heading> Manage Activities</Heading>
             </HeadingWrapper>
           </Root>
           <HotelCardsWrapper>{getComponents()}</HotelCardsWrapper>
@@ -502,4 +504,4 @@ const ManageAdmin = () => {
   );
 };
 
-export default ManageAdmin;
+export default VendorManageActivities;

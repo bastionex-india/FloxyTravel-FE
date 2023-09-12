@@ -164,21 +164,23 @@ const DatePickerStyled1 = styled(DatePicker)`
   margin: 0 10px;
 `;
 
-const BookingHistoryofAdmin = () => {
+const ActivityBookingHistory = () => {
   const [select, setSelect] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [select1, setSelect1] = useState("");
   const [response, setResponse] = useState({});
   const { authData, setAuthData } = useContext(AuthContext);
   const [data, setData] = useState([]);
-  const navigation = useNavigate();
-  const navigate = useNavigate();
-  const [fromDate, setFromDate] = useState(null);
-  const [toDate, setToDate] = useState(null);
-  const [search, setSearch] = useState();
-  const [allVendors, setAllVendors] = useState([]);
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
   const [isDatePickerOpen1, setIsDatePickerOpen1] = useState(false);
+  const [fromDate, setFromDate] = useState(null);
+  const [toDate, setToDate] = useState(null);
+  const navigation = useNavigate();
+  const navigate = useNavigate();
+
+  const [search, setSearch] = useState();
+  const [allVendors, setAllVendors] = useState([]);
+
   const InputStartsDate = useRef(null);
   const InputEndDate = useRef(null);
 
@@ -239,7 +241,7 @@ const BookingHistoryofAdmin = () => {
       id: select1,
       calenderStartDate: fromDate,
       calenderEndDate: toDate,
-      type: "hotel",
+      type: "activity",
     };
 
     data.page = page + 1;
@@ -298,29 +300,6 @@ const BookingHistoryofAdmin = () => {
     getAllVendors();
   }, []);
 
-  const handleStartDateChange = (date) => {
-    setSearch("");
-    setFromDate(date);
-    if (toDate && date > toDate) {
-      setToDate(null);
-    }
-
-    if (!date) {
-      setToDate(null);
-    }
-  };
-  const handleToggleDatePicker = () => {
-    setIsDatePickerOpen(!isDatePickerOpen);
-  };
-  const handleToggleDatePicker2 = () => {
-    setIsDatePickerOpen1(!isDatePickerOpen1);
-  };
-  const refHandle = () => {
-    InputStartsDate.current.setOpen(true);
-  };
-  const refHandle1 = () => {
-    InputEndDate.current.setOpen(true);
-  };
   function convertDateFormat(inputDate) {
     const possibleFormats = [
       "yyyy-MM-dd",
@@ -356,7 +335,29 @@ const BookingHistoryofAdmin = () => {
     const formattedDate = new Date(timestamp).toLocaleString("en-IN", options);
     return formattedDate;
   }
+  const handleStartDateChange = (date) => {
+    setSearch("");
+    setFromDate(date);
+    if (toDate && date > toDate) {
+      setToDate(null);
+    }
 
+    if (!date) {
+      setToDate(null);
+    }
+  };
+  const handleToggleDatePicker = () => {
+    setIsDatePickerOpen(!isDatePickerOpen);
+  };
+  const handleToggleDatePicker2 = () => {
+    setIsDatePickerOpen1(!isDatePickerOpen1);
+  };
+  const refHandle = () => {
+    InputStartsDate.current.setOpen(true);
+  };
+  const refHandle1 = () => {
+    InputEndDate.current.setOpen(true);
+  };
   // const formattedCheckInDate = formatDate(checkIn);
   // const formattedCheckOutDate = formatDate(checkOut);
   return (
@@ -377,12 +378,12 @@ const BookingHistoryofAdmin = () => {
               >
                 <ArrowBackIosNewOutlinedIcon />
               </IconButton>
-              <Heading> Hotel Booking History</Heading>
+              <Heading> Activity Booking History</Heading>
             </HeadingWrapper>
             <SearchContainerWrapper>
               <SearchFilterContainer>
                 <SearchFilterInput
-                  placeholder={"Search by Hotelname"}
+                  placeholder={"Search by activity name"}
                   value={search}
                   onChange={handleChange}
                 />
@@ -483,25 +484,6 @@ const BookingHistoryofAdmin = () => {
                         <i class="fas fa-calendar-alt"></i>
                       </FromDateInput>
                     </div>
-                    {/* <DateIcon>
-                    <BsCalendarDay
-                      size="1.5rem"
-                      onClick={() => InputEndDate.current.setOpen(true)}
-                    />
-                  </DateIcon>
-
-                  <DatePicker
-                    placeholderText="End Date"
-                    selected={toDate}
-                    onChange={(date) => setToDate(date)}
-                    selectsStart
-                    startDate={fromDate}
-                    endDate={toDate}
-                    disabled={fromDate ? false : true}
-                    minDate={fromDate}
-                    style={{ padding: "10px" }}
-                    ref={InputEndDate}
-                  /> */}
                   </DatePickerContainer>
                 </div>
                 <TextSelectField>
@@ -545,13 +527,10 @@ const BookingHistoryofAdmin = () => {
               <Table aria-label="simple table">
                 <TableHead>
                   <TableRow>
-                    <TableCell style={boldTextCss}>Hotel Name</TableCell>
+                    <TableCell style={boldTextCss}>Activity Name</TableCell>
                     <TableCell style={boldTextCss}>Vendor Name</TableCell>
                     <TableCell style={boldTextCss} align="right">
-                      CheckIn Date
-                    </TableCell>
-                    <TableCell style={boldTextCss} align="right">
-                      Checkout Date
+                      Activity Date
                     </TableCell>
                     <TableCell style={boldTextCss} align="right">
                       Creation date
@@ -575,16 +554,13 @@ const BookingHistoryofAdmin = () => {
                           }}
                         >
                           <TableCell component="th" scope="row">
-                            {item.hotelname} {item.isCombined ? "(With Activity)" : ""}
+                            {item.isCombined?`${item.hotelname}(with hotel)`:item.hotelname }
                           </TableCell>
                           <TableCell align="left">
                             {item.vendorData.name}
                           </TableCell>
                           <TableCell align="right">
                             {formatDate(item.checkIn)}
-                          </TableCell>
-                          <TableCell align="right">
-                            {formatDate(item.checkOut)}
                           </TableCell>
                           <TableCell align="right">
                             {formatDate(item.createdAt)}
@@ -649,4 +625,4 @@ const BookingHistoryofAdmin = () => {
   );
 };
 
-export default BookingHistoryofAdmin;
+export default ActivityBookingHistory;

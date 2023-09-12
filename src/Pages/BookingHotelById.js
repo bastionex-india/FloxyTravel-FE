@@ -24,6 +24,10 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 
+import IconButton from "@mui/material/IconButton";
+import ArrowBackIosNewOutlinedIcon from "@mui/icons-material/ArrowBackIosNewOutlined";
+import CircularLoader from "../Component/CircularLoader/CircularLoader";
+
 const Item = newStyled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
   ...theme.typography.body2,
@@ -60,6 +64,7 @@ const TextRoot = styled.div`
 `;
 const Heading = styled.div`
   font-size: 1.75rem;
+  padding-left: 40px;
   @media (max-width: 768px) {
     display: none;
   }
@@ -84,26 +89,78 @@ const CheckinoutButton = styled.div`
   }
 `;
 const HeadingDiv = styled.div`
-  display:flex;
+  display: flex;
   justify-content: space-between;
   align-items: flex-start;
 `;
-
+const HeadingWrapper = styled.div`
+  position: relative;
+  display: -webkit-box;
+`;
+const Line = styled.div`
+  width: 100%;
+  height: 1px;
+  background-color: #a5a5a5;
+  margin: 23px 0px;
+`;
+const RecentlyUploadedHeader = styled.div`
+  display: grid;
+  grid-template-columns: 30% 20% 25% 25%;
+  margin: 15px 2%;
+  padding: 14px 15px;
+  @media (max-width: 768px) {
+    display: none;
+  }
+`;
+const RecentlyUploadedHeaderElem = styled.div`
+  color: #6c7074;
+  padding-left: 4px;
+`;
+const RecentlyUploaded = styled.div`
+  background: #fff;
+  display: grid;
+  grid-template-columns: 30% 20% 25% 25%;
+  -webkit-box-align: center;
+  align-items: center;
+  margin: 15px 2%;
+  padding: 14px 15px;
+  box-shadow: 0px 0px 5px 5px #0000;
+  border-radius: 5px;
+  @media (max-width: 768px) {
+    display: flex;
+    justify-content: space-between;
+  }
+`;
+const DocInfo = styled.div`
+  display: flex;
+`;
+const DocName = styled.div`
+  margin-left: 4px;
+  // font-weight: 600;
+`;
+const RecentlyUploadedDate = styled.div`
+  @media (max-width: 768px) {
+    display: none;
+  }
+`;
 
 const BookingHotelById = () => {
   const { state } = useLocation();
   const { authData } = useContext(AuthContext);
 
   const [data, setData] = useState("");
+  const [alertMessage,setAlertMessage] =  useState('');
   const [arr, setArr] = useState([]);
   const [btnState, setBtnState] = useState(false);
+  const [isLoadingCheckIn,setIsLoadingCheckIn] = useState(false);
+  const [isLoadingCheckOut,setIsLoadingCheckOut] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const generateInvoiceHandler = () => {
     navigate("/generateInvoice", { state: data });
   };
 
-  console.log(state, "vendor");
+  // console.log(data, "vendor");
   const getAllUsers = async () => {
     await axios
       .get(
@@ -111,7 +168,8 @@ const BookingHotelById = () => {
         { headers: { _token: authData.data.token } }
       )
       .then((response) => {
-        setData(response.data.data[0]);
+        // console.log(response.data.data);
+        setData(response.data.data);
       })
       .catch((error) => {
         console.log("error", error);
@@ -123,30 +181,46 @@ const BookingHotelById = () => {
   }, [data.checkInStatus, data.checkOutStatus]);
   const checkIn = () => {
     if (data !== "" && !data.checkInStatus) {
+      setIsLoadingCheckIn(true)
       axios({
         method: "post",
         url: `${environmentVariables.apiUrl}/vendor/checkinpermissionbyvendor/${state._id}`,
         headers: { _token: authData.data.token },
       })
-        .then((response) => {
-          getAllUsers();
-        })
-        .catch((error) => {
+      .then((response) => {
+        
+        setIsLoadingCheckIn(false)
+        setAlertMessage(data.type!='activity' ? 'Hotel checkIn.' : "Activity attended.")
+        setTimeout(()=>{
+          setAlertMessage('')
+        },2000)
+        getAllUsers();
+      })
+      .catch((error) => {
+          setIsLoadingCheckIn(false)
           console.log("Error ", error);
         });
     }
   };
   const checkOut = () => {
     if (data !== "" && !data.checkOutStatus) {
+      
+      setIsLoadingCheckOut(true);
       axios({
         method: "post",
         url: `${environmentVariables.apiUrl}/vendor/checkoutpermissionbyvendor/${state._id}`,
         headers: { _token: authData.data.token },
       })
         .then((response) => {
+          setIsLoadingCheckOut(false);
+          setAlertMessage(data.type!='activity' ? 'Hotel checkOut.' : "Activity completed.")
+          setTimeout(()=>{
+            setAlertMessage('')
+          },2000)
           getAllUsers();
         })
         .catch((error) => {
+          setIsLoadingCheckOut(false);
           console.log("Error", error);
         });
     }
@@ -166,15 +240,27 @@ const BookingHotelById = () => {
     <>
       <TextMainWrapper>
         <TextRoot>
-          <div style={{ display: "flex", alignItems: "center" }}>
-            {" "}
-            <i
-              style={{ cursor: "pointer", marginRight: "50px" }}
-              onClick={() => navigate(-1)}
-              class="fa-solid fa-chevron-left fa-2x"
-            ></i>
-            <Heading> Booking Details</Heading>
-          </div>
+          <Root>
+            <HeadingWrapper>
+              <IconButton
+                title="Back"
+                onClick={() => navigate(-1)}
+                size="small"
+                sx={{
+                  backgroundColor: "#e1e1e1",
+                  color: "#01575c",
+                  marginTop: "4px",
+                }}
+              >
+                <ArrowBackIosNewOutlinedIcon />
+              </IconButton>
+              <Heading>
+                {" "}
+                {data.type == "activity" ? "Activity" : "Hotel"} Booking Details
+              </Heading>
+            </HeadingWrapper>
+          </Root>
+
           <Root>
             <TextWrapper></TextWrapper>
           </Root>
@@ -192,10 +278,17 @@ const BookingHotelById = () => {
                     {data.area} , {data.state}
                   </p>
                 </div>
+                {data.isCombined && data.type == "activity" ? (
+                  <p className="text-danger" style={{ width: "30%" }}>
+                    This invoice is attached with hotel, You can generate this
+                    invoice with respective hotel.
+                  </p>
+                ) : null}
                 <Button
                   variant="contained"
                   onClick={generateInvoiceHandler}
                   endIcon={<PictureAsPdfIcon />}
+                  disabled={data.isCombined && data.type == "activity"}
                 >
                   View Invoice{" "}
                 </Button>
@@ -215,6 +308,11 @@ const BookingHotelById = () => {
                         </TableCell>
                         <TableCell align="right">
                           {" "}
+                          {data.customer != undefined &&
+                          data.customer.title != undefined &&
+                          data.customer.title
+                            ? data.customer.title + "."
+                            : ``}{" "}
                           {data.customer && data.customer.name}{" "}
                         </TableCell>
                       </TableRow>
@@ -271,70 +369,139 @@ const BookingHotelById = () => {
                         </TableCell>
                         <TableCell align="right">{data.children}</TableCell>
                       </TableRow>
+                      {data.type == "activity" ? null : (
+                        <TableRow
+                          sx={{
+                            "&:last-child td, &:last-child th": { border: 0 },
+                          }}
+                        >
+                          <TableCell component="th" scope="row">
+                            Rooms
+                          </TableCell>
+                          <TableCell align="right">{data.noOfRooms}</TableCell>
+                        </TableRow>
+                      )}
                       <TableRow
                         sx={{
                           "&:last-child td, &:last-child th": { border: 0 },
                         }}
                       >
                         <TableCell component="th" scope="row">
-                          Rooms
-                        </TableCell>
-                        <TableCell align="right">{data.noOfRooms}</TableCell>
-                      </TableRow>
-                      <TableRow
-                        sx={{
-                          "&:last-child td, &:last-child th": { border: 0 },
-                        }}
-                      >
-                        <TableCell component="th" scope="row">
-                          CheckIn Date
+                          {data.type == "activity"
+                            ? "Activity Date"
+                            : "CheckIn Date"}
                         </TableCell>
                         <TableCell align="right">
                           {formatDate(data.checkIn)}
                         </TableCell>
                       </TableRow>
-                      <TableRow
-                        sx={{
-                          "&:last-child td, &:last-child th": { border: 0 },
-                        }}
-                      >
-                        <TableCell component="th" scope="row">
-                          CheckOut Date
-                        </TableCell>
-                        <TableCell align="right">
-                          {formatDate(data.checkOut)}
-                        </TableCell>
-                      </TableRow>
+                      {data.type == "activity" ? null : (
+                        <TableRow
+                          sx={{
+                            "&:last-child td, &:last-child th": { border: 0 },
+                          }}
+                        >
+                          <TableCell component="th" scope="row">
+                            CheckOut Date
+                          </TableCell>
+                          <TableCell align="right">
+                            {formatDate(data.checkOut)}
+                          </TableCell>
+                        </TableRow>
+                      )}
                     </TableBody>
                   </Table>
                 </Grid>
+                {data.isCombined && data.type === "hotel" && (
+                  <>
+                    <Line />
+                    <Grid xs={8}>
+                      <h4>Activity Details</h4>
+                      <RecentlyUploadedHeader>
+                        <RecentlyUploadedHeaderElem>
+                          Acitivity Name
+                        </RecentlyUploadedHeaderElem>
+                        <RecentlyUploadedHeaderElem>
+                          Activity Date
+                        </RecentlyUploadedHeaderElem>
+                        <RecentlyUploadedHeaderElem>
+                          Number of Members
+                        </RecentlyUploadedHeaderElem>
+                        <RecentlyUploadedHeaderElem>
+                          Number of Children
+                        </RecentlyUploadedHeaderElem>
+                      </RecentlyUploadedHeader>
+                      {data.activities &&
+                        data.activities.map((item, key) => {
+                          return (
+                            <RecentlyUploaded key={key}>
+                              <DocInfo>
+                                <DocName>{item.hotelname}</DocName>
+                              </DocInfo>
+                              <RecentlyUploadedDate>
+                                {formatDate(item.checkIn)}
+                              </RecentlyUploadedDate>
+                              <RecentlyUploadedDate>
+                                {item.adult}
+                              </RecentlyUploadedDate>
+                              <RecentlyUploadedDate>
+                                {item.children}
+                              </RecentlyUploadedDate>
+                            </RecentlyUploaded>
+                          );
+                        })}
+                    </Grid>
+                  </>
+                )}
               </Grid>
             </Item>
           </Grid>
         </Grid>
-        <Container2>
-          <CheckinoutButton
-            onClick={() => checkIn()}
-            style={{
-              opacity: data !== "" && data.checkInStatus ? 0.5 : 1,
-              cursor:
-                data !== "" && data.checkInStatus ? "not-allowed" : "pointer",
-            }}
-          >
-            CheckIn
-          </CheckinoutButton>
-          <CheckinoutButton
-            style={{
-              margin: "0 10px",
-              opacity: data !== "" && data.checkOutStatus ? 0.5 : 1,
-              cursor:
-                data !== "" && data.checkOutStatus ? "not-allowed" : "pointer",
-            }}
-            onClick={() => checkOut()}
-          >
-            CheckOut
-          </CheckinoutButton>
-        </Container2>
+          <Container2>
+            <CheckinoutButton
+              onClick={() => checkIn()}
+              style={{
+                opacity: data !== "" && data.checkInStatus ? 0.5 : 1,
+                cursor:
+                  data !== "" && data.checkInStatus ? "not-allowed" : "pointer",
+              }}
+            >
+              {
+                isLoadingCheckIn ? 
+                <div class="d-flex justify-content-center">
+                  <div class="spinner-border text-light" style={{height:"24px",width:"24px"}} role="status">
+                    <span class="visually-hidden">Loading...</span>
+                  </div>
+                </div>
+                :
+                data.type == "activity" ? "Activity attended" : "CheckIn"
+              }
+
+            </CheckinoutButton>
+            <CheckinoutButton
+              style={{
+                margin: "0 10px",
+                opacity: data !== "" && data.checkOutStatus ? 0.5 : 1,
+                cursor:
+                  data !== "" && data.checkOutStatus
+                    ? "not-allowed"
+                    : "pointer",
+              }}
+              onClick={() => checkOut()}
+            >
+              {
+                isLoadingCheckOut ? 
+                <div class="d-flex justify-content-center">
+                  <div class="spinner-border text-light" style={{height:"24px",width:"24px"}} role="status">
+                    <span class="visually-hidden">Loading...</span>
+                  </div>
+                </div>
+                :
+                data.type == "activity" ? "Activity completed" : "CheckOut"
+              }
+            </CheckinoutButton>
+            <span className="text-success"><b>{alertMessage}</b></span>
+          </Container2>
       </Container>
     </>
   );

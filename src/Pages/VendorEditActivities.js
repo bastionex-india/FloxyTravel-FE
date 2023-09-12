@@ -12,8 +12,6 @@ import Swal from "sweetalert2";
 import { FaTimes } from "react-icons/fa";
 import { useRef } from "react";
 import CircularLoader from "../Component/CircularLoader/CircularLoader";
-import IconButton from "@mui/material/IconButton";
-import ArrowBackIosNewOutlinedIcon from "@mui/icons-material/ArrowBackIosNewOutlined";
 import Editor from "./admin/Activities/Editor";
 
 const Root = styled.div`
@@ -24,16 +22,14 @@ const Root = styled.div`
 
 const HeadingWrapper = styled.div`
   position: relative;
-  display: -webkit-box;
-  // display: flex;
-  // justify-content: center;
-  // align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 const MainHeading = styled.div`
   font-size: 1.75rem;
-  padding-left: 40px;
   color: #000;
-  // margin: 0 5% 10px 5%;
+  margin: 0 5% 10px 5%;
 `;
 const MainContainer = styled.div`
   background-color: #fff;
@@ -109,7 +105,8 @@ const ThemeWrapper = styled.div`
 const GetLocationText = styled.div`
   position: absolute;
   top: 511px;
-  left: 54rem;
+  padding-top: 3px;
+  // left: 54rem;
   color: #01565c;
   :hover {
     text-decoration: underline;
@@ -125,10 +122,13 @@ const FormTextArea = styled.textarea`
   border: 1px solid #c4c4c4;
 `;
 const SelectVendor = styled.select`
-  width: 85%;
   font-size: 14px;
   border-radius: 5px;
-  padding: 0 10px;
+  margin-left: 10px;
+  margin-top: 11px;
+  height: 30px;
+  width: 40%;
+  border: 1px solid #c4c4c4;
 `;
 const SelectOption = styled.option`
   font-size: 14px;
@@ -176,87 +176,76 @@ const RemoveButton = styled.button`
   cursor: pointer;
 `;
 
-const VendorEditHotel = () => {
-  const navigation = useNavigate();
+const VendorEditActivities = () => {
   const { authData } = useContext(AuthContext);
   const { id } = useParams();
   const fileInputRef = useRef(null);
   const [hotelData, setHotelData] = useState("");
-  const [vendorlist, setVendorList] = useState(null);
-  const [vendorId, setVendorId] = useState("");
-  const [name, setName] = useState("");
-  const [category, setCategory] = useState("");
-  const [theme, setTheme] = useState([]);
   const [buttonLoading, setButtonLoading] = useState(false);
+  const [type, setType] = useState("activity");
+  const [name, setName] = useState("");
+  const [area, setArea] = useState("");
+  const [address, setAddress] = useState("");
+  const [lat, setLat] = useState("");
+  const [long, setLong] = useState("");
   const [general, setGeneral] = useState("");
   const [services, setServices] = useState("");
   const [internet, setInternet] = useState("");
   const [parking, setParking] = useState("");
   const [overview, setOverview] = useState("");
-  const [totalRooms, setTotalRooms] = useState("");
+  const [multipleFiles, setMultipleFiles] = useState("");
+  const [payoutInterval, setPayoutInterval] = useState("");
+  const [hotelFee, setHotelFee] = useState("");
   const [images, setImages] = useState([]);
   const [list, setList] = useState([]);
   const [arr, setArr] = useState([]);
   const [updatedHotelData, setUpdatedHotelData] = useState([]);
-  const [editorLoadedGeneral, setEditorLoadedGeneral] = useState(false);
-  const [editorLoadedServices, setEditorLoadedServices] = useState(false);
+  const navigate = useNavigate();
+  const [editorLoadedAboutActivity, setEditorLoadedAboutActivity] =
+    useState(false);
+  const [editorLoadedHighlights, setEditorLoadedHighlights] = useState(false);
   const [editorLoadedOverview, setEditorLoadedOverview] = useState(false);
 
-  const navigate = useNavigate();
-  const options = [
-    { label: "Beach", value: "beach" },
-    { label: "Wildlife", value: "wildlife" },
-    { label: "Romantic", value: "romantic" },
-    { label: "Hill", value: "hill" },
-    { label: "Heritage", value: "heritage" },
-    { label: "Yatch", value: "yatch" },
-    { label: "Desert", value: "desert" },
-  ];
-
-
-
   const getHotelDetailById = async () => {
-    try {
-      const url = `${environmentVariables.apiUrl}/vendor/gethoteldetailbyid/${id}`;
-      const response = await axios.get(url, {
-        headers: { _token: authData.data.token },
-      });
-      setHotelData(response.data.data);
-      setName(response.data.data.hotelname);
+    if (id) {
+      try {
+        const url = `${environmentVariables.apiUrl}/vendor/gethoteldetailbyid/${id}`;
+        const response = await axios.get(url, {
+          headers: { _token: authData.data.token },
+        });
+        // console.log("noOfRooms", response.data.data.payoutInterval);
+        setHotelData(response.data.data);
+        setName(response.data.data.hotelname);
 
-      setTotalRooms(response.data.data.noOfRooms);
-      setGeneral(response.data.data.facilities[0].general);
-      setServices(response.data.data.facilities[0].services);
-      setInternet(response.data.data.facilities[0].internet);
-      setParking(response.data.data.facilities[0].parking);
-      setOverview(response.data.data.overview);
-      setTheme(response.data.data.hotelTheme);
-      setCategory(response.data.data.hotelCategory);
-      setImages(response.data.data.image);
-    } catch (error) {
-      console.log(error);
+        setPayoutInterval(response.data.data.payoutInterval);
+
+        setHotelFee(response.data.data.adminFee);
+        setGeneral(response.data.data.facilities[0].general);
+        setServices(response.data.data.facilities[0].services);
+        setInternet(response.data.data.facilities[0].internet);
+        setParking(response.data.data.facilities[0].parking);
+        setOverview(response.data.data.overview);
+        setImages(response.data.data.image);
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
   useEffect(() => {
     getHotelDetailById();
   }, []);
 
-  const handleOnchangeTheme = (val) => {
-    setTheme(val);
-    console.log(val);
-  };
-
   const handleUpdate = async (e) => {
     setButtonLoading(true);
+
     axios({
       method: "put",
       url: `${environmentVariables.apiUrl}/vendor/updatehotel/vendor/${hotelData._id}`,
       data: {
         hotelName: name,
         overview: overview,
-        hotelCategory: category,
-        theme: theme.toString(),
-        noOfRooms: totalRooms,
+        adminFee: hotelFee,
+        payoutInterval: payoutInterval,
         general: general,
         services: services,
         internet: internet,
@@ -267,26 +256,26 @@ const VendorEditHotel = () => {
       .then((response) => {
         console.log(response.data.message);
         setUpdatedHotelData(response.data.message);
-        Swal.fire("Updated", "Hotel updated successfully", "success");
         setButtonLoading(false);
-        navigate("/vendormanagehotels");
+
+        Swal.fire("Updated", "updated successfully", "success");
+        navigate("/vendorManageActivities");
         // setName("");
         // setOverview("");
         // setGeneral("");
-        // setCategory("");
         // setServices("");
         // setInternet("");
         // setParking("");
-        // setTheme([])
-        // setTotalRooms("")
       })
       .catch((error) => {
-        console.log("///////////////", error);
+        console.log("Error", error);
         setButtonLoading(false);
+
         Swal.fire("Error", "Something went wrong", "error");
         // setError('Details are not valid');
       });
   };
+
   useEffect(() => {
     for (let i of images) {
       setArr((oldItems) => [
@@ -301,7 +290,7 @@ const VendorEditHotel = () => {
 
   const removeImage = async (imageName) => {
     try {
-      // console.log(imageName)
+      // Send the DELETE request using Axios
       await axios.delete(
         `${environmentVariables.apiUrl}/vendor/deletehotelimages/${hotelData._id}/${imageName}`,
         { headers: { _token: authData.data.token } }
@@ -319,6 +308,10 @@ const VendorEditHotel = () => {
     axios({
       method: "post",
       url: `${environmentVariables.apiUrl}/vendor/addhotelimages/${hotelData._id}`,
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
       data: formdata,
       headers: { _token: authData.data.token },
     })
@@ -328,29 +321,25 @@ const VendorEditHotel = () => {
         Swal.fire("Added", "Images inserted successfully", "success");
       })
       .catch((error) => {
+        console.log("///////////////", error);
         Swal.fire("Error", "Something went wrong", "error");
       });
   };
+
   useEffect(() => {
-    setEditorLoadedServices(true);
-    setEditorLoadedGeneral(true);
+    setEditorLoadedAboutActivity(true);
+    setEditorLoadedHighlights(true);
     setEditorLoadedOverview(true);
   }, []);
   return (
     <Root>
       <HeadingWrapper>
-        <IconButton
-          title="Back"
+        {" "}
+        <i
+          style={{ position: "absolute", left: "0", cursor: "pointer" }}
           onClick={() => navigate(-1)}
-          size="small"
-          sx={{
-            backgroundColor: "#e1e1e1",
-            color: "#01575c",
-            marginTop: "4px",
-          }}
-        >
-          <ArrowBackIosNewOutlinedIcon />
-        </IconButton>
+          className="fa-solid fa-chevron-left fa-2x"
+        ></i>
         <MainHeading>
           Edit {hotelData.type !== "activity" ? "Hotel" : "Activity"}
         </MainHeading>
@@ -358,83 +347,57 @@ const VendorEditHotel = () => {
       <MainContainer>
         <HotelAddForm>
           <FormWrapper>
-            <FormLabel>Hotel Name*</FormLabel>
+            <FormLabel>Activity Name*</FormLabel>
             <FormInput
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
-            <ThemeWrapper>
+            {/* <LocationWrapper>
               <div>
-                <FormLabel>Theme*</FormLabel>
-                <MultiSelect
-                  className="multi-select"
-                  onChange={handleOnchangeTheme}
-                  options={options}
-                  defaultValue={theme}
+                <FormLabel>Fee* (in percentage)</FormLabel>
+                <FormInput
+                  type="text"
+                  value={hotelFee}
+                  onChange={(e) => setHotelFee(e.target.value)}
                 />
               </div>
+
               <div style={{ marginLeft: "1.8rem" }}>
-                <FormLabel>Category*</FormLabel>
-                <FormSelect
-                  onChange={(e) => setCategory(e.target.value)}
-                  value={category}
-                >
-                  <FormOptions>Select Category</FormOptions>
-                  <FormOptions value={"economy"}>Economy</FormOptions>
-                  <FormOptions value={"midrange"}>Mid Range</FormOptions>
-                  <FormOptions value={"luxury"}>Luxury</FormOptions>
-                </FormSelect>
+                <FormLabel>Payout Interval * (in days)</FormLabel>
+                <FormInput
+                  type="text"
+                  value={payoutInterval}
+                  onChange={(e) => setPayoutInterval(e.target.value)}
+                />
               </div>
-            </ThemeWrapper>
-            <div>
-              <FormLabel>Total Rooms*</FormLabel>
-              <FormInput
-                type="number"
-                value={totalRooms}
-                onChange={(e) => setTotalRooms(e.target.value)}
-              />
-            </div>
-            <FormLabel>Local Attractions*</FormLabel>
+            </LocationWrapper> */}
+
+            <FormLabel>About Activity *</FormLabel>
+            {/* <FormTextArea
+              value={general}
+              onChange={(e) => setGeneral(e.target.value)}
+            /> */}
             <Editor
               value={general}
               onChange={(data) => {
                 setGeneral(data);
               }}
-              editorLoaded={editorLoadedGeneral}
+              editorLoaded={editorLoadedAboutActivity}
             />
-            <FormLabel>Services*</FormLabel>
+            <FormLabel>Highlights*</FormLabel>
+            {/* <FormTextArea
+              value={services}
+              onChange={(e) => setServices(e.target.value)}
+            /> */}
             <Editor
               value={services}
               onChange={(data) => {
                 setServices(data);
               }}
-              editorLoaded={editorLoadedServices}
+              editorLoaded={editorLoadedHighlights}
             />
-            {id !== undefined &&
-              hotelData.facilities !== undefined &&
-              hotelData.facilities[0].internet && (
-                <>
-                  <FormLabel>Internet*</FormLabel>
-                  <FormInput
-                    type="text"
-                    value={internet}
-                    onChange={(e) => setInternet(e.target.value)}
-                  />
-                </>
-              )}
-            {id !== undefined &&
-              hotelData.facilities !== undefined &&
-              hotelData.facilities[0].parking && (
-                <>
-                  <FormLabel>Parking*</FormLabel>
-                  <FormInput
-                    type="text"
-                    value={parking}
-                    onChange={(e) => setParking(e.target.value)}
-                  />
-                </>
-              )}
+
             <FormLabel>Overview*</FormLabel>
             <Editor
               value={overview}
@@ -455,18 +418,36 @@ const VendorEditHotel = () => {
               <CircularLoader></CircularLoader>
             </div>
           ) : (
-            <Button onClick={(e) => handleUpdate(e)}>Update</Button>
+            <>
+              <Button onClick={(e) => handleUpdate(e)}>Update</Button>
+            </>
           )}
         </HotelAddForm>
-        <FormLabel>Images*</FormLabel>
-        <FormFileInput
-          type="file"
-          multiple
-          name="myFiles"
-          onChange={(e) => MultipleFileChange1(e)}
-          ref={fileInputRef}
-        />
-
+        {id !== undefined && (
+          <>
+            <FormLabel>Images*</FormLabel>
+            <FormFileInput
+              type="file"
+              multiple
+              name="myFiles"
+              onChange={(e) => MultipleFileChange1(e)}
+              ref={fileInputRef}
+            />
+          </>
+        )}
+        {/* <div style={{display:"flex",flexDirection:'column'}}>
+          <div style={{ display: "flex", overflow: "scroll" }}>
+              {catalog}
+          </div>
+          <Button>Submit</Button>
+        </div> */}
+        {/* <div>
+          {images.map((image) => (
+            <div key={image}>
+              <img src={`${environmentVariables.apiUrl}/uploads/${image}`} alt="Image" />
+            </div>
+          ))}
+        </div> */}
         <ImageSection>
           {images.map((image) => (
             <ImageWrapper key={image}>
@@ -486,4 +467,4 @@ const VendorEditHotel = () => {
   );
 };
 
-export default VendorEditHotel;
+export default VendorEditActivities;
