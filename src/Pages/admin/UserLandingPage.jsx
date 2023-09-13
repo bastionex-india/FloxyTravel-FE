@@ -22,7 +22,7 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import WallpaperIcon from "@mui/icons-material/Wallpaper";
-import ArrowBackIosNewOutlinedIcon from '@mui/icons-material/ArrowBackIosNewOutlined';
+import ArrowBackIosNewOutlinedIcon from "@mui/icons-material/ArrowBackIosNewOutlined";
 
 const Item = newStyle(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -39,6 +39,14 @@ const SearchButtonWrapper = styled.div`
   justify-content: flex-start;
   padding: 10px 0;
 `;
+const BottomContainer = styled.div`
+  background-color: lightgray;
+  height: 100px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+`;
+const BottomHeading = styled.div``;
 
 const BootstrapDialog = newStyle(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -685,10 +693,19 @@ const UserLandingPage = () => {
   return (
     <Root>
       <HeadingWrapper>
-        <IconButton title="Back" onClick={() => navigate(-1)} size="small" sx={{ backgroundColor: "#e1e1e1", color: "#01575c", marginTop: "4px" }}>
+        <IconButton
+          title="Back"
+          onClick={() => navigate(-1)}
+          size="small"
+          sx={{
+            backgroundColor: "#e1e1e1",
+            color: "#01575c",
+            marginTop: "4px",
+          }}
+        >
           <ArrowBackIosNewOutlinedIcon />
         </IconButton>
-        <MainHeading>Manage State Landing Page</MainHeading>
+        <MainHeading>Manage State Landing Page...</MainHeading>
       </HeadingWrapper>
       <StatesContainer>
         {/* <StateHeading>States : </StateHeading> */}
@@ -698,7 +715,6 @@ const UserLandingPage = () => {
           id="staticBackdrop"
           data-bs-backdrop="static"
           data-bs-keyboard="false"
-
           aria-labelledby="staticBackdropLabel"
           aria-hidden="true"
         >
@@ -1072,72 +1088,69 @@ const UserLandingPage = () => {
         </SearchButtonWrapper>
       </StatesContainer>
       <div style={{ backgroundColor: "#fff", marginBottom: "10px" }}>
-        {
-          isLoading === true ? (
-            <div style={{ display: "flex", justifyContent: "center" }}>
-              <CircularLoader></CircularLoader>
-            </div>
-          ) :
-            <BacgroundContainer>
-              <Grid container spacing={2}>
-                <Grid item xs={5} >
-                  <Item style={{ paddingTop: "35px" }}>
-                    <h3>
-                      {stateSelected
-                        ? stateSelected.charAt(0).toUpperCase() +
+        {isLoading === true ? (
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <CircularLoader></CircularLoader>
+          </div>
+        ) : (
+          <BacgroundContainer>
+            <Grid container spacing={2}>
+              <Grid item xs={5}>
+                <Item style={{ paddingTop: "35px" }}>
+                  <h3>
+                    {stateSelected
+                      ? stateSelected.charAt(0).toUpperCase() +
                         stateSelected.slice(1)
-                        : ""}
-                    </h3>
-                  </Item>
-                </Grid>
-                <Grid item xs={4}>
-                  <Item>
-                    {
-                      backgroundImage ?
-                        <img
-                          height={100}
-                          width={250}
-                          src={`${environmentVariables.apiUrl}/uploadscitiesimages/${backgroundImage}`}
-                          type=""
-                        />
-                        : null
-                    }
-                  </Item>
-                </Grid>
-                <Grid item xs={3}>
-                  <Item style={{ paddingTop: "35px" }}>
-                    <Button
-                      variant="contained"
-                      component="label"
-                      size="small"
-                      startIcon={<WallpaperIcon />}
-                    >
-                      Change
-                      <input
-                        type="file"
-                        hidden
-                        onChange={(e) => setNewChangeImage(e)}
-                      />
-                    </Button>
-                    {selectNewBackground ? (
-                      <>
-                        <div>image selected </div>
-                        <Button
-                          color="secondary"
-                          type="button"
-                          variant="contained"
-                          size="small"
-                          onClick={() => updateImageHandler()}
-                        >
-                          update image
-                        </Button>
-                      </>
-                    ) : null}
-                  </Item>
-                </Grid>
+                      : ""}
+                  </h3>
+                </Item>
               </Grid>
-            </BacgroundContainer>
-        }
+              <Grid item xs={4}>
+                <Item>
+                  {backgroundImage ? (
+                    <img
+                      height={100}
+                      width={250}
+                      src={`${environmentVariables.apiUrl}/uploadscitiesimages/${backgroundImage}`}
+                      type=""
+                    />
+                  ) : null}
+                </Item>
+              </Grid>
+              <Grid item xs={3}>
+                <Item style={{ paddingTop: "35px" }}>
+                  <Button
+                    variant="contained"
+                    component="label"
+                    size="small"
+                    startIcon={<WallpaperIcon />}
+                  >
+                    Change
+                    <input
+                      type="file"
+                      hidden
+                      onChange={(e) => setNewChangeImage(e)}
+                    />
+                  </Button>
+                  {selectNewBackground ? (
+                    <>
+                      <div>image selected </div>
+                      <Button
+                        color="secondary"
+                        type="button"
+                        variant="contained"
+                        size="small"
+                        onClick={() => updateImageHandler()}
+                      >
+                        update image
+                      </Button>
+                    </>
+                  ) : null}
+                </Item>
+              </Grid>
+            </Grid>
+          </BacgroundContainer>
+        )}
         <ThemeContainer>
           <StateHeading>Themes :</StateHeading>
         </ThemeContainer>
@@ -1263,6 +1276,9 @@ const UserLandingPage = () => {
           </div>
         </MainThemeContainer>
       </div>
+      <BottomContainer>
+        <BottomHeading>Promotion Banner</BottomHeading>
+      </BottomContainer>
     </Root>
   );
 };
