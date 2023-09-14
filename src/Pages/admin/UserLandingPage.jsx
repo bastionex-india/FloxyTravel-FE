@@ -23,6 +23,7 @@ import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import WallpaperIcon from "@mui/icons-material/Wallpaper";
 import ArrowBackIosNewOutlinedIcon from "@mui/icons-material/ArrowBackIosNewOutlined";
+import { useRef } from "react";
 
 const Item = newStyle(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -40,13 +41,39 @@ const SearchButtonWrapper = styled.div`
   padding: 10px 0;
 `;
 const BottomContainer = styled.div`
-  background-color: lightgray;
-  height: 100px;
+  background-color: white;
+  padding: 16px 50px;
+  height: 160px;
   width: 100%;
   display: flex;
   flex-direction: column;
 `;
 const BottomHeading = styled.div``;
+const LocationWrapper = styled.div`
+  position: relative;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+`;
+const FormLabel = styled.div`
+  margin-top: 25px;
+`;
+const FormSelect = styled.select`
+  width: 100%;
+  padding: 0px 20px;
+  border-radius: 5px;
+  height: 30px;
+  margin: 10px 0 20px 0;
+  border: 1px solid #c4c4c4;
+`;
+const FormOptions = styled.option``;
+const FormFileInput = styled.input`
+  width: 100%;
+  border-radius: 5px;
+  height: 30px;
+  margin: 10px 0 20px 0;
+  border: 1px solid #c4c4c4;
+`;
 
 const BootstrapDialog = newStyle(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -87,6 +114,7 @@ BootstrapDialogTitle.propTypes = {
 };
 
 const UserLandingPage = () => {
+  const fileInputRef = useRef(null);
   const [allStates, setAllStates] = useState([]);
   const [stateSelected, setStateSelected] = useState();
   const [stateId, setStateId] = useState();
@@ -112,10 +140,26 @@ const UserLandingPage = () => {
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
 
+  const [allCountries, setAllCountries] = useState([]);
+  const [countryCode, setCountryCode] = useState("");
+  const [countryName, setCountryName] = useState("");
+  const [allStatesForPromotion, setAllStatesForPromotion] = useState([]);
+  const [stateCode, setStateCode] = useState("");
+  const [stateName, setStateName] = useState("");
+  const [allCities, setAllCities] = useState([]);
+  const [cityCode, setCityCode] = useState("");
+  const [cityName, setCityName] = useState("");
+  const [selectedFile, setSelectedFile] = useState(null);
+
   function deleteConfirmation(e) {
     setThemeId(e.target.id);
     setDeletePopUp(true);
   }
+  const handleChange = (e) => {
+    const file = e.target.files[0];
+    setSelectedFile(file);
+  };
+
   const handleClose = () => {
     setDeletePopUp(false);
   };
@@ -125,7 +169,63 @@ const UserLandingPage = () => {
   const deleteRecord = () => {
     handleDeleteTheme();
   };
+  const handleCountryChange = (e) => {
+    setCountryCode(e.target.value);
+    const selectedOption = e.target.selectedOptions[0];
+    setCountryName(selectedOption.getAttribute("data-value"));
+  };
+  const handleStateChange = (e) => {
+    setStateCode(e.target.value);
+    const selectedOption = e.target.selectedOptions[0];
+    setStateName(selectedOption.getAttribute("data-value"));
+  };
 
+  const handleCityChange = (e) => {
+    setCityCode(e.target.value);
+    const selectedOption = e.target.selectedOptions[0];
+    setCityName(selectedOption.getAttribute("data-value"));
+  };
+
+  useEffect(() => {
+    if (countryCode) {
+      let config = {
+        method: "post",
+        url: `${environmentVariables.apiUrl}/admin/getstatesofcountry`,
+        headers: { _token: authData?.data?.token },
+        data: { countryCode: countryCode },
+      };
+      axios
+        .request(config)
+        .then((response) => {
+          setAllStatesForPromotion(response.data.data);
+        })
+        .catch((err) => {
+          // console.log(err);
+        });
+    }
+  }, [countryCode]);
+
+  useEffect(() => {
+    if (countryCode && stateCode) {
+      let config = {
+        method: "post",
+        url: `${environmentVariables.apiUrl}/admin/getcitiesofcountry`,
+        headers: { _token: authData?.data?.token },
+        data: {
+          countryCode: countryCode,
+          stateCode: stateCode,
+        },
+      };
+      axios
+        .request(config)
+        .then((response) => {
+          setAllCities(response.data.data);
+        })
+        .catch((err) => {
+          // console.log(err);
+        });
+    }
+  }, [countryCode, stateCode]);
   const deleteVendor = async (vendorId) => {
     await axios
       .delete(
@@ -690,6 +790,52 @@ const UserLandingPage = () => {
   const updateImageHandler = () => {
     updateNewImage();
   };
+  useEffect(() => {
+    let config = {
+      method: "get",
+      url: `${environmentVariables.apiUrl}/admin/getallcountries`,
+      headers: { _token: authData?.data?.token },
+    };
+    axios
+      .request(config)
+      .then((response) => {
+        setAllCountries(response.data.data);
+      })
+      .catch((err) => {
+        // console.log(err);
+      });
+  }, []);
+
+  const handleUpload = () => {
+    const formData = new FormData();
+    formData.append("image", selectedFile);
+    formData.append("country", countryName);
+    formData.append("state", stateName);
+    formData.append("city", cityName);
+
+    const config = {
+      method: "post",
+      url: `${environmentVariables.apiUrl}/admin/uploadsactivitybanner`,
+      headers: { _token: authData?.data?.token },
+      data: formData,
+    };
+
+    axios(config)
+      .then(function (response) {
+        Swal.fire("Banner Inserted", "Successfully Inserted Image", "success");
+      })
+      .catch(function (error) {
+        Swal.fire(
+          "Error",
+          "Please check again the Image you are inserting!",
+          "error"
+        );
+      });
+    setCountryName("");
+    setStateName("");
+    setCityName("");
+    setSelectedFile(null);
+  };
   return (
     <Root>
       <HeadingWrapper>
@@ -705,7 +851,7 @@ const UserLandingPage = () => {
         >
           <ArrowBackIosNewOutlinedIcon />
         </IconButton>
-        <MainHeading>Manage State Landing Page...</MainHeading>
+        <MainHeading>Manage State Landing Page</MainHeading>
       </HeadingWrapper>
       <StatesContainer>
         {/* <StateHeading>States : </StateHeading> */}
@@ -1278,6 +1424,74 @@ const UserLandingPage = () => {
       </div>
       <BottomContainer>
         <BottomHeading>Promotion Banner</BottomHeading>
+        <LocationWrapper>
+          <div>
+            <FormLabel>Country*</FormLabel>
+            <FormSelect onChange={handleCountryChange}>
+              <FormOptions>Select Country</FormOptions>
+              {allCountries.map((country, index) => (
+                <option
+                  key={index}
+                  value={country.isoCode}
+                  data-value={country.name}
+                >
+                  {country.name}
+                </option>
+              ))}
+            </FormSelect>
+          </div>
+          <div>
+            <FormLabel>State*</FormLabel>
+            <FormSelect onChange={handleStateChange}>
+              <FormOptions>Select State</FormOptions>
+              {allStatesForPromotion.map((val, index) => {
+                return (
+                  <FormOptions
+                    key={index}
+                    value={val.isoCode}
+                    data-value={val.name}
+                  >
+                    {val.name}
+                  </FormOptions>
+                );
+              })}
+            </FormSelect>
+          </div>
+          <div>
+            <FormLabel>City*</FormLabel>
+            <FormSelect onChange={handleCityChange}>
+              <FormOptions>Select City</FormOptions>
+              {allCities.map((val, index) => {
+                return (
+                  <FormOptions
+                    key={index}
+                    value={val.isoCode}
+                    data-value={val.name}
+                  >
+                    {val.name}
+                  </FormOptions>
+                );
+              })}
+            </FormSelect>
+          </div>
+          <div>
+            <FormLabel>Banner*</FormLabel>
+            <FormFileInput
+              type="file"
+              multiple
+              name="myFiles"
+              onChange={(e) => handleChange(e)}
+              ref={fileInputRef}
+            />
+          </div>
+          <div
+            style={{
+              display: "flex",
+            }}
+          >
+            <PriorityButton onClick={handleUpload}>Save</PriorityButton>
+          </div>
+        </LocationWrapper>
       </BottomContainer>
     </Root>
   );
