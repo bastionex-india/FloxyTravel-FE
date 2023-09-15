@@ -270,7 +270,7 @@ const AddHotels = () => {
     getHotelDetailById();
     let config = {
       method: "get",
-      url: `${environmentVariables.apiUrl}/admin/getallcountries`,
+      url: `http://localhost:4000/admin/getallcountries`,
       headers: { _token: authData?.data?.token },
     };
     axios
