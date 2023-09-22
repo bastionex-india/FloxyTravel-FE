@@ -307,7 +307,8 @@ const GenerateInvoice = () => {
     hotelPrice,
     totalActivitiesAmount,
     totalDiscountAmount,
-    totalPayableAmount
+    totalPayableAmount,
+    typeof totalDiscountAmount
   );
   const sendInvoice = () => {
     // console.log(checkIn,checkOut,noofpersons,Number(noofchildren),noofrooms,state._id,amount.toString(),Number(discountAmount),new Date(checkIn).getTime(),new Date(checkOut).getTime())
@@ -449,14 +450,15 @@ const GenerateInvoice = () => {
               );
             setAllActivitiesData(responsedata.activitiesPaymentDetails);
             setTotalActivitiesAmount(totalActivitiesAmountAmount);
-            
+
             setHotelPrice(
               responsedata.hotelPaymentDetail.payAmount +
                 responsedata.hotelPaymentDetail.discount
-                
             );
-            setTotalPayableAmount(responsedata.hotelPaymentDetail.payAmount + totalActivitiesAmountAmount);
-
+            setTotalPayableAmount(
+              responsedata.hotelPaymentDetail.payAmount +
+                totalActivitiesAmountAmount
+            );
           } else {
             setHotelPrice(
               responsedata.hotelPaymentDetail.payAmount +
@@ -464,8 +466,10 @@ const GenerateInvoice = () => {
             );
             setTotalPayableAmount(responsedata.hotelPaymentDetail.payAmount);
           }
-          setTotalDiscountAmount(+responsedata.hotelPaymentDetail.discount);
-          
+          setTotalDiscountAmount(
+            Number(+responsedata.hotelPaymentDetail.discount)
+          );
+
           setPayMethod(responsedata.paymentStatus[0].method);
         } else {
           Swal.fire({
@@ -689,6 +693,24 @@ const GenerateInvoice = () => {
     const formattedDate = new Date(timestamp).toLocaleString("en-IN", options);
     return formattedDate;
   }
+  const handleHotelPriceChange = (e) => {
+    setHotelPrice(e.target.value);
+  };
+
+  const handleTotalDiscountAmountChange = (e) => {
+    const newDiscountAmount = e.target.value;
+
+    if (
+      Number(newDiscountAmount) <=
+      Number(hotelPrice) + Number(totalActivitiesAmount)
+    ) {
+      setTotalDiscountAmount(newDiscountAmount);
+    } else {
+      // Optionally, you can show a message or handle the situation in some way
+      // For example, you can set an error state or display an error message
+      console.error("Discount amount cannot be less than hotel price");
+    }
+  };
   // console.log({ isDinner, isLunch, isBreakfast, state, allActivitiesData });
   return (
     <>
@@ -1514,7 +1536,7 @@ const GenerateInvoice = () => {
           <ChildContainer5>
             {state.type === "hotel" && (
               <HotelInputPrice>
-                <HotelInputPriceHeading>Hotel Amount</HotelInputPriceHeading>
+                <HotelInputPriceHeading>Hotel Amount...</HotelInputPriceHeading>
                 <HotelInputPriceValue>
                   {state.status === "pending" || state.status === "approved" ? (
                     <FormControl variant="standard" className="pull-right">
@@ -1523,7 +1545,7 @@ const GenerateInvoice = () => {
                         onKeyDown={handleKeyPress}
                         id="standard-adornment-amount"
                         size="small"
-                        onChange={(e) => setHotelPrice(e.target.value)}
+                        onChange={handleHotelPriceChange}
                         value={hotelPrice}
                       />
                     </FormControl>
@@ -1614,7 +1636,7 @@ const GenerateInvoice = () => {
             )}
             <TotalDiscountPrice>
               <HotelInputPriceHeading>
-                Total Discount Amount
+                Total Discount Amount..
               </HotelInputPriceHeading>
               <HotelInputPriceValue>
                 {" "}
@@ -1625,7 +1647,7 @@ const GenerateInvoice = () => {
                       onKeyDown={handleKeyPress}
                       id="standard-adornment-amount"
                       size="small"
-                      onChange={(e) => setTotalDiscountAmount(e.target.value)}
+                      onChange={handleTotalDiscountAmountChange}
                       value={totalDiscountAmount}
                     />
                   </FormControl>
