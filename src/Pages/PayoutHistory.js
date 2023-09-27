@@ -11,7 +11,7 @@ import CircularLoader from "../Component/CircularLoader/CircularLoader";
 import TablePagination from "@mui/material/TablePagination";
 import Swal from "sweetalert2";
 import LoadingButton from "@mui/lab/LoadingButton";
-import Chip from '@mui/material/Chip';
+import Chip from "@mui/material/Chip";
 import PropTypes from "prop-types";
 import { styled as newStyle } from "@mui/material/styles";
 import Dialog from "@mui/material/Dialog";
@@ -21,9 +21,8 @@ import DialogActions from "@mui/material/DialogActions";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import Typography from "@mui/material/Typography";
-import MenuItem from '@mui/material/MenuItem';
-import Select from '@mui/material/Select';
-
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
 
 import moment from "moment";
 
@@ -32,7 +31,7 @@ import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid";
 
 import FormControl from "@mui/material/FormControl";
-import ArrowBackIosNewOutlinedIcon from '@mui/icons-material/ArrowBackIosNewOutlined';
+import ArrowBackIosNewOutlinedIcon from "@mui/icons-material/ArrowBackIosNewOutlined";
 
 const Item = newStyle(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -50,8 +49,6 @@ const BootstrapDialog = newStyle(Dialog)(({ theme }) => ({
     padding: theme.spacing(1),
   },
 }));
-
-
 
 function BootstrapDialogTitle(props) {
   const { children, onClose, ...other } = props;
@@ -202,10 +199,10 @@ const PayoutHistory = () => {
   const [activityList, setActivityList] = useState([]);
   const [selectHotel, setSelectHotel] = useState("all");
   const [selectCity, setSelectCity] = useState("all");
-  const [selectVendor, setSelectVendor] = useState('all')
-  const [selectStatus, setSelectStatus] = useState('all');
-  const [selectedHotel, setSelectedHotel] = useState('all'); 
-  const [selectedActivity, setSelectedActivity] = useState('all');
+  const [selectVendor, setSelectVendor] = useState("all");
+  const [selectStatus, setSelectStatus] = useState("all");
+  const [selectedHotel, setSelectedHotel] = useState("all");
+  const [selectedActivity, setSelectedActivity] = useState("all");
   const navigate = useNavigate();
 
   const handleClick = (item) => {
@@ -285,7 +282,6 @@ const PayoutHistory = () => {
     savePayout();
   };
   const getAllListData = async () => {
-
     await axios
       .get(`${environmentVariables.apiUrl}/vendor/getPayoutRequestList`, {
         headers: { _token: authData.data.token },
@@ -309,8 +305,6 @@ const PayoutHistory = () => {
         setIsLoading(false);
       });
   };
-
-
 
   const getComponents = () => {
     if (isLoading === true) {
@@ -368,7 +362,7 @@ const PayoutHistory = () => {
             <HotelCard>
               <HotelImageWrapper>
                 <HotelImage
-                  src={`${environmentVariables.apiUrl}/uploads/${imageSrc}`}
+                  src={`https://floxytravels.b-cdn.net/uploads/${imageSrc}`}
                 />
               </HotelImageWrapper>
               <HotelInfoWrapper>
@@ -380,48 +374,65 @@ const PayoutHistory = () => {
                   <HotelInfoText>City : {row.hotelsData.city}</HotelInfoText>
                   <HotelInfoText>State : {row.hotelsData.state}</HotelInfoText>
                   <HotelInfoText>
-                    Country : {row.hotelsData.country ? row.hotelsData.country : "NA"}
+                    Country :{" "}
+                    {row.hotelsData.country ? row.hotelsData.country : "NA"}
                   </HotelInfoText>
-                  {
-                    (row.hotelsData.type == undefined || row.hotelsData.type != 'activity') ?
+                  {row.hotelsData.type == undefined ||
+                  row.hotelsData.type != "activity" ? (
+                    <>
+                      <HotelInfoText>
+                        Theme : {row.hotelsData.theme}
+                      </HotelInfoText>
+                      <HotelInfoText>
+                        Category : {row.hotelsData.hotelCategory}
+                      </HotelInfoText>
+                    </>
+                  ) : null}
+                  <HotelInfoText>
+                    {" "}
+                    Type :
+                    {row.hotelsData.type == undefined ||
+                    row.hotelsData.type == "hotel" ? (
                       <>
-                        <HotelInfoText>Theme : {row.hotelsData.theme}</HotelInfoText>
-                        <HotelInfoText>
-                          Category : {row.hotelsData.hotelCategory}
-                        </HotelInfoText>
+                        <span className="text-primary fw-bold"> Hotel</span>
                       </>
-                      :
-                      null
-                  }
-                  <HotelInfoText> Type :
-                    {
-                      (row.hotelsData.type == undefined || row.hotelsData.type == 'hotel') ?
-                        <>
-                          <span className="text-primary fw-bold"> Hotel</span>
-                        </>
-                        :
-                        <>
-                          <span className="text-primary fw-bold"> Activity</span>
-                        </>
-                    }
+                    ) : (
+                      <>
+                        <span className="text-primary fw-bold"> Activity</span>
+                      </>
+                    )}
                   </HotelInfoText>
                 </HotelIconWrapper>
               </HotelInfoWrapper>
               <PayOutInfoWrapper>
-
                 <ul style={{ listStyle: "none" }}>
-                  <li><b>Vendor Name : </b> {row.vendorData.name}</li>
-                  <li><b>Status : </b> <Chip
-                    sx={{
-                      borderRadius: "3px",
-                      border: "1px solid black"
-                    }}
-                    label={row.status} color={row.status === 'pending' ? 'warning' : 'success'} /></li>
-                  <li><b>Payout amount : </b> {row.payoutAmount.toFixed(2)} INR</li>
-                  <li><b>Requested Date : </b> {moment(row.createdAt).format('LL')}</li>
-                  <li><b>Payout Time periods : </b> {moment(row.payoutFrom).format('LL')} to {moment(row.payoutTo).format('LL')}</li>
+                  <li>
+                    <b>Vendor Name : </b> {row.vendorData.name}
+                  </li>
+                  <li>
+                    <b>Status : </b>{" "}
+                    <Chip
+                      sx={{
+                        borderRadius: "3px",
+                        border: "1px solid black",
+                      }}
+                      label={row.status}
+                      color={row.status === "pending" ? "warning" : "success"}
+                    />
+                  </li>
+                  <li>
+                    <b>Payout amount : </b> {row.payoutAmount.toFixed(2)} INR
+                  </li>
+                  <li>
+                    <b>Requested Date : </b>{" "}
+                    {moment(row.createdAt).format("LL")}
+                  </li>
+                  <li>
+                    <b>Payout Time periods : </b>{" "}
+                    {moment(row.payoutFrom).format("LL")} to{" "}
+                    {moment(row.payoutTo).format("LL")}
+                  </li>
                 </ul>
-
               </PayOutInfoWrapper>
             </HotelCard>
           );
@@ -445,17 +456,14 @@ const PayoutHistory = () => {
 
   const getHotelListData = async () => {
     await axios
-      .get(
-        `${environmentVariables.apiUrl}/vendor/vendorget`,
-        {
-          headers: { _token: authData.data.token },
-          params: {
-            page: 1,
-            limit: 10000,
-            type: "hotel"
-          }
-        }
-      )
+      .get(`${environmentVariables.apiUrl}/vendor/vendorget`, {
+        headers: { _token: authData.data.token },
+        params: {
+          page: 1,
+          limit: 10000,
+          type: "hotel",
+        },
+      })
       .then((response) => {
         setHotelList(response.data.data.records);
       })
@@ -465,17 +473,14 @@ const PayoutHistory = () => {
   };
   const getActivitiesListData = async () => {
     await axios
-      .get(
-        `${environmentVariables.apiUrl}/vendor/vendorget`,
-        {
-          headers: { _token: authData.data.token },
-          params: {
-            page: 1,
-            limit: 10000,
-            type: "activity"
-          }
-        }
-      )
+      .get(`${environmentVariables.apiUrl}/vendor/vendorget`, {
+        headers: { _token: authData.data.token },
+        params: {
+          page: 1,
+          limit: 10000,
+          type: "activity",
+        },
+      })
       .then((response) => {
         // console.log("response.data.  ",response.data);
         setActivityList(response.data.data.records);
@@ -483,26 +488,26 @@ const PayoutHistory = () => {
       .catch((err) => {
         console.log("error", err);
       });
-  }
+  };
   const handleCityChange = (city) => {
     setSelectCity(city);
   };
   const handleStatusChange = (status) => {
     setSelectStatus(status);
-  }
+  };
   const handleHotelChange = (hotel) => {
     setSelectHotel(hotel);
-    // reset data of another dropdown 
-    setSelectedHotel(hotel)
-    setSelectedActivity('all');
+    // reset data of another dropdown
+    setSelectedHotel(hotel);
+    setSelectedActivity("all");
   };
-  const handleActivityChange = (activity)=>{
+  const handleActivityChange = (activity) => {
     setSelectHotel(activity);
-    // reset data of another dropdown 
-    setSelectedHotel('all')
+    // reset data of another dropdown
+    setSelectedHotel("all");
     setSelectedActivity(activity);
-  }
-  
+  };
+
   useEffect(() => {
     setIsLoading(true);
     getAllListData();
@@ -520,7 +525,16 @@ const PayoutHistory = () => {
         <TextRoot>
           <Root>
             <HeadingWrapper>
-              <IconButton title="Back" onClick={() => navigate(-1)} size="small" sx={{ backgroundColor: "#e1e1e1", color: "#01575c", marginTop: "4px" }}>
+              <IconButton
+                title="Back"
+                onClick={() => navigate(-1)}
+                size="small"
+                sx={{
+                  backgroundColor: "#e1e1e1",
+                  color: "#01575c",
+                  marginTop: "4px",
+                }}
+              >
                 <ArrowBackIosNewOutlinedIcon />
               </IconButton>
               <Heading>Payout History</Heading>
@@ -543,12 +557,22 @@ const PayoutHistory = () => {
               p={1}
               columnSpacing={{ xs: 1, sm: 2, md: 3 }}
             >
-              {
-                hotelList.length ? 
+              {hotelList.length ? (
                 <Grid item xs={3}>
                   <FormControl fullWidth>
                     <label>Hotels</label>
-                    <select style={{ height: '45px', border: "1px solid #cccc", marginTop: "10px", borderRadius: "6px" }} value={selectedHotel} onChange={(event) => handleHotelChange(event.target.value)} >
+                    <select
+                      style={{
+                        height: "45px",
+                        border: "1px solid #cccc",
+                        marginTop: "10px",
+                        borderRadius: "6px",
+                      }}
+                      value={selectedHotel}
+                      onChange={(event) =>
+                        handleHotelChange(event.target.value)
+                      }
+                    >
                       <option value="all">All</option>
                       {hotelList.map((row, index) => {
                         return (
@@ -560,35 +584,46 @@ const PayoutHistory = () => {
                     </select>
                   </FormControl>
                 </Grid>
-                :null
-              }
-              {
-                activityList.length ?
-                  <Grid item xs={3}>
-                    <FormControl fullWidth>
-                      <label>Activity</label>
-                      <select style={{ height: '45px', border: "1px solid #cccc", marginTop: "10px", borderRadius: "6px" }} value={selectedActivity} onChange={(event) => handleActivityChange(event.target.value)} >
-                        <option value="all">All</option>
-                        {activityList.map((row, index) => {
-                          return (
-                            <option key={index} value={row._id}>
-                              {row.hotelname}
-                            </option>
-                          );
-                        })}
-                      </select>
-                    </FormControl>
-                  </Grid>
-                  : null
-              }
+              ) : null}
+              {activityList.length ? (
+                <Grid item xs={3}>
+                  <FormControl fullWidth>
+                    <label>Activity</label>
+                    <select
+                      style={{
+                        height: "45px",
+                        border: "1px solid #cccc",
+                        marginTop: "10px",
+                        borderRadius: "6px",
+                      }}
+                      value={selectedActivity}
+                      onChange={(event) =>
+                        handleActivityChange(event.target.value)
+                      }
+                    >
+                      <option value="all">All</option>
+                      {activityList.map((row, index) => {
+                        return (
+                          <option key={index} value={row._id}>
+                            {row.hotelname}
+                          </option>
+                        );
+                      })}
+                    </select>
+                  </FormControl>
+                </Grid>
+              ) : null}
 
               <Grid item xs={3}>
                 <FormControl fullWidth>
-                  <label>
-                    City
-                  </label>
+                  <label>City</label>
                   <select
-                    style={{ height: '45px', border: "1px solid #cccc", marginTop: "10px", borderRadius: "6px" }}
+                    style={{
+                      height: "45px",
+                      border: "1px solid #cccc",
+                      marginTop: "10px",
+                      borderRadius: "6px",
+                    }}
                     onChange={(event) => handleCityChange(event.target.value)}
                   >
                     <option value={"all"}>All</option>
@@ -604,11 +639,14 @@ const PayoutHistory = () => {
               </Grid>
               <Grid item xs={3}>
                 <FormControl fullWidth>
-                  <label>
-                    Status
-                  </label>
+                  <label>Status</label>
                   <select
-                    style={{ height: '45px', border: "1px solid #cccc", marginTop: "10px", borderRadius: "6px" }}
+                    style={{
+                      height: "45px",
+                      border: "1px solid #cccc",
+                      marginTop: "10px",
+                      borderRadius: "6px",
+                    }}
                     onChange={(event) => handleStatusChange(event.target.value)}
                   >
                     <option value={"all"}>All</option>
@@ -622,7 +660,9 @@ const PayoutHistory = () => {
           <HotelCardsWrapper>{getComponents()}</HotelCardsWrapper>
         </TextRoot>
 
-        {(isLoading === true || mainResponse.totalrecords == undefined || mainResponse.totalrecords == 0) ? (
+        {isLoading === true ||
+        mainResponse.totalrecords == undefined ||
+        mainResponse.totalrecords == 0 ? (
           <></>
         ) : (
           <TablePagination

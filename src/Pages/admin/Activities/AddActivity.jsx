@@ -463,7 +463,7 @@ const AddActivity = () => {
     for (let i of images) {
       setArr((oldItems) => [
         ...oldItems,
-        { image: `${environmentVariables.apiUrl}/uploads/${i}` },
+        { image: `https://floxytravels.b-cdn.net/uploads/${i}` },
       ]);
     }
   }, [images]);
@@ -771,7 +771,7 @@ const AddActivity = () => {
         {/* <div>
           {images.map((image) => (
             <div key={image}>
-              <img src={`${environmentVariables.apiUrl}/uploads/${image}`} alt="Image" />
+              <img src={`https://floxytravels.b-cdn.net/uploads/${image}`} alt="Image" />
             </div>
           ))}
         </div> */}
@@ -780,7 +780,7 @@ const AddActivity = () => {
             <ImageWrapper key={image}>
               <CirleCross></CirleCross>
               <Image1
-                src={`${environmentVariables.apiUrl}/uploads/${image}`}
+                src={`https://floxytravels.b-cdn.net/uploads/${image}`}
                 alt="Image"
               />
               <RemoveButton onClick={() => removeImage(image)}>

@@ -2,7 +2,10 @@ import React from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
-import {environmentVariables, envrionmentVariables} from '../config/config.js'
+import {
+  environmentVariables,
+  envrionmentVariables,
+} from "../config/config.js";
 import { useState, useContext } from "react";
 import {
   Box,
@@ -336,9 +339,12 @@ const HotelDetails = () => {
 
   const getAllHotelData = async () => {
     await axios
-      .get(`${environmentVariables.apiUrl}/auth/gethoteldetailbyid/${state._id}`, {
-        headers: { _token: authData.data.token },
-      })
+      .get(
+        `${environmentVariables.apiUrl}/auth/gethoteldetailbyid/${state._id}`,
+        {
+          headers: { _token: authData.data.token },
+        }
+      )
       .then((response) => {
         setHotelByIdData(response.data.data.hotels);
       })
@@ -438,7 +444,7 @@ const HotelDetails = () => {
     for (let i of state.image) {
       setArr((oldItems) => [
         ...oldItems,
-        { image: `${environmentVariables.apiUrl}/uploads/${i}` },
+        { image: `https://floxytravels.b-cdn.net/uploads/${i}` },
       ]);
     }
   }, []);

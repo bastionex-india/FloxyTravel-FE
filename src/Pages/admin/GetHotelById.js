@@ -376,9 +376,12 @@ const GetHotelById = () => {
 
   const getAllHotelData = async () => {
     await axios
-      .get(`${environmentVariables.apiUrl}/auth/gethoteldetailbyid1/${state._id}`, {
-        headers: { _token: authData.data.token },
-      })
+      .get(
+        `${environmentVariables.apiUrl}/auth/gethoteldetailbyid1/${state._id}`,
+        {
+          headers: { _token: authData.data.token },
+        }
+      )
       .then((response) => {
         setHotelByIdData(response.data.data.hotels);
       })
@@ -394,7 +397,7 @@ const GetHotelById = () => {
     for (let i of state.image) {
       setArr((oldItems) => [
         ...oldItems,
-        { image: `${environmentVariables.apiUrl}/uploads/${i}` },
+        { image: `https://floxytravels.b-cdn.net/uploads/${i}` },
       ]);
     }
   }, []);

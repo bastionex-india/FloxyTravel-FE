@@ -11,7 +11,7 @@ import CircularLoader from "../Component/CircularLoader/CircularLoader";
 import TablePagination from "@mui/material/TablePagination";
 import Swal from "sweetalert2";
 import LoadingButton from "@mui/lab/LoadingButton";
-import HistoryIcon from '@mui/icons-material/History'
+import HistoryIcon from "@mui/icons-material/History";
 import PropTypes from "prop-types";
 import { styled as newStyle } from "@mui/material/styles";
 import Dialog from "@mui/material/Dialog";
@@ -31,7 +31,7 @@ import Grid from "@mui/material/Grid";
 import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
 import NativeSelect from "@mui/material/NativeSelect";
-import ArrowBackIosNewOutlinedIcon from '@mui/icons-material/ArrowBackIosNewOutlined';
+import ArrowBackIosNewOutlinedIcon from "@mui/icons-material/ArrowBackIosNewOutlined";
 
 const Item = newStyle(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -200,8 +200,8 @@ const Payouts = () => {
   const [activityList, setActivityList] = useState([]);
   const [selectHotel, setSelectHotel] = useState("all");
   const [selectCity, setSelectCity] = useState("all");
-  const [selectedHotel, setSelectedHotel] = useState('all'); 
-  const [selectedActivity, setSelectedActivity] = useState('all');
+  const [selectedHotel, setSelectedHotel] = useState("all");
+  const [selectedActivity, setSelectedActivity] = useState("all");
   const navigate = useNavigate();
 
   const handleClick = (item) => {
@@ -227,9 +227,21 @@ const Payouts = () => {
   const handleClickOpen = (item) => {
     setOpen(true);
   };
-  const payoutRequestHandler = (payLinkObjectIds, hotelIds, payOutAmount, payoutFrom, payoutTo) => {
+  const payoutRequestHandler = (
+    payLinkObjectIds,
+    hotelIds,
+    payOutAmount,
+    payoutFrom,
+    payoutTo
+  ) => {
     handleClickOpen();
-    setPayoutRequestData({ payLinkObjectIds, hotelIds, payOutAmount, payoutFrom, payoutTo });
+    setPayoutRequestData({
+      payLinkObjectIds,
+      hotelIds,
+      payOutAmount,
+      payoutFrom,
+      payoutTo,
+    });
   };
   const savePayout = async () => {
     let data = {
@@ -237,7 +249,7 @@ const Payouts = () => {
       hotelId: payoutRequestData.hotelIds,
       payoutAmount: payoutRequestData.payOutAmount,
       payoutFrom: payoutRequestData.payoutFrom,
-      payoutTo: payoutRequestData.payoutTo
+      payoutTo: payoutRequestData.payoutTo,
     };
     let config = {
       method: "post",
@@ -325,12 +337,18 @@ const Payouts = () => {
           // row.hotelsData.lastPayoutDate
           // row.hotelsData.payoutInterval
           let dayCount =
-            row.hotelsData.payoutInterval != undefined ? row.hotelsData.payoutInterval : 0;
+            row.hotelsData.payoutInterval != undefined
+              ? row.hotelsData.payoutInterval
+              : 0;
           let payoutInterval =
-            row.hotelsData.payoutInterval != undefined ? row.hotelsData.payoutInterval : 0;
+            row.hotelsData.payoutInterval != undefined
+              ? row.hotelsData.payoutInterval
+              : 0;
           let lastPayoutDate =
-            row.hotelsData.lastPayoutDate != undefined ? row.hotelsData.lastPayoutDate : 0;
-          if (lastPayoutDate){
+            row.hotelsData.lastPayoutDate != undefined
+              ? row.hotelsData.lastPayoutDate
+              : 0;
+          if (lastPayoutDate) {
             let a = moment(new Date(lastPayoutDate));
             var b = moment(new Date());
             dayCount = Number(b.diff(a, "days")); // 1
@@ -339,8 +357,10 @@ const Payouts = () => {
             // console.log("b",b.format('YYYY-MM-DD'))
           }
           // console.log("lastPayoutDate",lastPayoutDate);
-          let payoutFrom = lastPayoutDate ? moment(new Date(lastPayoutDate)).format('YYYY-MM-DD') : '1950-01-19';
-          let payoutTo = moment().format('YYYY-MM-DD');
+          let payoutFrom = lastPayoutDate
+            ? moment(new Date(lastPayoutDate)).format("YYYY-MM-DD")
+            : "1950-01-19";
+          let payoutTo = moment().format("YYYY-MM-DD");
 
           // console.log("payoutFrom",payoutFrom);
           // console.log("currentDate",currentDate)
@@ -352,7 +372,7 @@ const Payouts = () => {
             <HotelCard>
               <HotelImageWrapper>
                 <HotelImage
-                  src={`${environmentVariables.apiUrl}/uploads/${imageSrc}`}
+                  src={`https://floxytravels.b-cdn.net/uploads/${imageSrc}`}
                 />
               </HotelImageWrapper>
               <HotelInfoWrapper>
@@ -366,62 +386,77 @@ const Payouts = () => {
                   <HotelInfoText>
                     Country : {row.hotelsData.country}
                   </HotelInfoText>
-                  {
-                    (row.hotelsData.type == undefined || row.hotelsData.type == 'hotel') ?
+                  {row.hotelsData.type == undefined ||
+                  row.hotelsData.type == "hotel" ? (
+                    <>
+                      <HotelInfoText>
+                        Theme : {row.hotelsData.theme}
+                      </HotelInfoText>
+                      <HotelInfoText>
+                        Category : {row.hotelsData.hotelCategory}
+                      </HotelInfoText>
+                    </>
+                  ) : null}
+                  <HotelInfoText>
+                    {" "}
+                    Type :
+                    {row.hotelsData.type == undefined ||
+                    row.hotelsData.type == "hotel" ? (
                       <>
-                        <HotelInfoText>Theme : {row.hotelsData.theme}</HotelInfoText>
-                        <HotelInfoText>
-                          Category : {row.hotelsData.hotelCategory}
-                        </HotelInfoText>
+                        <span className="text-primary fw-bold"> Hotel</span>
                       </>
-                      : null
-                  }
-                  <HotelInfoText> Type : 
-                    {
-                      (row.hotelsData.type == undefined || row.hotelsData.type == 'hotel') ? 
+                    ) : (
                       <>
-                      <span className="text-primary fw-bold"> Hotel</span>
+                        <span className="text-primary fw-bold"> Activity</span>
                       </>
-                      :
-                      <>
-                      <span className="text-primary fw-bold"> Activity</span>
-                      </>
-                    }
+                    )}
                   </HotelInfoText>
                 </HotelIconWrapper>
               </HotelInfoWrapper>
               <PayOutInfoWrapper>
                 <ul style={{ listStyle: "none" }}>
-                  <li><b>TotalPaid amount : </b> {totalEarnings.toFixed(2)} INR</li>
-                  <li><b>Fee amount : </b> {feeAmount.toFixed(2)} ({adminFee}%) INR</li>
-                  <li><b>Payout amount : </b> {payOutAmount.toFixed(2)} INR</li>
-                  <li><b>Payout Time periods : </b> {moment(payoutFrom).format('LL')} to {moment(payoutTo).format('LL')}</li>
                   <li>
-                      <Button
-                        variant="contained"
-                        size="small"
-                        loading={true}
-                        disabled={!(dayCount >= payoutInterval)}
-                        onClick={() =>
-                          payoutRequestHandler(
-                            payLinkObjectIds,
-                            hotelIds,
-                            payOutAmount,
-                            payoutFrom,
-                            payoutTo
-                          )
-                        }
-                      >
-                        Request Payout
-                      </Button>
-                      {
-                        !(dayCount >= payoutInterval) ? 
-                        <p className="text-warning">if you complete {payoutInterval}  days from last payout date of  this {row.hotelsData.type}. then you  can make new Payout Request to admin.</p>
-                        :null
+                    <b>TotalPaid amount : </b> {totalEarnings.toFixed(2)} INR
+                  </li>
+                  <li>
+                    <b>Fee amount : </b> {feeAmount.toFixed(2)} ({adminFee}%)
+                    INR
+                  </li>
+                  <li>
+                    <b>Payout amount : </b> {payOutAmount.toFixed(2)} INR
+                  </li>
+                  <li>
+                    <b>Payout Time periods : </b>{" "}
+                    {moment(payoutFrom).format("LL")} to{" "}
+                    {moment(payoutTo).format("LL")}
+                  </li>
+                  <li>
+                    <Button
+                      variant="contained"
+                      size="small"
+                      loading={true}
+                      disabled={!(dayCount >= payoutInterval)}
+                      onClick={() =>
+                        payoutRequestHandler(
+                          payLinkObjectIds,
+                          hotelIds,
+                          payOutAmount,
+                          payoutFrom,
+                          payoutTo
+                        )
                       }
+                    >
+                      Request Payout
+                    </Button>
+                    {!(dayCount >= payoutInterval) ? (
+                      <p className="text-warning">
+                        if you complete {payoutInterval} days from last payout
+                        date of this {row.hotelsData.type}. then you can make
+                        new Payout Request to admin.
+                      </p>
+                    ) : null}
                   </li>
                 </ul>
-
               </PayOutInfoWrapper>
             </HotelCard>
           );
@@ -431,7 +466,7 @@ const Payouts = () => {
   };
   const getPayoutHistory = () => {
     navigate("/payoutHistory");
-  }
+  };
   const getAllListData = async () => {
     await axios
       .get(`${environmentVariables.apiUrl}/vendor/getPayoutList`, {
@@ -468,17 +503,14 @@ const Payouts = () => {
   };
   const getHotelListData = async () => {
     await axios
-      .get(
-        `${environmentVariables.apiUrl}/vendor/vendorget`,
-        {
-          headers: { _token: authData.data.token },
-          params:{
-            page : 1,
-            limit : 10000,
-            type: "hotel"
-          }
-        }
-      )
+      .get(`${environmentVariables.apiUrl}/vendor/vendorget`, {
+        headers: { _token: authData.data.token },
+        params: {
+          page: 1,
+          limit: 10000,
+          type: "hotel",
+        },
+      })
       .then((response) => {
         setHotelList(response.data.data.records);
       })
@@ -486,19 +518,16 @@ const Payouts = () => {
         console.log("error", err);
       });
   };
-  const getActivitiesListData = async ()=>{
+  const getActivitiesListData = async () => {
     await axios
-      .get(
-        `${environmentVariables.apiUrl}/vendor/vendorget`,
-        {
-          headers: { _token: authData.data.token },
-          params:{
-            page : 1,
-            limit : 10000,
-            type: "activity"
-          }
-        }
-      )
+      .get(`${environmentVariables.apiUrl}/vendor/vendorget`, {
+        headers: { _token: authData.data.token },
+        params: {
+          page: 1,
+          limit: 10000,
+          type: "activity",
+        },
+      })
       .then((response) => {
         // console.log("response.data.  ",response.data);
         setActivityList(response.data.data.records);
@@ -506,25 +535,24 @@ const Payouts = () => {
       .catch((err) => {
         console.log("error", err);
       });
-  }
+  };
   const handleCityChange = (city) => {
     console.log(city);
     setSelectCity(city);
   };
-  
 
   const handleHotelChange = (hotel) => {
     setSelectHotel(hotel);
-    // reset data of another dropdown 
-    setSelectedHotel(hotel)
-    setSelectedActivity('all');
+    // reset data of another dropdown
+    setSelectedHotel(hotel);
+    setSelectedActivity("all");
   };
-  const handleActivityChange = (activity)=>{
+  const handleActivityChange = (activity) => {
     setSelectHotel(activity);
-    // reset data of another dropdown 
-    setSelectedHotel('all')
+    // reset data of another dropdown
+    setSelectedHotel("all");
     setSelectedActivity(activity);
-  }
+  };
 
   useEffect(() => {
     setIsLoading(true);
@@ -542,18 +570,32 @@ const Payouts = () => {
         <TextRoot>
           <Root>
             <HeadingWrapper>
-              <IconButton title="Back" onClick={() => navigate(-1)} size="small" sx={{ backgroundColor: "#e1e1e1", color: "#01575c", marginTop: "4px" }}>
+              <IconButton
+                title="Back"
+                onClick={() => navigate(-1)}
+                size="small"
+                sx={{
+                  backgroundColor: "#e1e1e1",
+                  color: "#01575c",
+                  marginTop: "4px",
+                }}
+              >
                 <ArrowBackIosNewOutlinedIcon />
               </IconButton>
               <Heading>Payout</Heading>
-              <div style={{ marginTop: "4px", position: "absolute", right: "0px" }}>
-                Payout History {" "}
-                <IconButton title="History" onClick={() => getPayoutHistory()} size="small" sx={{ backgroundColor: "#e1e1e1", color: "#01575c" }}>
-
+              <div
+                style={{ marginTop: "4px", position: "absolute", right: "0px" }}
+              >
+                Payout History{" "}
+                <IconButton
+                  title="History"
+                  onClick={() => getPayoutHistory()}
+                  size="small"
+                  sx={{ backgroundColor: "#e1e1e1", color: "#01575c" }}
+                >
                   <HistoryIcon />
                 </IconButton>
               </div>
-
             </HeadingWrapper>
           </Root>
           {/* <NewRow>
@@ -573,16 +615,21 @@ const Payouts = () => {
               p={1}
               columnSpacing={{ xs: 1, sm: 2, md: 3 }}
             >
-              {
-                hotelList.length ?
+              {hotelList.length ? (
                 <Grid item xs={3}>
                   <FormControl fullWidth>
-                    <label>
-                      Hotels
-                    </label>
+                    <label>Hotels</label>
                     <select
-                      style={{ height: '45px', border: "1px solid #cccc", marginTop: "10px", borderRadius: "6px" }}
-                     value={selectedHotel} onChange={(event) => handleHotelChange(event.target.value)}
+                      style={{
+                        height: "45px",
+                        border: "1px solid #cccc",
+                        marginTop: "10px",
+                        borderRadius: "6px",
+                      }}
+                      value={selectedHotel}
+                      onChange={(event) =>
+                        handleHotelChange(event.target.value)
+                      }
                     >
                       <option value={"all"}>All</option>
                       {hotelList.map((row, index) => {
@@ -595,18 +642,22 @@ const Payouts = () => {
                     </select>
                   </FormControl>
                 </Grid>
-                : null
-              }
-              {
-                activityList.length ? 
+              ) : null}
+              {activityList.length ? (
                 <Grid item xs={3}>
                   <FormControl fullWidth>
-                    <label>
-                      Activity
-                    </label>
+                    <label>Activity</label>
                     <select
-                      style={{ height: '45px', border: "1px solid #cccc", marginTop: "10px", borderRadius: "6px" }}
-                      value={selectedActivity} onChange={(event) => handleActivityChange(event.target.value)}
+                      style={{
+                        height: "45px",
+                        border: "1px solid #cccc",
+                        marginTop: "10px",
+                        borderRadius: "6px",
+                      }}
+                      value={selectedActivity}
+                      onChange={(event) =>
+                        handleActivityChange(event.target.value)
+                      }
                     >
                       <option value={"all"}>All</option>
                       {activityList.map((row, index) => {
@@ -619,15 +670,17 @@ const Payouts = () => {
                     </select>
                   </FormControl>
                 </Grid>
-                : null
-              }
+              ) : null}
               <Grid item xs={3}>
                 <FormControl fullWidth>
-                  <label>
-                    City
-                  </label>
+                  <label>City</label>
                   <select
-                    style={{ height: '45px', border: "1px solid #cccc", marginTop: "10px", borderRadius: "6px" }}
+                    style={{
+                      height: "45px",
+                      border: "1px solid #cccc",
+                      marginTop: "10px",
+                      borderRadius: "6px",
+                    }}
                     onChange={(event) => handleCityChange(event.target.value)}
                   >
                     <option value={"all"}>All</option>
@@ -643,7 +696,12 @@ const Payouts = () => {
               </Grid>
               <Grid item xs={3} mt={3}>
                 <b>Total Payout: </b>
-                <span>{(mainResponse.allHotelPayoutAmount) ? mainResponse.allHotelPayoutAmount.toFixed(2) : '0.00'} INR</span>{" "}
+                <span>
+                  {mainResponse.allHotelPayoutAmount
+                    ? mainResponse.allHotelPayoutAmount.toFixed(2)
+                    : "0.00"}{" "}
+                  INR
+                </span>{" "}
                 {/* <Button variant="contained" size="small" onClick={() => payoutRequestHandler(mainResponse.payLinkIds, mainResponse.hotelIds, mainResponse.allHotelPayoutAmount)}>Payout</Button> */}
               </Grid>
             </Grid>

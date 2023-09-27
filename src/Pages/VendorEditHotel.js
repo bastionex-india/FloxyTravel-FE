@@ -213,8 +213,6 @@ const VendorEditHotel = () => {
     { label: "Desert", value: "desert" },
   ];
 
-
-
   const getHotelDetailById = async () => {
     try {
       const url = `${environmentVariables.apiUrl}/vendor/gethoteldetailbyid/${id}`;
@@ -291,7 +289,7 @@ const VendorEditHotel = () => {
     for (let i of images) {
       setArr((oldItems) => [
         ...oldItems,
-        { image: `${environmentVariables.apiUrl}/uploads/${i}` },
+        { image: `https://floxytravels.b-cdn.net/uploads/${i}` },
       ]);
     }
   }, [images]);
@@ -472,7 +470,7 @@ const VendorEditHotel = () => {
             <ImageWrapper key={image}>
               <CirleCross></CirleCross>
               <Image1
-                src={`${environmentVariables.apiUrl}/uploads/${image}`}
+                src={`https://floxytravels.b-cdn.net/uploads/${image}`}
                 alt="Image"
               />
               <RemoveButton onClick={() => removeImage(image)}>

@@ -456,7 +456,7 @@ const ManageActivities = () => {
                       <HotelCard key={index}>
                         <HotelImageWrapper>
                           <HotelImage
-                            src={`${environmentVariables.apiUrl}/uploads/${imageSrc}`}
+                            src={`https://floxytravels.b-cdn.net/uploads/${imageSrc}`}
                           />
                         </HotelImageWrapper>
                         <HotelInfoWrapper>
