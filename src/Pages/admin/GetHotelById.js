@@ -397,7 +397,7 @@ const GetHotelById = () => {
     for (let i of state.image) {
       setArr((oldItems) => [
         ...oldItems,
-        { image: `https://floxytravels.b-cdn.net/uploads/${i}` },
+        { image: `https://floxy-travels.b-cdn.net/uploads/${i}` },
       ]);
     }
   }, []);

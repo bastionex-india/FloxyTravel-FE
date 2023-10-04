@@ -471,7 +471,7 @@ const ManageAdmin = () => {
                       <HotelCard key={index}>
                         <HotelImageWrapper>
                           <HotelImage
-                            src={`https://floxytravels.b-cdn.net/uploads/${imageSrc}`}
+                            src={`https://floxy-travels.b-cdn.net/uploads/${imageSrc}`}
                           />
                         </HotelImageWrapper>
                         <HotelInfoWrapper>

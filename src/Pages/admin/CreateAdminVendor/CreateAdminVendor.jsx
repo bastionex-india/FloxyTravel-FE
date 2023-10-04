@@ -16,6 +16,7 @@ const ErrorText = styled.div`
   // left: 132px;
   // top: 35px;
   font-size: 14px;
+  left: 20px;
   // font-weight: 700;
   position: absolute;
 `;
@@ -38,6 +39,9 @@ const AddThemeLabel = styled.div`
 const RadioWrapper = styled.div`
   display: flex;
 `;
+const RowWrapper = styled.div`
+  display: flex;
+`;
 const RadioInput = styled.input``;
 const AddThemePopUp = styled.div`
   position: relative;
@@ -52,6 +56,7 @@ const ButtonWrapper = styled.div`
   display: flex;
   justify-content: center;
   margin-bottom: 20px;
+  margin-top: 20px;
 `;
 const AddStatePopUpCloseIcon = styled.i`
   position: absolute;
@@ -121,7 +126,7 @@ const CreateAdminVendor = ({ open, setOpen }) => {
     bankName: "",
     accountNumber: "",
     accountHolderName: "",
-    ifsc: ""
+    ifsc: "",
   };
   const { values, errors, touched, handleBlur, handleChange, handleSubmit } =
     useFormik({
@@ -145,7 +150,7 @@ const CreateAdminVendor = ({ open, setOpen }) => {
                 bankName: values.bankName,
                 accountNumber: values.accountNumber,
                 accountHolderName: values.accountHolderName,
-                ifsc: values.ifsc
+                ifsc: values.ifsc,
               },
               headers: { _token: authData.data.token },
             })
@@ -217,6 +222,14 @@ const CreateAdminVendor = ({ open, setOpen }) => {
         }
       },
     });
+  const handleFocus = (e) => {
+    e.target.addEventListener("wheel", preventScroll);
+  };
+
+  const preventScroll = (e) => {
+    e.preventDefault();
+  };
+
   return (
     <>
       <AddThemePopUpContainer>
@@ -236,34 +249,36 @@ const CreateAdminVendor = ({ open, setOpen }) => {
             className="fa-solid fa-circle-xmark"
             style={{ color: "#fff", fontSize: "20px" }}
           />
-          <AddThemeInputWrapper>
-            <div className="form-group">
-              <AddThemeLabel>Name* : </AddThemeLabel>
-              <AddThemePopUpInput
-                name="name"
-                value={values.name}
-                onChange={handleChange}
-                onBlur={handleBlur}
-              />
-              {errors.name && touched.name ? (
-                <ErrorText>{errors.name}</ErrorText>
-              ) : null}
-            </div>
-          </AddThemeInputWrapper>
-          <AddThemeInputWrapper>
-            <div className="form-group">
-              <AddThemeLabel>Email* : </AddThemeLabel>
-              <AddThemePopUpInput
-                name="email"
-                value={values.email}
-                onChange={handleChange}
-                onBlur={handleBlur}
-              />
-              {errors.email && touched.email ? (
-                <ErrorText>{errors.email}</ErrorText>
-              ) : null}
-            </div>
-          </AddThemeInputWrapper>
+          <RowWrapper>
+            <AddThemeInputWrapper>
+              <div className="form-group">
+                <AddThemeLabel>Name* : </AddThemeLabel>
+                <AddThemePopUpInput
+                  name="name"
+                  value={values.name}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                />
+                {errors.name && touched.name ? (
+                  <ErrorText>{errors.name}</ErrorText>
+                ) : null}
+              </div>
+            </AddThemeInputWrapper>
+            <AddThemeInputWrapper>
+              <div className="form-group">
+                <AddThemeLabel>Email* : </AddThemeLabel>
+                <AddThemePopUpInput
+                  name="email"
+                  value={values.email}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                />
+                {errors.email && touched.email ? (
+                  <ErrorText>{errors.email}</ErrorText>
+                ) : null}
+              </div>
+            </AddThemeInputWrapper>
+          </RowWrapper>
           <AddThemeInputWrapper>
             <div className="form-group">
               <AddThemeLabel>Contact* : </AddThemeLabel>
@@ -273,102 +288,110 @@ const CreateAdminVendor = ({ open, setOpen }) => {
                 type="number"
                 onChange={handleChange}
                 onBlur={handleBlur}
+                onFocus={handleFocus}
               />
               {errors.contact && touched.contact ? (
                 <ErrorText>{errors.contact}</ErrorText>
               ) : null}
             </div>
           </AddThemeInputWrapper>{" "}
-          <AddThemeInputWrapper>
-            <div className="form-group">
-              <AddThemeLabel>Password* : </AddThemeLabel>
-              <AddThemePopUpInput
-                name="password"
-                value={values.password}
-                type="password"
-                onChange={handleChange}
-                onBlur={handleBlur}
-              />
-              {errors.password && touched.password ? (
-                <ErrorText>{errors.password}</ErrorText>
-              ) : null}
-            </div>
-          </AddThemeInputWrapper>{" "}
-          <AddThemeInputWrapper>
-            <div className="form-group">
-              <AddThemeLabel>Confirm* : </AddThemeLabel>
-              <AddThemePopUpInput
-                name="confirmPassword"
-                value={values.confirmPassword}
-                type="password"
-                onChange={handleChange}
-                onBlur={handleBlur}
-              />
-              {errors.confirmPassword && touched.confirmPassword ? (
-                <ErrorText>{errors.confirmPassword}</ErrorText>
-              ) : null}
-            </div>
-          </AddThemeInputWrapper>{" "}
-          <AddThemeInputWrapper>
-            <div className="form-group">
-              <AddThemeLabel>Bank name* : </AddThemeLabel>
-              <AddThemePopUpInput
-                name="bankName"
-                value={values.bankName}
-                type="text"
-                onChange={handleChange}
-                onBlur={handleBlur}
-              />
-              {errors.bankName && touched.bankName ? (
-                <ErrorText>{errors.bankName}</ErrorText>
-              ) : null}
-            </div>
-          </AddThemeInputWrapper>{" "}
-          <AddThemeInputWrapper>
-            <div className="form-group">
-              <AddThemeLabel>Account Number* : </AddThemeLabel>
-              <AddThemePopUpInput
-                name="accountNumber"
-                value={values.accountNumber}
-                type="number"
-                onChange={handleChange}
-                onBlur={handleBlur}
-              />
-              {errors.accountNumber && touched.accountNumber ? (
-                <ErrorText>{errors.accountNumber}</ErrorText>
-              ) : null}
-            </div>
-          </AddThemeInputWrapper>{" "}
-          <AddThemeInputWrapper>
-            <div className="form-group">
-              <AddThemeLabel>Account Holder Name* : </AddThemeLabel>
-              <AddThemePopUpInput
-                name="accountHolderName"
-                value={values.accountHolderName}
-                type="text"
-                onChange={handleChange}
-                onBlur={handleBlur}
-              />
-              {errors.accountHolderName && touched.accountHolderName ? (
-                <ErrorText>{errors.accountHolderName}</ErrorText>
-              ) : null}
-            </div>
-          </AddThemeInputWrapper>{" "}
-          <AddThemeInputWrapper>
-            <div className="form-group">
-              <AddThemeLabel>IFSC Code* : </AddThemeLabel>
-              <AddThemePopUpInput
-                name="ifsc"
-                value={values.ifsc}
-                type="text"
-                onChange={handleChange}
-                onBlur={handleBlur}
-              />
-              {errors.ifsc && touched.ifsc ? (
-                <ErrorText>{errors.ifsc}</ErrorText>
-              ) : null}
-            </div>
-          </AddThemeInputWrapper>
+          <RowWrapper>
+            <AddThemeInputWrapper>
+              <div className="form-group">
+                <AddThemeLabel>Password* : </AddThemeLabel>
+                <AddThemePopUpInput
+                  name="password"
+                  value={values.password}
+                  type="password"
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                />
+                {errors.password && touched.password ? (
+                  <ErrorText>{errors.password}</ErrorText>
+                ) : null}
+              </div>
+            </AddThemeInputWrapper>{" "}
+            <AddThemeInputWrapper>
+              <div className="form-group">
+                <AddThemeLabel>Confirm* : </AddThemeLabel>
+                <AddThemePopUpInput
+                  name="confirmPassword"
+                  value={values.confirmPassword}
+                  type="password"
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                />
+                {errors.confirmPassword && touched.confirmPassword ? (
+                  <ErrorText>{errors.confirmPassword}</ErrorText>
+                ) : null}
+              </div>
+            </AddThemeInputWrapper>{" "}
+          </RowWrapper>
+          <RowWrapper>
+            <AddThemeInputWrapper>
+              <div className="form-group">
+                <AddThemeLabel>Bank name* : </AddThemeLabel>
+                <AddThemePopUpInput
+                  name="bankName"
+                  value={values.bankName}
+                  type="text"
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                />
+                {errors.bankName && touched.bankName ? (
+                  <ErrorText>{errors.bankName}</ErrorText>
+                ) : null}
+              </div>
+            </AddThemeInputWrapper>{" "}
+            <AddThemeInputWrapper>
+              <div className="form-group">
+                <AddThemeLabel>Account Number* : </AddThemeLabel>
+                <AddThemePopUpInput
+                  name="accountNumber"
+                  value={values.accountNumber}
+                  type="number"
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  onFocus={handleFocus}
+                />
+                {errors.accountNumber && touched.accountNumber ? (
+                  <ErrorText>{errors.accountNumber}</ErrorText>
+                ) : null}
+              </div>
+            </AddThemeInputWrapper>{" "}
+          </RowWrapper>
+          <RowWrapper>
+            <AddThemeInputWrapper>
+              <div className="form-group">
+                <AddThemeLabel>Account Holder Name* : </AddThemeLabel>
+                <AddThemePopUpInput
+                  name="accountHolderName"
+                  value={values.accountHolderName}
+                  type="text"
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                />
+                {errors.accountHolderName && touched.accountHolderName ? (
+                  <ErrorText>{errors.accountHolderName}</ErrorText>
+                ) : null}
+              </div>
+            </AddThemeInputWrapper>{" "}
+            <AddThemeInputWrapper>
+              <div className="form-group">
+                <AddThemeLabel>IFSC Code* : </AddThemeLabel>
+                <AddThemePopUpInput
+                  name="ifsc"
+                  value={values.ifsc}
+                  type="text"
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                />
+                {errors.ifsc && touched.ifsc ? (
+                  <ErrorText>{errors.ifsc}</ErrorText>
+                ) : null}
+              </div>
+            </AddThemeInputWrapper>
+          </RowWrapper>
           {/* <AddThemeInputWrapper style={{ marginRight: "240px" }}>
             <AddThemeLabel>Admin/Vendor* : </AddThemeLabel>
             <RadioWrapper>

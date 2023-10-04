@@ -463,7 +463,7 @@ const AddActivity = () => {
     for (let i of images) {
       setArr((oldItems) => [
         ...oldItems,
-        { image: `https://floxytravels.b-cdn.net/uploads/${i}` },
+        { image: `https://floxy-travels.b-cdn.net/uploads/${i}` },
       ]);
     }
   }, [images]);
@@ -771,7 +771,7 @@ const AddActivity = () => {
         {/* <div>
           {images.map((image) => (
             <div key={image}>
-              <img src={`https://floxytravels.b-cdn.net/uploads/${image}`} alt="Image" />
+              <img src={`https://floxy-travels.b-cdn.net/uploads/${image}`} alt="Image" />
             </div>
           ))}
         </div> */}
@@ -780,7 +780,7 @@ const AddActivity = () => {
             <ImageWrapper key={image}>
               <CirleCross></CirleCross>
               <Image1
-                src={`https://floxytravels.b-cdn.net/uploads/${image}`}
+                src={`https://floxy-travels.b-cdn.net/uploads/${image}`}
                 alt="Image"
               />
               <RemoveButton onClick={() => removeImage(image)}>
