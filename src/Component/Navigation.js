@@ -290,7 +290,7 @@ function Navigation({
   return (
     <Root>
       <Logo>
-        <img width={`180px`} src={BrandLogo} />
+        <img width={`180px`} src={BrandLogo} onClick={() => navigation("/")} />
       </Logo>
       <RightWrapper>
         <NotificationsWrapper>
