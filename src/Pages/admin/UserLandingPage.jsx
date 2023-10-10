@@ -186,6 +186,12 @@ const UserLandingPage = () => {
     setCityName(selectedOption.getAttribute("data-value"));
   };
 
+  const handleStateIdChange = (e) => {
+    setStateSelected(e.target.value);
+    const selectedOption = e.target.selectedOptions[0];
+    setStateId(selectedOption.getAttribute("data-value"));
+  };
+
   useEffect(() => {
     if (countryCode) {
       let config = {
@@ -506,6 +512,7 @@ const UserLandingPage = () => {
       },
     })
       .then((response) => {
+        console.log("llllllllllla", response.data.data);
         setAllStates(response.data.data);
         setStateSelected(response?.data?.data[0].cityName);
         setStateId(response.data.data[0]._id);
@@ -549,10 +556,10 @@ const UserLandingPage = () => {
   };
 
   const getThemes = () => {
-    // console.log(stateId);
+    console.log(stateId);
     axios({
       method: "get",
-      url: `${environmentVariables.apiUrl}/admin/getthemebystate/${stateId}`,
+      url: `http://localhost:4000/admin/getthemebystate/${stateId}`,
       headers: {
         _token: authData?.data?.token,
       },
@@ -560,7 +567,7 @@ const UserLandingPage = () => {
       .then((response) => {
         setThemeData(response.data.data);
         setIsLoading(false);
-        // console.log(response.data.data, "sr");
+        console.log(response.data.data, "sr");
       })
       .catch((err) => {
         // console.log(err.message);
@@ -589,7 +596,7 @@ const UserLandingPage = () => {
     } else {
       axios({
         method: "put",
-        url: `${environmentVariables.apiUrl}/admin/inserttheme/${stateSelected}`,
+        url: `http://localhost:4000/admin/inserttheme/${stateSelected}`,
         data: {
           name: theme,
           heading: title,
@@ -691,9 +698,10 @@ const UserLandingPage = () => {
     setThemeId(e.target.id);
   };
   const handleDeleteTheme = (e) => {
+    console.log(themeId, stateSelected);
     axios({
       method: "delete",
-      url: `${environmentVariables.apiUrl}/admin/deletetheme/${themeId}/${stateSelected}`,
+      url: `http://localhost:4000/admin/deletetheme/${themeId}/${stateSelected}`,
       headers: {
         _token: authData?.data?.token,
       },
@@ -717,7 +725,7 @@ const UserLandingPage = () => {
   };
   const handleEditTheme = (e) => {
     const editTheme = themeData.filter((val) => val._id === e.target.id);
-    // console.log(editTheme[0], "edit");
+    console.log(editTheme[0], "edit", e.target.id);
     setThemeId(e.target.id);
     setTheme(editTheme[0].name);
     setTitle(editTheme[0].heading);
@@ -735,7 +743,7 @@ const UserLandingPage = () => {
   useEffect(() => {
     setIsLoading(true);
     getThemes();
-  }, [stateId]);
+  }, [stateId, stateSelected]);
   useEffect(() => {
     getBackgroundImage();
   }, [chosenState, stateSelected]);
@@ -836,6 +844,7 @@ const UserLandingPage = () => {
     setCityName("");
     setSelectedFile(null);
   };
+  console.log(themeData);
   return (
     <Root>
       <HeadingWrapper>
@@ -868,7 +877,7 @@ const UserLandingPage = () => {
             <div className="modal-content">
               <div className="modal-header">
                 <h1 className="modal-title fs-5" id="staticBackdropLabel">
-                  Add State
+                  Add State...
                 </h1>
                 <button
                   type="button"
@@ -880,6 +889,27 @@ const UserLandingPage = () => {
               <div className="modal-body">
                 <div className="input-group mb-3">
                   <label className="input-group-text" for="inputGroupSelect01">
+                    Country*:{" "}
+                  </label>
+                  <select
+                    className="form-select"
+                    onChange={handleCountryChange}
+                    id="inputGroupSelect01"
+                  >
+                    <option>Select Country</option>
+                    {allCountries.map((country, index) => (
+                      <option
+                        key={index}
+                        value={country.isoCode}
+                        data-value={country.name}
+                      >
+                        {country.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="input-group mb-3">
+                  <label className="input-group-text" for="inputGroupSelect01">
                     State*:{" "}
                   </label>
                   <select
@@ -888,9 +918,13 @@ const UserLandingPage = () => {
                     id="inputGroupSelect01"
                   >
                     <option>Select State</option>
-                    {stateData.map((val) => (
-                      <option value={val.name}>{val.name}</option>
-                    ))}
+                    {allStatesForPromotion.map((val, index) => {
+                      return (
+                        <FormOptions key={index} value={val.name}>
+                          {val.name}
+                        </FormOptions>
+                      );
+                    })}
                   </select>
                 </div>
 
@@ -941,7 +975,7 @@ const UserLandingPage = () => {
             <div className="modal-content">
               <div className="modal-header">
                 <h1 className="modal-title fs-5" id="staticBackdropLabel1">
-                  Add Theme
+                  Add Theme....
                 </h1>
                 <button
                   type="button"
@@ -967,6 +1001,8 @@ const UserLandingPage = () => {
                     <option value={`romantic`}>Romantic</option>
                     <option value={`hill`}>Hill</option>
                     <option value={`heritage`}>Heritage</option>
+                    <option value={`yatch`}>Yatch</option>
+                    <option value={`desert`}>Desert</option>
                   </select>
                 </div>
 
@@ -1039,6 +1075,7 @@ const UserLandingPage = () => {
             </div>
           </div>
         </div>
+        {/* iiuyuiyiu */}
         <div
           className="modal fade"
           id="staticBackdrop3"
@@ -1082,6 +1119,8 @@ const UserLandingPage = () => {
                     <option value={`romantic`}>Romantic</option>
                     <option value={`hill`}>Hill</option>
                     <option value={`heritage`}>Heritage</option>
+                    <option value={`yatch`}>Yatch</option>
+                    <option value={`desert`}>Desert</option>
                   </select>
                 </div>
 
@@ -1187,16 +1226,15 @@ const UserLandingPage = () => {
 
         <SearchButtonWrapper>
           <StatesWrapper>
-            <SelectState
-              onChange={(e) => {
-                setStateSelected(e.target.value.split("-")[0]);
-                setStateId(e.target.value.split("-")[1]);
-              }}
-            >
+            <SelectState onChange={handleStateIdChange}>
               {/* <SelectOption>Select City</SelectOption> */}
               {allStates &&
-                allStates.map((val) => (
-                  <SelectOption value={`${val.cityName}-${val._id}`}>
+                allStates.map((val, index) => (
+                  <SelectOption
+                    key={index}
+                    value={`${val.cityName}`}
+                    data-value={val._id}
+                  >
                     {val.cityName}
                   </SelectOption>
                 ))}
@@ -1248,6 +1286,7 @@ const UserLandingPage = () => {
                       ? stateSelected.charAt(0).toUpperCase() +
                         stateSelected.slice(1)
                       : ""}
+                    nnnnnnnn
                   </h3>
                 </Item>
               </Grid>
@@ -1331,19 +1370,52 @@ const UserLandingPage = () => {
                         <ThemeBoxElement>{val?.heading}</ThemeBoxElement>
                         <ThemeBoxElementDesc>{`${val?.description}`}</ThemeBoxElementDesc>
                         <ThemeBoxElement style={{ justifyContent: "flex-end" }}>
-                          <DeleteIcon
-                            id={val?._id}
-                            deleteConfirmation
-                            onClick={(e) => deleteConfirmation(e)}
-                            classNameName="fa-solid fa-trash"
-                          />
-                          <EditIcon
-                            onClick={(e) => handleEditTheme(e)}
-                            id={val?._id}
-                            classNameName="fa-solid fa-pen-to-square"
+                          {/* <button type="button" class="btn">
+                            <DeleteIcon
+                              id={val?._id}
+                              deleteConfirmation
+                              onClick={(e) => {
+                                deleteConfirmation(e);
+                                
+                              }}
+                              classNameName="fa-solid fa-trash"
+                            />
+                          </button>
+                          dfgdf
+                          <button
+                            type="button"
+                            class="btn"
+                            data-bs-toggle="modal"
+                            data-bs-target="#exampleModal"
+                          >
+                            <EditIcon
+                              onClick={(e) => handleEditTheme(e)}
+                              id={val?._id}
+                              classNameName="fa-solid fa-pen-to-square"
+                            />
+                          </button> */}
+                          <button type="button" class="btn">
+                            <DeleteIcon
+                              id={val?._id}
+                              deleteConfirmation
+                              onClick={(e) => {
+                                deleteConfirmation(e);
+                              }}
+                              className="fa-solid fa-trash"
+                            />
+                          </button>
+                          <button
+                            type="button"
+                            class="btn"
                             data-bs-toggle="modal"
                             data-bs-target="#staticBackdrop3"
-                          />
+                          >
+                            <EditIcon
+                              onClick={(e) => handleEditTheme(e)}
+                              id={val?._id}
+                              className="fa-solid fa-pen-to-square"
+                            />
+                          </button>
                         </ThemeBoxElement>
                         {/* <Modal show={showModal} onHide={hideModal}>
                           <Modal.Header closeButton>

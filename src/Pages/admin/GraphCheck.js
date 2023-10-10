@@ -364,7 +364,7 @@ export default function GraphCheck() {
                 borderRight: "1px dashed black",
               }}
             >
-              Acitivities
+              Activities
             </TabButton>
             <TabButton
               onClick={() => setTab("Bookings")}

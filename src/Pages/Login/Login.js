@@ -78,7 +78,9 @@ const Input1 = styled.input`
   border-radius: 6px;
   outline: none;
 `;
-const Label = styled.label``;
+const Label = styled.label`
+  color: #fff;
+`;
 const Button1 = styled.button`
   background-color: #01575c;
   border: none;
@@ -107,6 +109,9 @@ const Image = styled.img`
   position: absolute;
   top: 15px;
   left: 15px;
+`;
+const PTAG = styled.p`
+  color: white;
 `;
 const style1 = {
   position: "absolute",
@@ -347,13 +352,12 @@ const Login = ({ loggedIn }) => {
   const [open1, setOpen1] = React.useState(false);
 
   const onSubmit = (e) => {
-
     e.preventDefault();
     if (!userName || !Password) {
       setError("Please enter all details correctly.");
       return;
     }
-    setIsLoading(true)
+    setIsLoading(true);
     axios({
       method: "post",
       url: `${environmentVariables?.apiUrl}/auth/admin/login`,
@@ -393,7 +397,7 @@ const Login = ({ loggedIn }) => {
             // setIsLoading(false)
           })
           .catch((error) => {
-            setIsLoading(false)
+            setIsLoading(false);
             console.log("vendor error", error);
             setError("Details are not valid");
           });
@@ -452,7 +456,6 @@ const Login = ({ loggedIn }) => {
       },
     });
 
-
   return (
     <Root>
       <Form>
@@ -489,24 +492,26 @@ const Login = ({ loggedIn }) => {
             type="text"
           />
         </InputWrapper> */}
-        <p onClick={handleOpen} style={{ cursor: "pointer" }}>
+        <PTAG onClick={handleOpen} style={{ cursor: "pointer" }}>
           Forget Password
-        </p>
+        </PTAG>
 
         {error && <ErrorMessage>{error}</ErrorMessage>}
 
-        
         <Button1 onClick={onSubmit}>
-          {
-            isLoading ?
-              <div class="d-flex justify-content-center">
-                <div class="spinner-border text-light" style={{height:"24px",width:"24px"}} role="status">
-                  <span class="visually-hidden">Loading...</span>
-                </div>
+          {isLoading ? (
+            <div class="d-flex justify-content-center">
+              <div
+                class="spinner-border text-light"
+                style={{ height: "24px", width: "24px" }}
+                role="status"
+              >
+                <span class="visually-hidden">Loading...</span>
               </div>
-              :
-              'Submit'
-          }
+            </div>
+          ) : (
+            "Submit"
+          )}
         </Button1>
 
         <div>

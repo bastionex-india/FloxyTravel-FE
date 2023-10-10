@@ -137,7 +137,7 @@ const UserLandingPageHome = () => {
   const handleEditPopUp = (e) => {
     const editCity = allData.filter((val) => val._id === e.target.id);
     setThemeId(e.target.id);
-    console.log(editCity[0]);
+    console.log(editCity[0], "edit", e.target.id);
     setTitle(editCity[0]?.title);
     setCity(editCity[0]?.city);
     setTheme(editCity[0]?.theme);
@@ -147,7 +147,7 @@ const UserLandingPageHome = () => {
   const handleDeleteData = () => {
     axios({
       method: "delete",
-      url: `${environmentVariables.apiUrl}/admin/deleteprioritybyid/${themeId}`,
+      url: `http://localhost:4000/admin/deleteprioritybyid/${themeId}`,
       headers: {
         _token: authData?.data?.token,
       },
@@ -453,7 +453,7 @@ const UserLandingPageHome = () => {
             <div class="modal-body">
               <div class="input-group mb-3">
                 <label class="input-group-text" for="inputGroupSelect01">
-                  City Name* :
+                  City Name* :nnddn
                 </label>
                 <select
                   class="form-select"
