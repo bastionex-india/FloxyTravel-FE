@@ -357,7 +357,7 @@ const GenerateInvoice = () => {
       setIsSendInvoice(true);
       let config = {
         method: "post",
-        url: `http://localhost:4000/admin/sendInvoice`,
+        url: `${environmentVariables.apiUrl}/admin/sendInvoice`,
         headers: {
           _token: authData.data.token,
           "Content-Type": "application/json",

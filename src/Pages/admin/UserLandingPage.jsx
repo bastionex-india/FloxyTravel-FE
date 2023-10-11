@@ -559,7 +559,7 @@ const UserLandingPage = () => {
     console.log(stateId);
     axios({
       method: "get",
-      url: `http://localhost:4000/admin/getthemebystate/${stateId}`,
+      url: `${environmentVariables.apiUrl}/admin/getthemebystate/${stateId}`,
       headers: {
         _token: authData?.data?.token,
       },
@@ -596,7 +596,7 @@ const UserLandingPage = () => {
     } else {
       axios({
         method: "put",
-        url: `http://localhost:4000/admin/inserttheme/${stateSelected}`,
+        url: `${environmentVariables.apiUrl}/admin/inserttheme/${stateSelected}`,
         data: {
           name: theme,
           heading: title,
@@ -701,7 +701,7 @@ const UserLandingPage = () => {
     console.log(themeId, stateSelected);
     axios({
       method: "delete",
-      url: `http://localhost:4000/admin/deletetheme/${themeId}/${stateSelected}`,
+      url: `${environmentVariables.apiUrl}/admin/deletetheme/${themeId}/${stateSelected}`,
       headers: {
         _token: authData?.data?.token,
       },

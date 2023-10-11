@@ -147,7 +147,7 @@ const UserLandingPageHome = () => {
   const handleDeleteData = () => {
     axios({
       method: "delete",
-      url: `http://localhost:4000/admin/deleteprioritybyid/${themeId}`,
+      url: `${environmentVariables.apiUrl}/admin/deleteprioritybyid/${themeId}`,
       headers: {
         _token: authData?.data?.token,
       },
