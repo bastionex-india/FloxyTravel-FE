@@ -479,7 +479,7 @@ const GetHotelByVendor = () => {
                   <CardMedia
                     component="img"
                     height="250"
-                    image={`https://floxy-travels.b-cdn.net/uploads/${item.image[0]}`}
+                    image={`https://bastionex-travels.b-cdn.net/uploads/${item.image[0]}`}
                     alt="Paella dish"
                     onClick={() => getHotels(item)}
                     style={{ cursor: "pointer" }}

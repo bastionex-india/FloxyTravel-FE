@@ -289,7 +289,7 @@ const VendorEditHotel = () => {
     for (let i of images) {
       setArr((oldItems) => [
         ...oldItems,
-        { image: `https://floxy-travels.b-cdn.net/uploads/${i}` },
+        { image: `https://bastionex-travels.b-cdn.net/uploads/${i}` },
       ]);
     }
   }, [images]);
@@ -470,7 +470,7 @@ const VendorEditHotel = () => {
             <ImageWrapper key={image}>
               <CirleCross></CirleCross>
               <Image1
-                src={`https://floxy-travels.b-cdn.net/uploads/${image}`}
+                src={`https://bastionex-travels.b-cdn.net/uploads/${image}`}
                 alt="Image"
               />
               <RemoveButton onClick={() => removeImage(image)}>

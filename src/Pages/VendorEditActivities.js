@@ -280,7 +280,7 @@ const VendorEditActivities = () => {
     for (let i of images) {
       setArr((oldItems) => [
         ...oldItems,
-        { image: `https://floxy-travels.b-cdn.net/uploads/${i}` },
+        { image: `https://bastionex-travels.b-cdn.net/uploads/${i}` },
       ]);
     }
   }, [images]);
@@ -444,7 +444,7 @@ const VendorEditActivities = () => {
         {/* <div>
           {images.map((image) => (
             <div key={image}>
-              <img src={`https://floxy-travels.b-cdn.net/uploads/${image}`} alt="Image" />
+              <img src={`https://bastionex-travels.b-cdn.net/uploads/${image}`} alt="Image" />
             </div>
           ))}
         </div> */}
@@ -453,7 +453,7 @@ const VendorEditActivities = () => {
             <ImageWrapper key={image}>
               <CirleCross></CirleCross>
               <Image1
-                src={`https://floxy-travels.b-cdn.net/uploads/${image}`}
+                src={`https://bastionex-travels.b-cdn.net/uploads/${image}`}
                 alt="Image"
               />
               <RemoveButton onClick={() => removeImage(image)}>
