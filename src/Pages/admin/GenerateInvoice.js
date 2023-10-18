@@ -37,6 +37,7 @@ import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormLabel from "@mui/material/FormLabel";
+import { io } from "socket.io-client";
 
 const Item = newStyled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -270,6 +271,7 @@ const boldTextCss = {
   width: "20%",
 };
 
+const socket = io(`${environmentVariables?.apiUrl}`);
 const GenerateInvoice = () => {
   const { state } = useLocation();
   const { authData } = useContext(AuthContext);
@@ -370,6 +372,7 @@ const GenerateInvoice = () => {
         .then((response) => {
           setIsSendInvoice(false);
           if (response.data.status) {
+            socket.emit("admin_booking_approved");
             Swal.fire({
               icon: "success",
               title: "Invoice sent successfully",
