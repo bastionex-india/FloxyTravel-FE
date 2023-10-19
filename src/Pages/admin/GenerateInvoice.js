@@ -372,16 +372,16 @@ const GenerateInvoice = () => {
         .then((response) => {
           setIsSendInvoice(false);
           if (response.data.status) {
-            socket.emit("admin_booking_approved");
             Swal.fire({
               icon: "success",
               title: "Invoice sent successfully",
               timer: "800",
             });
             let redirect =
-              state.type != undefined && state.type == "activity"
+              state.type !== undefined && state.type === "activity"
                 ? "/activityBookings"
                 : "/bookinghistoryofadmin";
+            socket.emit("admin_booking_approved");
             navigate(redirect);
           } else {
             Swal.fire({

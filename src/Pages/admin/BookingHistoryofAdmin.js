@@ -159,7 +159,8 @@ const DatePickerStyled1 = styled(DatePicker)`
   border-radius: 5px;
   outline: none;
   border: none;
-  box-shadow: rgba(50,50,93,0.25) 0px 6px 12px -2px, rgba(0,0,0,0.3) 0px 3px 7px -3px;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px,
+    rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
   background-color: white;
   margin: 0 10px;
 `;
@@ -223,7 +224,8 @@ const BookingHistoryofAdmin = () => {
       getAllUsers();
     });
 
-    socket.on("admin_booking_notification", (data) => {
+    socket.on("admin_booking_notification", (xyz) => {
+      console.log("xyz,data", xyz, data);
       getAllUsers();
     });
 
@@ -231,7 +233,7 @@ const BookingHistoryofAdmin = () => {
       socket.disconnect();
     };
   }, []);
-
+  console.log(data, "aaa");
   const getAllUsers = async () => {
     let data = {
       search: search,
@@ -575,7 +577,8 @@ const BookingHistoryofAdmin = () => {
                           }}
                         >
                           <TableCell component="th" scope="row">
-                            {item.hotelname} {item.isCombined ? "(With Activity)" : ""}
+                            {item.hotelname}{" "}
+                            {item.isCombined ? "(With Activity)" : ""}
                           </TableCell>
                           <TableCell align="left">
                             {item.vendorData.name}
