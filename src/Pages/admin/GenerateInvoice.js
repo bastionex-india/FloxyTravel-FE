@@ -381,8 +381,8 @@ const GenerateInvoice = () => {
               state.type !== undefined && state.type === "activity"
                 ? "/activityBookings"
                 : "/bookinghistoryofadmin";
-            socket.emit("admin_booking_approved");
             navigate(redirect);
+            socket.emit("admin_booking_approved");
           } else {
             Swal.fire({
               icon: "error",
