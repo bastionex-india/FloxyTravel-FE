@@ -182,6 +182,7 @@ const BookingHistoryofAdmin = () => {
   const [isDatePickerOpen1, setIsDatePickerOpen1] = useState(false);
   const InputStartsDate = useRef(null);
   const InputEndDate = useRef(null);
+  const socket = io.connect(environmentVariables?.apiUrl);
 
   // paginationstart
   const [page, setPage] = useState(0);
@@ -214,8 +215,6 @@ const BookingHistoryofAdmin = () => {
     navigation("/bookinghistorybyorderid", { state: item });
   };
   useEffect(() => {
-    const socket = io.connect(environmentVariables?.apiUrl);
-
     socket.on("admin_notification", (data) => {
       getAllUsers();
     });
