@@ -236,10 +236,11 @@ const HotelDetails = () => {
     // console.log(".nnnnnnnnnnnvvvv",hotelname,overview,hotelCategory,totalNoOfRooms,general,services,internet,parking,cityValue,area,stateValue)
     axios({
       method: "put",
-      url: `${environmentVariables.apiUrl}/auth/updatehotel/vendor/${state._id}`,
+      url: `${environmentVariables.apiUrl}/vendor/updatehotel/vendor/${state._id}`,
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
+        _token: authData.data.token
       },
       data: {
         hotelName: hotelname,
@@ -254,7 +255,6 @@ const HotelDetails = () => {
         state: stateValue,
         area: area,
       },
-      headers: { _token: authData.data.token },
     })
       .then((response) => {
         setUpdatedHotelData(response.data.message);
@@ -278,10 +278,11 @@ const HotelDetails = () => {
   const addDiv = async () => {
     axios({
       method: "post",
-      url: `${environmentVariables.apiUrl}/auth/addroomdetails`,
+      url: `${environmentVariables.apiUrl}/vendor/addroomdetails`,
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
+        _token: authData.data.token
       },
       data: {
         roomCategory: roomCategory,
@@ -289,7 +290,6 @@ const HotelDetails = () => {
         hotelId: state._id,
         price: price,
       },
-      headers: { _token: authData.data.token },
     })
       .then((response) => {
         // console.log(response.data.data.room,"00000000000001111111111")
@@ -315,15 +315,15 @@ const HotelDetails = () => {
     // alert(x)
     axios({
       method: "post",
-      url: `${environmentVariables.apiUrl}/auth/selectstateconutry`,
+      url: `${environmentVariables.apiUrl}/vendor/selectstateconutry`,
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
+        _token: authData.data.token,
       },
       data: {
         citiByState: x,
       },
-      headers: { _token: authData.data.token },
     })
       .then((response) => {
         // console.log(response.data.message,"0000000000000")
@@ -340,7 +340,7 @@ const HotelDetails = () => {
   const getAllHotelData = async () => {
     await axios
       .get(
-        `${environmentVariables.apiUrl}/auth/gethoteldetailbyid/${state._id}`,
+        `${environmentVariables.apiUrl}/vendor/gethoteldetailbyid/${state._id}`,
         {
           headers: { _token: authData.data.token },
         }
@@ -360,10 +360,11 @@ const HotelDetails = () => {
     // alert(noOfRoomsEdit)
     axios({
       method: "put",
-      url: `${environmentVariables.apiUrl}/auth/updaterooms/vendor/${state._id}`,
+      url: `${environmentVariables.apiUrl}/vendor/updaterooms/vendor/${state._id}`,
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
+        _token: authData.data.token,
       },
       data: {
         roomCategoryEdit: roomCategoryEdit,
@@ -371,7 +372,6 @@ const HotelDetails = () => {
         roomId: itemVal._id,
         priceEdit: priceEdit,
       },
-      headers: { _token: authData.data.token },
     })
       .then((response) => {
         console.log("dsffsdssd", response.data);
@@ -395,13 +395,13 @@ const HotelDetails = () => {
     }
     axios({
       method: "post",
-      url: `${environmentVariables.apiUrl}/auth/addhotelimagesvendor/${state._id}`,
+      url: `${environmentVariables.apiUrl}/vendor/addhotelimagesvendor/${state._id}`,
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
+        _token: authData.data.token,
       },
       data: formdata,
-      headers: { _token: authData.data.token },
     })
       .then((response) => {
         console.log(response.data, "00000000000001111111111");
@@ -419,7 +419,7 @@ const HotelDetails = () => {
   const imageDelete = () => {
     axios({
       method: "post",
-      url: `${environmentVariables.apiUrl}/auth/deletehotelimagesvendor/${state._id}`,
+      url: `${environmentVariables.apiUrl}/vendor/deletehotelimagesvendor/${state._id}`,
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",

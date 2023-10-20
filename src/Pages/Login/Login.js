@@ -360,7 +360,7 @@ const Login = ({ loggedIn }) => {
     setIsLoading(true);
     axios({
       method: "post",
-      url: `${environmentVariables?.apiUrl}/auth/admin/login`,
+      url: `${environmentVariables.apiUrl}/admin/admin/login`,
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
@@ -380,7 +380,7 @@ const Login = ({ loggedIn }) => {
       .catch((error) => {
         axios({
           method: "post",
-          url: `${environmentVariables?.apiUrl}/auth/vendor/login`,
+          url: `${environmentVariables.apiUrl}/vendor/vendor/login`,
           headers: {
             Accept: "application/json",
             "Content-Type": "application/json",

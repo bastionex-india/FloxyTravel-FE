@@ -212,7 +212,7 @@ const GetHotelByVendor = () => {
   const callApi = (x) => {
     axios({
       method: "post",
-      url: `${environmentVariables.apiUrl}/auth/selectstateconutryadmin`,
+      url: `${environmentVariables.apiUrl}/admin/selectstateconutryadmin`,
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",

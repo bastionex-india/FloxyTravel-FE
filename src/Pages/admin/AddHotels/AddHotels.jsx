@@ -508,9 +508,9 @@ const AddHotels = () => {
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
+        _token: authData.data.token,
       },
       data: formdata,
-      headers: { _token: authData.data.token },
     })
       .then((response) => {
         getHotelDetailById();

@@ -37,9 +37,9 @@ import ManageActivities from "./Pages/admin/Activities/ManageActivities";
 import AddActivity from "./Pages/admin/Activities/AddActivity";
 import ActivityBookingHistory from "./Pages/admin/ActivityBookingHistory";
 import VendorActivityHistory from "./Pages/VendorAcitivityHistory";
-import  { isExpired } from 'react-jwt';
+import { isExpired } from "react-jwt";
 import VendorEditActivities from "./Pages/VendorEditActivities";
- 
+
 const Root = styled.div``;
 const LeftWrapper = styled.div`
   width: 300px;
@@ -57,20 +57,19 @@ function App() {
   const [showDropDown, setShowDropDown] = useState(false);
   const location = useLocation();
   const [loggedIn, setLoggedIn] = useState(false);
-  
-  useEffect(() => {
-    if(authData===null){
-      setLoggedIn(false)
-    }else{
-      const url = authData?.data?.isadmin
-      ? `${environmentVariables?.apiUrl}/auth/isadminlogged`
-      : `${environmentVariables?.apiUrl}/auth/isvendorlogged`;
 
-      if(isExpired(authData.data.token)){
+  useEffect(() => {
+    if (authData === null) {
+      setLoggedIn(false);
+    } else {
+      const url = authData?.data?.isadmin
+        ? `${environmentVariables?.apiUrl}/admin/isadminlogged`
+        : `${environmentVariables?.apiUrl}/admin/isvendorlogged`;
+
+      if (isExpired(authData.data.token)) {
         setLoggedIn(false);
         localStorage.removeItem("authdata");
-      }
-      else{
+      } else {
         setLoggedIn(true);
       }
 
@@ -96,10 +95,8 @@ function App() {
       //     console.log(error);
       //   });
     }
-    
   }, [location, authData, loggedIn]);
 
- 
   return (
     <Root
       onClick={() => {
@@ -108,8 +105,7 @@ function App() {
       }}
     >
       {!loggedIn ? (
-        <Login loggedIn={loggedIn}/>
-        
+        <Login loggedIn={loggedIn} />
       ) : (
         <>
           <Navigation
@@ -125,7 +121,7 @@ function App() {
             </LeftWrapper>
             <RightWrapper>
               <Routes>
-                {authData!==null && authData.data.isadmin === "true" ? (
+                {authData !== null && authData.data.isadmin === "true" ? (
                   <>
                     <Route path="/" element={<Dashboard1 />} />
                     <Route path="/profile" element={<Profile />} />
@@ -146,9 +142,9 @@ function App() {
                     />
                     <Route
                       path="/activityBookings"
-                      element={<ActivityBookingHistory/>}
+                      element={<ActivityBookingHistory />}
                     />
-                    
+
                     <Route
                       path="/generateInvoice"
                       element={<GenerateInvoice />}
@@ -170,15 +166,18 @@ function App() {
                     {/* <Route path="/bookinghistory" element={<BookingHistory />} />
                     <Route path="/hoteldetails" element={<HotelDetails />} />
                     <Route path="/profile" element={<Profile />} /> */}
-                    <Route path="manageActivities" element={<ManageActivities />} />
+                    <Route
+                      path="manageActivities"
+                      element={<ManageActivities />}
+                    />
                     <Route path="/addActivity" element={<AddActivity />} />
                     <Route path="/addActivity/:id" element={<AddActivity />} />
-                    <Route path="vendordetails/:id" element={<VendorDetails />} />
-                    <Route path="/payoutRequests" element={<PayoutRequest />} />
                     <Route
-                      path="chatSupport"
-                      element={<ChatSupport/>}
+                      path="vendordetails/:id"
+                      element={<VendorDetails />}
                     />
+                    <Route path="/payoutRequests" element={<PayoutRequest />} />
+                    <Route path="chatSupport" element={<ChatSupport />} />
                   </>
                 ) : (
                   <>
@@ -203,10 +202,13 @@ function App() {
                       path="/vendormanagehotels"
                       element={<VendorManageHotels />}
                     />
-                    <Route path="vendorManageActivities" element={<VendorManageActivities />} />
+                    <Route
+                      path="vendorManageActivities"
+                      element={<VendorManageActivities />}
+                    />
                     <Route path="/payouts" element={<Payouts />} />
                     <Route path="/payoutHistory" element={<PayoutHistory />} />
-                    
+
                     <Route path="/hoteldetails" element={<HotelDetails />} />
 
                     <Route path="/profile" element={<Profile />} />

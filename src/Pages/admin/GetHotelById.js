@@ -245,7 +245,7 @@ const GetHotelById = () => {
   const saveHotelName = () => {
     axios({
       method: "put",
-      url: `${environmentVariables.apiUrl}/auth/updatehotel/admin/${state._id}`,
+      url: `${environmentVariables.apiUrl}/admin/updatehotel/admin/${state._id}`,
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
@@ -288,7 +288,7 @@ const GetHotelById = () => {
   const callApi = (x) => {
     axios({
       method: "post",
-      url: `${environmentVariables.apiUrl}/auth/selectstateconutryadmin`,
+      url: `${environmentVariables.apiUrl}/admin/selectstateconutryadmin`,
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
@@ -308,7 +308,7 @@ const GetHotelById = () => {
   const addDiv = async () => {
     axios({
       method: "post",
-      url: `${environmentVariables.apiUrl}/auth/addroomdetails1`,
+      url: `${environmentVariables.apiUrl}/admin/addroomdetails1`,
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
@@ -346,7 +346,7 @@ const GetHotelById = () => {
     // alert(noOfRoomsEdit)
     axios({
       method: "put",
-      url: `${environmentVariables.apiUrl}/auth/updaterooms/admin/${state._id}`,
+      url: `${environmentVariables.apiUrl}/admin/updaterooms/admin/${state._id}`,
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
@@ -377,7 +377,7 @@ const GetHotelById = () => {
   const getAllHotelData = async () => {
     await axios
       .get(
-        `${environmentVariables.apiUrl}/auth/gethoteldetailbyid1/${state._id}`,
+        `${environmentVariables.apiUrl}/admin/gethoteldetailbyid1/${state._id}`,
         {
           headers: { _token: authData.data.token },
         }
@@ -436,7 +436,7 @@ const GetHotelById = () => {
   const imageDelete = () => {
     axios({
       method: "post",
-      url: `${environmentVariables.apiUrl}/auth/deletehotelimages/${state._id}`,
+      url: `${environmentVariables.apiUrl}/admin/deletehotelimages/${state._id}`,
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
@@ -468,7 +468,7 @@ const GetHotelById = () => {
     }
     axios({
       method: "post",
-      url: `${environmentVariables.apiUrl}/auth/addhotelimages/${state._id}`,
+      url: `${environmentVariables.apiUrl}/admin/addhotelimages/${state._id}`,
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
