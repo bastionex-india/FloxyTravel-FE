@@ -506,8 +506,6 @@ const AddHotels = () => {
       method: "post",
       url: `${environmentVariables.apiUrl}/admin/addhotelimages/${hotelData._id}`,
       headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
         _token: authData.data.token,
       },
       data: formdata,

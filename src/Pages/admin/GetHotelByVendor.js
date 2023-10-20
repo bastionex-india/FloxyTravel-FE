@@ -93,7 +93,7 @@ const GetHotelByVendor = () => {
   const getData = async () => {
     await axios
       .get(
-        `${environmentVariables.apiUrl}/auth/gethoteldetailbyvendorid/${state.vendorId}`,
+        `${environmentVariables.apiUrl}/admin/gethoteldetailbyvendorid/${state.vendorId}`,
         { headers: { _token: authData.data.token } }
       )
       .then((response) => {
@@ -120,7 +120,7 @@ const GetHotelByVendor = () => {
   const deleteHotel = (item) => {
     // alert(item._id)
     axios
-      .delete(`${environmentVariables.apiUrl}/auth/deletehotel/${item._id}`, {
+      .delete(`${environmentVariables.apiUrl}/admin/deletehotel/${item._id}`, {
         headers: { _token: authData.data.token },
       })
       .then((response) => {
@@ -173,7 +173,7 @@ const GetHotelByVendor = () => {
     console.log("sssssss", formdata);
     axios({
       method: "post",
-      url: `${environmentVariables.apiUrl}/auth/addhotel`,
+      url: `${environmentVariables.apiUrl}/admin/addhotel`,
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",

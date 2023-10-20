@@ -414,7 +414,7 @@ const ManageAdmin = () => {
 
   const getVendor = async () => {
     await axios
-      .get(`${environmentVariables.apiUrl}/auth/vendorget`, {
+      .get(`${environmentVariables.apiUrl}/vendor/vendorget`, {
         headers: { _token: authData.data.token },
       })
       .then((response) => {

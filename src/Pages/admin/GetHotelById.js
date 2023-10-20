@@ -469,10 +469,6 @@ const GetHotelById = () => {
     axios({
       method: "post",
       url: `${environmentVariables.apiUrl}/admin/addhotelimages/${state._id}`,
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
       data: formdata,
       headers: { _token: authData.data.token },
     })

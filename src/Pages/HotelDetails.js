@@ -397,8 +397,6 @@ const HotelDetails = () => {
       method: "post",
       url: `${environmentVariables.apiUrl}/vendor/addhotelimagesvendor/${state._id}`,
       headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
         _token: authData.data.token,
       },
       data: formdata,

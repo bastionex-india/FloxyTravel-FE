@@ -181,7 +181,7 @@ const CreateAdminVendor = ({ open, setOpen }) => {
           } else {
             axios({
               method: "post",
-              url: `${environmentVariables.apiUrl}/auth/admin/register`,
+              url: `${environmentVariables.apiUrl}/admin/admin/register`,
               headers: {
                 Accept: "application/json",
                 "Content-Type": "application/json",

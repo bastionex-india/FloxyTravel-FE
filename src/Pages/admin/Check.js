@@ -189,30 +189,8 @@ const Check = ({ open, setOpen }) => {
     setOpen(false);
   };
 
-  // const handleClose2=()=>{
 
-  // }
-  // const handleClose3=()=>{
-  //   setOpen1(false);
-  // }
-  const deleteVendor = (item) => {
-    // alert(item._id)
-    axios
-      .delete(`${environmentVariables.apiUrl}/auth/deletevendor/${item._id}`, {
-        headers: { _token: authData.data.token },
-      })
-      .then((response) => {
-        console.log(response.data.data);
-        getAllListData();
-        navigate("/");
-
-        // toast(response.data.data)
-        // getAllUSers();
-      })
-      .catch((error) => {
-        console.log("err", error);
-      });
-  };
+  
   const initialValues = {
     name: "",
     email: "",
