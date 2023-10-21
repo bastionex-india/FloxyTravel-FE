@@ -78,6 +78,16 @@ const Root = styled.div`
 const CardWrapper = styled.div`
   width: 25%;
 `;
+const Headtext = styled.div`
+  text-align: left;
+  font-size: 16px;
+  font-weight: 500;
+`;
+const Subtext = styled.div`
+  text-align: left;
+  font-size: 28px;
+  font-weight: 600;
+`;
 
 const CardsWrapper = styled.div`
   display: flex;
@@ -394,21 +404,12 @@ const VendorList = () => {
                       sx={{ paddingLeft: "10px !important" }}
                     >
                       <Item elevation={0}>
-                        <p
-                          style={{ textAlign: "left", margin: "0 !important" }}
-                          className="card-title"
-                        >
-                          <b>Earnings</b>
-                        </p>
-                        <p
-                          style={{
-                            textAlign: "left",
-                            color: "#008080",
-                            margin: "0",
-                          }}
-                        >
+                        <Headtext>
+                          Earnings
+                        </Headtext>
+                        <Subtext>
                           ₹ {summaryData?.totalEarnings.toFixed(2)}
-                        </p>
+                        </Subtext>
                       </Item>
                     </Grid>
                   </Grid>
@@ -457,21 +458,12 @@ const VendorList = () => {
                       sx={{ paddingLeft: "10px !important" }}
                     >
                       <Item elevation={0}>
-                        <p
-                          style={{ textAlign: "left", margin: "0 !important" }}
-                          className="card-title"
-                        >
-                          <b>Payouts</b>
-                        </p>
-                        <p
-                          style={{
-                            textAlign: "left",
-                            color: "#008080",
-                            margin: "0",
-                          }}
-                        >
+                        <Headtext>
+                          Payouts
+                        </Headtext>
+                        <Subtext>
                           ₹ {summaryData?.allPayoutAmount.toFixed(2)}
-                        </p>
+                        </Subtext>
                       </Item>
                     </Grid>
                   </Grid>
@@ -520,21 +512,12 @@ const VendorList = () => {
                       sx={{ paddingLeft: "10px !important" }}
                     >
                       <Item elevation={0}>
-                        <p
-                          style={{ textAlign: "left", margin: "0 !important" }}
-                          className="card-title"
-                        >
-                          <b>Vendors</b>
-                        </p>
-                        <p
-                          style={{
-                            textAlign: "left",
-                            color: "#008080",
-                            margin: "0",
-                          }}
-                        >
+                        <Headtext>
+                          Vendors
+                        </Headtext>
+                        <Subtext>
                           {summaryData?.totalVendors}
-                        </p>
+                        </Subtext>
                       </Item>
                     </Grid>
                   </Grid>
@@ -585,21 +568,12 @@ const VendorList = () => {
                       sx={{ paddingLeft: "10px !important" }}
                     >
                       <Item elevation={0}>
-                        <p
-                          style={{ textAlign: "left", margin: "0 !important" }}
-                          className="card-title"
-                        >
-                          <b>Hotels</b>
-                        </p>
-                        <p
-                          style={{
-                            textAlign: "left",
-                            color: "#008080",
-                            margin: "0",
-                          }}
-                        >
+                        <Headtext>
+                          Hotels
+                        </Headtext>
+                        <Subtext>
                           {summaryData?.totalHotels}
-                        </p>
+                        </Subtext>
                       </Item>
                     </Grid>
                   </Grid>
@@ -648,21 +622,12 @@ const VendorList = () => {
                       sx={{ paddingLeft: "10px !important" }}
                     >
                       <Item elevation={0}>
-                        <p
-                          style={{ textAlign: "left", margin: "0 !important" }}
-                          className="card-title"
-                        >
-                          <b>Activities</b>
-                        </p>
-                        <p
-                          style={{
-                            textAlign: "left",
-                            color: "#008080",
-                            margin: "0",
-                          }}
-                        >
+                        <Headtext>
+                          Activities
+                        </Headtext>
+                        <Subtext>
                           {summaryData?.totalActivity}
-                        </p>
+                        </Subtext>
                       </Item>
                     </Grid>
                   </Grid>
@@ -711,21 +676,12 @@ const VendorList = () => {
                       sx={{ paddingLeft: "10px !important" }}
                     >
                       <Item elevation={0}>
-                        <p
-                          style={{ textAlign: "left", margin: "0 !important" }}
-                          className="card-title"
-                        >
-                          <b>Bookings</b>
-                        </p>
-                        <p
-                          style={{
-                            textAlign: "left",
-                            color: "#008080",
-                            margin: "0",
-                          }}
-                        >
-                          {summaryData?.totalBookings}
-                        </p>
+                        <Headtext>
+                          Bookings
+                        </Headtext>
+                        <Subtext>
+                        {summaryData?.totalBookings}
+                        </Subtext>
                       </Item>
                     </Grid>
                   </Grid>

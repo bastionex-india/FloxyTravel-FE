@@ -167,7 +167,7 @@ export default function LeaveRecord({ vendorId }) {
                         style={{ textAlign: "left", margin: "0 !important" }}
                         className="card-title"
                       >
-                        <b>Earnings</b>
+                        Earnings
                       </p>
                       <p
                         style={{
