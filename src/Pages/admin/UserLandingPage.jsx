@@ -975,7 +975,7 @@ const UserLandingPage = () => {
             <div className="modal-content">
               <div className="modal-header">
                 <h1 className="modal-title fs-5" id="staticBackdropLabel1">
-                  Add Theme....
+                  Add Theme
                 </h1>
                 <button
                   type="button"
@@ -1286,7 +1286,6 @@ const UserLandingPage = () => {
                       ? stateSelected.charAt(0).toUpperCase() +
                         stateSelected.slice(1)
                       : ""}
-                    nnnnnnnn
                   </h3>
                 </Item>
               </Grid>

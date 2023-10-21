@@ -1539,7 +1539,7 @@ const GenerateInvoice = () => {
           <ChildContainer5>
             {state.type === "hotel" && (
               <HotelInputPrice>
-                <HotelInputPriceHeading>Hotel Amount...</HotelInputPriceHeading>
+                <HotelInputPriceHeading>Hotel Amount</HotelInputPriceHeading>
                 <HotelInputPriceValue>
                   {state.status === "pending" || state.status === "approved" ? (
                     <FormControl variant="standard" className="pull-right">
@@ -1639,7 +1639,7 @@ const GenerateInvoice = () => {
             )}
             <TotalDiscountPrice>
               <HotelInputPriceHeading>
-                Total Discount Amount..
+                Total Discount Amount
               </HotelInputPriceHeading>
               <HotelInputPriceValue>
                 {" "}
