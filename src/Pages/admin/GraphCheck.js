@@ -49,7 +49,7 @@ export default function GraphCheck() {
   const [toDate, setToDate] = useState(null);
   const [xLabel, setXLabel] = useState("Year");
   const [customData, setCustomData] = useState(null);
-  const [type, setType] = useState('hotel');
+  const [type, setType] = useState("hotel");
   const ButtonGroup = styled.div`
     display: flex;
   `;
@@ -91,6 +91,7 @@ export default function GraphCheck() {
 
   function planUpdate(e) {
     const value = e.target.value;
+
     if (value === "yeardata") {
       setGraphData(yeardata);
       setXLabel("Year");
@@ -110,7 +111,7 @@ export default function GraphCheck() {
       year: 2023,
       fromDate: fromDate,
       toDate: toDate,
-      type:type
+      type: type,
     };
     //https://uat-travel-api.floxypay.com/vendor/getgraphhotels/a8c99f2a-9622-417a-b72e-aef09da04ba6
 
@@ -132,7 +133,7 @@ export default function GraphCheck() {
             mergedatas.push(mergedata);
           });
           setGraphData(mergedatas);
-        }else if (tab === "Activities") {
+        } else if (tab === "Activities") {
           const activityData = response.data.data[0]?.activityCount;
           activityData.forEach((val) => {
             let mergedata = {};
@@ -169,7 +170,7 @@ export default function GraphCheck() {
     const allData = {
       query: "year",
       year: 2023,
-      type:type
+      type: type,
     };
 
     await axios({
@@ -181,12 +182,12 @@ export default function GraphCheck() {
       .then((response) => {
         const data = response.data.data;
         const mergedata = [
-          { Name: 2018, Bookings: 0, Hotels: 0, Earnings: 0, Activities:0 },
-          { Name: 2019, Bookings: 0, Hotels: 0, Earnings: 0, Activities:0 },
-          { Name: 2020, Bookings: 0, Hotels: 0, Earnings: 0, Activities:0 },
-          { Name: 2021, Bookings: 0, Hotels: 0, Earnings: 0, Activities:0 },
-          { Name: 2022, Bookings: 0, Hotels: 0, Earnings: 0, Activities:0 },
-          { Name: 2023, Bookings: 0, Hotels: 0, Earnings: 0, Activities:0 },
+          { Name: 2018, Bookings: 0, Hotels: 0, Earnings: 0, Activities: 0 },
+          { Name: 2019, Bookings: 0, Hotels: 0, Earnings: 0, Activities: 0 },
+          { Name: 2020, Bookings: 0, Hotels: 0, Earnings: 0, Activities: 0 },
+          { Name: 2021, Bookings: 0, Hotels: 0, Earnings: 0, Activities: 0 },
+          { Name: 2022, Bookings: 0, Hotels: 0, Earnings: 0, Activities: 0 },
+          { Name: 2023, Bookings: 0, Hotels: 0, Earnings: 0, Activities: 0 },
         ];
 
         // for (let i = 0; i < mergedata.length; i++) {
@@ -219,7 +220,7 @@ export default function GraphCheck() {
     const allData = {
       query: "month",
       year: 2023,
-      type:type
+      type: type,
     };
 
     await axios({
@@ -230,24 +231,25 @@ export default function GraphCheck() {
     })
       .then((response) => {
         const mergedata = [
-          { Name: 1, Bookings: 0, Hotels: 0, Earnings: 0, Activities:0  },
-          { Name: 2, Bookings: 0, Hotels: 0, Earnings: 0, Activities:0  },
-          { Name: 3, Bookings: 0, Hotels: 0, Earnings: 0, Activities:0  },
-          { Name: 4, Bookings: 0, Hotels: 0, Earnings: 0, Activities:0  },
-          { Name: 5, Bookings: 0, Hotels: 0, Earnings: 0, Activities:0  },
-          { Name: 6, Bookings: 0, Hotels: 0, Earnings: 0, Activities:0  },
-          { Name: 7, Bookings: 0, Hotels: 0, Earnings: 0, Activities:0  },
-          { Name: 8, Bookings: 0, Hotels: 0, Earnings: 0, Activities:0  },
-          { Name: 9, Bookings: 0, Hotels: 0, Earnings: 0, Activities:0  },
-          { Name: 10, Bookings: 0, Hotels: 0, Earnings: 0, Activities:0  },
-          { Name: 11, Bookings: 0, Hotels: 0, Earnings: 0, Activities:0  },
-          { Name: 12, Bookings: 0, Hotels: 0, Earnings: 0, Activities:0  },
+          { Name: 1, Bookings: 0, Hotels: 0, Earnings: 0, Activities: 0 },
+          { Name: 2, Bookings: 0, Hotels: 0, Earnings: 0, Activities: 0 },
+          { Name: 3, Bookings: 0, Hotels: 0, Earnings: 0, Activities: 0 },
+          { Name: 4, Bookings: 0, Hotels: 0, Earnings: 0, Activities: 0 },
+          { Name: 5, Bookings: 0, Hotels: 0, Earnings: 0, Activities: 0 },
+          { Name: 6, Bookings: 0, Hotels: 0, Earnings: 0, Activities: 0 },
+          { Name: 7, Bookings: 0, Hotels: 0, Earnings: 0, Activities: 0 },
+          { Name: 8, Bookings: 0, Hotels: 0, Earnings: 0, Activities: 0 },
+          { Name: 9, Bookings: 0, Hotels: 0, Earnings: 0, Activities: 0 },
+          { Name: 10, Bookings: 0, Hotels: 0, Earnings: 0, Activities: 0 },
+          { Name: 11, Bookings: 0, Hotels: 0, Earnings: 0, Activities: 0 },
+          { Name: 12, Bookings: 0, Hotels: 0, Earnings: 0, Activities: 0 },
         ];
 
         const bookingdata = response.data.data[0].bookingCount;
         const hoteldata = response.data.data[0].hotelCount;
         const activitydata = response.data.data[0].activityCount;
         const earnings = response.data.data[0].earnings;
+
         for (let i = 0; i < mergedata.length; i++) {
           for (let j = 0; j < bookingdata.length; j++) {
             if (mergedata[i].Name === bookingdata[j].month) {
@@ -271,8 +273,8 @@ export default function GraphCheck() {
           }
         }
         for (let i = 0; i < mergedata.length; i++) {
-          for (let j = 0; j < bookingdata.length; j++) {
-            if (mergedata[i].Name === bookingdata[j].month) {
+          for (let j = 0; j < earnings.length; j++) {
+            if (mergedata[i].Name === earnings[j].month) {
               mergedata[i].Earnings = earnings[j].totalAmount;
             }
           }
@@ -319,7 +321,7 @@ export default function GraphCheck() {
         setAlldata(mergedata);
       })
       .catch((err) => {
-        console.log(err.message);
+        console.log(err);
       });
   };
   useEffect(() => {
@@ -352,13 +354,19 @@ export default function GraphCheck() {
                 borderRight: "1px dashed black",
                 borderLeft: "1px solid black",
               }}
-              onClick={() => {setTab("Hotels");setType('hotel')}}
+              onClick={() => {
+                setTab("Hotels");
+                setType("hotel");
+              }}
               active={tab === "Hotels"}
             >
               Hotels
             </TabButton>
             <TabButton
-              onClick={() => {setTab("Activities");setType('activity')}}
+              onClick={() => {
+                setTab("Activities");
+                setType("activity");
+              }}
               active={tab === "Activities"}
               style={{
                 borderRight: "1px dashed black",
