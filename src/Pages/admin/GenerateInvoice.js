@@ -304,7 +304,7 @@ const GenerateInvoice = () => {
   const [totalDiscountAmount, setTotalDiscountAmount] = useState(0);
   const [totalPayableAmount, setTotalPayableAmount] = useState(0);
   const [allActivitiesData, setAllActivitiesData] = useState([]);
-  const [sendInvoiceEnabled, setSendInvoiceEnabled] = useState(false);
+  // const [sendInvoiceEnabled, setSendInvoiceEnabled] = useState(false);
 
   console.log(
     hotelPrice,
@@ -603,6 +603,7 @@ const GenerateInvoice = () => {
     setActivitiesData(collectAllActivities);
     // setActivityAdult(event.target.value);
   };
+
   const handleChangeActivityDiscountPrice = (event, item) => {
     let collectAllActivities = [];
     for (let index = 0; index < activitiesData.length; index++) {
@@ -716,13 +717,24 @@ const GenerateInvoice = () => {
     }
   };
 
-  useEffect(() => {
+  // useEffect(() => {
+  //   if (state.isCombined) {
+  //     setSendInvoiceEnabled(hotelPrice > 0 && totalActivitiesAmount > 0);
+  //   } else {
+  //     setSendInvoiceEnabled(hotelPrice > 0);
+  //   }
+  // }, [state.isCombined, hotelPrice, totalActivitiesAmount]);
+
+  const sendInvoiceEnabled = () => {
     if (state.isCombined) {
-      setSendInvoiceEnabled(hotelPrice > 0 && totalActivitiesAmount > 0);
+      return (
+        hotelPrice > 0 && activitiesData.every((activity) => activity.price > 0)
+      );
     } else {
-      setSendInvoiceEnabled(hotelPrice > 0);
+      return hotelPrice > 0;
     }
-  }, [state.isCombined, hotelPrice, totalActivitiesAmount]);
+  };
+
   // console.log({ isDinner, isLunch, isBreakfast, state, allActivitiesData });
   return (
     <>
@@ -1716,12 +1728,12 @@ const GenerateInvoice = () => {
             <ChildContainer6>
               <LoadingButton
                 loading={isSendInvoice}
-                disabled={!sendInvoiceEnabled}
+                disabled={!sendInvoiceEnabled()}
                 variant="contained"
                 onClick={sendInvoiceHandler}
                 // sx={{cursor: "not-allowed"}}
                 style={{
-                  backgroundColor: sendInvoiceEnabled && "#01575c",
+                  backgroundColor: sendInvoiceEnabled() && "#01575c",
                 }}
               >
                 Send Invoice
