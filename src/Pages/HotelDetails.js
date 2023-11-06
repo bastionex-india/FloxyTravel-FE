@@ -240,7 +240,7 @@ const HotelDetails = () => {
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
-        _token: authData.data.token
+        _token: authData.data.token,
       },
       data: {
         hotelName: hotelname,
@@ -282,7 +282,7 @@ const HotelDetails = () => {
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
-        _token: authData.data.token
+        _token: authData.data.token,
       },
       data: {
         roomCategory: roomCategory,
@@ -421,9 +421,9 @@ const HotelDetails = () => {
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
+        _token: authData.data.token,
       },
       data: isCheck,
-      headers: { _token: authData.data.token },
     })
       .then((response) => {
         console.log(response.data, "00000000000001111111111");

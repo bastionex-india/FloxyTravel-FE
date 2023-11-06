@@ -153,7 +153,7 @@ function App() {
                       path="/bookinghistorybyorderid"
                       element={<BookingHistorybyOrderid />}
                     />
-                    <Route path="/gethotel" element={<GetHotelById />} />
+                    {/* <Route path="/gethotel" element={<GetHotelById />} /> */}
                     <Route
                       path="userselectedcity"
                       element={<UserLandingPage />}
@@ -209,7 +209,7 @@ function App() {
                     <Route path="/payouts" element={<Payouts />} />
                     <Route path="/payoutHistory" element={<PayoutHistory />} />
 
-                    <Route path="/hoteldetails" element={<HotelDetails />} />
+                    {/* <Route path="/hoteldetails" element={<HotelDetails />} /> */}
 
                     <Route path="/profile" element={<Profile />} />
                     <Route

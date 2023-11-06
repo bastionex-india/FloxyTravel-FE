@@ -304,6 +304,7 @@ const GenerateInvoice = () => {
   const [totalDiscountAmount, setTotalDiscountAmount] = useState(0);
   const [totalPayableAmount, setTotalPayableAmount] = useState(0);
   const [allActivitiesData, setAllActivitiesData] = useState([]);
+  const [sendInvoiceEnabled, setSendInvoiceEnabled] = useState(false);
 
   console.log(
     hotelPrice,
@@ -714,6 +715,14 @@ const GenerateInvoice = () => {
       console.error("Discount amount cannot be less than hotel price");
     }
   };
+
+  useEffect(() => {
+    if (state.isCombined) {
+      setSendInvoiceEnabled(hotelPrice > 0 && totalActivitiesAmount > 0);
+    } else {
+      setSendInvoiceEnabled(hotelPrice > 0);
+    }
+  }, [state.isCombined, hotelPrice, totalActivitiesAmount]);
   // console.log({ isDinner, isLunch, isBreakfast, state, allActivitiesData });
   return (
     <>
@@ -1707,12 +1716,12 @@ const GenerateInvoice = () => {
             <ChildContainer6>
               <LoadingButton
                 loading={isSendInvoice}
-                disabled={!totalPayableAmount}
+                disabled={!sendInvoiceEnabled}
                 variant="contained"
                 onClick={sendInvoiceHandler}
                 // sx={{cursor: "not-allowed"}}
                 style={{
-                  backgroundColor: totalPayableAmount > 0 && "#01575c",
+                  backgroundColor: sendInvoiceEnabled && "#01575c",
                 }}
               >
                 Send Invoice
