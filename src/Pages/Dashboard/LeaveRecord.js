@@ -54,14 +54,23 @@ const TextWrapper = styled.div`
 `;
 
 const CardWrapper = styled.div`
-  width: 25%;
+  // width: 25%;
 `;
 
 const CardsWrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  grid-gap: 20px;
   margin-bottom: 20px;
-  width: 74vw;
+  // width: 74vw;
+  width:100%;
+  @media(max-width:1240px){
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+  }
+  @media(max-width:1024px){
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
 `;
 const CardText = styled.div`
   color: #fff;
@@ -124,7 +133,7 @@ export default function LeaveRecord({ vendorId }) {
           <CardWrapper>
             <Card
               elevation={0}
-              style={{ padding: "50px 0px", marginRight: "20px" }}
+              style={{ padding: "50px 0px" }}
             >
               <Box sx={{ flexGrow: 1 }}>
                 <Grid
@@ -188,7 +197,7 @@ export default function LeaveRecord({ vendorId }) {
           <CardWrapper>
             <Card
               elevation={0}
-              style={{ padding: "50px 0px", marginRight: "20px" }}
+              style={{ padding: "50px 0px" }}
             >
               <Box sx={{ flexGrow: 1 }}>
                 <Grid
@@ -251,7 +260,7 @@ export default function LeaveRecord({ vendorId }) {
           <CardWrapper>
             <Card
               elevation={0}
-              style={{ padding: "50px 0px", marginRight: "20px" }}
+              style={{ padding: "50px 0px" }}
             >
               <Box sx={{ flexGrow: 1 }}>
                 <Grid
@@ -314,7 +323,7 @@ export default function LeaveRecord({ vendorId }) {
           <CardWrapper>
             <Card
               elevation={0}
-              style={{ padding: "50px 0px", marginRight: "20px" }}
+              style={{ padding: "50px 0px" }}
             >
               <Box sx={{ flexGrow: 1 }}>
                 <Grid
@@ -377,7 +386,7 @@ export default function LeaveRecord({ vendorId }) {
           <CardWrapper>
             <Card
               elevation={0}
-              style={{ padding: "50px 0px", marginRight: "20px" }}
+              style={{ padding: "50px 0px" }}
             >
               <Box sx={{ flexGrow: 1 }}>
                 <Grid

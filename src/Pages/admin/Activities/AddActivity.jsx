@@ -96,6 +96,9 @@ const LocationWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  ${(p)=>p.CountryCoustomCss && `
+  
+  `}
 `;
 const ThemeWrapper = styled.div`
   display: flex;
@@ -533,7 +536,7 @@ const AddActivity = () => {
               onChange={(e) => setName(e.target.value)}
             />
             {id === undefined && (
-              <LocationWrapper>
+              <LocationWrapper CountryCoustomCss>
                 <div>
                   <FormLabel>Country*</FormLabel>
                   <FormSelect onChange={handleCountryChange}>

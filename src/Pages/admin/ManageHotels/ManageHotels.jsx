@@ -88,9 +88,19 @@ const HotelBigText = styled.div`
 `;
 
 const HotelInfoText = styled.div`
+
   font-size: 14px;
   display: flex;
   align-items: center;
+  ${(p)=>p.AddressCustomData && `
+
+  `}
+  ${(p)=>p.ThemeCustomData && `
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  text-align: flex-start;
+  `}
 `;
 const HotelIcon = styled.i``;
 const HotelIconWrapper = styled.div``;
@@ -105,7 +115,7 @@ const HotelActionButtons = styled.div`
 
 const HotelInfoWrapper = styled.div`
   width: 50%;
-  margin: 10px 30px;
+  margin: 10px 15px;
 `;
 const Lable = styled.div`
   font-size: 16px;
@@ -284,14 +294,21 @@ const TextCenter = styled.div`
   text-align: center;
 `;
 const OuterDiv = styled.div`
-  display: flex;
-  align-items: center;
-  width: 60%;
+  // display: flex;
+  // align-items: center;
+  // width: 60%;
+  display: grid;
+grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+grid-gap: 2px;
+@media(max-width:1240px){
+  grid-template-columns: 1fr 1fr 1fr;
+}
 `;
 const InnerDiv = styled.div`
-  margin: 0px 10px;
-  padding: 6px 5px;
-  background-color: white;
+
+  // margin: 0px 10px;
+  // padding: 6px 5px;
+  // background-color: white;
   text-align: center;
 `;
 
@@ -483,10 +500,10 @@ const ManageAdmin = () => {
                             {/* <HotelInfoText>City : {row.city}</HotelInfoText>
                     <HotelInfoText>State : {row.state}</HotelInfoText>
                     <HotelInfoText>Country : {row.country}</HotelInfoText> */}
-                            <HotelInfoText>{`Address : ${row?.city}, ${row?.state} - ${row?.country}
+                            <HotelInfoText AddressCustomData>{`Address : ${row?.city}, ${row?.state} - ${row?.country}
                   `}</HotelInfoText>
-                            <HotelInfoText>
-                              Theme :
+                            <HotelInfoText ThemeCustomData> 
+                              Theme:
                               <OuterDiv>
                                 {row.hotelTheme.map((item, key) => (
                                   <InnerDiv key={key}>{item}</InnerDiv>

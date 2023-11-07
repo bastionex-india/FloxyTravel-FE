@@ -68,7 +68,7 @@ const useStyles = makeStyles({
       justifyContent:"center",
       alignItems:"center",
       textAlign:"flex-start",
-      padding: "10px 30px !important",
+      padding: "10px 15px !important",
       fontWeight: "500 !important",
       fontSize: "18px !important",
       
@@ -77,7 +77,7 @@ const useStyles = makeStyles({
       justifyContent:"center",
       alignItems:"center",
       textAlign:"flex-start",
-      padding:"22px 30px !important",
+      padding:"22px 15px !important",
       color:"#131313 !important",
       fontWeight: "300 !important",
       fontSize:"16px !important",

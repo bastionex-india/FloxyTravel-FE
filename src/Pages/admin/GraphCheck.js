@@ -52,6 +52,8 @@ export default function GraphCheck() {
   const [type, setType] = useState("hotel");
   const ButtonGroup = styled.div`
     display: flex;
+    width: 70%;
+    margin: 0 20px;
   `;
   const FilterWrapper = styled.div`
     display: flex;
@@ -87,6 +89,10 @@ export default function GraphCheck() {
     cursor: pointer;
     border-top: 1px solid black;
     border-bottom: 1px solid black;
+  `;
+
+  const BarCustomUpdate = styled.div`
+  width: 100%;
   `;
 
   function planUpdate(e) {
@@ -338,12 +344,13 @@ export default function GraphCheck() {
 
   return (
     <>
-      <MDBCard style={{ width: "63rem", position: "relative" }}>
+      <MDBCard style={{ width: "100%", position: "relative", marginTop: "40px" }}>
         <div
           style={{
             display: "flex",
             justifyContent: "space-around",
-            margin: "65px 0  65px 0",
+            margin: "65px 0px  65px 0px",
+            width:"98%"
           }}
         >
           <ButtonGroup>
@@ -395,7 +402,7 @@ export default function GraphCheck() {
           </ButtonGroup>
 
           <select
-            style={{ width: "200px" }}
+            style={{ width: "30%" }}
             class="form-select"
             id="inputGroupSelect01"
             onChange={(e) => planUpdate(e)}
@@ -460,8 +467,9 @@ export default function GraphCheck() {
             <CircularLoader></CircularLoader>
           </div>
         ) : (
-          <BarChart
-            width={800}
+        <BarCustomUpdate>
+            <BarChart
+            width={700}
             height={300}
             data={graphdata}
             margin={{
@@ -471,7 +479,7 @@ export default function GraphCheck() {
               bottom: 20,
             }}
           >
-            <CartesianGrid strokeDasharray="3 3" />
+            <CartesianGrid strokeDasharray="3 3"  style={{width:"700px"}}/>
             <XAxis
               dataKey="Name"
               label={{ value: xLabel, position: "outsideBottom", dy: 10 }}
@@ -484,12 +492,13 @@ export default function GraphCheck() {
                 position: "insideLeft",
               }}
             />
-            <Tooltip />
+            <Tooltip  style={{width:"700px"}}/>
             {/* <Legend /> */}
             {/* <Bar dataKey="Bookings" fill="#8884d8" /> */}
-            <Bar dataKey={tab} shape={<CustomBar />} />
+            <Bar dataKey={tab} shape={<CustomBar />}  style={{width:"700px"}}/>
             {/* <Bar dataKey="Earnings" fill="red" /> */}
           </BarChart>
+        </BarCustomUpdate>
         )}
       </MDBCard>
     </>
