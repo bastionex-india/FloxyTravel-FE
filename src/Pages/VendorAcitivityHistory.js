@@ -541,6 +541,7 @@ const VendorActivityHistory = () => {
                 page={page}
                 onPageChange={handleChangePage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
+                style={{  display:"flex", justifyContent:"flex-end",alignItems:"baseline"}}
               />
             </TableContainer>
           )}

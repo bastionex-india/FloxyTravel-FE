@@ -89,7 +89,10 @@ const useStyles = makeStyles({
       fontWight:"400 !important"
     },
     Pagination:{
-      width:"88%"
+      width:"88%",
+      display:"flex",
+      justifyContent:"flex-end",
+      alignItems:"baseline",
     }
 
 });
@@ -526,6 +529,8 @@ const ManageAdmin = () => {
                 onPageChange={handleChangePage}
                 rowsPerPage={rowsPerPage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
+                style={{  display:"flex", justifyContent:"flex-end",alignItems:"baseline"}}
+
               />
             </TableContainer>
           )}

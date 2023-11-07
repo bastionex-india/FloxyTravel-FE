@@ -718,6 +718,7 @@ const Payouts = () => {
             onPageChange={handleChangePage}
             rowsPerPage={rowsPerPage}
             onRowsPerPageChange={handleChangeRowsPerPage}
+            style={{  display:"flex", justifyContent:"flex-end",alignItems:"baseline"}}
           />
         )}
         <BootstrapDialog
