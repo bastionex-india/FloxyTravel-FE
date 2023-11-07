@@ -78,11 +78,13 @@ const HeadingWrapper = styled.div`
 `;
 const RecentlyUploadedHeader = styled.div`
   display: grid;
-  grid-template-columns: 30% 20% 25% 25%;
+  // grid-template-columns: 30% 20% 25% 25%;
+  grid-template-columns:1fr 1fr 1fr 1fr;
+  grid-gap: 0 20px;
   margin: 15px 2%;
-  padding: 14px 15px;
+  // padding: 14px 15px;
   @media (max-width: 768px) {
-    display: none;
+    // display: none;
   }
 `;
 const RecentlyUploadedHeaderElem = styled.div`

@@ -61,6 +61,7 @@ const Heading = styled.div`
 
 const TextSelectField = styled.div`
   // margin: 10px 0px 0px 10px;
+
   @media (max-width: 768px) {
     margin: 0;
   }
@@ -80,6 +81,9 @@ const Select = styled.select`
     margin: "0 20px 0 10px";
     padding: "0 20px 0 10px";
   }
+  @media(max-width:1380px){
+    width: 500px;
+  }
 `;
 const TextWrapper = styled.div`
   display: flex;
@@ -87,6 +91,12 @@ const TextWrapper = styled.div`
   align-items: center;
   text-align: center;
   width: 100%;
+  @media(max-width:1380px){
+    isplay: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
 
   @media (max-width: 768px) {
     justify-content: flex-end;
@@ -115,6 +125,14 @@ const CheckInDateWrapper = styled.input`
     rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
   margin: 0 10px;
 `;
+const DatePickerContainerWrapper = styled.div`
+display: flex;
+@media(max-width:1380px){
+  display:flex;
+  flex-direction: column;
+  margin:0;
+}
+`;
 const CheckOutDateWrapper = styled(CheckInDateWrapper)``;
 const SearchContainerWrapper = styled.div``;
 const SearchFilterContainer = styled.div`
@@ -141,6 +159,9 @@ const FromDateInput = styled.div`
   font-size: 20px;
   cursor: pointer;
   top: 10px;
+  @media (max-width: 1380px) {
+    top: 20px;
+  }
   @media (max-width: 768px) {
     top: 14%;
     left: 90%;
@@ -162,6 +183,10 @@ const DatePickerStyled1 = styled(DatePicker)`
   box-shadow: rgba(50,50,93,0.25) 0px 6px 12px -2px, rgba(0,0,0,0.3) 0px 3px 7px -3px;
   background-color: white;
   margin: 0 10px;
+  @media(max-width:1380px){
+    margin: 10px 0;
+    width: 500px;
+  }
 `;
 
 const ActivityBookingHistory = () => {
@@ -415,7 +440,7 @@ const ActivityBookingHistory = () => {
                     })}
                   </Select>
                 </TextSelectField>
-                <div style={{ display: "flex" }}>
+                <DatePickerContainerWrapper style={{ display: "flex" }}>
                   <DatePickerContainer>
                     {/* <DateIcon>
                     <BsCalendarDay
@@ -485,7 +510,7 @@ const ActivityBookingHistory = () => {
                       </FromDateInput>
                     </div>
                   </DatePickerContainer>
-                </div>
+                </DatePickerContainerWrapper>
                 <TextSelectField>
                   <Select
                     onChange={(e) => {

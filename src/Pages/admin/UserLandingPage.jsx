@@ -43,7 +43,7 @@ const SearchButtonWrapper = styled.div`
 const BottomContainer = styled.div`
   background-color: white;
   padding: 16px 50px;
-  height: 160px;
+  // height: 160px;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -52,6 +52,7 @@ const BottomHeading = styled.div``;
 const LocationWrapper = styled.div`
   position: relative;
   display: flex;
+  flex-direction: column;
   justify-content: flex-start;
   align-items: center;
 `;
@@ -1294,9 +1295,9 @@ const UserLandingPage = () => {
                   {backgroundImage ? (
                     <img
                       height={100}
-                      width={250}
                       src={`${environmentVariables.apiUrl}/uploadscitiesimages/${backgroundImage}`}
                       type=""
+                      style={{ width: "100%" }}
                     />
                   ) : null}
                 </Item>
@@ -1481,7 +1482,7 @@ const UserLandingPage = () => {
             style={{
               display: "flex",
               justifyContent: "flex-end",
-              margin: "10px 5%",
+              margin: "10px 2%",
             }}
           >
             <PriorityButton
@@ -1496,71 +1497,83 @@ const UserLandingPage = () => {
       <BottomContainer>
         <BottomHeading>Promotion Banner</BottomHeading>
         <LocationWrapper>
-          <div>
-            <FormLabel>Country*</FormLabel>
-            <FormSelect onChange={handleCountryChange}>
-              <FormOptions>Select Country</FormOptions>
-              {allCountries.map((country, index) => (
-                <option
-                  key={index}
-                  value={country.isoCode}
-                  data-value={country.name}
-                >
-                  {country.name}
-                </option>
-              ))}
-            </FormSelect>
-          </div>
-          <div>
-            <FormLabel>State*</FormLabel>
-            <FormSelect onChange={handleStateChange}>
-              <FormOptions>Select State</FormOptions>
-              {allStatesForPromotion.map((val, index) => {
-                return (
-                  <FormOptions
+          <div style={{ width: "100%", display: "flex" }}>
+            <div style={{ width: "50%" }}>
+              <FormLabel>Country*</FormLabel>
+              <FormSelect onChange={handleCountryChange}>
+                <FormOptions>Select Country</FormOptions>
+                {allCountries.map((country, index) => (
+                  <option
                     key={index}
-                    value={val.isoCode}
-                    data-value={val.name}
+                    value={country.isoCode}
+                    data-value={country.name}
                   >
-                    {val.name}
-                  </FormOptions>
-                );
-              })}
-            </FormSelect>
+                    {country.name}
+                  </option>
+                ))}
+              </FormSelect>
+            </div>
+            <div style={{ width: "25%", marginLeft: "10px" }}>
+              <FormLabel>State*</FormLabel>
+              <FormSelect onChange={handleStateChange}>
+                <FormOptions>Select State</FormOptions>
+                {allStatesForPromotion.map((val, index) => {
+                  return (
+                    <FormOptions
+                      key={index}
+                      value={val.isoCode}
+                      data-value={val.name}
+                    >
+                      {val.name}
+                    </FormOptions>
+                  );
+                })}
+              </FormSelect>
+            </div>
+            <div style={{ width: "25%", marginLeft: "10px" }}>
+              <FormLabel>City*</FormLabel>
+              <FormSelect onChange={handleCityChange}>
+                <FormOptions>Select City</FormOptions>
+                {allCities.map((val, index) => {
+                  return (
+                    <FormOptions
+                      key={index}
+                      value={val.isoCode}
+                      data-value={val.name}
+                    >
+                      {val.name}
+                    </FormOptions>
+                  );
+                })}
+              </FormSelect>
+            </div>
           </div>
-          <div>
-            <FormLabel>City*</FormLabel>
-            <FormSelect onChange={handleCityChange}>
-              <FormOptions>Select City</FormOptions>
-              {allCities.map((val, index) => {
-                return (
-                  <FormOptions
-                    key={index}
-                    value={val.isoCode}
-                    data-value={val.name}
-                  >
-                    {val.name}
-                  </FormOptions>
-                );
-              })}
-            </FormSelect>
-          </div>
-          <div>
-            <FormLabel>Banner*</FormLabel>
-            <FormFileInput
-              type="file"
-              multiple
-              name="myFiles"
-              onChange={(e) => handleChange(e)}
-              ref={fileInputRef}
-            />
-          </div>
+
           <div
             style={{
+              width: "100%",
               display: "flex",
+              justifyContent: "flex-start",
+              alignItems: "flex-end",
             }}
           >
-            <PriorityButton onClick={handleUpload}>Save</PriorityButton>
+            <div style={{ width: "95%"}}>
+              <FormLabel>Banner*</FormLabel>
+              <FormFileInput
+                type="file"
+                multiple
+                name="myFiles"
+                onChange={(e) => handleChange(e)}
+                ref={fileInputRef}
+              />
+            </div>
+            <div
+              style={{
+                display:"flex", justifyContent:"flex-end",alignItems:"flex-end", width:"100%"
+              }}
+            >
+              <PriorityButton onClick={handleUpload} style={{ }} >Save</PriorityButton>
+            </div>
           </div>
         </LocationWrapper>
       </BottomContainer>
@@ -1641,12 +1654,12 @@ const ThemeContainer = styled.div`
   justify-content: space-between;
   align-items: flex-start;
   padding: 20px 0;
-  margin: 0 5%;
+  margin: 0 2%;
   padding-bottom: 0;
 `;
 const BacgroundContainer = styled.div`
   // padding: 20px 0;
-  margin: 0 5%;
+  margin: 0 2%;
 `;
 
 const ThemeCardWrapper = styled.div`
@@ -1912,7 +1925,7 @@ const AddStatePopUpSubmitButton = styled.div`
 
 export const RecentlyDocumentHeader = styled.div`
   display: flex;
-  margin: 5px 5%;
+  margin: 5px 2%;
   justify-content: space-between;
   padding: 0px 15px;
   @media (max-width: 768px) {
@@ -1941,7 +1954,7 @@ export const RecentlyDocumentUploaded = styled.div`
   -webkit-box-align: center;
   align-items: center;
   justify-content: space-between;
-  margin: 10px 5%;
+  margin: 10px 2%;
   padding: 14px 15px;
   border: 1px solid #b8b8b8;
   // padding-right: 0;
@@ -1962,7 +1975,8 @@ export const ThemeBoxElement = styled.div`
 `;
 export const ThemeBoxElementDesc = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
+  align-items: center;
   height: 70px;
   width: 300px;
   overflow: scroll;

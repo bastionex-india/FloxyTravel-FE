@@ -416,7 +416,7 @@ const UserLandingPageHome = () => {
               style={{
                 display: "flex",
                 justifyContent: "flex-end",
-                margin: "10px 5%",
+                margin: "10px 3%",
               }}
             >
               <PriorityButton
@@ -453,7 +453,7 @@ const UserLandingPageHome = () => {
             <div class="modal-body">
               <div class="input-group mb-3">
                 <label class="input-group-text" for="inputGroupSelect01">
-                  City Name* :nnddn
+                  City Name* :
                 </label>
                 <select
                   class="form-select"
@@ -709,7 +709,7 @@ const ThemeContainer = styled.div`
   justify-content: space-between;
   align-items: flex-start;
   padding: 20px 0;
-  margin: 0 5%;
+  margin: 0 3%;
   padding-bottom: 0;
 `;
 
@@ -946,9 +946,9 @@ const AddStatePopUpSubmitButton = styled.div`
 
 export const RecentlyDocumentHeader = styled.div`
   display: flex;
-  margin: 5px 5%;
+  margin: 5px 3%;
   justify-content: space-between;
-  padding: 14px 15px;
+  padding: 14px 10px;
   @media (max-width: 768px) {
     display: none;
   }
@@ -975,7 +975,7 @@ export const RecentlyDocumentUploaded = styled.div`
   justify-content: space-between;
   -webkit-box-align: center;
   align-items: center;
-  margin: 10px 5%;
+  margin: 10px 3%;
   padding: 14px 15px;
   border: 1px solid #b8b8b8;
   /* box-shadow: 2px 2px 4px 1px #000; */
