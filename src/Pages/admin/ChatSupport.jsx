@@ -703,6 +703,14 @@ const ChatSupport = () => {
                     width: "120%",
                     marginBottom: "10px",
                     padding: "0px 20px 0px 20px",
+                    "@media (max-width: 1440px)": {
+                      width: "100%",
+                    
+                    },
+                    "@media (max-width: 1200px)": {
+                      width: "80%",
+                  
+                    },
                   }}
                 >
                   <Grid item xs={6} md={6} lg={6}>

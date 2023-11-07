@@ -115,7 +115,7 @@ const DetailValue = styled.text`
   text-align: right;
 `;
 const MainContainer = styled.div`
-  width: 1250px;
+  // width: 1250px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -270,6 +270,10 @@ const boldTextCss = {
   color: "white",
   width: "20%",
 };
+
+const TableContainerCustomUpdate = styled(TableContainer)`
+width:100% !important;
+`;
 
 const socket = io(`${environmentVariables?.apiUrl}`);
 const GenerateInvoice = () => {
@@ -1083,9 +1087,9 @@ const GenerateInvoice = () => {
           </HotelInputPrice> */}
           {state.type === "activity" && (
             <ChildContainer4>
-              <HeadingText>Activity Details : </HeadingText>
+              <HeadingText>Activity Details :  </HeadingText>
               <TabularData>
-                <TableContainer component={Paper}>
+                <TableContainerCustomUpdate component={Paper}>
                   <Table aria-label="simple table">
                     <TableHead>
                       <TableRow>
@@ -1215,7 +1219,7 @@ const GenerateInvoice = () => {
                       </TableRow>
                     </TableBody>
                   </Table>
-                </TableContainer>
+                </TableContainerCustomUpdate>
               </TabularData>
             </ChildContainer4>
           )}
@@ -1223,7 +1227,7 @@ const GenerateInvoice = () => {
             <ChildContainer4>
               <HeadingText>Activity Details : </HeadingText>
               <TabularData>
-                <TableContainer component={Paper}>
+                <TableContainerCustomUpdate component={Paper}>
                   <Table aria-label="simple table">
                     <TableHead>
                       <TableRow>
@@ -1532,7 +1536,7 @@ const GenerateInvoice = () => {
                           })}
                     </TableBody>
                   </Table>
-                </TableContainer>
+                </TableContainerCustomUpdate>
               </TabularData>
             </ChildContainer4>
           )}

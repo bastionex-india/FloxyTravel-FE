@@ -118,12 +118,13 @@ const HotelActionButtons = styled.div`
 
 const HotelInfoWrapper = styled.div`
   width: 50%;
-  margin: 10px 30px;
+  margin: 10px 15px;
 `;
 
 const PayOutInfoWrapper = styled.div`
   width: 50%;
-  margin: 10px 30px;
+  margin: 10px 15px;
+  padding: 0;
 `;
 const HotelButtonWrapper = styled.div`
   width: 30%;
@@ -473,7 +474,7 @@ const PayoutRequest = () => {
                 </HotelIconWrapper>
               </HotelInfoWrapper>
               <PayOutInfoWrapper>
-                <ul style={{ listStyle: "none" }}>
+                <ul style={{ listStyle: "none", padding:"0" }}>
                   <li>
                     <b>Vendor Name : </b> {row.vendorData.name}
                   </li>
@@ -712,7 +713,7 @@ const PayoutRequest = () => {
                   </FormControl>
                 </Grid>
               ) : null}
-              <Grid item xs={2}>
+              <Grid item xs={3}>
                 <FormControl fullWidth>
                   <label>Vendor</label>
                   <select
@@ -735,7 +736,7 @@ const PayoutRequest = () => {
                   </select>
                 </FormControl>
               </Grid>
-              <Grid item xs={2}>
+              <Grid item xs={3}>
                 <FormControl fullWidth>
                   <label>City</label>
                   <select
@@ -758,7 +759,7 @@ const PayoutRequest = () => {
                   </select>
                 </FormControl>
               </Grid>
-              <Grid item xs={2}>
+              <Grid item xs={3}>
                 <FormControl fullWidth>
                   <label>Status</label>
                   <select
