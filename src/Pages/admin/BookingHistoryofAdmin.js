@@ -232,7 +232,7 @@ const BookingHistoryofAdmin = () => {
       socket.disconnect();
     };
   }, []);
-  console.log(data, "aaa");
+  // console.log(data, "aaa");
   const getAllUsers = async () => {
     let data = {
       search: search,
@@ -360,6 +360,8 @@ const BookingHistoryofAdmin = () => {
 
   // const formattedCheckInDate = formatDate(checkIn);
   // const formattedCheckOutDate = formatDate(checkOut);
+
+  // console.log(data, "data");
   return (
     <>
       <TextMainWrapper>

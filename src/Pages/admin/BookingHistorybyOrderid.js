@@ -129,6 +129,8 @@ const BookingHistorybyOrderid = () => {
   const [data, setData] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const [activities, setActivities] = useState([]);
+  const [totalActivityAmount, setTotalActivityAmount] = useState(0);
 
   const getAllUsers = async () => {
     await axios
@@ -136,6 +138,7 @@ const BookingHistorybyOrderid = () => {
         headers: { _token: authData.data.token },
       })
       .then((response) => {
+        // console.log("response.data.data", response.data.data);
         setIsLoading(false);
         setData(response.data.data);
       })
@@ -149,7 +152,14 @@ const BookingHistorybyOrderid = () => {
   }, []);
 
   const generateInvoiceHandler = () => {
-    navigate("/generateInvoice", { state: data });
+    const dataWithActivities = {
+      ...data, // Copy the existing data object
+      activitiesforview: activities, // Add the 'activities' field
+    };
+
+    navigate("/generateInvoice", { state: dataWithActivities });
+
+    // navigate("/generateInvoice", { state: data });
   };
   function convertDateFormat(inputDate) {
     const possibleFormats = [
@@ -186,6 +196,31 @@ const BookingHistorybyOrderid = () => {
     const formattedDate = new Date(timestamp).toLocaleString("en-IN", options);
     return formattedDate;
   }
+
+  const getActivitiesAndDetail = async (bookingId) => {
+    axios({
+      method: "get",
+      url: `${environmentVariables.apiUrl}/admin/getActivitiesAndPaymentDetail/${bookingId}`,
+      headers: { _token: authData.data.token },
+    })
+      .then((response) => {
+        setActivities(response.data.data.activitiesData);
+        setTotalActivityAmount(Number(response.data.data.totalActivityAmount));
+      })
+      .catch((error) => {
+        // Swal.fire({
+        //   icon: "error",
+        //   title: "Something went wrong!",
+        //   text: error.message,
+        // });
+      });
+  };
+  useEffect(() => {
+    // if (state && state._id) {
+    // console.log(state._id);
+    getActivitiesAndDetail(state._id);
+    // }
+  }, []);
   return (
     <>
       <TextMainWrapper>
@@ -206,7 +241,8 @@ const BookingHistorybyOrderid = () => {
               </IconButton>
               <Heading>
                 {" "}
-                {data.type == "activity" ? "Activity" : "Hotel"} Booking Details
+                {data.type == "activity" ? "Activity" : "Hotel"} Booking
+                Details..
               </Heading>
             </HeadingWrapper>
           </Root>
@@ -237,13 +273,16 @@ const BookingHistorybyOrderid = () => {
                     </p>
                   </div>
                   {data.isCombined && data.bookingObjectId && (
-                    <p className="text-danger" style={{width:"30%"}}>This invoice is attached with hotel, You can generate this invoice with respective hotel.</p>
+                    <p className="text-danger" style={{ width: "30%" }}>
+                      This invoice is attached with hotel, You can generate this
+                      invoice with respective hotel.
+                    </p>
                   )}
                   <Button
                     variant="contained"
                     onClick={generateInvoiceHandler}
                     endIcon={<PictureAsPdfIcon />}
-                    disabled={(data.isCombined && data.bookingObjectId) }
+                    disabled={data.isCombined && data.bookingObjectId}
                   >
                     {data.status === "pending" || data.status === "approved"
                       ? "Generate Invoice"
@@ -382,7 +421,7 @@ const BookingHistorybyOrderid = () => {
                       </TableBody>
                     </Table>
                   </Grid>
-                  {data.isCombined && data.type==="hotel" && (
+                  {data.isCombined && data.type === "hotel" && (
                     <>
                       <Line />
                       <Grid xs={8}>

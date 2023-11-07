@@ -306,13 +306,13 @@ const GenerateInvoice = () => {
   const [allActivitiesData, setAllActivitiesData] = useState([]);
   // const [sendInvoiceEnabled, setSendInvoiceEnabled] = useState(false);
 
-  console.log(
-    hotelPrice,
-    totalActivitiesAmount,
-    totalDiscountAmount,
-    totalPayableAmount,
-    typeof totalDiscountAmount
-  );
+  // console.log(
+  //   hotelPrice,
+  //   totalActivitiesAmount,
+  //   totalDiscountAmount,
+  //   totalPayableAmount,
+  //   typeof totalDiscountAmount
+  // );
   const sendInvoice = () => {
     // console.log(checkIn,checkOut,noofpersons,Number(noofchildren),noofrooms,state._id,amount.toString(),Number(discountAmount),new Date(checkIn).getTime(),new Date(checkOut).getTime())
     // console.log(state._id,totalPayableAmount,Number(totalDiscountAmount),new Date(checkIn).getTime(),noofpersons,Number(noofchildren),currency,state.type !== undefined ? state.type : "hotel",new Date(checkOut).getTime(),noofrooms,activitiesData)
@@ -397,8 +397,8 @@ const GenerateInvoice = () => {
           console.log(err);
           Swal.fire({
             icon: "error",
-            title: err.response.data.message,
-            timer: "800",
+            title: "SomeThing went Wrong",
+            // timer: "800",
           });
         });
     } else {
@@ -470,11 +470,14 @@ const GenerateInvoice = () => {
             );
             setTotalPayableAmount(responsedata.hotelPaymentDetail.payAmount);
           }
+          // console.log("dhfgyrygfr", responsedata);
           setTotalDiscountAmount(
             Number(+responsedata.hotelPaymentDetail.discount)
           );
 
-          setPayMethod(responsedata.paymentStatus[0].method);
+          setPayMethod(
+            responsedata?.hotelPaymentDetail.paymentStatus[0].method
+          );
         } else {
           Swal.fire({
             icon: "error",
@@ -484,9 +487,10 @@ const GenerateInvoice = () => {
         }
       })
       .catch((err) => {
+        // console.log(err, "a");
         Swal.fire({
           icon: "error",
-          title: err.response.data.message,
+          title: "SOmething went wrong",
           timer: "800",
         });
       });
@@ -735,7 +739,7 @@ const GenerateInvoice = () => {
     }
   };
 
-  // console.log({ isDinner, isLunch, isBreakfast, state, allActivitiesData });
+  // console.log({ state, allActivitiesData });
   return (
     <>
       <TextMainWrapper>
@@ -1406,8 +1410,9 @@ const GenerateInvoice = () => {
                               </TableRow>
                             );
                           })
-                        : allActivitiesData.length !== 0 &&
-                          allActivitiesData.map((item, key) => {
+                        : state.activitiesforview.length !== 0 &&
+                          state.activitiesforview.map((item, key) => {
+                            // console.log("item", item);
                             return (
                               <TableRow
                                 key={key}
@@ -1418,7 +1423,7 @@ const GenerateInvoice = () => {
                                 }}
                               >
                                 <TableCell component="th" scope="row">
-                                  {item.bookinghistory.hotelname}
+                                  {item.hotelname}
                                 </TableCell>
                                 <TableCell align="left">
                                   {state.status === "pending" ||
@@ -1455,9 +1460,7 @@ const GenerateInvoice = () => {
                                       ></DatePickerStyled2>
                                     </div>
                                   ) : (
-                                    <>
-                                      {formatDate(item.bookinghistory.checkIn)}
-                                    </>
+                                    <>{formatDate(item.checkIn)}</>
                                   )}
                                 </TableCell>
                                 <TableCell align="left">
@@ -1481,7 +1484,7 @@ const GenerateInvoice = () => {
                                       />
                                     </FormControl>
                                   ) : (
-                                    <>{item.bookinghistory.adult}</>
+                                    <>{item.adult}</>
                                   )}
                                 </TableCell>
                                 <TableCell align="left">
@@ -1508,7 +1511,7 @@ const GenerateInvoice = () => {
                                       />
                                     </FormControl>
                                   ) : (
-                                    <>{item.bookinghistory.children}</>
+                                    <>{item.children}</>
                                   )}
                                 </TableCell>
                                 <TableCell align="left">
@@ -1531,7 +1534,7 @@ const GenerateInvoice = () => {
                                       />
                                     </FormControl>
                                   ) : (
-                                    <>{item.payAmount}</>
+                                    <>{item.amount}</>
                                   )}
                                 </TableCell>
                                 {/* <TableCell align="right">
@@ -1574,7 +1577,7 @@ const GenerateInvoice = () => {
                       />
                     </FormControl>
                   ) : (
-                    Number(hotelPrice).toFixed(2)
+                    Number(state.hotelAmount).toFixed(2)
                   )}{" "}
                   <span
                     style={{
@@ -1643,7 +1646,7 @@ const GenerateInvoice = () => {
                       />
                     </FormControl>
                   ) : (
-                    totalActivitiesAmount.toFixed(2)
+                    state.totalActivitiesAmount.toFixed(2)
                   )}{" "}
                   <span
                     style={{

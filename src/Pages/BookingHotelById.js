@@ -149,15 +149,24 @@ const BookingHotelById = () => {
   const { authData } = useContext(AuthContext);
 
   const [data, setData] = useState("");
-  const [alertMessage,setAlertMessage] =  useState('');
+  const [alertMessage, setAlertMessage] = useState("");
   const [arr, setArr] = useState([]);
   const [btnState, setBtnState] = useState(false);
-  const [isLoadingCheckIn,setIsLoadingCheckIn] = useState(false);
-  const [isLoadingCheckOut,setIsLoadingCheckOut] = useState(false);
+  const [isLoadingCheckIn, setIsLoadingCheckIn] = useState(false);
+  const [isLoadingCheckOut, setIsLoadingCheckOut] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+
+  const [activities, setActivities] = useState([]);
+  const [totalActivityAmount, setTotalActivityAmount] = useState(0);
+
   const generateInvoiceHandler = () => {
-    navigate("/generateInvoice", { state: data });
+    const dataWithActivities = {
+      ...data, // Copy the existing data object
+      activitiesforview: activities, // Add the 'activities' field
+    };
+
+    navigate("/generateInvoice", { state: dataWithActivities });
   };
 
   // console.log(data, "vendor");
@@ -181,30 +190,30 @@ const BookingHotelById = () => {
   }, [data.checkInStatus, data.checkOutStatus]);
   const checkIn = () => {
     if (data !== "" && !data.checkInStatus) {
-      setIsLoadingCheckIn(true)
+      setIsLoadingCheckIn(true);
       axios({
         method: "post",
         url: `${environmentVariables.apiUrl}/vendor/checkinpermissionbyvendor/${state._id}`,
         headers: { _token: authData.data.token },
       })
-      .then((response) => {
-        
-        setIsLoadingCheckIn(false)
-        setAlertMessage(data.type!='activity' ? 'Hotel checkIn.' : "Activity attended.")
-        setTimeout(()=>{
-          setAlertMessage('')
-        },2000)
-        getAllUsers();
-      })
-      .catch((error) => {
-          setIsLoadingCheckIn(false)
+        .then((response) => {
+          setIsLoadingCheckIn(false);
+          setAlertMessage(
+            data.type != "activity" ? "Hotel checkIn." : "Activity attended."
+          );
+          setTimeout(() => {
+            setAlertMessage("");
+          }, 2000);
+          getAllUsers();
+        })
+        .catch((error) => {
+          setIsLoadingCheckIn(false);
           console.log("Error ", error);
         });
     }
   };
   const checkOut = () => {
     if (data !== "" && !data.checkOutStatus) {
-      
       setIsLoadingCheckOut(true);
       axios({
         method: "post",
@@ -213,10 +222,12 @@ const BookingHotelById = () => {
       })
         .then((response) => {
           setIsLoadingCheckOut(false);
-          setAlertMessage(data.type!='activity' ? 'Hotel checkOut.' : "Activity completed.")
-          setTimeout(()=>{
-            setAlertMessage('')
-          },2000)
+          setAlertMessage(
+            data.type != "activity" ? "Hotel checkOut." : "Activity completed."
+          );
+          setTimeout(() => {
+            setAlertMessage("");
+          }, 2000);
           getAllUsers();
         })
         .catch((error) => {
@@ -236,6 +247,31 @@ const BookingHotelById = () => {
     return formattedDate;
   }
 
+  const getActivitiesAndDetail = async (bookingId) => {
+    axios({
+      method: "get",
+      url: `${environmentVariables.apiUrl}/vendor/getActivitiesAndPaymentDetail/${bookingId}`,
+      headers: { _token: authData.data.token },
+    })
+      .then((response) => {
+        console.log(response.data.data,"response.data.data")
+        setActivities(response.data.data.activitiesData);
+        setTotalActivityAmount(Number(response.data.data.totalActivityAmount));
+      })
+      .catch((error) => {
+        // Swal.fire({
+        //   icon: "error",
+        //   title: "Something went wrong!",
+        //   text: error.message,
+        // });
+      });
+  };
+  useEffect(() => {
+    // if (state && state._id) {
+    // console.log(state._id);
+    getActivitiesAndDetail(state._id);
+    // }
+  }, []);
   return (
     <>
       <TextMainWrapper>
@@ -457,51 +493,60 @@ const BookingHotelById = () => {
             </Item>
           </Grid>
         </Grid>
-          <Container2>
-            <CheckinoutButton
-              onClick={() => checkIn()}
-              style={{
-                opacity: data !== "" && data.checkInStatus ? 0.5 : 1,
-                cursor:
-                  data !== "" && data.checkInStatus ? "not-allowed" : "pointer",
-              }}
-            >
-              {
-                isLoadingCheckIn ? 
-                <div class="d-flex justify-content-center">
-                  <div class="spinner-border text-light" style={{height:"24px",width:"24px"}} role="status">
-                    <span class="visually-hidden">Loading...</span>
-                  </div>
+        <Container2>
+          <CheckinoutButton
+            onClick={() => checkIn()}
+            style={{
+              opacity: data !== "" && data.checkInStatus ? 0.5 : 1,
+              cursor:
+                data !== "" && data.checkInStatus ? "not-allowed" : "pointer",
+            }}
+          >
+            {isLoadingCheckIn ? (
+              <div class="d-flex justify-content-center">
+                <div
+                  class="spinner-border text-light"
+                  style={{ height: "24px", width: "24px" }}
+                  role="status"
+                >
+                  <span class="visually-hidden">Loading</span>
                 </div>
-                :
-                data.type == "activity" ? "Activity attended" : "CheckIn"
-              }
-
-            </CheckinoutButton>
-            <CheckinoutButton
-              style={{
-                margin: "0 10px",
-                opacity: data !== "" && data.checkOutStatus ? 0.5 : 1,
-                cursor:
-                  data !== "" && data.checkOutStatus
-                    ? "not-allowed"
-                    : "pointer",
-              }}
-              onClick={() => checkOut()}
-            >
-              {
-                isLoadingCheckOut ? 
-                <div class="d-flex justify-content-center">
-                  <div class="spinner-border text-light" style={{height:"24px",width:"24px"}} role="status">
-                    <span class="visually-hidden">Loading...</span>
-                  </div>
+              </div>
+            ) : data.type == "activity" ? (
+              "Activity attended"
+            ) : (
+              "CheckIn"
+            )}
+          </CheckinoutButton>
+          <CheckinoutButton
+            style={{
+              margin: "0 10px",
+              opacity: data !== "" && data.checkOutStatus ? 0.5 : 1,
+              cursor:
+                data !== "" && data.checkOutStatus ? "not-allowed" : "pointer",
+            }}
+            onClick={() => checkOut()}
+          >
+            {isLoadingCheckOut ? (
+              <div class="d-flex justify-content-center">
+                <div
+                  class="spinner-border text-light"
+                  style={{ height: "24px", width: "24px" }}
+                  role="status"
+                >
+                  <span class="visually-hidden">Loading</span>
                 </div>
-                :
-                data.type == "activity" ? "Activity completed" : "CheckOut"
-              }
-            </CheckinoutButton>
-            <span className="text-success"><b>{alertMessage}</b></span>
-          </Container2>
+              </div>
+            ) : data.type == "activity" ? (
+              "Activity completed"
+            ) : (
+              "CheckOut"
+            )}
+          </CheckinoutButton>
+          <span className="text-success">
+            <b>{alertMessage}</b>
+          </span>
+        </Container2>
       </Container>
     </>
   );
