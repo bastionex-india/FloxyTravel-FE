@@ -68,23 +68,46 @@ const TextSelectField = styled.div`
 `;
 
 const Select = styled.select`
-
-width: 100%;
-  height: 30px;
+width: 15rem;
+height: 50px;
   padding: 0px 10px;
   border-radius: 5px;
   outline: none;
   border: none;
   box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px,
     rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
-    height: 50px;
+  
+    ::-ms-expand {
+      margin: "0 20px 0 10px";
+      padding: "0 20px 0 10px";
+    }
+    @media(max-width:1380px){
+      width: 500px;
+    }
 `;
+// const TextWrapper = styled.div`
+//   display: flex;
+//   justify-content: start;
+//   align-items: center;
+//   text-align:center;
+//   margin-top: 25px;
+
+//   @media (max-width: 768px) {
+//     justify-content: flex-end;
+//   }
+// `;
 const TextWrapper = styled.div`
   display: flex;
-  justify-content: start;
+  justify-content: flex-start;
   align-items: center;
-  text-align:center;
-  margin-top: 25px;
+  text-align: center;
+  width: 100%;
+  @media(max-width:1380px){
+    isplay: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
 
   @media (max-width: 768px) {
     justify-content: flex-end;
@@ -164,16 +187,19 @@ const DatePickerContainer = styled.div`
   text-align: Center;
 `;
 const FromDateInput = styled.div`
-  position: absolute;
-  top: 18%;
-  right: 35px;
-  font-size: 20px;
-  cursor: pointer;
-  @media (max-width: 768px) {
-    top: 14%;
-    left: 90%;
-    z-index: 1;
-  }
+position: absolute;
+right: 26px;
+font-size: 20px;
+cursor: pointer;
+top: 10px;
+@media (max-width: 1380px) {
+  top: 20px;
+}
+@media (max-width: 768px) {
+  top: 14%;
+  left: 90%;
+  z-index: 1;
+}
 `;
 
 const HeadingWrapper = styled.div`
@@ -184,6 +210,14 @@ const HeadingWrapper = styled.div`
   // align-items: center;
 `;
 
+const DatePickerContainerWrapper = styled.div`
+display: flex;
+@media(max-width:1380px){
+  display:flex;
+  flex-direction: column;
+  margin:0;
+}
+`;
 
 const DatePickerStyled1 = styled(DatePicker)`
 height: 50px;
@@ -194,6 +228,10 @@ border: none;
 box-shadow: rgba(50,50,93,0.25) 0px 6px 12px -2px, rgba(0,0,0,0.3) 0px 3px 7px -3px;
 background-color: white;
 margin: 0 10px;
+@media(max-width:1380px){
+  margin: 10px 0;
+  width: 500px;
+}
 `;
 
 
@@ -367,7 +405,7 @@ const VendorActivityHistory = () => {
             </HeadingWrapper>
             <TextWrapper>
               <TextSelectField
-                style={{ width: "20%" }}
+                // style={{ width: "20%" }}
               >
                 <Select
                   onChange={(e) => {
@@ -375,7 +413,7 @@ const VendorActivityHistory = () => {
                   }}
                   value={searchByName}
                   required
-                  style={{ width: "100%" }}
+                  // style={{ width: "100%" }}
                 >
                   <option value="" hidden>
                     Select Activity
@@ -389,7 +427,7 @@ const VendorActivityHistory = () => {
                   })}
                 </Select>
               </TextSelectField>
-              <div style={{ display: 'flex' }}>
+              <DatePickerContainerWrapper style={{ display: 'flex' }}>
                 <DatePickerContainer>
                   <div onClick={handleToggleDatePicker} style={{ position: 'relative' }}>
                     <DatePickerStyled1
@@ -435,9 +473,9 @@ const VendorActivityHistory = () => {
                     </FromDateInput>
                   </div>
                 </DatePickerContainer>
-              </div>
+              </DatePickerContainerWrapper>
               <TextSelectField
-                style={{ width: "20%" }}
+                // style={{ width: "20%" }}
               >
                 <Select
                   onChange={(e) => {

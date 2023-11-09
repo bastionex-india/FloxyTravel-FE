@@ -113,12 +113,12 @@ const HotelActionButtons = styled.div`
 
 const HotelInfoWrapper = styled.div`
   width: 50%;
-  margin: 10px 30px;
+  margin: 10px 10px;
 `;
 
 const PayOutInfoWrapper = styled.div`
   width: 50%;
-  margin: 10px 30px;
+  margin: 10px 10px;
 `;
 const HotelButtonWrapper = styled.div`
   width: 30%;
@@ -414,7 +414,7 @@ const Payouts = () => {
                 </HotelIconWrapper>
               </HotelInfoWrapper>
               <PayOutInfoWrapper>
-                <ul style={{ listStyle: "none" }}>
+                <ul style={{ listStyle: "none", paddingLeft:"0" }}>
                   <li>
                     <b>TotalPaid amount : </b> {totalEarnings.toFixed(2)} INR
                   </li>
@@ -586,7 +586,7 @@ const Payouts = () => {
               <div
                 style={{ marginTop: "4px", position: "absolute", right: "0px" }}
               >
-                Payout History{" "}
+                 Payout History{" "}
                 <IconButton
                   title="History"
                   onClick={() => getPayoutHistory()}
