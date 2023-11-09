@@ -710,7 +710,7 @@ const AddHotels = () => {
                   </div>
 
                   <GetLocationText onClick={getHotelLatLong}>
-                    Get Coordinates
+                    Get Current Coordinates
                   </GetLocationText>
 
                   {/* <SelectVendor onChange={(e) => setVendorId(e.target.value)}>

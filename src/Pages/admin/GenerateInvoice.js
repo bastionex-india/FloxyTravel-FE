@@ -207,6 +207,7 @@ const Wrapper2 = styled.div`
   display: flex;
 `;
 const HotelDetailsWrapper = styled.div`
+width:100%
   display: flex;
   flex-direction: column;
   margin: 8px 0px;
@@ -1087,7 +1088,7 @@ const GenerateInvoice = () => {
           </HotelInputPrice> */}
           {state.type === "activity" && (
             <ChildContainer4>
-              <HeadingText>Activity Details :  </HeadingText>
+              <HeadingText>Activity Details : </HeadingText>
               <TabularData>
                 <TableContainerCustomUpdate component={Paper}>
                   <Table aria-label="simple table">

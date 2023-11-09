@@ -56,7 +56,7 @@ const Button = styled.div`
 const HotelAddForm = styled.div`
   /* border: 1px solid #c4c4c4; */
   border-radius: 5px;
-  margin: 20px;
+  // margin: 20px;
 `;
 const FormWrapper = styled.div`
   margin: 10px;
@@ -97,7 +97,7 @@ const LocationWrapper = styled.div`
   justify-content: space-between;
   align-items: center;
   ${(p)=>p.CountryCoustomCss && `
-  
+  width: 100%;
   `}
 `;
 const ThemeWrapper = styled.div`
@@ -128,7 +128,7 @@ const SelectVendor = styled.select`
   font-size: 14px;
   border-radius: 5px;
   margin-left: 10px;
-  margin-top: 11px;
+  margin-top: 35px;
   height: 30px;
   width: 40%;
   border: 1px solid #c4c4c4;
@@ -537,7 +537,7 @@ const AddActivity = () => {
             />
             {id === undefined && (
               <LocationWrapper CountryCoustomCss>
-                <div>
+                <div style={{width:"25%"}}>
                   <FormLabel>Country*</FormLabel>
                   <FormSelect onChange={handleCountryChange}>
                     <FormOptions>Select Country</FormOptions>
@@ -552,7 +552,7 @@ const AddActivity = () => {
                     ))}
                   </FormSelect>
                 </div>
-                <div>
+                <div style={{width:"25%",marginLeft: ".4rem"}}>
                   <FormLabel>State*</FormLabel>
                   <FormSelect onChange={handleStateChange}>
                     <FormOptions>Select State</FormOptions>
@@ -569,7 +569,7 @@ const AddActivity = () => {
                     })}
                   </FormSelect>
                 </div>
-                <div>
+                <div style={{width:"25%",marginLeft: ".4rem"}}>
                   <FormLabel>City*</FormLabel>
                   <FormSelect onChange={handleCityChange}>
                     <FormOptions>Select City</FormOptions>
@@ -586,7 +586,7 @@ const AddActivity = () => {
                     })}
                   </FormSelect>
                 </div>
-                <div style={{ marginLeft: "1.8rem" }}>
+                <div style={{ marginLeft: ".4rem" ,width:"25%"}}>
                   <FormLabel>Area*</FormLabel>
                   <FormInput
                     type="text"
@@ -596,8 +596,8 @@ const AddActivity = () => {
                 </div>
               </LocationWrapper>
             )}
-            <LocationWrapper>
-              <div>
+            <LocationWrapper style={{width:"100%"}}>
+              <div style={{width:"33.33%"}}>
                 <FormLabel>Fee* (in percentage)</FormLabel>
                 <FormInput
                   type="text"
@@ -605,7 +605,7 @@ const AddActivity = () => {
                   onChange={(e) => setHotelFee(e.target.value)}
                 />
               </div>
-              <div style={{ marginLeft: "1.8rem" }}>
+              <div style={{width:"33.33%", marginLeft: ".4rem" }}>
                 <FormLabel>Address*</FormLabel>
                 <FormInput
                   type="text"
@@ -614,7 +614,7 @@ const AddActivity = () => {
                 />
               </div>
 
-              <div style={{ marginLeft: "1.8rem" }}>
+              <div style={{ width:"33.33%", marginLeft: ".4rem" }}>
                 <FormLabel>Payout Interval * (in days)</FormLabel>
                 <FormInput
                   type="text"
@@ -625,8 +625,8 @@ const AddActivity = () => {
             </LocationWrapper>
             <ThemeWrapper>
               {id === undefined && (
-                <>
-                  <div>
+                <div style={{width:"100%", display:"flex"}}>
+                  <div style={{width:"33.33%"}}>
                     <FormLabel>Latitude*</FormLabel>
                     <FormInput
                       type="text"
@@ -634,10 +634,10 @@ const AddActivity = () => {
                       onChange={(e) => setLat(e.target.value)}
                     />
                     <GetLocationText onClick={getHotelLatLong}>
-                      Get Coordinates
+                      Get Current Coordinates
                     </GetLocationText>
                   </div>
-                  <div style={{ marginLeft: "10px" }}>
+                  <div style={{width:"33.33%", marginLeft: "10px" }}>
                     <FormLabel>Longitude*</FormLabel>
                     <FormInput
                       type="text"
@@ -646,7 +646,9 @@ const AddActivity = () => {
                     />
                   </div>
 
-                  <SelectVendor onChange={(e) => setVendorId(e.target.value)}>
+                  <SelectVendor onChange={(e) => setVendorId(e.target.value)}
+                  style={{width:"33.33%", marginTop:"57px"}}
+                  >
                     <SelectOption>Select Vendor*</SelectOption>
                     {vendorlist &&
                       vendorlist.map((row, index) => {
@@ -657,7 +659,7 @@ const AddActivity = () => {
                         );
                       })}
                   </SelectVendor>
-                </>
+                </div>
               )}
             </ThemeWrapper>
 
