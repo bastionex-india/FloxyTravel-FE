@@ -65,7 +65,7 @@ const HotelCard = styled.div`
   margin-bottom: 20px;
   border: 1px solid #aec5c5;
   border-radius: 5px;
-  height: 150px;
+  // height: 150px;
 `;
 
 const HotelImage = styled.img`
@@ -468,6 +468,7 @@ const VendorManageActivities = () => {
             onPageChange={handleChangePage}
             rowsPerPage={rowsPerPage}
             onRowsPerPageChange={handleChangeRowsPerPage}
+            style={{  display:"flex", justifyContent:"flex-end",alignItems:"baseline"}}
           />
         )}
         <BootstrapDialog

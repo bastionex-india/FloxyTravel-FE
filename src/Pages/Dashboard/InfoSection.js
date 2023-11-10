@@ -5,8 +5,10 @@ import ActivityStatus from "./ActivityStatus";
 import LeaveRecord from "./LeaveRecord";
 
 const Root = styled.div`
-  width: 70%;
-  padding-right: 30px;
+// width: 70%;
+  width: 100%;
+  // padding-right: 30px;
+  padding-right: 0px;
 `;
 const Heading = styled.div`
   color: #012e31;

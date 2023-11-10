@@ -97,7 +97,7 @@ const AddThemeInputWrapper = styled.div`
 `;
 const AddThemePopUpInput = styled.input`
   padding: 4px;
-  width: 500px;
+  width: 450px;
   margin: 0 20px;
   border-radius: 2px;
   border: 1px solid #cccc;

@@ -56,7 +56,7 @@ const Button = styled.div`
 const HotelAddForm = styled.div`
   /* border: 1px solid #c4c4c4; */
   border-radius: 5px;
-  margin: 20px;
+  margin: 20px 10px;
 `;
 const FormWrapper = styled.div`
   margin: 10px;
@@ -96,16 +96,43 @@ const LocationWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  ${(p) =>
+    p.ForstSecondWrapper &&
+    `
+  display: flex;
+  flex-direction: column;
+  `}
+  ${(p) =>
+    p.FeePayout &&
+    `
+  width: 100%;
+  margin-top:70px;
+  `}
 `;
+const LocationFirstItemWrapper = styled.div`
+  display: flex;
+  width: 100%;
+`;
+const LocationSecondItemWrapper = styled.div`
+  display: flex;
+  width: 100%;
+`;
+
 const ThemeWrapper = styled.div`
   display: flex;
   justify-content: flex-start;
   align-items: center;
+  width: 100%;
 `;
+
 const GetLocationText = styled.div`
   position: absolute;
   top: 511px;
-  left: 54rem;
+  // left: 54rem;
+  left: 50%;
+  margin: 30px 0;
+  font-size: 20px;
   color: #01565c;
   :hover {
     text-decoration: underline;
@@ -121,7 +148,7 @@ const FormTextArea = styled.textarea`
   border: 1px solid #c4c4c4;
 `;
 const SelectVendor = styled.select`
-  width: 85%;
+  // width: 85%;
   font-size: 14px;
   border-radius: 5px;
   padding: 0 10px;
@@ -548,76 +575,80 @@ const AddHotels = () => {
               onChange={(e) => setName(e.target.value)}
             />
             {id === undefined && (
-              <LocationWrapper>
-                <div>
-                  <FormLabel>Country*</FormLabel>
-                  <FormSelect onChange={handleCountryChange}>
-                    <FormOptions>Select Country</FormOptions>
-                    {allCountries.map((country, index) => (
-                      <option
-                        key={index}
-                        value={country.isoCode}
-                        data-value={country.name}
-                      >
-                        {country.name}
-                      </option>
-                    ))}
-                  </FormSelect>
-                </div>
-                <div>
-                  <FormLabel>State*</FormLabel>
-                  <FormSelect onChange={handleStateChange}>
-                    <FormOptions>Select State</FormOptions>
-                    {allStates.map((val, index) => {
-                      return (
-                        <FormOptions
+              <LocationWrapper ForstSecondWrapper>
+                <LocationFirstItemWrapper>
+                  <div style={{ width: "50%", marginRight: "10px" }}>
+                    <FormLabel>Country*</FormLabel>
+                    <FormSelect onChange={handleCountryChange}>
+                      <FormOptions>Select Country</FormOptions>
+                      {allCountries.map((country, index) => (
+                        <option
                           key={index}
-                          value={val.isoCode}
-                          data-value={val.name}
+                          value={country.isoCode}
+                          data-value={country.name}
                         >
-                          {val.name}
-                        </FormOptions>
-                      );
-                    })}
-                  </FormSelect>
-                </div>
-                <div>
-                  <FormLabel>City*</FormLabel>
-                  <FormSelect onChange={handleCityChange}>
-                    <FormOptions>Select City</FormOptions>
-                    {allCities.map((val, index) => {
-                      return (
-                        <FormOptions
-                          key={index}
-                          value={val.isoCode}
-                          data-value={val.name}
-                        >
-                          {val.name}
-                        </FormOptions>
-                      );
-                    })}
-                  </FormSelect>
-                </div>
-                <div style={{ marginLeft: "1.8rem" }}>
-                  <FormLabel>Area*</FormLabel>
-                  <FormInput
-                    type="text"
-                    value={area}
-                    onChange={(e) => setArea(e.target.value)}
-                  />
-                </div>
-                <div style={{ marginLeft: "1.8rem" }}>
-                  <FormLabel>Address*</FormLabel>
-                  <FormInput
-                    type="text"
-                    value={id === undefined ? address : hotelData.address}
-                    onChange={(e) => setAddress(e.target.value)}
-                  />
-                </div>
+                          {country.name}
+                        </option>
+                      ))}
+                    </FormSelect>
+                  </div>
+                  <div style={{ width: "25%", marginRight: "10px" }}>
+                    <FormLabel>State*</FormLabel>
+                    <FormSelect onChange={handleStateChange}>
+                      <FormOptions>Select State</FormOptions>
+                      {allStates.map((val, index) => {
+                        return (
+                          <FormOptions
+                            key={index}
+                            value={val.isoCode}
+                            data-value={val.name}
+                          >
+                            {val.name}
+                          </FormOptions>
+                        );
+                      })}
+                    </FormSelect>
+                  </div>
+                  <div style={{ width: "25%" }}>
+                    <FormLabel>City*</FormLabel>
+                    <FormSelect onChange={handleCityChange}>
+                      <FormOptions>Select City</FormOptions>
+                      {allCities.map((val, index) => {
+                        return (
+                          <FormOptions
+                            key={index}
+                            value={val.isoCode}
+                            data-value={val.name}
+                          >
+                            {val.name}
+                          </FormOptions>
+                        );
+                      })}
+                    </FormSelect>
+                  </div>
+                </LocationFirstItemWrapper>
+                <LocationSecondItemWrapper>
+                  <div style={{ width: "50%", marginRight: "10px" }}>
+                    <FormLabel>Area*</FormLabel>
+                    <FormInput
+                      type="text"
+                      value={area}
+                      onChange={(e) => setArea(e.target.value)}
+                    />
+                  </div>
+                  <div style={{ width: "50%" }}>
+                    <FormLabel>Address*</FormLabel>
+                    <FormInput
+                      type="text"
+                      value={id === undefined ? address : hotelData.address}
+                      onChange={(e) => setAddress(e.target.value)}
+                    />
+                  </div>
+                </LocationSecondItemWrapper>
               </LocationWrapper>
             )}
-            <LocationWrapper>
-              <div>
+            <LocationWrapper FeePayout>
+              <div style={{ width: "50%" }}>
                 <FormLabel>Fee* (in percentage)</FormLabel>
                 <FormInput
                   type="text"
@@ -626,7 +657,7 @@ const AddHotels = () => {
                 />
               </div>
 
-              <div style={{ marginLeft: "1.8rem" }}>
+              <div style={{ width: "50%", marginLeft: "10px" }}>
                 <FormLabel>Payout Interval * (in days)</FormLabel>
                 <FormInput
                   type="text"
@@ -635,17 +666,19 @@ const AddHotels = () => {
                 />
               </div>
             </LocationWrapper>
+
             <ThemeWrapper>
-              <div>
+              <div style={{ width: "50%", marginRight: "10px" }}>
                 <FormLabel>Theme*</FormLabel>
                 <MultiSelect
                   className="multi-select"
                   onChange={handleOnchangeTheme}
                   options={options}
                   defaultValue={theme}
+                  style={{ width: "100%" }}
                 />
               </div>
-              <div style={{ marginLeft: "1.8rem" }}>
+              <div style={{ width: "30%" }}>
                 <FormLabel>Category*</FormLabel>
                 <FormSelect
                   onChange={(e) => setCategory(e.target.value)}
@@ -659,7 +692,7 @@ const AddHotels = () => {
               </div>
               {id === undefined && (
                 <>
-                  <div>
+                  <div style={{ width: "10%" }}>
                     <FormLabel>Latitude*</FormLabel>
                     <FormInput
                       type="text"
@@ -667,7 +700,7 @@ const AddHotels = () => {
                       onChange={(e) => setLat(e.target.value)}
                     />
                   </div>
-                  <div>
+                  <div style={{ width: "10%" }}>
                     <FormLabel>Longitude*</FormLabel>
                     <FormInput
                       type="text"
@@ -675,11 +708,12 @@ const AddHotels = () => {
                       onChange={(e) => setLong(e.target.value)}
                     />
                   </div>
+
                   <GetLocationText onClick={getHotelLatLong}>
-                    Get Coordinates
+                    Get Current Coordinates
                   </GetLocationText>
 
-                  <SelectVendor onChange={(e) => setVendorId(e.target.value)}>
+                  {/* <SelectVendor onChange={(e) => setVendorId(e.target.value)}>
                     <SelectOption>Select Vendor*</SelectOption>
                     {vendorlist &&
                       vendorlist.map((row, index) => {
@@ -689,18 +723,46 @@ const AddHotels = () => {
                           </SelectOption>
                         );
                       })}
-                  </SelectVendor>
+                  </SelectVendor> */}
                 </>
               )}
             </ThemeWrapper>
-            <div>
-              <FormLabel>Total Rooms*</FormLabel>
-              <FormInput
-                type="number"
-                value={totalRooms}
-                onChange={(e) => setTotalRooms(e.target.value)}
-              />
+            <div
+              style={{
+                display: "flex",
+                width: "100%",
+                justifyContent: "center",
+                alignItems: "flex-end",
+              }}
+            >
+              <SelectVendor
+                onChange={(e) => setVendorId(e.target.value)}
+                style={{
+                  width: "50%",
+                  height: "50px",
+                  backgroundColor: "transparent",
+                }}
+              >
+                <SelectOption>Select Vendor*</SelectOption>
+                {vendorlist &&
+                  vendorlist.map((row, index) => {
+                    return (
+                      <SelectOption key={index} value={row.vendorId}>
+                        {row.name}
+                      </SelectOption>
+                    );
+                  })}
+              </SelectVendor>
+              <div style={{ width: "50%", marginLeft: "10px" }}>
+                <FormLabel>Total Rooms*</FormLabel>
+                <FormInput
+                  type="number"
+                  value={totalRooms}
+                  onChange={(e) => setTotalRooms(e.target.value)}
+                />
+              </div>
             </div>
+
             <FormLabel>Local Attractions*</FormLabel>
             <Editor
               value={general}

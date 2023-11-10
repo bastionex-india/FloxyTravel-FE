@@ -22,3 +22,22 @@
 .pull-right{
     text-align: right;
 }
+
+.css-1oqqzyl-MuiContainer-root{
+    max-width: 90% !important;
+}
+
+.css-mvadxi-MuiPaper-root{
+    padding: 40px 30px !important;
+}
+
+@media (max-width: 1125px) {
+    .css-1oqqzyl-MuiContainer-root {
+        margin: 0 !important;
+        width: 70vw !important;
+    }
+    .css-1oqqzyl-MuiContainer-root{
+        max-width: 100% !important;
+    }
+}
+

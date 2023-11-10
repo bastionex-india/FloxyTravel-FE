@@ -247,12 +247,12 @@ export default function VendorGraphCheck() {
           <CircularLoader></CircularLoader>
         </div>
       ) : (
-        <MDBCard style={{ width: "63rem", position: "relative" }}>
+        <MDBCard style={{ width: "100%", position: "relative", marginTop:"10px" }}>
           <div
             style={{
               display: "flex",
               justifyContent: "space-around",
-              margin: "20px 0 65px 0",
+              margin: "65px 0 65px 0",
             }}
           >
             <ButtonGroup>
@@ -338,8 +338,8 @@ export default function VendorGraphCheck() {
             <></>
           )}
           <BarChart
-            width={800}
-            height={280}
+            width={700}
+            height={300}
             data={graphdata}
             margin={{
               top: 5,
@@ -348,7 +348,7 @@ export default function VendorGraphCheck() {
               bottom: 50,
             }}
           >
-            <CartesianGrid strokeDasharray="3 3" />
+            <CartesianGrid strokeDasharray="3 3" style={{width:"700px"}}/>
             <XAxis
               dataKey="Name"
               label={{ value: xLabel, dy: 20, position: "insideBottom" }}
@@ -361,9 +361,9 @@ export default function VendorGraphCheck() {
                 dy: 60,
               }}
             />
-            <Tooltip />
+            <Tooltip  style={{width:"700px"}}/>
             {/* <Legend /> */}
-            <Bar dataKey={tab} shape={<CustomBar />} />
+            <Bar dataKey={tab} shape={<CustomBar />} style={{width:"700px"}}/>
           </BarChart>
         </MDBCard>
       )}

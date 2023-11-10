@@ -80,6 +80,9 @@ const Select = styled.select`
     margin: "0 20px 0 10px";
     padding: "0 20px 0 10px";
   }
+  @media(max-width:1380px){
+    width: 500px;
+  }
 `;
 const TextWrapper = styled.div`
   display: flex;
@@ -87,6 +90,12 @@ const TextWrapper = styled.div`
   align-items: center;
   text-align: center;
   width: 100%;
+  @media(max-width:1380px){
+    isplay: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
 
   @media (max-width: 768px) {
     justify-content: flex-end;
@@ -105,6 +114,14 @@ const DatePickerContainer = styled.div`
   justify-content: center;
   align-items: center;
   text-align: Center;
+`;
+const DatePickerContainerWrapper = styled.div`
+display: flex;
+@media(max-width:1380px){
+  display:flex;
+  flex-direction: column;
+  margin:0;
+}
 `;
 const CheckInDateWrapper = styled.input`
   padding: 10px;
@@ -141,6 +158,9 @@ const FromDateInput = styled.div`
   font-size: 20px;
   cursor: pointer;
   top: 10px;
+  @media (max-width: 1380px) {
+    top: 20px;
+  }
   @media (max-width: 768px) {
     top: 14%;
     left: 90%;
@@ -163,6 +183,10 @@ const DatePickerStyled1 = styled(DatePicker)`
     rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
   background-color: white;
   margin: 0 10px;
+  @media(max-width:1380px){
+    margin: 10px 0;
+    width: 500px;
+  }
 `;
 
 const BookingHistoryofAdmin = () => {
@@ -417,7 +441,7 @@ const BookingHistoryofAdmin = () => {
                     })}
                   </Select>
                 </TextSelectField>
-                <div style={{ display: "flex" }}>
+                <DatePickerContainerWrapper style={{ display: "flex" }}>
                   <DatePickerContainer>
                     {/* <DateIcon>
                     <BsCalendarDay
@@ -506,7 +530,7 @@ const BookingHistoryofAdmin = () => {
                     ref={InputEndDate}
                   /> */}
                   </DatePickerContainer>
-                </div>
+                </DatePickerContainerWrapper>
                 <TextSelectField>
                   <Select
                     onChange={(e) => {
@@ -644,6 +668,7 @@ const BookingHistoryofAdmin = () => {
                 page={page}
                 onPageChange={handleChangePage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
+                style={{  display:"flex", justifyContent:"flex-end",alignItems:"baseline"}}
               />
             </TableContainer>
           )}

@@ -34,7 +34,7 @@ const AddThemePopUpContainer = styled.div`
 `;
 const AddThemeLabel = styled.div`
   color: #999;
-  margin-left: 20px;
+  // margin-left: 20px;
 `;
 const RadioWrapper = styled.div`
   display: flex;
@@ -114,8 +114,9 @@ const AddThemePopUpInput = styled.input`
   border-radius: 2px;
   border:1px solid #cccc;
   // border: none;
-  width: 500px;
-  margin: 0 20px;
+  // width: 500px;
+  width:100%;
+  // margin: 0 20px;
 `;
 const EditVendor = ({ open, setOpen, vendorDetails }) => {
   const [name, setName] = useState("");
@@ -241,7 +242,7 @@ const EditVendor = ({ open, setOpen, vendorDetails }) => {
             className="fa-solid fa-circle-xmark"
             style={{ fontSize: "20px" }}
           />
-          <div style={{display:'flex',flexDirection:'column',width:'450px',alignItems: 'center'}}>
+          <div style={{display:'flex',flexDirection:'column',alignItems: 'center'}}>
           <AddThemeInputWrapper>
             <div className="form-group">
               <AddThemeLabel>Name* : </AddThemeLabel>

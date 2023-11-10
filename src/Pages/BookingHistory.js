@@ -68,9 +68,8 @@ const TextSelectField = styled.div`
 `;
 
 const Select = styled.select`
-
-width: 100%;
-  height: 30px;
+width: 15rem;
+height: 50px;
   padding: 0px 10px;
   border-radius: 5px;
   outline: none;
@@ -78,13 +77,39 @@ width: 100%;
   box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px,
     rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
     height: 50px;
+
+    ::-ms-expand {
+      margin: "0 20px 0 10px";
+      padding: "0 20px 0 10px";
+    }
+    @media(max-width:1380px){
+      width: 500px;
+    }
 `;
+
+// const TextWrapper = styled.div`
+//   display: flex;
+//   justify-content: start;
+//   align-items: center;
+//   text-align:center;
+//   margin-top: 25px;
+
+//   @media (max-width: 768px) {
+//     justify-content: flex-end;
+//   }
+// `;
 const TextWrapper = styled.div`
   display: flex;
-  justify-content: start;
+  justify-content: flex-start;
   align-items: center;
-  text-align:center;
-  margin-top: 25px;
+  text-align: center;
+  width: 100%;
+  @media(max-width:1380px){
+    isplay: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
 
   @media (max-width: 768px) {
     justify-content: flex-end;
@@ -157,18 +182,50 @@ const DateIcon = styled.div`
   right: 5%;
   z-index: 1;
 `;
+const DatePickerContainerWrapper = styled.div`
+display: flex;
+@media(max-width:1380px){
+  display:flex;
+  flex-direction: column;
+  margin:0;
+}
+`;
+const CheckInDateWrapper = styled.input`
+  padding: 10px;
+  border-radius: 5px;
+  outline: none;
+  border: none;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px,
+    rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+  margin: 0 10px;
+`;
 const DatePickerContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
   text-align: Center;
 `;
+// const FromDateInput = styled.div`
+//   position: absolute;
+//   top: 18%;
+//   right: 35px;
+//   font-size: 20px;
+//   cursor: pointer;
+//   @media (max-width: 768px) {
+//     top: 14%;
+//     left: 90%;
+//     z-index: 1;
+//   }
+// `;
 const FromDateInput = styled.div`
   position: absolute;
-  top: 18%;
-  right: 35px;
+  right: 26px;
   font-size: 20px;
   cursor: pointer;
+  top: 10px;
+  @media (max-width: 1380px) {
+    top: 20px;
+  }
   @media (max-width: 768px) {
     top: 14%;
     left: 90%;
@@ -178,8 +235,8 @@ const FromDateInput = styled.div`
 
 const HeadingWrapper = styled.div`
   position: relative;
-  // display: flex;
   display: -webkit-box;
+  // display: flex;
   // justify-content: center;
   // align-items: center;
 `;
@@ -366,6 +423,10 @@ const BookingHistory = () => {
   box-shadow: rgba(50,50,93,0.25) 0px 6px 12px -2px, rgba(0,0,0,0.3) 0px 3px 7px -3px;
   background-color: white;
   margin: 0 10px;
+  @media(max-width:1380px){
+    margin: 10px 0;
+    width: 500px;
+  }
 `;
 
 
@@ -435,7 +496,7 @@ const BookingHistory = () => {
                   autoComplete="false"
                 /> */}
               <TextSelectField
-                style={{ width: "20%" }}
+              
               >
                 <Select
                   onChange={(e) => {
@@ -443,7 +504,7 @@ const BookingHistory = () => {
                   }}
                   value={searchByName}
                   required
-                  style={{ width: "100%" }}
+                  // style={{ width: "100%" }}
                 >
                   <option value="" hidden>
                     Select Hotel
@@ -493,7 +554,7 @@ const BookingHistory = () => {
                 </FilterComponent>
               </FilterWrapper> */}
 
-              <div style={{ display: 'flex' }}>
+              <DatePickerContainerWrapper style={{ display: 'flex' }}>
                 <DatePickerContainer>
                   <div onClick={handleToggleDatePicker} style={{ position: 'relative' }}>
                     <DatePickerStyled1
@@ -539,9 +600,9 @@ const BookingHistory = () => {
                     </FromDateInput>
                   </div>
                 </DatePickerContainer>
-              </div>
+              </DatePickerContainerWrapper>
               <TextSelectField
-                style={{ width: "20%" }}
+              
               >
                 <Select
                   onChange={(e) => {
@@ -649,6 +710,7 @@ const BookingHistory = () => {
                 page={page}
                 onPageChange={handleChangePage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
+                style={{  display:"flex", justifyContent:"flex-end",alignItems:"baseline"}}
               />
             </TableContainer>
           )}

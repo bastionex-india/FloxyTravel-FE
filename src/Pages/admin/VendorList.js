@@ -76,14 +76,16 @@ const Root = styled.div`
   padding-left: 50px;
 `;
 const CardWrapper = styled.div`
-  width: 25%;
+  // width: 25%;
 `;
 
+const CardsWrapperContainer = styled.div``;
 const CardsWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   margin-bottom: 20px;
+  width: 100%;
 `;
 // const Card = styled.div``;
 const ErrorMessage = styled.div`
@@ -92,8 +94,12 @@ const ErrorMessage = styled.div`
   margin-bottom: 20px;
 `;
 const CardsWrapper1 = styled.div`
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-gap: 20px;
   margin-top: 20px;
+
+
 `;
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -142,7 +148,7 @@ const VendorList = () => {
 
 
   return (
-    <>
+    <div>
       {isLoading === true ? (
         <div
           style={{
@@ -154,12 +160,12 @@ const VendorList = () => {
           <CircularLoader></CircularLoader>
         </div>
       ) : (
-        <CardsWrapper>
+        <CardsWrapperContainer>
           <CardsWrapper1>
             <CardWrapper>
               <Card
                 elevation={0}
-                style={{ padding: "50px 0px", marginRight: "20px" }}
+                style={{ padding: "50px 0px" }}
               >
                 <Box sx={{ flexGrow: 1 }}>
                   <Grid
@@ -197,9 +203,9 @@ const VendorList = () => {
                       lg={6}
                       sx={{ paddingLeft: "10px !important" }}
                     >
-                      <Item elevation={0}>
+                      <Item elevation={0} style={{display:"flex",justifyContent:"space-between", flexDirection:"column",alignItems:"flex-start",textAlign:"start"}}>
                         <p
-                          style={{ textAlign: "left", margin: "0 !important" }}
+                          style={{ textAlign: "left", margin: "0 !important", justifyContent:"center", display:"flex" }}
                           className="card-title"
                         >
                           <b>Earnings</b>
@@ -209,6 +215,8 @@ const VendorList = () => {
                             textAlign: "left",
                             color: "#008080",
                             margin: "0",
+                           
+                            fontSize: "18px",
                           }}
                         >
                           ₹ {summaryData?.totalEarnings.toFixed(2)}
@@ -222,7 +230,7 @@ const VendorList = () => {
             <CardWrapper>
               <Card
                 elevation={0}
-                style={{ padding: "50px 0px", marginRight: "20px" }}
+                style={{ padding: "50px 0px" }}
               >
                 <Box sx={{ flexGrow: 1 }}>
                   <Grid
@@ -272,6 +280,8 @@ const VendorList = () => {
                             textAlign: "left",
                             color: "#008080",
                             margin: "0",
+                             fontSize: "18px",
+                        
                           }}
                         >
                           ₹ {summaryData?.allPayoutAmount.toFixed(2)}
@@ -285,7 +295,7 @@ const VendorList = () => {
             <CardWrapper>
               <Card
                 elevation={0}
-                style={{ padding: "50px 0px", marginRight: "20px" }}
+                style={{ padding: "50px 0px" }}
               >
                 <Box sx={{ flexGrow: 1 }}>
                   <Grid
@@ -335,6 +345,7 @@ const VendorList = () => {
                             textAlign: "left",
                             color: "#008080",
                             margin: "0",
+                             fontSize: "18px",
                           }}
                         >
                           {summaryData?.totalVendors}
@@ -350,7 +361,7 @@ const VendorList = () => {
             <CardWrapper>
               <Card
                 elevation={0}
-                style={{ padding: "50px 0px", marginRight: "20px" }}
+                style={{ padding: "50px 0px" }}
               >
                 <Box sx={{ flexGrow: 1 }}>
                   <Grid
@@ -400,6 +411,7 @@ const VendorList = () => {
                             textAlign: "left",
                             color: "#008080",
                             margin: "0",
+                             fontSize: "18px",
                           }}
                         >
                           {summaryData?.totalHotels}
@@ -413,7 +425,7 @@ const VendorList = () => {
             <CardWrapper>
               <Card
                 elevation={0}
-                style={{ padding: "50px 0px", marginRight: "20px" }}
+                style={{ padding: "50px 0px" }}
               >
                 <Box sx={{ flexGrow: 1 }}>
                   <Grid
@@ -463,6 +475,7 @@ const VendorList = () => {
                             textAlign: "left",
                             color: "#008080",
                             margin: "0",
+                             fontSize: "18px",
                           }}
                         >
                           {summaryData?.totalActivity}
@@ -476,7 +489,7 @@ const VendorList = () => {
             <CardWrapper>
               <Card
                 elevation={0}
-                style={{ padding: "50px 0px", marginRight: "20px" }}
+                style={{ padding: "50px 0px" }}
               >
                 <Box sx={{ flexGrow: 1 }}>
                   <Grid
@@ -526,6 +539,7 @@ const VendorList = () => {
                             textAlign: "left",
                             color: "#008080",
                             margin: "0",
+                             fontSize: "18px",
                           }}
                         >
                           {summaryData?.totalBookings}
@@ -537,11 +551,11 @@ const VendorList = () => {
               </Card>
             </CardWrapper>
           </CardsWrapper1>
-        </CardsWrapper>
+        </CardsWrapperContainer>
       )}
 
       <GraphCheck />
-    </>
+    </div>
   );
 };
 

@@ -79,24 +79,26 @@ const HeadingWrapper = styled.div`
 const RecentlyUploadedHeader = styled.div`
   display: grid;
   grid-template-columns: 30% 20% 25% 25%;
-  margin: 15px 2%;
-  padding: 14px 15px;
+  grid-template-columns:1fr 1fr 1fr 1fr;
+  // grid-gap: 0 20px;
+  margin: 15px 0;
+  // padding: 14px 0px;
   @media (max-width: 768px) {
-    display: none;
+    // display: none;
   }
 `;
 const RecentlyUploadedHeaderElem = styled.div`
   color: #6c7074;
-  padding-left: 4px;
+  // padding-left: 4px;
 `;
 const RecentlyUploaded = styled.div`
   background: #fff;
   display: grid;
-  grid-template-columns: 30% 20% 25% 25%;
+  grid-template-columns: 25% 25% 25% 25%;
   -webkit-box-align: center;
   align-items: center;
-  margin: 15px 2%;
-  padding: 14px 15px;
+  margin: 15px 0;
+  padding: 14px 0px;
   box-shadow: 0px 0px 5px 5px #0000;
   border-radius: 5px;
   @media (max-width: 768px) {
@@ -426,9 +428,9 @@ const BookingHistorybyOrderid = () => {
                   {data.isCombined && data.type === "hotel" && (
                     <>
                       <Line />
-                      <Grid xs={8}>
+                  <Grid xs={12}>
                         <h4>Activity Details</h4>
-                        <RecentlyUploadedHeader>
+                      <RecentlyUploadedHeader>
                           <RecentlyUploadedHeaderElem>
                             Acitivity Name
                           </RecentlyUploadedHeaderElem>
@@ -441,7 +443,7 @@ const BookingHistorybyOrderid = () => {
                           <RecentlyUploadedHeaderElem>
                             Number of Children
                           </RecentlyUploadedHeaderElem>
-                        </RecentlyUploadedHeader>
+                      </RecentlyUploadedHeader>
                         {data.activities &&
                           data.activities.map((item, key) => {
                             return (

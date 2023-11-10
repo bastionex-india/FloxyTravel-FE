@@ -68,7 +68,7 @@ const useStyles = makeStyles({
       justifyContent:"center",
       alignItems:"center",
       textAlign:"flex-start",
-      padding: "10px 30px !important",
+      padding: "10px 15px !important",
       fontWeight: "500 !important",
       fontSize: "18px !important",
       
@@ -77,7 +77,7 @@ const useStyles = makeStyles({
       justifyContent:"center",
       alignItems:"center",
       textAlign:"flex-start",
-      padding:"22px 30px !important",
+      padding:"22px 15px !important",
       color:"#131313 !important",
       fontWeight: "300 !important",
       fontSize:"16px !important",
@@ -89,7 +89,10 @@ const useStyles = makeStyles({
       fontWight:"400 !important"
     },
     Pagination:{
-      width:"88%"
+      width:"88%",
+      display:"flex",
+      justifyContent:"flex-end",
+      alignItems:"baseline",
     }
 
 });
@@ -526,6 +529,8 @@ const ManageAdmin = () => {
                 onPageChange={handleChangePage}
                 rowsPerPage={rowsPerPage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
+                style={{  display:"flex", justifyContent:"flex-end",alignItems:"baseline"}}
+
               />
             </TableContainer>
           )}
