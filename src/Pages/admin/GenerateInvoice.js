@@ -397,7 +397,7 @@ const GenerateInvoice = () => {
           console.log(err);
           Swal.fire({
             icon: "error",
-            title: "SomeThing went Wrong",
+            title: "SomeThing went Wrong11",
             // timer: "800",
           });
         });
@@ -443,26 +443,24 @@ const GenerateInvoice = () => {
     axios
       .request(config)
       .then((response) => {
+        // console.log(response.data);
         if (response.data.status) {
           let responsedata = response.data.data;
-          // console.log({responsedata.hotelPaymentDetail});
+          // console.log(responsedata);
           if (responsedata.activitiesPaymentDetails) {
             const totalActivitiesAmountAmount =
               responsedata.activitiesPaymentDetails.reduce(
                 (total, payment) => total + payment.payAmount,
                 0
               );
-            setAllActivitiesData(responsedata.activitiesPaymentDetails);
+            // setAllActivitiesData(responsedata.activitiesPaymentDetails);
             setTotalActivitiesAmount(totalActivitiesAmountAmount);
 
             setHotelPrice(
               responsedata.hotelPaymentDetail.payAmount +
                 responsedata.hotelPaymentDetail.discount
             );
-            setTotalPayableAmount(
-              responsedata.hotelPaymentDetail.payAmount +
-                totalActivitiesAmountAmount
-            );
+            setTotalPayableAmount(responsedata.hotelPaymentDetail.payAmount);
           } else {
             setHotelPrice(
               responsedata.hotelPaymentDetail.payAmount +
@@ -476,7 +474,7 @@ const GenerateInvoice = () => {
           );
 
           setPayMethod(
-            responsedata?.hotelPaymentDetail.paymentStatus[0].method
+            responsedata?.hotelPaymentDetail?.paymentStatus[0]?.method
           );
         } else {
           Swal.fire({
@@ -487,10 +485,10 @@ const GenerateInvoice = () => {
         }
       })
       .catch((err) => {
-        // console.log(err, "a");
+        console.log(err, "a");
         Swal.fire({
           icon: "error",
-          title: "SOmething went wrong",
+          title: "SOmething went wrong22",
           timer: "800",
         });
       });
