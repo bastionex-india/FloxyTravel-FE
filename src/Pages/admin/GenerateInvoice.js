@@ -273,7 +273,7 @@ const boldTextCss = {
 };
 
 const TableContainerCustomUpdate = styled(TableContainer)`
-width:100% !important;
+  width: 100% !important;
 `;
 
 const socket = io(`${environmentVariables?.apiUrl}`);
@@ -311,16 +311,7 @@ const GenerateInvoice = () => {
   const [allActivitiesData, setAllActivitiesData] = useState([]);
   // const [sendInvoiceEnabled, setSendInvoiceEnabled] = useState(false);
 
-  // console.log(
-  //   hotelPrice,
-  //   totalActivitiesAmount,
-  //   totalDiscountAmount,
-  //   totalPayableAmount,
-  //   typeof totalDiscountAmount
-  // );
   const sendInvoice = () => {
-    // console.log(checkIn,checkOut,noofpersons,Number(noofchildren),noofrooms,state._id,amount.toString(),Number(discountAmount),new Date(checkIn).getTime(),new Date(checkOut).getTime())
-    // console.log(state._id,totalPayableAmount,Number(totalDiscountAmount),new Date(checkIn).getTime(),noofpersons,Number(noofchildren),currency,state.type !== undefined ? state.type : "hotel",new Date(checkOut).getTime(),noofrooms,activitiesData)
     const limitedFieldsArray = activitiesData.map(
       ({ _id, checkIn, adult, children, price }) => ({
         _id,
@@ -333,7 +324,6 @@ const GenerateInvoice = () => {
       })
     );
 
-    // console.log(limitedFieldsArray);
     if (hotelPrice && Number(hotelPrice) - Number(discountAmount) > 0) {
       let amount = Number(hotelPrice) - Number(discountAmount);
       let data = {
@@ -451,36 +441,57 @@ const GenerateInvoice = () => {
         // console.log(response.data);
         if (response.data.status) {
           let responsedata = response.data.data;
-          // console.log(responsedata);
-          if (responsedata.activitiesPaymentDetails) {
-            const totalActivitiesAmountAmount =
-              responsedata.activitiesPaymentDetails.reduce(
-                (total, payment) => total + payment.payAmount,
-                0
+          if (responsedata.activitiesPaymentDetails?.length) {
+            if (state.status === "pending" || state.status === "approved") {
+              setTotalActivitiesAmount(0);
+              setTotalDiscountAmount(0);
+              setHotelPrice(0);
+              setTotalPayableAmount(0);
+            } else {
+              const totalActivitiesAmountAmount =
+                responsedata.activitiesPaymentDetails.reduce(
+                  (total, payment) => total + payment.payAmount,
+                  0
+                );
+              // setAllActivitiesData(responsedata.activitiesPaymentDetails);
+
+              setTotalActivitiesAmount(totalActivitiesAmountAmount);
+              setHotelPrice(
+                responsedata.hotelPaymentDetail.payAmount +
+                  responsedata.hotelPaymentDetail.discount
               );
-            // setAllActivitiesData(responsedata.activitiesPaymentDetails);
-            setTotalActivitiesAmount(totalActivitiesAmountAmount);
-
-            setHotelPrice(
-              responsedata.hotelPaymentDetail.payAmount +
-                responsedata.hotelPaymentDetail.discount
-            );
-            setTotalPayableAmount(responsedata.hotelPaymentDetail.payAmount);
+              setTotalPayableAmount(responsedata.hotelPaymentDetail.payAmount);
+              setTotalDiscountAmount(
+                Number(+responsedata.hotelPaymentDetail.discount)
+              );
+              setPayMethod(
+                responsedata?.hotelPaymentDetail?.paymentStatus[0]?.method
+              );
+            }
           } else {
-            setHotelPrice(
-              responsedata.hotelPaymentDetail.payAmount +
-                responsedata.hotelPaymentDetail.discount
-            );
-            setTotalPayableAmount(responsedata.hotelPaymentDetail.payAmount);
-          }
-          // console.log("dhfgyrygfr", responsedata);
-          setTotalDiscountAmount(
-            Number(+responsedata.hotelPaymentDetail.discount)
-          );
+            if (state.status === "pending" || state.status === "approved") {
+              setHotelPrice(0);
+              setTotalPayableAmount(0);
+              setTotalDiscountAmount(0);
 
-          setPayMethod(
-            responsedata?.hotelPaymentDetail?.paymentStatus[0]?.method
-          );
+              // setPayMethod(
+              //   responsedata?.hotelPaymentDetail?.paymentStatus[0]?.method
+              // );
+            } else {
+              setHotelPrice(
+                responsedata.hotelPaymentDetail.payAmount +
+                  responsedata.hotelPaymentDetail.discount
+              );
+              setTotalPayableAmount(responsedata.hotelPaymentDetail.payAmount);
+              setTotalDiscountAmount(
+                Number(+responsedata.hotelPaymentDetail.discount)
+              );
+
+              setPayMethod(
+                responsedata?.hotelPaymentDetail?.paymentStatus[0]?.method
+              );
+            }
+          }
         } else {
           Swal.fire({
             icon: "error",
@@ -504,7 +515,6 @@ const GenerateInvoice = () => {
     }
   }, [state]);
   useEffect(() => {
-    // console.log(activitiesData)
     const sum = activitiesData.reduce(
       (acc, item) => acc + Number(item.price),
       0
@@ -742,7 +752,6 @@ const GenerateInvoice = () => {
     }
   };
 
-  // console.log({ state, allActivitiesData });
   return (
     <>
       <TextMainWrapper>
@@ -1415,7 +1424,6 @@ const GenerateInvoice = () => {
                           })
                         : state.activitiesforview.length !== 0 &&
                           state.activitiesforview.map((item, key) => {
-                            // console.log("item", item);
                             return (
                               <TableRow
                                 key={key}
