@@ -134,9 +134,12 @@ const BookingHistorybyOrderid = () => {
 
   const getAllUsers = async () => {
     await axios
-      .get(`${environmentVariables.apiUrl}/admin/getallbookingbyorderid/${state._id}`, {
-        headers: { _token: authData.data.token },
-      })
+      .get(
+        `${environmentVariables.apiUrl}/admin/getallbookingbyorderid/${state._id}`,
+        {
+          headers: { _token: authData.data.token },
+        }
+      )
       .then((response) => {
         // console.log("response.data.data", response.data.data);
         setIsLoading(false);
@@ -241,8 +244,7 @@ const BookingHistorybyOrderid = () => {
               </IconButton>
               <Heading>
                 {" "}
-                {data.type == "activity" ? "Activity" : "Hotel"} Booking
-                Details..
+                {data.type == "activity" ? "Activity" : "Hotel"} Booking Details
               </Heading>
             </HeadingWrapper>
           </Root>
