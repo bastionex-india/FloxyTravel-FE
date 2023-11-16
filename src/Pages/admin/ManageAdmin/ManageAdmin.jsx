@@ -352,7 +352,7 @@ const ManageAdmin = () => {
   const getAllListData = async () => {
     await axios
       .get(
-        `${environmentVariables.apiUrl}/admin/getvendorlist?page=${page}&limit=${rowsPerPage}`,
+        `${environmentVariables.apiUrl}/admin/getvendorlist?page=${page+1}&limit=${rowsPerPage}`,
         {
           headers: { _token: authData.data.token },
         }
@@ -390,7 +390,7 @@ const ManageAdmin = () => {
   useEffect(() => {
     setIsLoading(true);
     getAllListData();
-  }, [addVendorPopUp, editVendorPopUp]);
+  }, [addVendorPopUp, editVendorPopUp,page,rowsPerPage]);
   const deleteRecord = (item) => {
     deleteVendor(item);
   };

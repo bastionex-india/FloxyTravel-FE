@@ -152,6 +152,7 @@ const BookingHotelById = () => {
   const [alertMessage, setAlertMessage] = useState("");
   const [arr, setArr] = useState([]);
   const [btnState, setBtnState] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [isLoadingCheckIn, setIsLoadingCheckIn] = useState(false);
   const [isLoadingCheckOut, setIsLoadingCheckOut] = useState(false);
   const location = useLocation();
@@ -171,23 +172,27 @@ const BookingHotelById = () => {
 
   // console.log(data, "vendor");
   const getAllUsers = async () => {
+    
     await axios
       .get(
         `${environmentVariables.apiUrl}/vendor/getallbookingbyorderid/${authData.data.vendorId}/${state._id}`,
         { headers: { _token: authData.data.token } }
       )
       .then((response) => {
+        setIsLoading(false);
         // console.log(response.data.data);
         setData(response.data.data);
       })
       .catch((error) => {
-        console.log("error", error);
+        setIsLoading(false);
+        // console.log("error", error);
       });
   };
 
   useEffect(() => {
+    setIsLoading(true);
     getAllUsers();
-  }, [data.checkInStatus, data.checkOutStatus]);
+  }, []);
   const checkIn = () => {
     if (data !== "" && !data.checkInStatus) {
       setIsLoadingCheckIn(true);
@@ -254,7 +259,6 @@ const BookingHotelById = () => {
       headers: { _token: authData.data.token },
     })
       .then((response) => {
-        console.log(response.data.data,"response.data.data")
         setActivities(response.data.data.activitiesData);
         setTotalActivityAmount(Number(response.data.data.totalActivityAmount));
       })
@@ -303,196 +307,210 @@ const BookingHotelById = () => {
         </TextRoot>
       </TextMainWrapper>
       <Container maxWidth="lg">
-        <Grid container>
-          <Grid xs={12}>
-            <Item style={{ padding: "40px" }}>
-              {/* <h4>Hotel Location</h4> */}
-              <HeadingDiv>
-                <div>
-                  <h4>{data.hotelname}</h4>
-                  <p>
-                    {data.area} , {data.state}
-                  </p>
-                </div>
-                {data.isCombined && data.type == "activity" ? (
-                  <p className="text-danger" style={{ width: "30%" }}>
-                    This invoice is attached with hotel, You can generate this
-                    invoice with respective hotel.
-                  </p>
-                ) : null}
-                <Button
-                  variant="contained"
-                  onClick={generateInvoiceHandler}
-                  endIcon={<PictureAsPdfIcon />}
-                  disabled={data.isCombined && data.type == "activity"}
-                >
-                  View Invoice{" "}
-                </Button>
-              </HeadingDiv>
-              <Grid container>
-                <Grid xs={6}>
-                  <h4>Customer Details</h4>
-                  <Table aria-label="simple table">
-                    <TableBody>
-                      <TableRow
-                        sx={{
-                          "&:last-child td, &:last-child th": { border: 0 },
-                        }}
-                      >
-                        <TableCell component="th" scope="row">
-                          Name
-                        </TableCell>
-                        <TableCell align="right">
-                          {" "}
-                          {data.customer != undefined &&
-                          data.customer.title != undefined &&
-                          data.customer.title
-                            ? data.customer.title + "."
-                            : ``}{" "}
-                          {data.customer && data.customer.name}{" "}
-                        </TableCell>
-                      </TableRow>
-                      <TableRow
-                        sx={{
-                          "&:last-child td, &:last-child th": { border: 0 },
-                        }}
-                      >
-                        <TableCell component="th" scope="row">
-                          Email
-                        </TableCell>
-                        <TableCell align="right">
-                          {" "}
-                          {data.customer && data.customer.email}
-                        </TableCell>
-                      </TableRow>
-                      <TableRow
-                        sx={{
-                          "&:last-child td, &:last-child th": { border: 0 },
-                        }}
-                      >
-                        <TableCell component="th" scope="row">
-                          Contact
-                        </TableCell>
-                        <TableCell align="right">
-                          {" "}
-                          {data.customer && data.customer.mobile}{" "}
-                        </TableCell>
-                      </TableRow>
-                    </TableBody>
-                  </Table>
-                </Grid>
-                <Grid xs={6}>
-                  <h4>Booking Details</h4>
-                  <Table aria-label="simple table">
-                    <TableBody>
-                      <TableRow
-                        sx={{
-                          "&:last-child td, &:last-child th": { border: 0 },
-                        }}
-                      >
-                        <TableCell component="th" scope="row">
-                          Adult
-                        </TableCell>
-                        <TableCell align="right">{data.adult}</TableCell>
-                      </TableRow>
-                      <TableRow
-                        sx={{
-                          "&:last-child td, &:last-child th": { border: 0 },
-                        }}
-                      >
-                        <TableCell component="th" scope="row">
-                          Children
-                        </TableCell>
-                        <TableCell align="right">{data.children}</TableCell>
-                      </TableRow>
-                      {data.type == "activity" ? null : (
+        {isLoading === true ? (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              marginTop: "30px",
+            }}
+          >
+            <CircularLoader></CircularLoader>
+          </div>
+        ) : (
+          <Grid container>
+            <Grid xs={12}>
+              <Item style={{ padding: "40px" }}>
+                {/* <h4>Hotel Location</h4> */}
+                <HeadingDiv>
+                  <div>
+                    <h4>{data.hotelname}</h4>
+                    <p>
+                      {data.area} , {data.state}
+                    </p>
+                  </div>
+                  {data.isCombined && data.type == "activity" ? (
+                    <p className="text-danger" style={{ width: "30%" }}>
+                      This invoice is attached with hotel, You can generate this
+                      invoice with respective hotel.
+                    </p>
+                  ) : null}
+                  <Button
+                    variant="contained"
+                    onClick={generateInvoiceHandler}
+                    endIcon={<PictureAsPdfIcon />}
+                    disabled={data.isCombined && data.type == "activity"}
+                  >
+                    View Invoice{" "}
+                  </Button>
+                </HeadingDiv>
+                <Grid container>
+                  <Grid xs={6}>
+                    <h4>Customer Details</h4>
+                    <Table aria-label="simple table">
+                      <TableBody>
                         <TableRow
                           sx={{
                             "&:last-child td, &:last-child th": { border: 0 },
                           }}
                         >
                           <TableCell component="th" scope="row">
-                            Rooms
-                          </TableCell>
-                          <TableCell align="right">{data.noOfRooms}</TableCell>
-                        </TableRow>
-                      )}
-                      <TableRow
-                        sx={{
-                          "&:last-child td, &:last-child th": { border: 0 },
-                        }}
-                      >
-                        <TableCell component="th" scope="row">
-                          {data.type == "activity"
-                            ? "Activity Date"
-                            : "CheckIn Date"}
-                        </TableCell>
-                        <TableCell align="right">
-                          {formatDate(data.checkIn)}
-                        </TableCell>
-                      </TableRow>
-                      {data.type == "activity" ? null : (
-                        <TableRow
-                          sx={{
-                            "&:last-child td, &:last-child th": { border: 0 },
-                          }}
-                        >
-                          <TableCell component="th" scope="row">
-                            CheckOut Date
+                            Name
                           </TableCell>
                           <TableCell align="right">
-                            {formatDate(data.checkOut)}
+                            {" "}
+                            {data.customer != undefined &&
+                            data.customer.title != undefined &&
+                            data.customer.title
+                              ? data.customer.title + "."
+                              : ``}{" "}
+                            {data.customer && data.customer.name}{" "}
                           </TableCell>
                         </TableRow>
-                      )}
-                    </TableBody>
-                  </Table>
+                        <TableRow
+                          sx={{
+                            "&:last-child td, &:last-child th": { border: 0 },
+                          }}
+                        >
+                          <TableCell component="th" scope="row">
+                            Email
+                          </TableCell>
+                          <TableCell align="right">
+                            {" "}
+                            {data.customer && data.customer.email}
+                          </TableCell>
+                        </TableRow>
+                        <TableRow
+                          sx={{
+                            "&:last-child td, &:last-child th": { border: 0 },
+                          }}
+                        >
+                          <TableCell component="th" scope="row">
+                            Contact
+                          </TableCell>
+                          <TableCell align="right">
+                            {" "}
+                            {data.customer && data.customer.mobile}{" "}
+                          </TableCell>
+                        </TableRow>
+                      </TableBody>
+                    </Table>
+                  </Grid>
+                  <Grid xs={6}>
+                    <h4>Booking Details</h4>
+                    <Table aria-label="simple table">
+                      <TableBody>
+                        <TableRow
+                          sx={{
+                            "&:last-child td, &:last-child th": { border: 0 },
+                          }}
+                        >
+                          <TableCell component="th" scope="row">
+                            Adult
+                          </TableCell>
+                          <TableCell align="right">{data.adult}</TableCell>
+                        </TableRow>
+                        <TableRow
+                          sx={{
+                            "&:last-child td, &:last-child th": { border: 0 },
+                          }}
+                        >
+                          <TableCell component="th" scope="row">
+                            Children
+                          </TableCell>
+                          <TableCell align="right">{data.children}</TableCell>
+                        </TableRow>
+                        {data.type == "activity" ? null : (
+                          <TableRow
+                            sx={{
+                              "&:last-child td, &:last-child th": { border: 0 },
+                            }}
+                          >
+                            <TableCell component="th" scope="row">
+                              Rooms
+                            </TableCell>
+                            <TableCell align="right">
+                              {data.noOfRooms}
+                            </TableCell>
+                          </TableRow>
+                        )}
+                        <TableRow
+                          sx={{
+                            "&:last-child td, &:last-child th": { border: 0 },
+                          }}
+                        >
+                          <TableCell component="th" scope="row">
+                            {data.type == "activity"
+                              ? "Activity Date"
+                              : "CheckIn Date"}
+                          </TableCell>
+                          <TableCell align="right">
+                            {formatDate(data.checkIn)}
+                          </TableCell>
+                        </TableRow>
+                        {data.type == "activity" ? null : (
+                          <TableRow
+                            sx={{
+                              "&:last-child td, &:last-child th": { border: 0 },
+                            }}
+                          >
+                            <TableCell component="th" scope="row">
+                              CheckOut Date
+                            </TableCell>
+                            <TableCell align="right">
+                              {formatDate(data.checkOut)}
+                            </TableCell>
+                          </TableRow>
+                        )}
+                      </TableBody>
+                    </Table>
+                  </Grid>
+                  {data.isCombined && data.type === "hotel" && (
+                    <>
+                      <Line />
+                      <Grid xs={8}>
+                        <h4>Activity Details</h4>
+                        <RecentlyUploadedHeader>
+                          <RecentlyUploadedHeaderElem>
+                            Acitivity Name
+                          </RecentlyUploadedHeaderElem>
+                          <RecentlyUploadedHeaderElem>
+                            Activity Date
+                          </RecentlyUploadedHeaderElem>
+                          <RecentlyUploadedHeaderElem>
+                            Number of Members
+                          </RecentlyUploadedHeaderElem>
+                          <RecentlyUploadedHeaderElem>
+                            Number of Children
+                          </RecentlyUploadedHeaderElem>
+                        </RecentlyUploadedHeader>
+                        {data.activities &&
+                          data.activities.map((item, key) => {
+                            return (
+                              <RecentlyUploaded key={key}>
+                                <DocInfo>
+                                  <DocName>{item.hotelname}</DocName>
+                                </DocInfo>
+                                <RecentlyUploadedDate>
+                                  {formatDate(item.checkIn)}
+                                </RecentlyUploadedDate>
+                                <RecentlyUploadedDate>
+                                  {item.adult}
+                                </RecentlyUploadedDate>
+                                <RecentlyUploadedDate>
+                                  {item.children}
+                                </RecentlyUploadedDate>
+                              </RecentlyUploaded>
+                            );
+                          })}
+                      </Grid>
+                    </>
+                  )}
                 </Grid>
-                {data.isCombined && data.type === "hotel" && (
-                  <>
-                    <Line />
-                    <Grid xs={8}>
-                      <h4>Activity Details</h4>
-                      <RecentlyUploadedHeader>
-                        <RecentlyUploadedHeaderElem>
-                          Acitivity Name
-                        </RecentlyUploadedHeaderElem>
-                        <RecentlyUploadedHeaderElem>
-                          Activity Date
-                        </RecentlyUploadedHeaderElem>
-                        <RecentlyUploadedHeaderElem>
-                          Number of Members
-                        </RecentlyUploadedHeaderElem>
-                        <RecentlyUploadedHeaderElem>
-                          Number of Children
-                        </RecentlyUploadedHeaderElem>
-                      </RecentlyUploadedHeader>
-                      {data.activities &&
-                        data.activities.map((item, key) => {
-                          return (
-                            <RecentlyUploaded key={key}>
-                              <DocInfo>
-                                <DocName>{item.hotelname}</DocName>
-                              </DocInfo>
-                              <RecentlyUploadedDate>
-                                {formatDate(item.checkIn)}
-                              </RecentlyUploadedDate>
-                              <RecentlyUploadedDate>
-                                {item.adult}
-                              </RecentlyUploadedDate>
-                              <RecentlyUploadedDate>
-                                {item.children}
-                              </RecentlyUploadedDate>
-                            </RecentlyUploaded>
-                          );
-                        })}
-                    </Grid>
-                  </>
-                )}
-              </Grid>
-            </Item>
+              </Item>
+            </Grid>
           </Grid>
-        </Grid>
+        )}
         <Container2>
           <CheckinoutButton
             onClick={() => checkIn()}
