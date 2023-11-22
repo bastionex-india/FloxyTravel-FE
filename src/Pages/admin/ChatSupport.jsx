@@ -589,7 +589,7 @@ const ChatSupport = () => {
                       {getSortName(
                         activeChannel
                           ? activeChannel.channelState.friendlyName
-                          : "Admin"
+                          : "Admin..."
                       )}
                     </Avatar>
                     &nbsp;

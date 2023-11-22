@@ -132,7 +132,7 @@ const ChildContainer0 = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 20px;
+  // margin-bottom: 20px;
 `;
 const ChildContainer1 = styled.div`
   display: flex;
@@ -144,6 +144,19 @@ const First = styled.div`
   flex-direction: column;
   font-size: 15px;
   font-weight: 600;
+
+  ${(p) =>
+    p.xyz &&
+    `
+    font-size: 13px;
+    font-weight: 300;
+  `}
+  ${(p) =>
+    p.xyza &&
+    `
+    font-size: 14px;
+    font-weight: 400;
+  `}
 `;
 const Second = styled.div`
   display: flex;
@@ -170,6 +183,15 @@ const InvoiceNoText = styled.div`
 const InvoiceDate = styled.div``;
 const ChildContainer2 = styled.div`
   margin: 25px 0px;
+  display: flex;
+`;
+const HotelHeaderName = styled.div`
+  color: #60c764;
+  font-size: 20px;
+  font-weight: 500;
+`;
+const InsideChildConainer2 = styled.div`
+  width: 50%;
 `;
 const HeadingText = styled.div`
   font-size: 18px;
@@ -227,25 +249,25 @@ const TabularData = styled.div`
 `;
 const HotelInputPrice = styled.div`
   display: flex;
-  width: 60%;
+  width: 40%;
   justify-content: space-between;
   align-items: center;
 `;
 const TotalActivitiesPrice = styled.div`
   display: flex;
-  width: 60%;
+  width: 40%;
   justify-content: space-between;
   align-items: center;
 `;
 const TotalDiscountPrice = styled.div`
   display: flex;
-  width: 60%;
+  width: 40%;
   justify-content: space-between;
   align-items: center;
 `;
 const TotalPayblePrice = styled.div`
   display: flex;
-  width: 60%;
+  width: 40%;
   justify-content: space-between;
   align-items: center;
 `;
@@ -271,6 +293,11 @@ const boldTextCss = {
   color: "white",
   width: "20%",
 };
+const TimeInput = styled.input`
+  /* Add your styles here */
+  padding: 0.5rem;
+  font-size: 1rem;
+`;
 
 const TableContainerCustomUpdate = styled(TableContainer)`
   width: 100% !important;
@@ -572,6 +599,19 @@ const GenerateInvoice = () => {
     setActivitiesData(collectAllActivities);
     // setActivityAdult(event.target.value);
   };
+
+  const handleTimeChange = (event,item)=>{
+    let collectAllActivities = [];
+    for (let index = 0; index < activitiesData.length; index++) {
+      let element = activitiesData[index];
+      if (element._id === item._id) {
+        element.activityTime = event.target.value;
+      }
+
+      collectAllActivities.push(element);
+    }
+    setActivitiesData(collectAllActivities);
+  }
   const handleChangeActivityChildren = (event, item) => {
     let collectAllActivities = [];
     for (let index = 0; index < activitiesData.length; index++) {
@@ -752,6 +792,7 @@ const GenerateInvoice = () => {
     }
   };
 
+  console.log("state", state);
   return (
     <>
       <TextMainWrapper>
@@ -779,7 +820,7 @@ const GenerateInvoice = () => {
             </First>
           </ChildContainer0>
           <ChildContainer1>
-            <First>
+            <First xyz>
               <Address>B2 Sec-4, Noida, Uttar Pradesh 201301, India</Address>
               <Address>8880036677</Address>
               <Address>https://travel.floxypay.com/</Address>
@@ -798,23 +839,40 @@ const GenerateInvoice = () => {
             </Second>
           </ChildContainer1>
           <ChildContainer2>
-            <HeadingText>Customer Details : </HeadingText>
-            <ChildContainer1>
-              <First>
-                <GuestName>
-                  Name : {state.customer.title}. {state.customer.name}
-                </GuestName>
-                {/* <GuestAddress>8880036677</GuestAddress> */}
-                <GuestPhone>
-                  Phone : {state.customer.countryCode}-{state.customer.mobile}
-                </GuestPhone>
-                <GuestEmail>Email : {state.customer.email}</GuestEmail>
-              </First>
-            </ChildContainer1>
+            <InsideChildConainer2>
+              <HeadingText>Customer Details : </HeadingText>
+              <ChildContainer1>
+                <First xyza>
+                  <GuestName>
+                    Name : {state.customer.title}. {state.customer.name}
+                  </GuestName>
+                  {/* <GuestAddress>8880036677</GuestAddress> */}
+                  <GuestPhone>
+                    Phone : {state.customer.countryCode}-{state.customer.mobile}
+                  </GuestPhone>
+                  <GuestEmail>Email : {state.customer.email}</GuestEmail>
+                </First>
+              </ChildContainer1>
+            </InsideChildConainer2>
+            {state?.guestDetails.length > 0 && (
+              <InsideChildConainer2>
+                <HeadingText>Guest Details : </HeadingText>
+                {state?.guestDetails?.map((item, index) => {
+                  return (
+                    <First key={index} xyza>
+                      <div>
+                        {item.title} {item.firstName} {item.lastName}
+                      </div>
+                    </First>
+                  );
+                })}
+              </InsideChildConainer2>
+            )}
           </ChildContainer2>
           {state.type === "hotel" && (
             <ChildContainer3>
               <HeadingText>Hotel Details : </HeadingText>
+              <HotelHeaderName>{state?.hotelname}</HotelHeaderName>
               <HotelDetailsWrapper>
                 <Wrapper1>
                   <CheckInWrapper>
@@ -852,6 +910,7 @@ const GenerateInvoice = () => {
                             endDate={checkOut}
                             ref={InputCheckIn}
                             minDate={checkIn}
+                            dateFormat="dd/MM/yyyy"
                           ></DatePickerStyled2>
                         </div>
                       ) : (
@@ -892,6 +951,7 @@ const GenerateInvoice = () => {
                                 endDate={checkOut}
                                 minDate={checkIn}
                                 ref={InputCheckOut}
+                                dateFormat="dd/MM/yyyy"
                               ></DatePickerStyled2>
                             </div>
                           ) : (
@@ -1055,7 +1115,7 @@ const GenerateInvoice = () => {
           )}
           {/* <HotelInputPrice>
             <DetailContainer style={{ padding: "10px 0" }}>
-              <Detailkey> Hotel Amount </Detailkey>
+              <Detailkey> Hotel </Detailkey>
               <DetailValue>
                 <span
                   style={{
@@ -1179,6 +1239,7 @@ const GenerateInvoice = () => {
                                 endDate={checkOut}
                                 ref={InputCheckIn}
                                 minDate={checkIn}
+                                dateFormat="dd/MM/yyyy"
                               ></DatePickerStyled2>
                             </div>
                           ) : (
@@ -1269,6 +1330,9 @@ const GenerateInvoice = () => {
                           Activity Date
                         </TableCellStyle>
                         <TableCellStyle align="left">
+                          Activity Time
+                        </TableCellStyle>
+                        <TableCellStyle align="left">
                           Total Adults
                         </TableCellStyle>
                         <TableCellStyle align="left">
@@ -1325,12 +1389,48 @@ const GenerateInvoice = () => {
                                         ref={InputCheckIn}
                                         minDate={checkIn}
                                         maxDate={checkOut}
+                                        dateFormat="dd/MM/yyyy"
                                       ></DatePickerStyled2>
                                     </div>
                                   ) : (
                                     <>{formatDate(item.checkIn)}</>
                                   )}
                                 </TableCell>
+
+                                <TableCell align="left">
+                                  {" "}
+                                  {state.status === "pending" ||
+                                  state.status === "approved" ? (
+                                    <FormControl
+                                      sx={{ width: "71%" }}
+                                      variant="standard"
+                                      className="pull-right"
+                                    >
+                                      <TimeInput
+                                        type="time"
+                                        id="timeInput"
+                                        name="timeInput"
+                                        value={item.activityTime}
+                                        onChange={(event) =>
+                                          handleTimeChange(event, item)
+                                        }
+                                      />
+                                      {/* <Input
+                                        type="number"
+                                        placeholder="Total Adults*"
+                                        name="adults"
+                                        value={item.adult}
+                                        onChange={(event) =>
+                                          handleChangeActivityAdult(event, item)
+                                        }
+                                        onKeyDown={handleKeyPress}
+                                      /> */}
+                                    </FormControl>
+                                  ) : (
+                                    <>{item.adult}</>
+                                  )}
+                                </TableCell>
+
                                 <TableCell align="left">
                                   {" "}
                                   {state.status === "pending" ||
@@ -1468,6 +1568,7 @@ const GenerateInvoice = () => {
                                         ref={InputCheckIn}
                                         minDate={checkIn}
                                         maxDate={checkOut}
+                                        dateFormat="dd/MM/yyyy"
                                       ></DatePickerStyled2>
                                     </div>
                                   ) : (
@@ -1574,7 +1675,7 @@ const GenerateInvoice = () => {
           <ChildContainer5>
             {state.type === "hotel" && (
               <HotelInputPrice>
-                <HotelInputPriceHeading>Hotel Amount</HotelInputPriceHeading>
+                <HotelInputPriceHeading>Hotel</HotelInputPriceHeading>
                 <HotelInputPriceValue>
                   {state.status === "pending" || state.status === "approved" ? (
                     <FormControl variant="standard" className="pull-right">
@@ -1637,9 +1738,7 @@ const GenerateInvoice = () => {
             )}
             {state.isCombined && (
               <TotalActivitiesPrice>
-                <HotelInputPriceHeading>
-                  Total Activities Amount
-                </HotelInputPriceHeading>
+                <HotelInputPriceHeading>Activities</HotelInputPriceHeading>
                 <HotelInputPriceValue>
                   {" "}
                   {state.status === "pending" || state.status === "approved" ? (
@@ -1673,9 +1772,7 @@ const GenerateInvoice = () => {
               </TotalActivitiesPrice>
             )}
             <TotalDiscountPrice>
-              <HotelInputPriceHeading>
-                Total Discount Amount
-              </HotelInputPriceHeading>
+              <HotelInputPriceHeading>Discount</HotelInputPriceHeading>
               <HotelInputPriceValue>
                 {" "}
                 {state.status === "pending" || state.status === "approved" ? (
@@ -1705,9 +1802,7 @@ const GenerateInvoice = () => {
               </HotelInputPriceValue>
             </TotalDiscountPrice>
             <TotalPayblePrice>
-              <HotelInputPriceHeading>
-                Total Payable Amount
-              </HotelInputPriceHeading>
+              <HotelInputPriceHeading>Payable</HotelInputPriceHeading>
               <HotelInputPriceValue>
                 {" "}
                 {state.status === "pending" || state.status === "approved" ? (
@@ -1828,6 +1923,7 @@ const GenerateInvoice = () => {
                             endDate={checkOut}
                             ref={InputCheckIn}
                             minDate={checkIn}
+                             dateFormat="dd/MM/yyyy"
 
                           ></DatePickerStyled2>
 
@@ -1874,6 +1970,7 @@ const GenerateInvoice = () => {
                               endDate={checkOut}
                               minDate={checkIn}
                               ref={InputCheckOut}
+                               dateFormat="dd/MM/yyyy"
                             ></DatePickerStyled2>
 
                           </div>
