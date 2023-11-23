@@ -336,11 +336,12 @@ const GenerateInvoice = () => {
   const [totalDiscountAmount, setTotalDiscountAmount] = useState(0);
   const [totalPayableAmount, setTotalPayableAmount] = useState(0);
   const [allActivitiesData, setAllActivitiesData] = useState([]);
+  const [activityTimeIndividual, setActivityTimeIndividual] = useState();
   // const [sendInvoiceEnabled, setSendInvoiceEnabled] = useState(false);
 
   const sendInvoice = () => {
     const limitedFieldsArray = activitiesData.map(
-      ({ _id, checkIn, adult, children, price,activityTime }) => ({
+      ({ _id, checkIn, adult, children, price, activityTime }) => ({
         _id,
         checkIn: Number(checkIn),
         adult,
@@ -348,7 +349,7 @@ const GenerateInvoice = () => {
         price,
         includeWithHotel: true,
         discount: "0",
-        activityTime
+        activityTime,
       })
     );
 
@@ -367,6 +368,7 @@ const GenerateInvoice = () => {
         isDinner: false,
         isCombined: false,
         type: state.type !== undefined ? state.type : "hotel",
+        activityTime: activityTimeIndividual,
       };
       if (state.type === "hotel") {
         data.checkOut = new Date(checkOut).getTime();
@@ -466,7 +468,6 @@ const GenerateInvoice = () => {
     axios
       .request(config)
       .then((response) => {
-        // console.log(response.data);
         if (response.data.status) {
           let responsedata = response.data.data;
           if (responsedata.activitiesPaymentDetails?.length) {
@@ -580,6 +581,9 @@ const GenerateInvoice = () => {
   const handleChangePerson = (e) => {
     setNoofPerons(e.target.value);
   };
+  const handleTimeChangeIndividual = (e) => {
+    setActivityTimeIndividual(e.target.value);
+  };
   const handleChangeChildren = (e) => {
     setNoofChildren(e.target.value);
   };
@@ -601,7 +605,7 @@ const GenerateInvoice = () => {
     // setActivityAdult(event.target.value);
   };
 
-  const handleTimeChange = (event,item)=>{
+  const handleTimeChange = (event, item) => {
     let collectAllActivities = [];
     for (let index = 0; index < activitiesData.length; index++) {
       let element = activitiesData[index];
@@ -612,7 +616,7 @@ const GenerateInvoice = () => {
       collectAllActivities.push(element);
     }
     setActivitiesData(collectAllActivities);
-  }
+  };
   const handleChangeActivityChildren = (event, item) => {
     let collectAllActivities = [];
     for (let index = 0; index < activitiesData.length; index++) {
@@ -728,6 +732,10 @@ const GenerateInvoice = () => {
     if (!checkOut) {
       setCheckOut(new Date(state.checkOut));
     }
+
+    if (!activityTimeIndividual) {
+      setActivityTimeIndividual(state.activityTime);
+    }
   }, [state]);
 
   useEffect(() => {
@@ -793,7 +801,6 @@ const GenerateInvoice = () => {
     }
   };
 
-  console.log("state", state);
   return (
     <>
       <TextMainWrapper>
@@ -1192,6 +1199,9 @@ const GenerateInvoice = () => {
                           Activity Date
                         </TableCellStyle>
                         <TableCellStyle align="left">
+                          Activity Time
+                        </TableCellStyle>
+                        <TableCellStyle align="left">
                           Total Adults
                         </TableCellStyle>
                         <TableCellStyle align="left">
@@ -1247,6 +1257,29 @@ const GenerateInvoice = () => {
                             <>{formatDate(checkIn)}</>
                           )}
                         </TableCell>
+
+                        <TableCell align="left">
+                          {" "}
+                          {state.status === "pending" ||
+                          state.status === "approved" ? (
+                            <FormControl
+                              sx={{ width: "71%" }}
+                              variant="standard"
+                              className="pull-right"
+                            >
+                              <TimeInput
+                                type="time"
+                                id="timeInput"
+                                name="timeInput"
+                                value={activityTimeIndividual}
+                                onChange={handleTimeChangeIndividual}
+                              />
+                            </FormControl>
+                          ) : (
+                            <>{activityTimeIndividual}</>
+                          )}
+                        </TableCell>
+
                         <TableCell align="left">
                           {" "}
                           {state.status === "pending" ||
