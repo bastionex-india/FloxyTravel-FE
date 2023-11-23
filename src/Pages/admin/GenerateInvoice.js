@@ -340,7 +340,7 @@ const GenerateInvoice = () => {
 
   const sendInvoice = () => {
     const limitedFieldsArray = activitiesData.map(
-      ({ _id, checkIn, adult, children, price }) => ({
+      ({ _id, checkIn, adult, children, price,activityTime }) => ({
         _id,
         checkIn: Number(checkIn),
         adult,
@@ -348,6 +348,7 @@ const GenerateInvoice = () => {
         price,
         includeWithHotel: true,
         discount: "0",
+        activityTime
       })
     );
 
