@@ -79,7 +79,7 @@ const HeadingWrapper = styled.div`
 const RecentlyUploadedHeader = styled.div`
   display: grid;
   grid-template-columns: 30% 20% 25% 25%;
-  grid-template-columns:1fr 1fr 1fr 1fr;
+  grid-template-columns: 40% 15% 15% 15% 15%;
   // grid-gap: 0 20px;
   margin: 15px 0;
   // padding: 14px 0px;
@@ -94,7 +94,7 @@ const RecentlyUploadedHeaderElem = styled.div`
 const RecentlyUploaded = styled.div`
   background: #fff;
   display: grid;
-  grid-template-columns: 25% 25% 25% 25%;
+  grid-template-columns: 40% 15% 15% 15% 15%;
   -webkit-box-align: center;
   align-items: center;
   margin: 15px 0;
@@ -246,7 +246,8 @@ const BookingHistorybyOrderid = () => {
               </IconButton>
               <Heading>
                 {" "}
-                {data.type == "activity" ? "Activity" : "Hotel"} Booking Details
+                {data.type === "activity" ? "Activity" : "Hotel"} Booking
+                Details
               </Heading>
             </HeadingWrapper>
           </Root>
@@ -380,7 +381,17 @@ const BookingHistorybyOrderid = () => {
                           </TableCell>
                           <TableCell align="right">{data.children}</TableCell>
                         </TableRow>
-                        {data.type == "activity" ? null : (
+                        <TableRow
+                          sx={{
+                            "&:last-child td, &:last-child th": { border: 0 },
+                          }}
+                        >
+                          <TableCell component="th" scope="row">
+                            Infants
+                          </TableCell>
+                          <TableCell align="right">{data.infants}</TableCell>
+                        </TableRow>
+                        {data.type === "activity" ? null : (
                           <TableRow
                             sx={{
                               "&:last-child td, &:last-child th": { border: 0 },
@@ -400,7 +411,7 @@ const BookingHistorybyOrderid = () => {
                           }}
                         >
                           <TableCell component="th" scope="row">
-                            {data.type == "activity"
+                            {data.type === "activity"
                               ? "Activity Date"
                               : "CheckIn Date"}
                           </TableCell>
@@ -428,9 +439,9 @@ const BookingHistorybyOrderid = () => {
                   {data.isCombined && data.type === "hotel" && (
                     <>
                       <Line />
-                  <Grid xs={12}>
+                      <Grid xs={12}>
                         <h4>Activity Details</h4>
-                      <RecentlyUploadedHeader>
+                        <RecentlyUploadedHeader>
                           <RecentlyUploadedHeaderElem>
                             Acitivity Name
                           </RecentlyUploadedHeaderElem>
@@ -438,12 +449,15 @@ const BookingHistorybyOrderid = () => {
                             Activity Date
                           </RecentlyUploadedHeaderElem>
                           <RecentlyUploadedHeaderElem>
-                            Number of Members
+                            Adults
                           </RecentlyUploadedHeaderElem>
                           <RecentlyUploadedHeaderElem>
-                            Number of Children
+                            Children
                           </RecentlyUploadedHeaderElem>
-                      </RecentlyUploadedHeader>
+                          <RecentlyUploadedHeaderElem>
+                            Infants
+                          </RecentlyUploadedHeaderElem>
+                        </RecentlyUploadedHeader>
                         {data.activities &&
                           data.activities.map((item, key) => {
                             return (
@@ -459,6 +473,9 @@ const BookingHistorybyOrderid = () => {
                                 </RecentlyUploadedDate>
                                 <RecentlyUploadedDate>
                                   {item.children}
+                                </RecentlyUploadedDate>
+                                <RecentlyUploadedDate>
+                                  {item.infants}
                                 </RecentlyUploadedDate>
                               </RecentlyUploaded>
                             );

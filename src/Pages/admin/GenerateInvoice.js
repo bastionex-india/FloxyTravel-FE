@@ -324,6 +324,7 @@ const GenerateInvoice = () => {
   const [isSendInvoice, setIsSendInvoice] = useState(false);
   const [noofpersons, setNoofPerons] = useState(state.adult);
   const [noofchildren, setNoofChildren] = useState(state.children);
+  const [noofinfants, setNoofInfants] = useState(state.infants);
   const [noofrooms, setNoofRooms] = useState(state.noOfRooms);
   const [currency, setCurrency] = useState("INR");
 
@@ -341,7 +342,7 @@ const GenerateInvoice = () => {
 
   const sendInvoice = () => {
     const limitedFieldsArray = activitiesData.map(
-      ({ _id, checkIn, adult, children, price, activityTime }) => ({
+      ({ _id, checkIn, adult, children, price, activityTime, infants }) => ({
         _id,
         checkIn: Number(checkIn),
         adult,
@@ -350,6 +351,7 @@ const GenerateInvoice = () => {
         includeWithHotel: true,
         discount: "0",
         activityTime,
+        infants,
       })
     );
 
@@ -369,6 +371,7 @@ const GenerateInvoice = () => {
         isCombined: false,
         type: state.type !== undefined ? state.type : "hotel",
         activityTime: activityTimeIndividual,
+        infants: Number(noofinfants),
       };
       if (state.type === "hotel") {
         data.checkOut = new Date(checkOut).getTime();
@@ -587,6 +590,9 @@ const GenerateInvoice = () => {
   const handleChangeChildren = (e) => {
     setNoofChildren(e.target.value);
   };
+  const handleChangeInfants = (e) => {
+    setNoofInfants(e.target.value);
+  };
   const handleChangeRooms = (e) => {
     setNoofRooms(e.target.value);
   };
@@ -623,6 +629,18 @@ const GenerateInvoice = () => {
       let element = activitiesData[index];
       if (element._id === item._id) {
         element.children = event.target.value;
+      }
+      collectAllActivities.push(element);
+    }
+    setActivitiesData(collectAllActivities);
+    // setActivityAdult(event.target.value);
+  };
+  const handleChangeActivityInfants = (event, item) => {
+    let collectAllActivities = [];
+    for (let index = 0; index < activitiesData.length; index++) {
+      let element = activitiesData[index];
+      if (element._id === item._id) {
+        element.infants = event.target.value;
       }
       collectAllActivities.push(element);
     }
@@ -1054,6 +1072,30 @@ const GenerateInvoice = () => {
                       )}
                     </CheckInValue>
                   </CheckInWrapper>
+                  <CheckInWrapper>
+                    <CheckInHeading> Number of Infants </CheckInHeading>
+                    <CheckInValue>
+                      {state.status === "pending" ||
+                      state.status === "approved" ? (
+                        <FormControl
+                          sx={{ width: "71%" }}
+                          variant="standard"
+                          className="pull-right"
+                        >
+                          <Input
+                            type="number"
+                            placeholder="Total Infants*"
+                            name="noofinfants"
+                            value={noofinfants}
+                            onChange={handleChangeInfants}
+                            onKeyDown={handleKeyPress}
+                          />
+                        </FormControl>
+                      ) : (
+                        <>{noofinfants}</>
+                      )}
+                    </CheckInValue>
+                  </CheckInWrapper>
                 </Wrapper2>
                 <Wrapper3>
                   <CheckBoxWrapper>
@@ -1372,6 +1414,9 @@ const GenerateInvoice = () => {
                         <TableCellStyle align="left">
                           Total Children
                         </TableCellStyle>
+                        <TableCellStyle align="left">
+                          Total Infants
+                        </TableCellStyle>
                         <TableCellStyle align="left">Price</TableCellStyle>
                       </TableRow>
                     </TableHead>
@@ -1516,6 +1561,35 @@ const GenerateInvoice = () => {
                                     <>{item.children}</>
                                   )}
                                 </TableCell>
+
+                                <TableCell align="left">
+                                  {" "}
+                                  {state.status === "pending" ||
+                                  state.status === "approved" ? (
+                                    <FormControl
+                                      sx={{ width: "71%" }}
+                                      variant="standard"
+                                      className="pull-right"
+                                    >
+                                      <Input
+                                        type="number"
+                                        placeholder="Total Infants*"
+                                        name="infants"
+                                        value={item.infants}
+                                        onChange={(event) =>
+                                          handleChangeActivityInfants(
+                                            event,
+                                            item
+                                          )
+                                        }
+                                        onKeyDown={handleKeyPress}
+                                      />
+                                    </FormControl>
+                                  ) : (
+                                    <>{item.infants}</>
+                                  )}
+                                </TableCell>
+
                                 <TableCell align="left">
                                   {state.status === "pending" ||
                                   state.status === "approved" ? (
@@ -1660,6 +1734,35 @@ const GenerateInvoice = () => {
                                     <>{item.children}</>
                                   )}
                                 </TableCell>
+
+                                <TableCell align="left">
+                                  {" "}
+                                  {state.status === "pending" ||
+                                  state.status === "approved" ? (
+                                    <FormControl
+                                      sx={{ width: "71%" }}
+                                      variant="standard"
+                                      className="pull-right"
+                                    >
+                                      <Input
+                                        type="number"
+                                        placeholder="Total Infants*"
+                                        name="infants"
+                                        value={item.infants}
+                                        onChange={(event) =>
+                                          handleChangeActivityInfants(
+                                            event,
+                                            item
+                                          )
+                                        }
+                                        onKeyDown={handleKeyPress}
+                                      />
+                                    </FormControl>
+                                  ) : (
+                                    <>{item.infants}</>
+                                  )}
+                                </TableCell>
+
                                 <TableCell align="left">
                                   {state.status === "pending" ||
                                   state.status === "approved" ? (
