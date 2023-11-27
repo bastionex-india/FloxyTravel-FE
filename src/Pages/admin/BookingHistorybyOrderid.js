@@ -246,7 +246,7 @@ const BookingHistorybyOrderid = () => {
               </IconButton>
               <Heading>
                 {" "}
-                {data.type === "activity" ? "Activity" : "Hotel"} Booking
+                {data?.type === "activity" ? "Activity" : "Hotel"} Booking
                 Details
               </Heading>
             </HeadingWrapper>
