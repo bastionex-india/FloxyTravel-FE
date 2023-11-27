@@ -105,7 +105,7 @@ const Line = styled.div`
 `;
 const RecentlyUploadedHeader = styled.div`
   display: grid;
-  grid-template-columns: 30% 20% 25% 25%;
+  grid-template-columns: 30% 16% 16% 12% 12% 12%;
   margin: 15px 2%;
   padding: 14px 15px;
   @media (max-width: 768px) {
@@ -119,7 +119,7 @@ const RecentlyUploadedHeaderElem = styled.div`
 const RecentlyUploaded = styled.div`
   background: #fff;
   display: grid;
-  grid-template-columns: 30% 20% 25% 25%;
+  grid-template-columns: 30% 16% 16% 12% 12% 12%;
   -webkit-box-align: center;
   align-items: center;
   margin: 15px 2%;
@@ -172,7 +172,6 @@ const BookingHotelById = () => {
 
   // console.log(data, "vendor");
   const getAllUsers = async () => {
-    
     await axios
       .get(
         `${environmentVariables.apiUrl}/vendor/getallbookingbyorderid/${authData.data.vendorId}/${state._id}`,
@@ -420,6 +419,18 @@ const BookingHotelById = () => {
                           </TableCell>
                           <TableCell align="right">{data.children}</TableCell>
                         </TableRow>
+
+                        <TableRow
+                          sx={{
+                            "&:last-child td, &:last-child th": { border: 0 },
+                          }}
+                        >
+                          <TableCell component="th" scope="row">
+                            Infants
+                          </TableCell>
+                          <TableCell align="right">{data.infants}</TableCell>
+                        </TableRow>
+
                         {data.type == "activity" ? null : (
                           <TableRow
                             sx={{
@@ -468,7 +479,7 @@ const BookingHotelById = () => {
                   {data.isCombined && data.type === "hotel" && (
                     <>
                       <Line />
-                      <Grid xs={8}>
+                      <Grid xs={12}>
                         <h4>Activity Details</h4>
                         <RecentlyUploadedHeader>
                           <RecentlyUploadedHeaderElem>
@@ -478,10 +489,16 @@ const BookingHotelById = () => {
                             Activity Date
                           </RecentlyUploadedHeaderElem>
                           <RecentlyUploadedHeaderElem>
-                            Number of Members
+                            Activity Time
                           </RecentlyUploadedHeaderElem>
                           <RecentlyUploadedHeaderElem>
-                            Number of Children
+                            Adults
+                          </RecentlyUploadedHeaderElem>
+                          <RecentlyUploadedHeaderElem>
+                            Children
+                          </RecentlyUploadedHeaderElem>
+                          <RecentlyUploadedHeaderElem>
+                            Infants
                           </RecentlyUploadedHeaderElem>
                         </RecentlyUploadedHeader>
                         {data.activities &&
@@ -495,10 +512,16 @@ const BookingHotelById = () => {
                                   {formatDate(item.checkIn)}
                                 </RecentlyUploadedDate>
                                 <RecentlyUploadedDate>
+                                  {item.activityTime}
+                                </RecentlyUploadedDate>
+                                <RecentlyUploadedDate>
                                   {item.adult}
                                 </RecentlyUploadedDate>
                                 <RecentlyUploadedDate>
                                   {item.children}
+                                </RecentlyUploadedDate>
+                                <RecentlyUploadedDate>
+                                  {item.infants}
                                 </RecentlyUploadedDate>
                               </RecentlyUploaded>
                             );

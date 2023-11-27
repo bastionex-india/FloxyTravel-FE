@@ -1249,6 +1249,9 @@ const GenerateInvoice = () => {
                         <TableCellStyle align="left">
                           Total Children
                         </TableCellStyle>
+                        <TableCellStyle align="left">
+                          Total Infants
+                        </TableCellStyle>
                         <TableCellStyle align="left">Price</TableCellStyle>
                       </TableRow>
                     </TableHead>
@@ -1364,6 +1367,28 @@ const GenerateInvoice = () => {
                             </FormControl>
                           ) : (
                             <>{noofchildren}</>
+                          )}
+                        </TableCell>
+                        <TableCell align="left">
+                          {" "}
+                          {state.status === "pending" ||
+                          state.status === "approved" ? (
+                            <FormControl
+                              sx={{ width: "71%" }}
+                              variant="standard"
+                              className="pull-right"
+                            >
+                              <Input
+                                type="number"
+                                placeholder="Total Infants*"
+                                name="noofinfants"
+                                value={noofinfants}
+                                onChange={handleChangeInfants}
+                                onKeyDown={handleKeyPress}
+                              />
+                            </FormControl>
+                          ) : (
+                            <>{noofinfants}</>
                           )}
                         </TableCell>
                         <TableCell align="left">
@@ -1506,7 +1531,7 @@ const GenerateInvoice = () => {
                                       /> */}
                                     </FormControl>
                                   ) : (
-                                    <>{item.adult}</>
+                                    <>{item.activityTime}</>
                                   )}
                                 </TableCell>
 
@@ -1632,6 +1657,7 @@ const GenerateInvoice = () => {
                           })
                         : state.activitiesforview.length !== 0 &&
                           state.activitiesforview.map((item, key) => {
+                            console.log("wwww", item);
                             return (
                               <TableRow
                                 key={key}
@@ -1683,6 +1709,30 @@ const GenerateInvoice = () => {
                                     <>{formatDate(item.checkIn)}</>
                                   )}
                                 </TableCell>
+
+                                <TableCell align="left">
+                                  {" "}
+                                  {state.status === "pending" ||
+                                  state.status === "approved" ? (
+                                    <FormControl
+                                      sx={{ width: "71%" }}
+                                      variant="standard"
+                                      className="pull-right"
+                                    >
+                                      <TimeInput
+                                        type="time"
+                                        id="timeInput"
+                                        name="timeInput"
+                                        value={item.activityTime}
+                                        onChange={(event) =>
+                                          handleTimeChange(event, item)
+                                        }
+                                      />
+                                    </FormControl>
+                                  ) : (
+                                    <>{item.activityTime}</>
+                                  )}
+                                </TableCell>
                                 <TableCell align="left">
                                   {" "}
                                   {state.status === "pending" ||
@@ -1707,6 +1757,7 @@ const GenerateInvoice = () => {
                                     <>{item.adult}</>
                                   )}
                                 </TableCell>
+
                                 <TableCell align="left">
                                   {" "}
                                   {state.status === "pending" ||
@@ -1843,7 +1894,7 @@ const GenerateInvoice = () => {
             )}
             {state.type === "activity" && (
               <TotalActivitiesPrice>
-                <HotelInputPriceHeading>Total Amount</HotelInputPriceHeading>
+                <HotelInputPriceHeading>Amount</HotelInputPriceHeading>
                 <HotelInputPriceValue>
                   {" "}
                   {state.status === "pending" || state.status === "approved" ? (

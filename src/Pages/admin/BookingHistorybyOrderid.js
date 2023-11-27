@@ -78,8 +78,7 @@ const HeadingWrapper = styled.div`
 `;
 const RecentlyUploadedHeader = styled.div`
   display: grid;
-  grid-template-columns: 30% 20% 25% 25%;
-  grid-template-columns: 40% 15% 15% 15% 15%;
+  grid-template-columns: 30% 16% 16% 12% 12% 12%;
   // grid-gap: 0 20px;
   margin: 15px 0;
   // padding: 14px 0px;
@@ -94,7 +93,7 @@ const RecentlyUploadedHeaderElem = styled.div`
 const RecentlyUploaded = styled.div`
   background: #fff;
   display: grid;
-  grid-template-columns: 40% 15% 15% 15% 15%;
+  grid-template-columns: 30% 16% 16% 12% 12% 12%;
   -webkit-box-align: center;
   align-items: center;
   margin: 15px 0;
@@ -449,6 +448,9 @@ const BookingHistorybyOrderid = () => {
                             Activity Date
                           </RecentlyUploadedHeaderElem>
                           <RecentlyUploadedHeaderElem>
+                            Activity Time
+                          </RecentlyUploadedHeaderElem>
+                          <RecentlyUploadedHeaderElem>
                             Adults
                           </RecentlyUploadedHeaderElem>
                           <RecentlyUploadedHeaderElem>
@@ -467,6 +469,9 @@ const BookingHistorybyOrderid = () => {
                                 </DocInfo>
                                 <RecentlyUploadedDate>
                                   {formatDate(item.checkIn)}
+                                </RecentlyUploadedDate>
+                                <RecentlyUploadedDate>
+                                  {item.activityTime}
                                 </RecentlyUploadedDate>
                                 <RecentlyUploadedDate>
                                   {item.adult}
