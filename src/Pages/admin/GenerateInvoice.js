@@ -211,7 +211,7 @@ const Wrapper1 = styled.div`
 const CheckInWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  width: 30%;
+  width: 25%;
 `;
 const CheckInHeading = styled.div`
   // padding: 0px 10px;
@@ -301,6 +301,7 @@ const TimeInput = styled.input`
 
 const TableContainerCustomUpdate = styled(TableContainer)`
   width: 100% !important;
+  overflow-y: auto !important;
 `;
 
 const socket = io(`${environmentVariables?.apiUrl}`);
