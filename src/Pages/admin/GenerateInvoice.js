@@ -1580,6 +1580,7 @@ const GenerateInvoice = () => {
                                             item
                                           )
                                         }
+                                        
                                         onKeyDown={handleKeyPress}
                                       />
                                     </FormControl>
