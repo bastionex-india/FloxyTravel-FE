@@ -255,6 +255,7 @@ const AddActivity = () => {
         setName(response.data.data.hotelname);
 
         setPayoutInterval(response.data.data.payoutInterval);
+        setAddress(response.data.data.address)
 
         setHotelFee(response.data.data.adminFee);
         setGeneral(response.data.data.facilities[0].general);
@@ -420,6 +421,7 @@ const AddActivity = () => {
         services: services,
         internet: internet,
         parking: parking,
+        address:address
       },
       headers: { _token: authData.data.token },
     })
@@ -609,7 +611,7 @@ const AddActivity = () => {
                 <FormLabel>Address*</FormLabel>
                 <FormInput
                   type="text"
-                  value={id === undefined ? address : hotelData.address}
+                  value={address}
                   onChange={(e) => setAddress(e.target.value)}
                 />
               </div>

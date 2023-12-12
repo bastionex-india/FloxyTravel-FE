@@ -401,7 +401,7 @@ const GenerateInvoice = () => {
         .request(config)
         .then((response) => {
           setIsSendInvoice(false);
-          if (response.data.status) {
+          if (response.data.success) {
             Swal.fire({
               icon: "success",
               title: "Invoice sent successfully",
@@ -472,7 +472,7 @@ const GenerateInvoice = () => {
     axios
       .request(config)
       .then((response) => {
-        if (response.data.status) {
+        if (response.data.success) {
           let responsedata = response.data.data;
           if (responsedata.activitiesPaymentDetails?.length) {
             if (state.status === "pending" || state.status === "approved") {

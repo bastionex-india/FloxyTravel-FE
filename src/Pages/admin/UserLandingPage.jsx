@@ -68,6 +68,7 @@ const FormSelect = styled.select`
   border: 1px solid #c4c4c4;
 `;
 const FormOptions = styled.option``;
+const Image = styled.img``;
 const FormFileInput = styled.input`
   width: 100%;
   border-radius: 5px;
@@ -468,7 +469,7 @@ const UserLandingPage = () => {
           headers: { _token: authData.data.token },
         })
           .then((response) => {
-            if (response?.data?.status) {
+            if (response?.data?.success) {
               Swal.fire(
                 "State Inserted",
                 "Successfully Inserted State and Image",
@@ -609,7 +610,7 @@ const UserLandingPage = () => {
       })
         .then((response) => {
           // console.log(response);
-          if (response.data.status === true) {
+          if (response.data.success === true) {
             setAddThemePopUp(false);
             setTheme(null);
             setTitle(null);
@@ -660,7 +661,7 @@ const UserLandingPage = () => {
       })
         .then((response) => {
           // console.log(response);
-          if (response.data.status === true) {
+          if (response.data.success === true) {
             setAddThemePopUp(false);
             setTheme("");
             setThemeId(null);
@@ -765,7 +766,7 @@ const UserLandingPage = () => {
         headers: { _token: authData.data.token },
       })
         .then((response) => {
-          if (response?.data?.status) {
+          if (response?.data?.success) {
             // setBackgroundImage(response.data.data.image)
             getBackgroundImage();
             setSelectNewBackground(null);
@@ -845,7 +846,6 @@ const UserLandingPage = () => {
     setCityName("");
     setSelectedFile(null);
   };
-  console.log(themeData);
   return (
     <Root>
       <HeadingWrapper>
@@ -878,7 +878,7 @@ const UserLandingPage = () => {
             <div className="modal-content">
               <div className="modal-header">
                 <h1 className="modal-title fs-5" id="staticBackdropLabel">
-                  Add State...
+                  Add State
                 </h1>
                 <button
                   type="button"
@@ -1293,10 +1293,9 @@ const UserLandingPage = () => {
               <Grid item xs={4}>
                 <Item>
                   {backgroundImage ? (
-                    <img
+                    <Image
                       height={100}
                       src={`${environmentVariables.apiUrl}/uploadscitiesimages/${backgroundImage}`}
-                      type=""
                       style={{ width: "100%" }}
                     />
                   ) : null}
@@ -1557,7 +1556,7 @@ const UserLandingPage = () => {
               alignItems: "flex-end",
             }}
           >
-            <div style={{ width: "95%"}}>
+            <div style={{ width: "95%" }}>
               <FormLabel>Banner*</FormLabel>
               <FormFileInput
                 type="file"
@@ -1569,10 +1568,15 @@ const UserLandingPage = () => {
             </div>
             <div
               style={{
-                display:"flex", justifyContent:"flex-end",alignItems:"flex-end", width:"100%"
+                display: "flex",
+                justifyContent: "flex-end",
+                alignItems: "flex-end",
+                width: "100%",
               }}
             >
-              <PriorityButton onClick={handleUpload} style={{ }} >Save</PriorityButton>
+              <PriorityButton onClick={handleUpload} style={{}}>
+                Save
+              </PriorityButton>
             </div>
           </div>
         </LocationWrapper>

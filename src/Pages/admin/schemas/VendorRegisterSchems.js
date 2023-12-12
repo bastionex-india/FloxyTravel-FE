@@ -25,6 +25,6 @@ export const VendorRegisterSchema = Yup.object({
   accountHolderName: Yup.string().required("Please Enter Holder Name"),
   ifsc: Yup.string()
     .required("Please Enter IFSC code")
-    .matches(/^[A-Z]{4}[0-9]{7}$/, "Invalid IFSC code"),
+    .matches(/^[A-Z|a-z]{4}[0][\d]{6}$/, "Invalid IFSC code"),
   // option: Yup.boolean().oneOf([true], 'Please select an option')
 });

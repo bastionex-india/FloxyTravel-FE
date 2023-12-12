@@ -260,7 +260,7 @@ const PayoutRequest = () => {
       .then((response) => {
         setIsButtonLoading(false);
         handleClose();
-        if (response.data.status) {
+        if (response.data.success) {
           socket.emit("sendPayoutRequestToAdmin", response.data);
           Swal.fire({
             icon: "success",
@@ -333,7 +333,7 @@ const PayoutRequest = () => {
       .then((response) => {
         // setIsButtonLoading(false);
         // handleClose();
-        if (response.data.status) {
+        if (response.data.succcess) {
           // load all data
           getAllListData();
           Swal.fire({

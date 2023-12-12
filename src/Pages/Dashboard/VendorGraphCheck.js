@@ -94,8 +94,7 @@ export default function VendorGraphCheck() {
       query: "year",
       year: 2023,
     };
-    //https://uat-travel-api.floxypay.com/vendor/getgraphhotels/a8c99f2a-9622-417a-b72e-aef09da04ba6
-
+    
     await axios({
       method: "post",
       url: `${environmentVariables.apiUrl}/vendor/getgraphhotels/${vendorId}`,
@@ -129,8 +128,7 @@ export default function VendorGraphCheck() {
       query: "month",
       year: 2023,
     };
-    //https://uat-travel-api.floxypay.com/vendor/getgraphhotels/a8c99f2a-9622-417a-b72e-aef09da04ba6
-
+    
     await axios({
       method: "post",
       url: `${environmentVariables.apiUrl}/vendor/getgraphhotels/${vendorId}`,
@@ -152,8 +150,7 @@ export default function VendorGraphCheck() {
       fromdate: fromDate,
       todate: toDate,
     };
-    //https://uat-travel-api.floxypay.com/vendor/getgraphhotels/a8c99f2a-9622-417a-b72e-aef09da04ba6
-
+    
     await axios({
       method: "post",
       url: `${environmentVariables.apiUrl}/vendor/getgraphhotels/${vendorId}`,

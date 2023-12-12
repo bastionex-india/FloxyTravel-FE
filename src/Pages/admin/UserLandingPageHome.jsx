@@ -88,7 +88,9 @@ const UserLandingPageHome = () => {
   };
   const getPopularCities = () => {
     axios
-      .get(`${environmentVariables.apiUrl}/auth/getnameofcity`)
+      .get(`${environmentVariables.apiUrl}/admin/getnameofcity`, {
+        headers: { _token: authData.data.token },
+      })
       .then((res) => {
         setCityData(res.data.data);
       })
@@ -192,7 +194,7 @@ const UserLandingPageHome = () => {
         headers: { _token: authData.data.token },
       })
         .then((response) => {
-          if (response?.data?.status) {
+          if (response?.data?.success) {
             getAllData();
             resetForm();
 

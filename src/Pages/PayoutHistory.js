@@ -253,7 +253,7 @@ const PayoutHistory = () => {
       .then((response) => {
         setIsButtonLoading(false);
         handleClose();
-        if (response.data.status) {
+        if (response.data.success) {
           Swal.fire({
             icon: "success",
             title: "Request send Successfully.",

@@ -303,14 +303,17 @@ const AddHotels = () => {
     axios
       .request(config)
       .then((response) => {
+        console.log("dfhdjsf", response.data.data);
         setAllCountries(response.data.data);
       })
       .catch((err) => {
-        // console.log(err);
+        console.log(err, "dd");
       });
   }, []);
 
+  console.log("allCountries", allCountries);
   useEffect(() => {
+    console.log("countryCode", countryCode, allCountries);
     let config = {
       method: "post",
       url: `${environmentVariables.apiUrl}/admin/getstatesofcountry`,
@@ -596,7 +599,7 @@ const AddHotels = () => {
                     <FormLabel>State*</FormLabel>
                     <FormSelect onChange={handleStateChange}>
                       <FormOptions>Select State</FormOptions>
-                      {allStates.map((val, index) => {
+                      {allStates?.map((val, index) => {
                         return (
                           <FormOptions
                             key={index}
@@ -613,7 +616,7 @@ const AddHotels = () => {
                     <FormLabel>City*</FormLabel>
                     <FormSelect onChange={handleCityChange}>
                       <FormOptions>Select City</FormOptions>
-                      {allCities.map((val, index) => {
+                      {allCities?.map((val, index) => {
                         return (
                           <FormOptions
                             key={index}

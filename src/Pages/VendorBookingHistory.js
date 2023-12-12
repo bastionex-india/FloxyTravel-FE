@@ -124,7 +124,7 @@ const VendorBookingHistory = () => {
         headers: { _token: authData.data.token },
       })
         .then((response) => {
-          if (response?.data?.status) {
+          if (response?.data?.success) {
             getAllData();
             Swal.fire(
               `City ${themeId === null ? "Inserted" : "Updated"}`,
