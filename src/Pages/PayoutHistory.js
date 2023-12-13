@@ -295,7 +295,7 @@ const PayoutHistory = () => {
         },
       })
       .then((response) => {
-        // console.log(response.data.data);
+        console.log(response.data.data,",,,,,,,,");
         setResponse(response.data.data);
         setData(response.data.data.records);
         setIsLoading(false);

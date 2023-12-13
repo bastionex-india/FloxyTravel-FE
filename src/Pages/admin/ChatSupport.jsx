@@ -81,7 +81,6 @@ const Drawer = styled(MuiDrawer, {
   },
 }));
 
-// TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
 const ChatSupport = () => {
@@ -130,7 +129,7 @@ const ChatSupport = () => {
   let scrollDiv = useRef(null);
 
   const handleContextMenu = (e, message) => {
-    e.preventDefault(); // Prevent default right-click menu from showing
+    e.preventDefault(); 
     setSelectedMessages([...selectedMessages, message]);
     setMenuOpen(true);
     setMenuPosition({ x: e.clientX, y: e.clientY });
@@ -161,7 +160,6 @@ const ChatSupport = () => {
   };
 
   const getTwilioAuthToken = async () => {
-    // authData.data.data.email
     return await axios({
       method: "POST",
       url: `${baseUrl}/auth/generateToken`,
@@ -172,9 +170,7 @@ const ChatSupport = () => {
   };
 
   const initializeChatClient = async () => {
-    //  initializeChatClient
     try {
-      // Replace with your backend endpoint to generate the token
       const response = await getTwilioAuthToken();
       const token = response.data.token;
       const client = new Client(token);
@@ -195,7 +191,6 @@ const ChatSupport = () => {
           messageAttributes
         );
         setInputText("");
-        // console.log("sent");
         setIsSendButtonDisable(false);
       } catch (error) {
         isSendButtonDisable(false);
@@ -219,10 +214,7 @@ const ChatSupport = () => {
     );
   };
   const handleKeyDown = (event) => {
-    // console.log("event.key",event.shiftKey);
-    // console.log("event.key",event.key);
     if (event.key === "Enter" && !event.shiftKey) {
-      // 👇 Get input value
       sendMessage();
     }
   };
@@ -234,15 +226,11 @@ const ChatSupport = () => {
   const selectChannel = (channel) => {
     setActiveChannel(channel);
     setActiveChannelSID(channel.sid);
-
-    // console.log("channel selected...");
   };
-  // Assuming you have a valid Twilio Chat client
   const getAllChannels = async (client) => {
     try {
       setIsChannelLoading(true);
       const channels = await client.getSubscribedChannels();
-      // console.log("All channels:", channels);
       setAllChannel(channels.items);
       setIsChannelLoading(false);
     } catch (error) {
@@ -254,18 +242,12 @@ const ChatSupport = () => {
     for (let index = 0; index < selectedMessages.length; index++) {
       const message = selectedMessages[index];
       try {
-        //  hard  delete
-        // let deletedMessage = await message.remove();
-        // console.log("deleted ",deletedMessage);
-
-        // soft delete
         const updatedAttributes = {
           ...message.state.attributes,
           deleted: true,
         };
         await message.updateAttributes(updatedAttributes);
 
-        // console.log('Message deleted successfully!');
       } catch (error) {
         console.error("Error deleting message:", error);
       }
@@ -274,8 +256,6 @@ const ChatSupport = () => {
   };
 
   const handleMessageDelete = async () => {
-    // handleMessageDelete
-    // console.log("data >>>>>>>>>",selectedMessages);
     let getResult = await deleteMessages();
     if (getResult) {
       getAllMessages(activeChannel);
@@ -283,13 +263,10 @@ const ChatSupport = () => {
     setSelectedMessages([]);
     handleCloseMenu();
   };
-  // mark  All Messages As Consumed
+
   const markAllMessagesAsConsumed = async (channel) => {
     try {
       await channel.setAllMessagesConsumed();
-      // await channel.setNoMessagesConsumed();
-      // let getMembersCount = await  channel.getMembersCount()
-      // console.log("getMembersCount",getMembersCount)
       await getAllChannels(chatClient);
       console.log("All messages marked as consumed");
     } catch (error) {
@@ -303,7 +280,6 @@ const ChatSupport = () => {
     setMessages((messages) => [...messages, message]);
     messages.push(message);
 
-    // Automatically select the channel associated with the new message
     const channelSid = message.channel.sid;
     const channel = allChannel.find((channel) => channel.sid === channelSid);
     if (channel) {
@@ -314,18 +290,12 @@ const ChatSupport = () => {
   };
 
   const handleChannelAdded = (channel) => {
-    // console.log('New channel created:', channel);
-    // Perform any desired actions when a new channel is created
     getAllChannels(chatClient);
   };
   const handleChannelDeleted = (channel) => {
-    // console.log('Channel deleted:', channel);
-    // Perform any desired actions when a channel is deleted
     getAllChannels(chatClient);
   };
   const handleChannelRemoved = (channel) => {
-    // console.log('Channel removed:', channel);
-    // Perform any desired actions when a channel is removed
     getAllChannels(chatClient);
   };
 
@@ -357,17 +327,13 @@ const ChatSupport = () => {
   useEffect(() => {
     console.log("Client changed...");
     if (chatClient) {
-      // console.log({ chatClient });
       getAllChannels(chatClient);
     }
     if (chatClient) {
-      // Attach the event listener
       chatClient.on("channelAdded", handleChannelAdded);
     }
     if (chatClient) {
-      // Attach the event listener
       chatClient.on("channelDeleted", handleChannelDeleted);
-      // chatClient.off('channelDeleted', handleChannelDeleted); //  in case  of memory  leak you can use it
     }
     if (chatClient) {
       chatClient.on("channelRemoved", handleChannelRemoved);
@@ -378,7 +344,6 @@ const ChatSupport = () => {
     const handleOutsideClick = (event) => {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
         setMenuOpen(false);
-        // after  click  on outside =>  selected message  will be empty
         setSelectedMessages([]);
       }
     };
@@ -396,7 +361,6 @@ const ChatSupport = () => {
   }, []);
 
   console.log("messages", allChannel);
-  // console.log("seleceted Message",selectedMessages);
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -410,7 +374,6 @@ const ChatSupport = () => {
             <Toolbar
               sx={{
                 display: "flex",
-                // alignItems: 'center',
                 justifyContent: "center",
                 px: [1],
               }}
@@ -435,12 +398,8 @@ const ChatSupport = () => {
               <p>
                 <b>{authData.data.name}</b>
               </p>
-              {/* <p>pradeep@bastionex.net</p>
-              <p>pradeep@bastionex.net</p>
-              <p>Backend Developer</p> */}
             </div>
           </div>
-          {/* <Divider sx={{ my: 1 }} /> */}
           <List
             style={{
               backgroundColor: "#fff",
@@ -463,15 +422,13 @@ const ChatSupport = () => {
             ) : (
               allChannel &&
               allChannel.map((channel, index) => {
-                // console.log("channel.lastConsumedMessageIndex", channel);
-                // console.log("channel.lastMessage.index",channel.lastMessage.index);
                 let unreadMessageCount = 0;
                 if (channel.lastConsumedMessageIndex !== null) {
                   unreadMessageCount =
                     channel.lastMessage.index -
                     channel.lastConsumedMessageIndex;
+                  console.log("underr",unreadMessageCount,"/.",channel)
                 }
-                //  channel.lastConsumedMessageIndex !== channel.lastMessage.index ? channel.lastMessage.index - channel.lastConsumedMessageIndex : 0
                 let userName = channel.channelState.friendlyName;
                 let number = index % (colorList.length - 1);
                 let shortName = getSortName(userName);
@@ -497,7 +454,7 @@ const ChatSupport = () => {
 
                 console.log(
                   "channel",
-                  channel?.lastMessage?.index -
+                  channel?.lastMessage?.index ,
                     channel?.lastConsumedMessageIndex
                 );
 
@@ -544,9 +501,7 @@ const ChatSupport = () => {
                       >
                         {lastMessageDateTime}
                       </Box>
-                      {/* <Box component="span" sx={{position:"absolute",color:"gray",fontSize:"12px",bottom: 0, right:3 }}>
-                        last  messages ......
-                      </Box> */}
+                      {/* {unreadMessageCount+ "iii"} */}
                       <Badge
                         badgeContent={unreadMessageCount}
                         color="primary"
@@ -638,7 +593,6 @@ const ChatSupport = () => {
                           message.attributes.deleted != undefined
                             ? message.attributes.deleted
                             : false;
-                        // console.log("message isDeleted >>>>>>",isDeleted);
 
                         return (
                           <Grid
@@ -716,11 +670,9 @@ const ChatSupport = () => {
                   <Grid item xs={6} md={6} lg={6}>
                     <TextField
                       id="filled-multiline-flexible"
-                      // label="Multiline"
                       placeholder="Type Your Message..."
                       multiline
                       size="small"
-                      // maxRows={1}
                       sx={{ outline: "none" }}
                       style={{ width: "100%" }}
                       value={inputText}

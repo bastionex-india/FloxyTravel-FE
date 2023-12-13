@@ -303,7 +303,7 @@ const PayoutRequest = () => {
         },
       })
       .then((response) => {
-        // console.log(response.data.data);
+        console.log(response.data.data);
         setResponse(response.data.data);
         setData(response.data.data.records);
         setIsLoading(false);
@@ -333,7 +333,8 @@ const PayoutRequest = () => {
       .then((response) => {
         // setIsButtonLoading(false);
         // handleClose();
-        if (response.data.succcess) {
+        console.log(response.data.success)
+        if (response.data.success) {
           // load all data
           getAllListData();
           Swal.fire({
@@ -618,7 +619,7 @@ const PayoutRequest = () => {
     getAllCities();
     getAllVendors();
   }, []);
-  // console.log({selectCity,selectHotel});
+  console.log({selectCity,selectHotel});
   return (
     <>
       <TextMainWrapper>
