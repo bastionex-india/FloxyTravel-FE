@@ -343,15 +343,26 @@ function Navigation({
     };
     channelUserConfirmedBooking.bind('create', handleUserConfirmedBookingEvent);
   
+
+    const channelforvendorrequest = pusher.subscribe('vendor_payout_request');
+    const handleVendorRequestEvent = (receivedData) => {
+      console.log(".....")
+      getNotificationData();
+    };
+    channelforvendorrequest.bind('create', handleVendorRequestEvent);
+  
+
     return () => {
       channelUserRegister.unbind('create', handleUserRegisterEvent);
       channelUserBooking.unbind('create', handleUserBookingEvent);
       channelUserCancelBooking.unbind('create', handleUserCancelBookingEvent);
       channelUserConfirmedBooking.unbind('create', handleUserConfirmedBookingEvent);
+      channelforvendorrequest.unbind('create', handleVendorRequestEvent);
       pusher.unsubscribe('user_register');
       pusher.unsubscribe('user_booking');
       pusher.unsubscribe('user_cancel_booking');
       pusher.unsubscribe('user_confirm_booking');
+      pusher.unsubscribe('vendor_payout_request');
     };
   }, []);
 

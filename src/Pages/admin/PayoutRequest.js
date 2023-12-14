@@ -261,7 +261,7 @@ const PayoutRequest = () => {
         setIsButtonLoading(false);
         handleClose();
         if (response.data.success) {
-          socket.emit("sendPayoutRequestToAdmin", response.data);
+          // socket.emit("sendPayoutRequestToAdmin", response.data);
           Swal.fire({
             icon: "success",
             title: "Request send Successfully.",
