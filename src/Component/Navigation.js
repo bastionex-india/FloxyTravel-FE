@@ -9,6 +9,7 @@ import Avtar from "../Images/avatar.png";
 import BrandLogo from "../Images/LogoDark.png";
 import bell from "../Images/bell.png";
 import io, { socketIOClient } from "socket.io-client";
+import Pusher from 'pusher-js';
 
 const Root = styled.div`
   box-shadow: 0 0 49px 0 rgba(0, 0, 0, 0.11);
@@ -260,29 +261,97 @@ function Navigation({
   useEffect(() => {
     getNotificationData();
   }, []);
+  // useEffect(() => {
+  //   const socket = io.connect(environmentVariables?.apiUrl);
+
+  //   socket.on("admin_notification", (data) => {
+  //     getNotificationData();
+  //   });
+
+  //   socket.on("admin_cancellation_notification", (data) => {
+  //     getNotificationData();
+  //   });
+
+  //   socket.on("admin_booking_notification", (data) => {
+  //     getNotificationData();
+  //   });
+  //   socket.on("emitPayoutRequestToAdmin", (data) => {
+  //     getNotificationData();
+  //   });
+  //   socket.on("admin_confirmed_notification", (data) => {
+  //     getNotificationData();
+  //   });
+
+  //   return () => {
+  //     socket.disconnect();
+  //   };
+  // }, []);
+
+  // useEffect(() => {
+  //   Pusher.logToConsole = true;
+  //   const pusher = new Pusher('cbb68a6fad0862e7fd60', {
+  //     cluster: 'ap2'
+  //   });
+  //   const channelContacts = pusher.subscribe('user_register');
+  //   const channelContacts1 = pusher.subscribe('user_booking');
+    
+
+  //   const handleMyEventContact = (receivedData) => {
+  //     // setNotificationsData([receivedData?.message, ...notificationsData]);
+  //     // setIsNewNotifications(true)
+  //     getNotificationData();
+  //   };
+
+  //   channelContacts.bind('create', handleMyEventContact);
+  //   return () => {
+  //     channelContacts.unbind('create', handleMyEventContact);
+  //     pusher.unsubscribe('MakeContacts');
+  //   };
+  // }, []);
+
   useEffect(() => {
-    const socket = io.connect(environmentVariables?.apiUrl);
+    Pusher.logToConsole = true;
+    const pusher = new Pusher('cbb68a6fad0862e7fd60', {
+      cluster: 'ap2'
+    });
+  
+    // Subscribe to 'user_register' channel
+    const channelUserRegister = pusher.subscribe('user_register');
+    const handleUserRegisterEvent = (receivedData) => {
+      getNotificationData();
+    };
+    channelUserRegister.bind('create', handleUserRegisterEvent);
 
-    socket.on("admin_notification", (data) => {
+    const channelUserBooking = pusher.subscribe('user_booking');
+    const handleUserBookingEvent = (receivedData) => {
+      console.log("ooo")
       getNotificationData();
-    });
+    };
+    channelUserBooking.bind('create', handleUserBookingEvent);
+    
+    const channelUserCancelBooking = pusher.subscribe('user_cancel_booking');
+    const handleUserCancelBookingEvent = (receivedData) => {
+      console.log(".....")
+      getNotificationData();
+    };
+    channelUserCancelBooking.bind('create', handleUserCancelBookingEvent);
 
-    socket.on("admin_cancellation_notification", (data) => {
+    const channelUserConfirmedBooking = pusher.subscribe('user_confirm_booking');
+    const handleUserConfirmedBookingEvent = (receivedData) => {
+      console.log(".....")
       getNotificationData();
-    });
-
-    socket.on("admin_booking_notification", (data) => {
-      getNotificationData();
-    });
-    socket.on("emitPayoutRequestToAdmin", (data) => {
-      getNotificationData();
-    });
-    socket.on("admin_confirmed_notification", (data) => {
-      getNotificationData();
-    });
-
+    };
+    channelUserConfirmedBooking.bind('create', handleUserConfirmedBookingEvent);
+  
     return () => {
-      socket.disconnect();
+      channelUserRegister.unbind('create', handleUserRegisterEvent);
+      channelUserBooking.unbind('create', handleUserBookingEvent);
+      channelUserCancelBooking.unbind('create', handleUserCancelBookingEvent);
+      channelUserConfirmedBooking.unbind('create', handleUserConfirmedBookingEvent);
+      pusher.unsubscribe('user_register');
+      pusher.unsubscribe('user_booking');
+      pusher.unsubscribe('user_cancel_booking');
+      pusher.unsubscribe('user_confirm_booking');
     };
   }, []);
 

@@ -412,7 +412,7 @@ const GenerateInvoice = () => {
                 ? "/activityBookings"
                 : "/bookinghistoryofadmin";
             navigate(redirect);
-            socket.emit("admin_booking_approved");
+            // socket.emit("admin_booking_approved");
           } else {
             Swal.fire({
               icon: "error",

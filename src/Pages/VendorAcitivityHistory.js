@@ -18,7 +18,7 @@ import SearchIcon from ".././Images/SearchIconNavbar.png";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import ArrowBackIosNewOutlinedIcon from '@mui/icons-material/ArrowBackIosNewOutlined';
-
+import Pusher from 'pusher-js';
 import {
   Button,
   Table,
@@ -277,25 +277,63 @@ const VendorActivityHistory = () => {
       window.scrollTo(0, 0);
     }
   }, []);
+  // useEffect(() => {
+  //   const socket = io.connect(environmentVariables?.apiUrl);
+
+  //   socket.on("admin_notification", (data) => {
+  //     getAllUsers();
+  //   });
+
+  //   socket.on("admin_cancellation_notification", (data) => {
+  //     getAllUsers();
+  //   });
+
+  //   socket.on("admin_booking_notification", (data) => {
+  //     getAllUsers();
+  //   });
+
+  //   return () => {
+  //     socket.disconnect();
+  //   };
+  // }, []);
   useEffect(() => {
-    const socket = io.connect(environmentVariables?.apiUrl);
-
-    socket.on("admin_notification", (data) => {
-      getAllUsers();
+    Pusher.logToConsole = true;
+    const pusher = new Pusher('cbb68a6fad0862e7fd60', {
+      cluster: 'ap2'
     });
+  
 
-    socket.on("admin_cancellation_notification", (data) => {
+    const channelUserBooking = pusher.subscribe('user_booking');
+    const handleUserBookingEvent = (receivedData) => {
+      console.log("-----")
+      getAllUsers()
+    };
+    channelUserBooking.bind('create', handleUserBookingEvent);
+  
+    const channelUserCancelBooking = pusher.subscribe('user_cancel_booking');
+    const handleUserCancelBookingEvent = (receivedData) => {
+      console.log(".....11")
       getAllUsers();
-    });
+    };
+    channelUserCancelBooking.bind('create', handleUserCancelBookingEvent);
 
-    socket.on("admin_booking_notification", (data) => {
+    const channelUserConfirmedBooking = pusher.subscribe('user_confirm_booking');
+    const handleUserConfirmedBookingEvent = (receivedData) => {
+      console.log(".....")
       getAllUsers();
-    });
+    };
+    channelUserConfirmedBooking.bind('create', handleUserConfirmedBookingEvent);
 
     return () => {
-      socket.disconnect();
+      channelUserBooking.unbind('create', handleUserBookingEvent);
+      channelUserCancelBooking.unbind('create', handleUserCancelBookingEvent);
+      channelUserConfirmedBooking.unbind('create', handleUserConfirmedBookingEvent);
+      pusher.unsubscribe('user_booking');
+      pusher.unsubscribe('user_cancel_booking');
+      pusher.unsubscribe('user_confirm_booking');
     };
   }, []);
+
   const handleClick = (item) => {
     navigate("/bookinghotelbyid", { state: item });
   };
