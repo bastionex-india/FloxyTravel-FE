@@ -52,7 +52,7 @@ export default function VendorGraphCheck() {
   const [vendorId, setVendorId] = useState(null);
   const [isLoadingGraph, setIsLoadingGraph] = useState(false);
   const url = authData !== null &&
-  (authData.data.vendorId ? `http://localhost:4000/vendor/getgraphhotels/${vendorId}` : `http://localhost:4000/admin/getgraphhotels/${vendorId}`);
+  (authData.data.vendorId ? `${environmentVariables.apiUrl}/vendor/getgraphhotels/${vendorId}` : `${environmentVariables.apiUrl}/admin/getgraphhotels/${vendorId}`);
   const ButtonGroup = styled.div`
     display: flex;
   `;

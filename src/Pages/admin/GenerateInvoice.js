@@ -440,8 +440,8 @@ const GenerateInvoice = () => {
     }));
     let url =
       authData.data.isadmin === "true"
-        ? `http://localhost:4000/admin/getPaymentdetail`
-        : `http://localhost:4000/vendor/getPaymentdetail`;
+        ? `${environmentVariables.apiUrl}/admin/getPaymentdetail`
+        : `${environmentVariables.apiUrl}/vendor/getPaymentdetail`;
     let requestBody = {
       bookingID: state._id,
     };
