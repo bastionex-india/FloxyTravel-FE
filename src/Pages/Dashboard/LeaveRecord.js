@@ -97,6 +97,7 @@ export default function LeaveRecord({ vendorId }) {
     axios
       .get(`${environmentVariables.apiUrl}/admin/getVendorSummary/${vendorid}`)
       .then((res) => {
+        console.log("res.data.data",res.data.data)
         setSummaryData(res.data.data);
         setIsLoadingCards(false);
       })

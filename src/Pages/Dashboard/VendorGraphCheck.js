@@ -94,10 +94,10 @@ export default function VendorGraphCheck() {
       query: "year",
       year: 2023,
     };
-    
+    console.log("vendorId",vendorId)
     await axios({
       method: "post",
-      url: `${environmentVariables.apiUrl}/vendor/getgraphhotels/${vendorId}`,
+      url: `http://localhost:4000/admin/getgraphhotels/${vendorId}`,
       data: allData,
       headers: { _token: authData !== null && authData.data.token },
     })
@@ -131,7 +131,7 @@ export default function VendorGraphCheck() {
     
     await axios({
       method: "post",
-      url: `${environmentVariables.apiUrl}/vendor/getgraphhotels/${vendorId}`,
+      url: `http://localhost:4000/admin/getgraphhotels/${vendorId}`,
       data: allData,
       headers: { _token: authData !== null && authData.data.token },
     })
@@ -153,7 +153,7 @@ export default function VendorGraphCheck() {
     
     await axios({
       method: "post",
-      url: `${environmentVariables.apiUrl}/vendor/getgraphhotels/${vendorId}`,
+      url: `http://localhost:4000/admin/getgraphhotels/${vendorId}`,
       data: allData,
       headers: { _token: authData !== null && authData.data.token },
     })
@@ -200,6 +200,7 @@ export default function VendorGraphCheck() {
     }
   }, [fromDate, toDate, tab]);
   useEffect(() => {
+    console.log(authData,"authData")
     setIsLoadingGraph(true);
     if (window !== undefined) {
       const param = window.location.href.split("/").pop();
@@ -263,7 +264,7 @@ export default function VendorGraphCheck() {
                 onClick={() => setTab("Bookings")}
                 active={tab === "Bookings"}
               >
-                Bookings
+                Bookings....
               </TabButton>
 
               <TabButton
