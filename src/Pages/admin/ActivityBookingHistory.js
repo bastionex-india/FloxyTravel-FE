@@ -7,7 +7,6 @@ import { environmentVariables } from "../../config/config";
 import { useEffect } from "react";
 import { useContext } from "react";
 import { AuthContext } from "../../ContextApi/ContextApi";
-import io, { socketIOClient } from "socket.io-client";
 import CircularLoader from "../../Component/CircularLoader/CircularLoader";
 import Table from "@mui/material/Table";
 import { Button } from "@mui/material";
@@ -239,25 +238,6 @@ const ActivityBookingHistory = () => {
   const handleClick = (item) => {
     navigation("/bookinghistorybyorderid", { state: item });
   };
-  // useEffect(() => {
-  //   const socket = io.connect(environmentVariables?.apiUrl);
-
-  //   socket.on("admin_notification", (data) => {
-  //     getAllUsers();
-  //   });
-
-  //   socket.on("admin_cancellation_notification", (data) => {
-  //     getAllUsers();
-  //   });
-
-  //   socket.on("admin_booking_notification", (data) => {
-  //     getAllUsers();
-  //   });
-
-  //   return () => {
-  //     socket.disconnect();
-  //   };
-  // }, []);
   useEffect(() => {
     Pusher.logToConsole = true;
     const pusher = new Pusher('cbb68a6fad0862e7fd60', {

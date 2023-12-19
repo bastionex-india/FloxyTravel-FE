@@ -120,7 +120,6 @@ const ExpandableTableRow = ({ children, expandComponent, ...otherProps }) => {
 
   const submit = (e) => {
     e.preventDefault();
-    console.log("comment", commentText, Ids._id);
     axios({
       method: "post",
       url: `${environmentVariables?.apiUrl}/auth/addsmcomments`,
@@ -137,7 +136,6 @@ const ExpandableTableRow = ({ children, expandComponent, ...otherProps }) => {
       });
   };
   const list = (anchor, item) => {
-    console.log("ddddddddddddd", Ids);
     return (
       <Box
         sx={{ width: anchor === "top" || anchor === "bottom" ? "auto" : 650 }}
@@ -263,7 +261,6 @@ const ExpandableTableRow = ({ children, expandComponent, ...otherProps }) => {
           <>
             {subRows &&
               subRows.map((item, key) => {
-                // console.log("subrow items",item)
                 return (
                   <TableRow key={key}>
                     <TableCell></TableCell>

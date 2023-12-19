@@ -7,7 +7,6 @@ import { environmentVariables } from "../../config/config";
 import { useEffect } from "react";
 import { useContext } from "react";
 import { AuthContext } from "../../ContextApi/ContextApi";
-import io, { socketIOClient } from "socket.io-client";
 import CircularLoader from "../../Component/CircularLoader/CircularLoader";
 import Table from "@mui/material/Table";
 import { Button } from "@mui/material";
@@ -207,7 +206,6 @@ const BookingHistoryofAdmin = () => {
   const [isDatePickerOpen1, setIsDatePickerOpen1] = useState(false);
   const InputStartsDate = useRef(null);
   const InputEndDate = useRef(null);
-  const socket = io.connect(environmentVariables?.apiUrl);
 
   // paginationstart
   const [page, setPage] = useState(0);
@@ -239,25 +237,7 @@ const BookingHistoryofAdmin = () => {
   const handleClick = (item) => {
     navigation("/bookinghistorybyorderid", { state: item });
   };
-  // useEffect(() => {
-  //   socket.on("admin_notification", (data) => {
-  //     getAllUsers();
-  //   });
 
-  //   socket.on("admin_cancellation_notification", (data) => {
-  //     getAllUsers();
-  //   });
-
-  //   socket.on("admin_booking_notification", (xyz) => {
-  //     console.log("xyz,data", xyz, data);
-  //     getAllUsers();
-  //   });
-
-  //   return () => {
-  //     socket.disconnect();
-  //   };
-  // }, []);
-  // console.log(data, "aaa");
 
   useEffect(() => {
     Pusher.logToConsole = true;

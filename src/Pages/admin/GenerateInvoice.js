@@ -27,17 +27,8 @@ import moment from "moment";
 import logo from "../../Images/LogoDark.png";
 import Checkbox from "@mui/material/Checkbox";
 import { LoadingButton } from "@mui/lab";
-// import Box from '@mui/material/Box';
-import InputLabel from "@mui/material/InputLabel";
-import InputAdornment from "@mui/material/InputAdornment";
 import FormControl from "@mui/material/FormControl";
 import { useRef } from "react";
-import { format, parse, differenceInCalendarDays } from "date-fns";
-import Radio from "@mui/material/Radio";
-import RadioGroup from "@mui/material/RadioGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import FormLabel from "@mui/material/FormLabel";
-import { io } from "socket.io-client";
 
 const Item = newStyled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -304,7 +295,6 @@ const TableContainerCustomUpdate = styled(TableContainer)`
   overflow-y: auto !important;
 `;
 
-const socket = io(`${environmentVariables?.apiUrl}`);
 const GenerateInvoice = () => {
   const { state } = useLocation();
   const { authData } = useContext(AuthContext);
@@ -412,7 +402,6 @@ const GenerateInvoice = () => {
                 ? "/activityBookings"
                 : "/bookinghistoryofadmin";
             navigate(redirect);
-            // socket.emit("admin_booking_approved");
           } else {
             Swal.fire({
               icon: "error",
@@ -451,8 +440,8 @@ const GenerateInvoice = () => {
     }));
     let url =
       authData.data.isadmin === "true"
-        ? `${environmentVariables.apiUrl}/admin/getPaymentdetail`
-        : `${environmentVariables.apiUrl}/vendor/getPaymentdetail`;
+        ? `http://localhost:4000/admin/getPaymentdetail`
+        : `http://localhost:4000/vendor/getPaymentdetail`;
     let requestBody = {
       bookingID: state._id,
     };

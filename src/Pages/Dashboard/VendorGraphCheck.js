@@ -51,6 +51,8 @@ export default function VendorGraphCheck() {
   const [xLabel, setXLabel] = useState();
   const [vendorId, setVendorId] = useState(null);
   const [isLoadingGraph, setIsLoadingGraph] = useState(false);
+  const url = authData !== null &&
+  (authData.data.vendorId ? `http://localhost:4000/vendor/getgraphhotels/${vendorId}` : `http://localhost:4000/admin/getgraphhotels/${vendorId}`);
   const ButtonGroup = styled.div`
     display: flex;
   `;
@@ -97,7 +99,7 @@ export default function VendorGraphCheck() {
     console.log("vendorId",vendorId)
     await axios({
       method: "post",
-      url: `http://localhost:4000/admin/getgraphhotels/${vendorId}`,
+      url: url,
       data: allData,
       headers: { _token: authData !== null && authData.data.token },
     })
@@ -131,7 +133,7 @@ export default function VendorGraphCheck() {
     
     await axios({
       method: "post",
-      url: `http://localhost:4000/admin/getgraphhotels/${vendorId}`,
+      url: url,
       data: allData,
       headers: { _token: authData !== null && authData.data.token },
     })
@@ -153,7 +155,7 @@ export default function VendorGraphCheck() {
     
     await axios({
       method: "post",
-      url: `http://localhost:4000/admin/getgraphhotels/${vendorId}`,
+      url: url,
       data: allData,
       headers: { _token: authData !== null && authData.data.token },
     })
@@ -207,12 +209,13 @@ export default function VendorGraphCheck() {
       const vendorid =
         authData !== null &&
         (authData.data.vendorId ? authData.data.vendorId : param);
+        console.log(param)
       setVendorId(vendorid);
     }
 
     getMonthData();
     getYearData();
-  }, [vendorId]);
+  }, [vendorId,window.location]);
 
   function planUpdate(e) {
     setToDate(null);
@@ -264,7 +267,7 @@ export default function VendorGraphCheck() {
                 onClick={() => setTab("Bookings")}
                 active={tab === "Bookings"}
               >
-                Bookings....
+                Bookings
               </TabButton>
 
               <TabButton

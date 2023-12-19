@@ -103,7 +103,6 @@ function SideBar(props) {
       }
     } 
   }, [selected]);
-  // console.log("authdata of sidebar",authData.data)
   return (
     <Root>
       {authData!==null && authData.data.isadmin === "true" ? (

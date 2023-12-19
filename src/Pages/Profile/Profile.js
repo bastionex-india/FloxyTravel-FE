@@ -32,7 +32,6 @@ const NavigationSecvtion = styled.div`
 export default function Profile() {
   const { authData } = useContext(AuthContext);
   const navigate=useNavigate();
-// console.log("aaaaaaaaaaaaaaaaa",authData.data)
   return (
     <Root>
       <NavigationSecvtion>

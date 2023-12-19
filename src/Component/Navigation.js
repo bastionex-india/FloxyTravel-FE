@@ -8,7 +8,6 @@ import { AuthContext } from "../ContextApi/ContextApi";
 import Avtar from "../Images/avatar.png";
 import BrandLogo from "../Images/LogoDark.png";
 import bell from "../Images/bell.png";
-import io, { socketIOClient } from "socket.io-client";
 import Pusher from 'pusher-js';
 
 const Root = styled.div`
@@ -169,7 +168,6 @@ function Navigation({
   const [notificationLength, setNotificationLength] = useState(0);
   const navigation = useNavigate();
   const getTimeNotification = (time) => {
-    console.log((Date.now() - time) / 3600000);
     if (
       (Date.now() - time) / 3600000 >= 1 &&
       (Date.now() - time) / 3600000 < 24
@@ -191,7 +189,6 @@ function Navigation({
     e.stopPropagation();
     setShowNotifications(!showNotifications);
     setShowDropDown(false);
-    console.log(authData?.data?.id);
     const url = authData?.data?.isadmin
       ? `${environmentVariables?.apiUrl}/admin/addidstonotification/${authData?.data?.id}`
       : `${environmentVariables?.apiUrl}/vendor/addidstonotification/${authData?.data?.id}`;
@@ -228,10 +225,8 @@ function Navigation({
   //      })
   //       .then((response) => {
   //         navigation("/")
-  //         // console.log(response);
   //       })
   //       .catch((error) => {
-  //         // console.log(error);
   //       });
   //   };
   const setShow = (e) => {
@@ -261,53 +256,7 @@ function Navigation({
   useEffect(() => {
     getNotificationData();
   }, []);
-  // useEffect(() => {
-  //   const socket = io.connect(environmentVariables?.apiUrl);
 
-  //   socket.on("admin_notification", (data) => {
-  //     getNotificationData();
-  //   });
-
-  //   socket.on("admin_cancellation_notification", (data) => {
-  //     getNotificationData();
-  //   });
-
-  //   socket.on("admin_booking_notification", (data) => {
-  //     getNotificationData();
-  //   });
-  //   socket.on("emitPayoutRequestToAdmin", (data) => {
-  //     getNotificationData();
-  //   });
-  //   socket.on("admin_confirmed_notification", (data) => {
-  //     getNotificationData();
-  //   });
-
-  //   return () => {
-  //     socket.disconnect();
-  //   };
-  // }, []);
-
-  // useEffect(() => {
-  //   Pusher.logToConsole = true;
-  //   const pusher = new Pusher('cbb68a6fad0862e7fd60', {
-  //     cluster: 'ap2'
-  //   });
-  //   const channelContacts = pusher.subscribe('user_register');
-  //   const channelContacts1 = pusher.subscribe('user_booking');
-    
-
-  //   const handleMyEventContact = (receivedData) => {
-  //     // setNotificationsData([receivedData?.message, ...notificationsData]);
-  //     // setIsNewNotifications(true)
-  //     getNotificationData();
-  //   };
-
-  //   channelContacts.bind('create', handleMyEventContact);
-  //   return () => {
-  //     channelContacts.unbind('create', handleMyEventContact);
-  //     pusher.unsubscribe('MakeContacts');
-  //   };
-  // }, []);
 
   useEffect(() => {
     Pusher.logToConsole = true;
@@ -324,21 +273,18 @@ function Navigation({
 
     const channelUserBooking = pusher.subscribe('user_booking');
     const handleUserBookingEvent = (receivedData) => {
-      console.log("ooo")
       getNotificationData();
     };
     channelUserBooking.bind('create', handleUserBookingEvent);
     
     const channelUserCancelBooking = pusher.subscribe('user_cancel_booking');
     const handleUserCancelBookingEvent = (receivedData) => {
-      console.log(".....")
       getNotificationData();
     };
     channelUserCancelBooking.bind('create', handleUserCancelBookingEvent);
 
     const channelUserConfirmedBooking = pusher.subscribe('user_confirm_booking');
     const handleUserConfirmedBookingEvent = (receivedData) => {
-      console.log(".....")
       getNotificationData();
     };
     channelUserConfirmedBooking.bind('create', handleUserConfirmedBookingEvent);
@@ -346,7 +292,6 @@ function Navigation({
 
     const channelforvendorrequest = pusher.subscribe('vendor_payout_request');
     const handleVendorRequestEvent = (receivedData) => {
-      console.log(".....")
       getNotificationData();
     };
     channelforvendorrequest.bind('create', handleVendorRequestEvent);

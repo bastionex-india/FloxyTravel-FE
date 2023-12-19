@@ -3,7 +3,6 @@ import axios from "axios";
 import { AuthContext } from "../ContextApi/ContextApi";
 import { environmentVariables } from "../config/config";
 import { useNavigate } from "react-router-dom";
-import io, { socketIOClient } from "socket.io-client";
 import CircularLoader from "../Component/CircularLoader/CircularLoader";
 import styled from "styled-components";
 // import AdharCard from "../../Component/Images/sample_aadhar.jpg";
@@ -87,17 +86,6 @@ height: 50px;
     }
 `;
 
-// const TextWrapper = styled.div`
-//   display: flex;
-//   justify-content: start;
-//   align-items: center;
-//   text-align:center;
-//   margin-top: 25px;
-
-//   @media (max-width: 768px) {
-//     justify-content: flex-end;
-//   }
-// `;
 const TextWrapper = styled.div`
   display: flex;
   justify-content: flex-start;
@@ -116,16 +104,6 @@ const TextWrapper = styled.div`
   }
 `;
 
-const InputIconWrapper = styled.div`
-  position: relative;
-  border-radius: 5px;
-  outline: none;
-  background: white;
-  // color:black;
-  border: none;
-  box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px,
-    rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
-`;
 
 const TextMainWrapper = styled.div`
   /* display: grid; 
@@ -135,53 +113,10 @@ const TextMainWrapper = styled.div`
   }
 `;
 
-const IconSearch = styled.div`
-  width: 5%;
-  top: -3px;
-  left: 15px;
-  font-size: 26px;
-  /* background-color: #0cb09b; */
-  display: inline-block;
-  position: absolute;
-  height: 59px;
-  line-height: 55px;
-  text-align: center;
-  @media (max-width: 768px) {
-    width: 59px;
-  }
-`;
-const Input = styled.input`
-  width: 95%;
-  height: 55px;
-  /* font-size: 20px; */
-  // color: #fff;
-  outline: none;
-  background-color: transparent;
-  padding: 0 10px 0 50px;
-  /* opacity: 1; */
-  font-size: 16px;
-  /* border: 1px solid rgba(75, 233, 245, 0.541); */
-  border: none;
-  @media (max-width: 768px) {
-    width: 80%;
-  }
-`;
 
-const FilterWrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  /* padding: 0px 50px; */
-`;
-const FilterComponent = styled.div`
-  margin-left: 10px;
-  position: relative;
-`;
-const DateIcon = styled.div`
-  position: absolute;
-  right: 5%;
-  z-index: 1;
-`;
+
+
+
 const DatePickerContainerWrapper = styled.div`
 display: flex;
 @media(max-width:1380px){
@@ -190,33 +125,12 @@ display: flex;
   margin:0;
 }
 `;
-const CheckInDateWrapper = styled.input`
-  padding: 10px;
-  border-radius: 5px;
-  outline: none;
-  border: none;
-  box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px,
-    rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
-  margin: 0 10px;
-`;
 const DatePickerContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
   text-align: Center;
 `;
-// const FromDateInput = styled.div`
-//   position: absolute;
-//   top: 18%;
-//   right: 35px;
-//   font-size: 20px;
-//   cursor: pointer;
-//   @media (max-width: 768px) {
-//     top: 14%;
-//     left: 90%;
-//     z-index: 1;
-//   }
-// `;
 const FromDateInput = styled.div`
   position: absolute;
   right: 26px;
@@ -283,25 +197,7 @@ const BookingHistory = () => {
       window.scrollTo(0, 0);
     }
   }, []);
-  // useEffect(() => {
-  //   const socket = io.connect(environmentVariables?.apiUrl);
-
-  //   socket.on("admin_notification", (data) => {
-  //     getAllUsers();
-  //   });
-
-  //   socket.on("admin_cancellation_notification", (data) => {
-  //     getAllUsers();
-  //   });
-
-  //   socket.on("admin_booking_notification", (data) => {
-  //     getAllUsers();
-  //   });
-
-  //   return () => {
-  //     socket.disconnect();
-  //   };
-  // }, []);
+  
   useEffect(() => {
     Pusher.logToConsole = true;
     const pusher = new Pusher('cbb68a6fad0862e7fd60', {
@@ -311,21 +207,18 @@ const BookingHistory = () => {
 
     const channelUserBooking = pusher.subscribe('user_booking');
     const handleUserBookingEvent = (receivedData) => {
-      console.log("-----")
       getAllUsers()
     };
     channelUserBooking.bind('create', handleUserBookingEvent);
 
     const channelUserCancelBooking = pusher.subscribe('user_cancel_booking');
     const handleUserCancelBookingEvent = (receivedData) => {
-      console.log(".....11")
       getAllUsers();
     };
     channelUserCancelBooking.bind('create', handleUserCancelBookingEvent);
 
     const channelUserConfirmedBooking = pusher.subscribe('user_confirm_booking');
     const handleUserConfirmedBookingEvent = (receivedData) => {
-      console.log(".....")
       getAllUsers();
     };
     channelUserConfirmedBooking.bind('create', handleUserConfirmedBookingEvent);
@@ -375,8 +268,6 @@ const BookingHistory = () => {
     await axios
       .request(config)
       .then((response) => {
-        // setData(response.data.sort((a, b) => b.createdAt - a.createdAt));
-        // console.log(response.data);
         const { totalItems, totalPages, currentPage, data } = response.data;
         setData(data);
         setTotalPages(totalPages);

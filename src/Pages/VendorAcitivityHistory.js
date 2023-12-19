@@ -3,14 +3,8 @@ import axios from "axios";
 import { AuthContext } from "../ContextApi/ContextApi";
 import { environmentVariables } from "../config/config";
 import { useNavigate } from "react-router-dom";
-import io, { socketIOClient } from "socket.io-client";
 import CircularLoader from "../Component/CircularLoader/CircularLoader";
 import styled from "styled-components";
-// import AdharCard from "../../Component/Images/sample_aadhar.jpg";
-// import LeftSlideBar from '../../Component/LeftSlideBar/LeftSlideBar';
-
-// import { DocName } from '../Dashboard/Dashboard.styles';
-// import { DocInfo } from '../Dashboard/Dashboard.styles';
 import { BsCalendarDay } from "react-icons/bs";
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
@@ -277,25 +271,7 @@ const VendorActivityHistory = () => {
       window.scrollTo(0, 0);
     }
   }, []);
-  // useEffect(() => {
-  //   const socket = io.connect(environmentVariables?.apiUrl);
 
-  //   socket.on("admin_notification", (data) => {
-  //     getAllUsers();
-  //   });
-
-  //   socket.on("admin_cancellation_notification", (data) => {
-  //     getAllUsers();
-  //   });
-
-  //   socket.on("admin_booking_notification", (data) => {
-  //     getAllUsers();
-  //   });
-
-  //   return () => {
-  //     socket.disconnect();
-  //   };
-  // }, []);
   useEffect(() => {
     Pusher.logToConsole = true;
     const pusher = new Pusher('cbb68a6fad0862e7fd60', {

@@ -8,7 +8,6 @@ import { environmentVariables } from "../../../config/config";
 import { useEffect } from "react";
 import { useContext } from "react";
 import { AuthContext } from "../../../ContextApi/ContextApi";
-import io, { socketIOClient } from "socket.io-client";
 import Swal from "sweetalert2";
 
 import { Button } from "@mui/material";

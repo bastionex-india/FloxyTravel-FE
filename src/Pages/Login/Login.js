@@ -128,8 +128,6 @@ const style1 = {
 };
 
 function ChildModal({ open, setOpen, email, setParentClose }) {
-  // const [open, setOpen] = React.useState(false);
-  // console.log(open,email,"//")
   const [error, setError] = useState("");
   const [timer, setTimer] = useState(10);
 
@@ -149,11 +147,9 @@ function ChildModal({ open, setOpen, email, setParentClose }) {
       },
     })
       .then((response) => {
-        console.log("response", response.data.data);
         setTimer(10);
       })
       .catch((error) => {
-        console.log("error", error.response.data.message);
         axios({
           method: "post",
           url: `${environmentVariables.apiUrl}/vendor/emailsend`,
@@ -162,11 +158,9 @@ function ChildModal({ open, setOpen, email, setParentClose }) {
           },
         })
           .then((response) => {
-            console.log("response", response.data.data);
             setTimer(10);
           })
           .catch((error) => {
-            console.log("error", error.response.data.message);
           });
       });
   };
@@ -192,7 +186,6 @@ function ChildModal({ open, setOpen, email, setParentClose }) {
           },
         })
           .then((response) => {
-            console.log("response", response.data);
             // setData(JSON.stringify(response.data))
             setOpen(false);
             setParentClose(false);
@@ -205,7 +198,6 @@ function ChildModal({ open, setOpen, email, setParentClose }) {
             // navigate("/");
           })
           .catch((error) => {
-            console.log("verify error of admin", error.response.data.message);
             // setError(error.response.data.message);
             axios({
               method: "post",
@@ -218,8 +210,6 @@ function ChildModal({ open, setOpen, email, setParentClose }) {
               },
             })
               .then((response) => {
-                console.log("response", response.data);
-                // setData(JSON.stringify(response.data))
                 setOpen(false);
                 setParentClose(false);
                 Swal.fire({
@@ -231,10 +221,6 @@ function ChildModal({ open, setOpen, email, setParentClose }) {
                 // navigate("/");
               })
               .catch((error) => {
-                console.log(
-                  "verify error of vendor",
-                  error.response.data.message
-                );
                 setError(error.response.data.message);
               });
           });
@@ -398,7 +384,6 @@ const Login = ({ loggedIn }) => {
           })
           .catch((error) => {
             setIsLoading(false);
-            console.log("vendor error", error);
             setError("Details are not valid");
           });
       });
@@ -421,7 +406,6 @@ const Login = ({ loggedIn }) => {
           },
         })
           .then((response) => {
-            console.log("response", response.data.data);
             setEnableChild(true);
             setOpen1(true);
             setEmail(response.data.data.email);
@@ -431,7 +415,6 @@ const Login = ({ loggedIn }) => {
             // navigate("/verifypassword", { state: response.data });
           })
           .catch((error) => {
-            console.log("errorofadmin", error.response.data.message);
             axios({
               method: "post",
               url: `${environmentVariables.apiUrl}/vendor/emailsend`,
@@ -440,14 +423,10 @@ const Login = ({ loggedIn }) => {
               },
             })
               .then((response) => {
-                console.log("response", response.data.data);
                 setEnableChild(true);
                 setOpen1(true);
                 setEmail(response.data.data.email);
                 action.resetForm();
-                // setData(response.data);
-                // setShowPopup(false);
-                // navigate("/verifypassword", { state: response.data });
               })
               .catch((error) => {
                 console.log("errorofvendor", error.response.data.message);

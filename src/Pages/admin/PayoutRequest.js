@@ -21,28 +21,18 @@ import DialogActions from "@mui/material/DialogActions";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import Typography from "@mui/material/Typography";
-import { io } from "socket.io-client";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 
 import moment from "moment";
 
 import Box from "@mui/material/Box";
-import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid";
 
-import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
-import NativeSelect from "@mui/material/NativeSelect";
+
 import ArrowBackIosNewOutlinedIcon from "@mui/icons-material/ArrowBackIosNewOutlined";
 
-const Item = newStyle(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
-  ...theme.typography.body2,
-  padding: theme.spacing(1),
-  textAlign: "center",
-  color: theme.palette.text.secondary,
-}));
 
 const BootstrapDialog = newStyle(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -53,7 +43,6 @@ const BootstrapDialog = newStyle(Dialog)(({ theme }) => ({
   },
 }));
 
-const socket = io(`${environmentVariables?.apiUrl}`);
 
 function BootstrapDialogTitle(props) {
   const { children, onClose, ...other } = props;
@@ -107,14 +96,6 @@ const HotelInfoText = styled.div`
 `;
 const HotelIcon = styled.i``;
 const HotelIconWrapper = styled.div``;
-const HotelActionButtons = styled.div`
-  background-color: #17a2b8;
-  color: #fff;
-  padding: 5px 10px;
-  margin: 5px;
-  border-radius: 5px;
-  cursor: pointer;
-`;
 
 const HotelInfoWrapper = styled.div`
   width: 50%;
@@ -125,12 +106,6 @@ const PayOutInfoWrapper = styled.div`
   width: 50%;
   margin: 10px 15px;
   padding: 0;
-`;
-const HotelButtonWrapper = styled.div`
-  width: 30%;
-  display: flex;
-  align-items: flex-end;
-  margin-bottom: 10px;
 `;
 const HotelImageWrapper = styled.div``;
 
@@ -170,14 +145,6 @@ const HeadingWrapper = styled.div`
   // justify-content: center;
   // align-items: center;
 `;
-const TextWrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
-  margin-top: 20px;
-  @media (max-width: 768px) {
-    justify-content: flex-end;
-  }
-`;
 
 const TextMainWrapper = styled.div`
   /* display: grid; 
@@ -186,15 +153,9 @@ const TextMainWrapper = styled.div`
     display: flex;
   }
 `;
-const NewRow = styled.div`
-  width: 100%;
-`;
 const PayoutRequest = () => {
-  const [select, setSelect] = useState("");
-  const [select1, setSelect1] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { authData, setAuthData } = useContext(AuthContext);
-  const [addVendorPopUp, setAddVendorPopUp] = useState(false);
   const [data, setData] = useState(null);
   const [vendorlist, setVendorList] = useState([]);
   const [mainResponse, setResponse] = useState("");
@@ -212,9 +173,6 @@ const PayoutRequest = () => {
   const [selectStatus, setSelectStatus] = useState("all");
   const navigate = useNavigate();
 
-  const handleClick = (item) => {
-    navigate("/bookinghistorybyorderid", { state: item });
-  };
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
@@ -231,13 +189,6 @@ const PayoutRequest = () => {
   };
   const handleClose = () => {
     setOpen(false);
-  };
-  const handleClickOpen = (item) => {
-    setOpen(true);
-  };
-  const payoutRequestHandler = (payLinkObjectIds, hotelIds, payOutAmount) => {
-    handleClickOpen();
-    setPayoutRequestData({ payLinkObjectIds, hotelIds, payOutAmount });
   };
   const savePayout = async () => {
     let data = {
@@ -261,7 +212,6 @@ const PayoutRequest = () => {
         setIsButtonLoading(false);
         handleClose();
         if (response.data.success) {
-          // socket.emit("sendPayoutRequestToAdmin", response.data);
           Swal.fire({
             icon: "success",
             title: "Request send Successfully.",
@@ -386,45 +336,14 @@ const PayoutRequest = () => {
         );
       } else {
         return data.map((row, index) => {
-          let totalEarnings = Number(row.totalEarnings);
-          let feeAmount = 0;
-          let adminFee =
-            row.hotelsData.adminFee != undefined ? row.hotelsData.adminFee : 0;
-          if (adminFee) {
-            feeAmount =
-              (Number(row.totalEarnings) * Number(row.hotelsData.adminFee)) /
-              100;
-          }
-          let payOutAmount = Number(row.totalEarnings) - feeAmount;
-
-          let payLinkObjectIds = row.objectIds;
-          let hotelIds = [row.hotelId];
 
           let imageSrc = row.hotelsData.image.length
             ? row.hotelsData.image[0]
             : "1675936089112-teanest1.jpg";
-          // lastPayoutDate
-          // payoutInterval
 
-          let dayCount =
-            row.hotelsData.payoutInterval != undefined
-              ? row.hotelsData.payoutInterval
-              : 0;
-          let payoutInterval =
-            row.hotelsData.payoutInterval != undefined
-              ? row.hotelsData.payoutInterval
-              : 0;
-          let lastPayoutDate =
-            row.hotelsData.lastPayoutDate != undefined
-              ? row.hotelsData.lastPayoutDate
-              : 0;
-          if (lastPayoutDate) {
-            let a = moment(new Date(lastPayoutDate));
-            var b = moment(new Date());
-            dayCount = Number(b.diff(a, "days")); // 1
-          }
+      
           return (
-            <HotelCard>
+            <HotelCard key={index}>
               <HotelImageWrapper>
                 <HotelImage
                   src={`https://bastionex-travels.b-cdn.net/uploads/${imageSrc}`}
@@ -443,8 +362,8 @@ const PayoutRequest = () => {
                     Country :{" "}
                     {row.hotelsData.country ? row.hotelsData.country : "NA"}
                   </HotelInfoText>
-                  {row.hotelsData.type == undefined ||
-                  row.hotelsData.type != "activity" ? (
+                  {row.hotelsData.type === undefined ||
+                  row.hotelsData.type !== "activity" ? (
                     <>
                       <HotelInfoText>
                         Theme :{" "}
@@ -461,8 +380,8 @@ const PayoutRequest = () => {
                   <HotelInfoText>
                     {" "}
                     Type :
-                    {row.hotelsData.type == undefined ||
-                    row.hotelsData.type == "hotel" ? (
+                    {row.hotelsData.type === undefined ||
+                    row.hotelsData.type === "hotel" ? (
                       <>
                         <span className="text-primary fw-bold"> Hotel</span>
                       </>
@@ -619,7 +538,7 @@ const PayoutRequest = () => {
     getAllCities();
     getAllVendors();
   }, []);
-  console.log({selectCity,selectHotel});
+
   return (
     <>
       <TextMainWrapper>
@@ -784,8 +703,8 @@ const PayoutRequest = () => {
         </TextRoot>
 
         {isLoading === true ||
-        mainResponse.totalrecords == undefined ||
-        mainResponse.totalrecords == 0 ? (
+        mainResponse.totalrecords === undefined ||
+        mainResponse.totalrecords === 0 ? (
           <></>
         ) : (
           <TablePagination

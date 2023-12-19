@@ -8,7 +8,6 @@ import { environmentVariables } from "../../../config/config";
 import { useEffect } from "react";
 import { useContext } from "react";
 import { AuthContext } from "../../../ContextApi/ContextApi";
-import io, { socketIOClient } from "socket.io-client";
 import Table from "@mui/material/Table";
 import { Button, ButtonGroup, Modal } from "@mui/material";
 import TableBody from "@mui/material/TableBody";

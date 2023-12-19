@@ -92,7 +92,6 @@ function App() {
       //   .catch(function (error) {
       //     setLoggedIn(false);
       //     localStorage.removeItem("authdata");
-      //     console.log(error);
       //   });
     }
   }, [location, authData, loggedIn]);

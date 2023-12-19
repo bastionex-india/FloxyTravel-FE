@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react"; 
  
 const Timer = ({timer,setTimer}) => { 
-//    console.log("jgkjgg",timer,setTimer)
   useEffect(() => { 
     const interval = setInterval(() => { 
       if (timer > 0) { 
