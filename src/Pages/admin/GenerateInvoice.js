@@ -802,10 +802,10 @@ const GenerateInvoice = () => {
   const sendInvoiceEnabled = () => {
     if (state.isCombined) {
       return (
-        hotelPrice > 0 && activitiesData.every((activity) => activity.price > 0)
+        (hotelPrice > 0 && activitiesData.every((activity) => activity.price > 0)) && totalPayableAmount>0
       );
     } else {
-      return hotelPrice > 0;
+      return hotelPrice > 0 && totalPayableAmount>0;
     }
   };
 
