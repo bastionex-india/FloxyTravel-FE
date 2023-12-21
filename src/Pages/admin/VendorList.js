@@ -111,26 +111,12 @@ const boldTextCss = {
 };
 
 const VendorList = () => {
-  const [data, setData] = useState([]);
   const [responseData, setResponseData] = useState([]);
   const [adminResponseData, setAdminResponseData] = useState([]);
   const { authData, setAuthData } = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [summaryData, setSummaryData] = useState(null);
-
-  const getAllListData = async () => {
-    await axios
-      .get(`${environmentVariables.apiUrl}/admin/getvendorlist`, {
-        headers: { _token: authData.data.token },
-      })
-      .then((response) => {
-        setData(response.data.message);
-      })
-      .catch((err) => {
-        console.log("error", err);
-      });
-  };
   const getSummaryData = () => {
     axios
       .get(`${environmentVariables.apiUrl}/admin/getSummaryData`)
@@ -142,7 +128,6 @@ const VendorList = () => {
   };
   useEffect(() => {
     setIsLoading(true);
-    getAllListData();
     getSummaryData();
   }, []);
 

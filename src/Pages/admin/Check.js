@@ -50,7 +50,6 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 const Check = ({ open, setOpen }) => {
-  const [data, setData] = useState([]);
   const [responseData, setResponseData] = useState([]);
   const [adminResponseData, setAdminResponseData] = useState([]);
   const { authData, setAuthData } = useContext(AuthContext);
@@ -66,22 +65,8 @@ const Check = ({ open, setOpen }) => {
   const [error, setError] = useState("");
   // const [open, setOpen] = useState(false);
 
-  const getAllListData = async () => {
-    await axios
-      .get(`${environmentVariables.apiUrl}/admin/getvendorlist`, {
-        headers: { _token: authData.data.token },
-      })
-      .then((response) => {
-        // console.log("vendorlist",response.data)
-        setData(response.data.message);
-      })
-      .catch((err) => {
-        console.log("error", err);
-      });
-  };
-  useEffect(() => {
-    getAllListData();
-  }, []);
+ 
+
 
   const getAnotherComponent = (item) => {
     navigate("/gethotelsbyvendorid", { state: item });
@@ -231,7 +216,6 @@ const Check = ({ open, setOpen }) => {
                 setResponseData(response.data.data);
 
                 action.resetForm();
-                getAllListData();
                 toast(response.data.message);
                 setOpen(false);
               })

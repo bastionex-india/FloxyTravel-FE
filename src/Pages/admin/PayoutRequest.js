@@ -459,13 +459,13 @@ const PayoutRequest = () => {
   const getAllVendors = async () => {
     await axios
       .get(
-        `${environmentVariables.apiUrl}/admin/getvendorlist?page=0&limit=10000`,
+        `${environmentVariables.apiUrl}/admin/getallvendor`,
         {
           headers: { _token: authData.data.token },
         }
       )
       .then((response) => {
-        setVendorList(response.data.data.records);
+        setVendorList(response.data.data);
       })
       .catch((err) => {
         console.log("error", err);

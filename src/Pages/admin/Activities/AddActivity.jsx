@@ -231,12 +231,12 @@ const AddActivity = () => {
 
   const getVendorList = async () => {
     await axios
-      .get(`${environmentVariables.apiUrl}/admin/getvendorlist`, {
+      .get(`${environmentVariables.apiUrl}/admin/getallvendor`, {
         headers: { _token: authData.data.token },
       })
       .then((response) => {
         // console.log("sddfsdsf",response.data.data)
-        setVendorList(response.data.data.records);
+        setVendorList(response.data.data);
       })
       .catch((err) => {
         console.log("error", err);

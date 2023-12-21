@@ -347,11 +347,11 @@ const ManageActivities = () => {
   };
   const getVendorList = async () => {
     await axios
-      .get(`${environmentVariables.apiUrl}/admin/getvendorlist`, {
+      .get(`${environmentVariables.apiUrl}/admin/getallvendor`, {
         headers: { _token: authData.data.token },
       })
       .then((response) => {
-        setVendorList(response.data.data.records);
+        setVendorList(response.data.data);
         setIsLoading(false);
       })
       .catch((err) => {
