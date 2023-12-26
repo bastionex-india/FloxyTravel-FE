@@ -278,6 +278,12 @@ const ChildContainer5 = styled.div`
   align-items: flex-end;
   margin-top: 12px;
 `;
+const ErrorMessage = styled.div`
+  color: red;
+  font-size: 12px;
+  margin: 5px 0px 5px 0px;
+  width: 25%;
+`;
 const boldTextCss = {
   fontWeight: 700,
   backgroundColor: "#01575c",
@@ -329,6 +335,7 @@ const GenerateInvoice = () => {
   const [totalPayableAmount, setTotalPayableAmount] = useState(0);
   const [allActivitiesData, setAllActivitiesData] = useState([]);
   const [activityTimeIndividual, setActivityTimeIndividual] = useState();
+  const [errorMessage, setErrorMessage] = useState("");
   // const [sendInvoiceEnabled, setSendInvoiceEnabled] = useState(false);
 
   const sendInvoice = () => {
@@ -773,7 +780,14 @@ const GenerateInvoice = () => {
     return formattedDate;
   }
   const handleHotelPriceChange = (e) => {
-    setHotelPrice(e.target.value);
+    const hotel_price = e.target.value;
+    setHotelPrice(hotel_price);
+    if(Number(hotel_price) >= Number(totalDiscountAmount)){
+      setHotelPrice(hotel_price);
+      setErrorMessage("")
+    }else{
+      setErrorMessage("Hotel Price cannot be less than Discount");
+    }
   };
 
   const handleTotalDiscountAmountChange = (e) => {
@@ -785,9 +799,7 @@ const GenerateInvoice = () => {
     ) {
       setTotalDiscountAmount(newDiscountAmount);
     } else {
-      // Optionally, you can show a message or handle the situation in some way
-      // For example, you can set an error state or display an error message
-      console.error("Discount amount cannot be less than hotel price");
+      setErrorMessage("Discount cannot be more than hotel price");
     }
   };
 
@@ -802,10 +814,12 @@ const GenerateInvoice = () => {
   const sendInvoiceEnabled = () => {
     if (state.isCombined) {
       return (
-        (hotelPrice > 0 && activitiesData.every((activity) => activity.price > 0)) && totalPayableAmount>0
+        hotelPrice > 0 &&
+        activitiesData.every((activity) => activity.price > 0) &&
+        totalPayableAmount > 0
       );
     } else {
-      return hotelPrice > 0 && totalPayableAmount>0;
+      return hotelPrice > 0 && totalPayableAmount > 0;
     }
   };
 
@@ -1219,7 +1233,7 @@ const GenerateInvoice = () => {
             </DetailContainer>
           </HotelInputPrice> */}
           {state.type === "activity" && (
-            <ChildContainer4>
+            <ChildContainer4 onClick={()=>setErrorMessage("")}>
               <HeadingText>Activity Details : </HeadingText>
               <TabularData>
                 <TableContainerCustomUpdate component={Paper}>
@@ -1569,7 +1583,6 @@ const GenerateInvoice = () => {
                                             item
                                           )
                                         }
-                                        
                                         onKeyDown={handleKeyPress}
                                       />
                                     </FormControl>
@@ -1853,7 +1866,7 @@ const GenerateInvoice = () => {
           )}
           <ChildContainer5>
             {state.type === "hotel" && (
-              <HotelInputPrice>
+              <HotelInputPrice onClick={()=>setErrorMessage("")}>
                 <HotelInputPriceHeading>Hotel</HotelInputPriceHeading>
                 <HotelInputPriceValue>
                   {state.status === "pending" || state.status === "approved" ? (
@@ -1884,7 +1897,7 @@ const GenerateInvoice = () => {
               </HotelInputPrice>
             )}
             {state.type === "activity" && (
-              <TotalActivitiesPrice>
+              <TotalActivitiesPrice onClick={()=>setErrorMessage("")}>
                 <HotelInputPriceHeading>Amount</HotelInputPriceHeading>
                 <HotelInputPriceValue>
                   {" "}
@@ -1916,7 +1929,7 @@ const GenerateInvoice = () => {
               </TotalActivitiesPrice>
             )}
             {state.isCombined && (
-              <TotalActivitiesPrice>
+              <TotalActivitiesPrice onClick={()=>setErrorMessage("")}>
                 <HotelInputPriceHeading>Activities</HotelInputPriceHeading>
                 <HotelInputPriceValue>
                   {" "}
@@ -1950,7 +1963,9 @@ const GenerateInvoice = () => {
                 </HotelInputPriceValue>
               </TotalActivitiesPrice>
             )}
-            <TotalDiscountPrice>
+            {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
+
+            <TotalDiscountPrice onClick={()=>setErrorMessage("")}>
               <HotelInputPriceHeading>Discount</HotelInputPriceHeading>
               <HotelInputPriceValue>
                 {" "}
@@ -1980,7 +1995,7 @@ const GenerateInvoice = () => {
                 </span>
               </HotelInputPriceValue>
             </TotalDiscountPrice>
-            <TotalPayblePrice>
+            <TotalPayblePrice onClick={()=>setErrorMessage("")}>
               <HotelInputPriceHeading>Payable</HotelInputPriceHeading>
               <HotelInputPriceValue>
                 {" "}
