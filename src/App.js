@@ -57,8 +57,6 @@ function App() {
   const [showDropDown, setShowDropDown] = useState(false);
   const location = useLocation();
   const [loggedIn, setLoggedIn] = useState(false);
-
-  console.log("authData",authData)
   useEffect(() => {
     if (authData === null) {
       setLoggedIn(false);

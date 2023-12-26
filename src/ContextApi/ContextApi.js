@@ -88,7 +88,6 @@ export const AuthProvider = ({ children }) => {
   const [authData, setAuthData] = useState(null);
 
   const decryptData = (encryptedData) => {
-    console.log("encryptedData",encryptedData)
     // Your decryption logic here
     const key = CryptoJS.enc.Hex.parse("lifeisoutside!1234567890@$%^&*()");
     const iv = CryptoJS.enc.Hex.parse("blkiajnij2345tgh");

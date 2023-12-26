@@ -345,7 +345,7 @@ const Login = ({ loggedIn }) => {
     setIsLoading(true);
     axios({
       method: "post",
-      url: `http://localhost:4000/admin/admin/login`,
+      url: `${environmentVariables?.apiUrl}/admin/admin/login`,
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
@@ -357,7 +357,6 @@ const Login = ({ loggedIn }) => {
       },
     })
       .then((response) => {
-        console.log("response", response.data.data);
         // localStorage.setItem("authdata", JSON.stringify(response.data));
         updateAuthData(response.data.data);
         navigate("/");
@@ -367,7 +366,7 @@ const Login = ({ loggedIn }) => {
         console.log("error", error);
         axios({
           method: "post",
-          url: `http://localhost:4000/vendor/vendor/login`,
+          url: `${environmentVariables?.apiUrl}/vendor/vendor/login`,
           headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
@@ -378,7 +377,6 @@ const Login = ({ loggedIn }) => {
           },
         })
           .then((res) => {
-            console.log("response", res.data.data);
             // localStorage.setItem("authdata", JSON.stringify(res.data));
             updateAuthData(res.data.data);
             navigate("/");

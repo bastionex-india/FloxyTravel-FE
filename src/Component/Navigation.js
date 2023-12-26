@@ -193,10 +193,9 @@ function Navigation({
     e.stopPropagation();
     setShowNotifications(!showNotifications);
     setShowDropDown(false);
-    console.log(authData)
     const url = authData?.isAdmin
-      ? `http://localhost:4000/admin/addidstonotification/${authData?._id}`
-      : `http://localhost:4000/vendor/addidstonotification/${authData?._id}`;
+      ? `${environmentVariables?.apiUrl}/admin/addidstonotification/${authData?._id}`
+      : `${environmentVariables?.apiUrl}/vendor/addidstonotification/${authData?._id}`;
     let config = {
       method: "post",
       url: url,
@@ -242,8 +241,8 @@ function Navigation({
   };
   const getNotificationData = () => {
     const url = authData?.isAdmin
-      ? `http://localhost:4000/admin/getregisterednotification`
-      : `http://localhost:4000/vendor/getregisterednotification/${authData?.vendorId}`;
+      ? `${environmentVariables?.apiUrl}/admin/getregisterednotification`
+      : `${environmentVariables?.apiUrl}/vendor/getregisterednotification/${authData?.vendorId}`;
     axios
       .get(url, {
         headers: { _token: authData?.token },
@@ -343,12 +342,6 @@ function Navigation({
                 <NotificationWrapper>
                   <NotificationText>Notifications</NotificationText>
                 </NotificationWrapper>
-                {console.log(
-                  "notificationData",
-                  notificationData,
-                  authData?._id,
-                  notificationLength
-                )}
                 {notificationData &&
                   notificationData?.map((val, key) => (
                     <NotificationDiv
