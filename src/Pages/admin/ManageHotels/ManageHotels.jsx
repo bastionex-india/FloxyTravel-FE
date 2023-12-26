@@ -7,7 +7,7 @@ import Check from "../Check";
 import { environmentVariables } from "../../../config/config";
 import { useEffect } from "react";
 import { useContext } from "react";
-import { AuthContext } from "../../../ContextApi/ContextApi";
+import { AuthContext, useAuth } from "../../../ContextApi/ContextApi";
 import Swal from "sweetalert2";
 
 import { Button } from "@mui/material";
@@ -313,7 +313,7 @@ const InnerDiv = styled.div`
 
 const ManageAdmin = () => {
   const [isLoading, setIsLoading] = useState(true);
-  const { authData, setAuthData } = useContext(AuthContext);
+  const { authData } = useAuth();
   const [addVendorPopUp, setAddVendorPopUp] = useState(false);
   const [data, setData] = useState();
   const [page, setPage] = useState(0);
@@ -335,7 +335,7 @@ const ManageAdmin = () => {
   const getAllListData = async () => {
     await axios
       .get(`${environmentVariables.apiUrl}/admin/getallhotels`, {
-        headers: { _token: authData.data.token },
+        headers: { _token: authData.token },
         params: {
           page: page + 1,
           limit: rowsPerPage,
@@ -358,7 +358,7 @@ const ManageAdmin = () => {
       .get(
         `${environmentVariables.apiUrl}/admin/gethoteldetailbyvendorid/${vendorId}`,
         {
-          headers: { _token: authData.data.token },
+          headers: { _token: authData.token },
           params: {
             page: page + 1,
             limit: rowsPerPage,
@@ -379,7 +379,7 @@ const ManageAdmin = () => {
   const getVendorList = async () => {
     await axios
       .get(`${environmentVariables.apiUrl}/admin/getallvendor`, {
-        headers: { _token: authData.data.token },
+        headers: { _token: authData.token },
       })
       .then((response) => {
         setVendorList(response.data.data);
@@ -415,7 +415,7 @@ const ManageAdmin = () => {
       method: "delete",
       url: `${environmentVariables.apiUrl}/admin/deletehotel/${item._id}`,
       headers: {
-        _token: authData.data.token,
+        _token: authData.token,
       },
     };
 

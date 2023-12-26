@@ -5,7 +5,7 @@ import SideBar from "./Component/SideBar";
 import Login from "./Pages/Login/Login";
 import { Route, Routes, useLocation } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
-import { AuthContext } from "./ContextApi/ContextApi";
+import { AuthContext, useAuth } from "./ContextApi/ContextApi";
 import Dashboard from "./Pages/Dashboard/Dashboard";
 import BookingHistory from "./Pages/BookingHistory";
 import HotelDetails from "./Pages/HotelDetails";
@@ -52,12 +52,13 @@ const Container = styled.div`
   display: flex;
 `;
 function App() {
-  const { authData, setAuthData } = useContext(AuthContext);
+  const { authData } = useAuth();
   const [showNotifications, setShowNotifications] = useState(false);
   const [showDropDown, setShowDropDown] = useState(false);
   const location = useLocation();
   const [loggedIn, setLoggedIn] = useState(false);
 
+  console.log("authData",authData)
   useEffect(() => {
     if (authData === null) {
       setLoggedIn(false);
@@ -66,7 +67,7 @@ function App() {
         ? `${environmentVariables?.apiUrl}/admin/isadminlogged`
         : `${environmentVariables?.apiUrl}/admin/isvendorlogged`;
 
-      if (isExpired(authData.data.token)) {
+      if (isExpired(authData.token)) {
         setLoggedIn(false);
         localStorage.removeItem("authdata");
       } else {
@@ -120,7 +121,7 @@ function App() {
             </LeftWrapper>
             <RightWrapper>
               <Routes>
-                {authData !== null && authData.data.isadmin === "true" ? (
+                {authData !== null && authData.isAdmin ? (
                   <>
                     <Route path="/" element={<Dashboard1 />} />
                     <Route path="/profile" element={<Profile />} />

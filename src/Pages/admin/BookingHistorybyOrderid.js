@@ -3,7 +3,7 @@ import React from "react";
 import styled from "styled-components";
 import { useLocation } from "react-router-dom";
 import { useContext } from "react";
-import { AuthContext } from "../../ContextApi/ContextApi";
+import { AuthContext, useAuth } from "../../ContextApi/ContextApi";
 import { useState } from "react";
 import axios from "axios";
 import { useEffect } from "react";
@@ -126,7 +126,7 @@ const Line = styled.div`
 
 const BookingHistorybyOrderid = () => {
   const { state } = useLocation();
-  const { authData } = useContext(AuthContext);
+  const { authData } = useAuth();
   const [data, setData] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
@@ -138,7 +138,7 @@ const BookingHistorybyOrderid = () => {
       .get(
         `${environmentVariables.apiUrl}/admin/getallbookingbyorderid/${state._id}`,
         {
-          headers: { _token: authData.data.token },
+          headers: { _token: authData.token },
         }
       )
       .then((response) => {
@@ -205,7 +205,7 @@ const BookingHistorybyOrderid = () => {
     axios({
       method: "get",
       url: `${environmentVariables.apiUrl}/admin/getActivitiesAndPaymentDetail/${bookingId}`,
-      headers: { _token: authData.data.token },
+      headers: { _token: authData.token },
     })
       .then((response) => {
         setActivities(response.data.data.activitiesData);

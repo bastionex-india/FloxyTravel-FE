@@ -6,7 +6,7 @@ import axios from "axios";
 import { environmentVariables } from "../../config/config";
 import { useEffect } from "react";
 import { useContext } from "react";
-import { AuthContext } from "../../ContextApi/ContextApi";
+import { AuthContext, useAuth } from "../../ContextApi/ContextApi";
 import CircularLoader from "../../Component/CircularLoader/CircularLoader";
 import Table from "@mui/material/Table";
 import { Button } from "@mui/material";
@@ -194,7 +194,7 @@ const BookingHistoryofAdmin = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [select1, setSelect1] = useState("");
   const [response, setResponse] = useState({});
-  const { authData, setAuthData } = useContext(AuthContext);
+  const { authData } = useAuth();
   const [data, setData] = useState([]);
   const navigation = useNavigate();
   const navigate = useNavigate();
@@ -294,7 +294,7 @@ const BookingHistoryofAdmin = () => {
       method: "post",
       url: `${environmentVariables.apiUrl}/admin/getallbooking`,
       headers: {
-        _token: authData.data.token,
+        _token: authData.token,
         "Content-Type": "application/json",
       },
       data: data,
@@ -330,7 +330,7 @@ const BookingHistoryofAdmin = () => {
       const response = await axios.get(
         `${environmentVariables.apiUrl}/admin/getallvendor`,
         {
-          headers: { _token: authData.data.token },
+          headers: { _token: authData.token },
         }
       );
       setAllVendors(response.data.data);

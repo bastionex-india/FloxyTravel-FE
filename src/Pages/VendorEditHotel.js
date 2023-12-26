@@ -4,7 +4,7 @@ import React, { useContext, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect } from "react";
 import axios from "axios";
-import { AuthContext } from "../ContextApi/ContextApi";
+import { AuthContext, useAuth } from "../ContextApi/ContextApi";
 import MultiSelect from "react-multiple-select-dropdown-lite";
 import "react-multiple-select-dropdown-lite/dist/index.css";
 import { environmentVariables } from "../config/config";
@@ -178,7 +178,7 @@ const RemoveButton = styled.button`
 
 const VendorEditHotel = () => {
   const navigation = useNavigate();
-  const { authData } = useContext(AuthContext);
+  const { authData } = useAuth();
   const { id } = useParams();
   const fileInputRef = useRef(null);
   const [hotelData, setHotelData] = useState("");
@@ -217,7 +217,7 @@ const VendorEditHotel = () => {
     try {
       const url = `${environmentVariables.apiUrl}/vendor/gethoteldetailbyid/${id}`;
       const response = await axios.get(url, {
-        headers: { _token: authData.data.token },
+        headers: { _token: authData.token },
       });
       setHotelData(response.data.data);
       setName(response.data.data.hotelname);
@@ -260,7 +260,7 @@ const VendorEditHotel = () => {
         internet: internet,
         parking: parking,
       },
-      headers: { _token: authData.data.token },
+      headers: { _token: authData.token },
     })
       .then((response) => {
         console.log(response.data.message);
@@ -302,7 +302,7 @@ const VendorEditHotel = () => {
       // console.log(imageName)
       await axios.delete(
         `${environmentVariables.apiUrl}/vendor/deletehotelimages/${hotelData._id}/${imageName}`,
-        { headers: { _token: authData.data.token } }
+        { headers: { _token: authData.token } }
       );
       getHotelDetailById();
     } catch (error) {
@@ -318,7 +318,7 @@ const VendorEditHotel = () => {
       method: "post",
       url: `${environmentVariables.apiUrl}/vendor/addhotelimages/${hotelData._id}`,
       data: formdata,
-      headers: { _token: authData.data.token },
+      headers: { _token: authData.token },
     })
       .then((response) => {
         getHotelDetailById();

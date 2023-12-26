@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { AuthContext } from "../../ContextApi/ContextApi";
+import { AuthContext, useAuth } from "../../ContextApi/ContextApi";
 import styled from "styled-components";
 import { useNavigate } from 'react-router-dom';
 
@@ -30,7 +30,7 @@ const NavigationSecvtion = styled.div`
   align-self: flex-start;
 `;
 export default function Profile() {
-  const { authData } = useContext(AuthContext);
+  const { authData } = useAuth();
   const navigate=useNavigate();
   return (
     <Root>
@@ -49,20 +49,20 @@ export default function Profile() {
       <Container>
       <DataWrapper>
           <Label>Id</Label>
-          <Data>{authData?.data?.vendorId}</Data>
+          <Data>{authData?.vendorId}</Data>
         </DataWrapper>
         <DataWrapper>
           <Label>Name</Label>
-          <Data>{authData?.data?.name}</Data>
+          <Data>{authData?.username}</Data>
         </DataWrapper>
        
         <DataWrapper>
           <Label>Email Id</Label>
-          <Data>{authData?.data?.email}</Data>
+          <Data>{authData?.email}</Data>
         </DataWrapper>
         <DataWrapper>
           <Label>Contact Number</Label>
-          <Data>{authData?.data?.mobile}</Data>
+          <Data>{authData?.mobile}</Data>
         </DataWrapper>
       </Container>
     </Root>

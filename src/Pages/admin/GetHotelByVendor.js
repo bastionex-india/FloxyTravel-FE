@@ -4,7 +4,7 @@ import { useEffect, useContext } from "react";
 import { useState } from "react";
 import { environmentVariables } from "../../config/config";
 import axios from "axios";
-import { AuthContext } from "../../ContextApi/ContextApi";
+import { AuthContext, useAuth } from "../../ContextApi/ContextApi";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import Container from "react-bootstrap/Container";
@@ -69,7 +69,7 @@ const GetHotelByVendor = () => {
   const { state } = useLocation();
   const [data, setData] = useState();
   const navigate = useNavigate();
-  const { authData, setAuthData } = useContext(AuthContext);
+  const { authData } = useAuth();
   const [showData, setShowData] = useState(false);
   const [name, setName] = useState("");
   const [area, setArea] = useState("");
@@ -94,7 +94,7 @@ const GetHotelByVendor = () => {
     await axios
       .get(
         `${environmentVariables.apiUrl}/admin/gethoteldetailbyvendorid/${state.vendorId}`,
-        { headers: { _token: authData.data.token } }
+        { headers: { _token: authData.token } }
       )
       .then((response) => {
         // console.log("response.data",response.data.data.hotels)
@@ -121,7 +121,7 @@ const GetHotelByVendor = () => {
     // alert(item._id)
     axios
       .delete(`${environmentVariables.apiUrl}/admin/deletehotel/${item._id}`, {
-        headers: { _token: authData.data.token },
+        headers: { _token: authData.token },
       })
       .then((response) => {
         // console.log(response.data.data);
@@ -169,7 +169,7 @@ const GetHotelByVendor = () => {
     formdata.append("lat", lat);
     formdata.append("long", long);
     formdata.append("hotelVendorId", state.vendorId);
-    // formdata.append('email',authData.data.token)
+    // formdata.append('email',authData.token)
     console.log("sssssss", formdata);
     axios({
       method: "post",
@@ -179,7 +179,7 @@ const GetHotelByVendor = () => {
         "Content-Type": "application/json",
       },
       data: formdata,
-      headers: { _token: authData.data.token },
+      headers: { _token: authData.token },
     })
       .then((response) => {
         console.log("aaaaaaaaaaaasssssss", response.data);
@@ -220,7 +220,7 @@ const GetHotelByVendor = () => {
       data: {
         citiByState: x,
       },
-      headers: { _token: authData.data.token },
+      headers: { _token: authData.token },
     })
       .then((response) => {
         setCitiesData(response.data.message);

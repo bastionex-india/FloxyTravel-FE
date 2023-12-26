@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
 import axios from "axios";
-import { AuthContext } from "../ContextApi/ContextApi";
+import { AuthContext, useAuth } from "../ContextApi/ContextApi";
 import { environmentVariables } from "../config/config";
 import { useNavigate } from "react-router-dom";
 import CircularLoader from "../Component/CircularLoader/CircularLoader";
@@ -156,7 +156,7 @@ const HeadingWrapper = styled.div`
 `;
 
 const BookingHistory = () => {
-  const { authData, setAuthData } = useContext(AuthContext);
+  const { authData } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState([]);
   const navigate = useNavigate();
@@ -261,8 +261,8 @@ const BookingHistory = () => {
     // }
     const config = {
       method: "post",
-      url: `${environmentVariables.apiUrl}/vendor/getallbooking/${authData.data.vendorId}`,
-      headers: { _token: authData.data.token },
+      url: `${environmentVariables.apiUrl}/vendor/getallbooking/${authData.vendorId}`,
+      headers: { _token: authData.token },
       data: data,
     };
     await axios
@@ -285,7 +285,7 @@ const BookingHistory = () => {
       .get(
         `${environmentVariables.apiUrl}/vendor/vendorget`,
         {
-          headers: { _token: authData.data.token },
+          headers: { _token: authData.token },
           params:{
             page : 1,
             limit : 10000,

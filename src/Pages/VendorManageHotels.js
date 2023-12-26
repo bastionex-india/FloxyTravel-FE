@@ -5,7 +5,7 @@ import axios from "axios";
 import { environmentVariables } from "../config/config";
 import { useEffect } from "react";
 import { useContext } from "react";
-import { AuthContext } from "../ContextApi/ContextApi";
+import { AuthContext, useAuth } from "../ContextApi/ContextApi";
 import { Button } from "@mui/material";
 import CircularLoader from "../Component/CircularLoader/CircularLoader";
 import TablePagination from "@mui/material/TablePagination";
@@ -300,7 +300,7 @@ const ManageAdmin = () => {
   const [select, setSelect] = useState("");
   const [select1, setSelect1] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const { authData, setAuthData } = useContext(AuthContext);
+  const { authData } = useAuth();
   const [addVendorPopUp, setAddVendorPopUp] = useState(false);
   const [data, setData] = useState(null);
   const [vendorlist, setVendorList] = useState(null);
@@ -403,7 +403,7 @@ const ManageAdmin = () => {
   const getAllListData = async () => {
     await axios
       .get(`${environmentVariables.apiUrl}/vendor/vendorget`, {
-        headers: { _token: authData.data.token },
+        headers: { _token: authData.token },
         params: {
           page: page + 1,
           limit: rowsPerPage,
@@ -427,7 +427,7 @@ const ManageAdmin = () => {
   const getVendor = async () => {
     await axios
       .get(`${environmentVariables.apiUrl}/vendor/vendorget`, {
-        headers: { _token: authData.data.token },
+        headers: { _token: authData.token },
       })
       .then((response) => {
         setVendor(response.data.data.hotels);
@@ -444,7 +444,7 @@ const ManageAdmin = () => {
       method: "delete",
       url: `${environmentVariables.apiUrl}/vendor/deletehotel/${item._id}`,
       headers: {
-        _token: authData.data.token,
+        _token: authData.token,
       },
     };
 

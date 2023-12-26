@@ -5,7 +5,7 @@ import axios from "axios";
 import { environmentVariables } from "../config/config";
 import { useEffect } from "react";
 import { useContext } from "react";
-import { AuthContext } from "../ContextApi/ContextApi";
+import { AuthContext, useAuth } from "../ContextApi/ContextApi";
 import { Button } from "@mui/material";
 import CircularLoader from "../Component/CircularLoader/CircularLoader";
 import TablePagination from "@mui/material/TablePagination";
@@ -187,7 +187,7 @@ const Payouts = () => {
   const [select, setSelect] = useState("");
   const [select1, setSelect1] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const { authData, setAuthData } = useContext(AuthContext);
+  const { authData } = useAuth();
   const [addVendorPopUp, setAddVendorPopUp] = useState(false);
   const [data, setData] = useState(null);
   const [vendorlist, setVendorList] = useState(null);
@@ -255,7 +255,7 @@ const Payouts = () => {
       method: "post",
       url: `${environmentVariables.apiUrl}/vendor/savePayout`,
       headers: {
-        _token: authData.data.token,
+        _token: authData.token,
         "Content-Type": "application/json",
       },
       data: data,
@@ -470,7 +470,7 @@ const Payouts = () => {
   const getAllListData = async () => {
     await axios
       .get(`${environmentVariables.apiUrl}/vendor/getPayoutList`, {
-        headers: { _token: authData.data.token },
+        headers: { _token: authData.token },
         params: {
           hotelname: selectHotel,
           cityname: selectCity,
@@ -492,7 +492,7 @@ const Payouts = () => {
   const getAllCities = async () => {
     await axios
       .get(`${environmentVariables.apiUrl}/vendor/getVendorCities`, {
-        headers: { _token: authData.data.token },
+        headers: { _token: authData.token },
       })
       .then((response) => {
         setCityList(response.data.data);
@@ -504,7 +504,7 @@ const Payouts = () => {
   const getHotelListData = async () => {
     await axios
       .get(`${environmentVariables.apiUrl}/vendor/vendorget`, {
-        headers: { _token: authData.data.token },
+        headers: { _token: authData.token },
         params: {
           page: 1,
           limit: 10000,
@@ -521,7 +521,7 @@ const Payouts = () => {
   const getActivitiesListData = async () => {
     await axios
       .get(`${environmentVariables.apiUrl}/vendor/vendorget`, {
-        headers: { _token: authData.data.token },
+        headers: { _token: authData.token },
         params: {
           page: 1,
           limit: 10000,

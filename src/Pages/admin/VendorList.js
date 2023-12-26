@@ -111,9 +111,6 @@ const boldTextCss = {
 };
 
 const VendorList = () => {
-  const [responseData, setResponseData] = useState([]);
-  const [adminResponseData, setAdminResponseData] = useState([]);
-  const { authData, setAuthData } = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [summaryData, setSummaryData] = useState(null);

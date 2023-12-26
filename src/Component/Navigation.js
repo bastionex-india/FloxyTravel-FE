@@ -4,11 +4,11 @@ import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { environmentVariables } from "../config/config";
-import { AuthContext } from "../ContextApi/ContextApi";
+import { AuthContext, useAuth } from "../ContextApi/ContextApi";
 import Avtar from "../Images/avatar.png";
 import BrandLogo from "../Images/LogoDark.png";
 import bell from "../Images/bell.png";
-import Pusher from 'pusher-js';
+import Pusher from "pusher-js";
 
 const Root = styled.div`
   box-shadow: 0 0 49px 0 rgba(0, 0, 0, 0.11);
@@ -139,15 +139,18 @@ const NotificationDiv = styled.div`
 `;
 const NotificationNumber = styled.div`
   position: absolute;
-  height: 18px;
-  width: 18px;
+  height: 22px;
+  width: 22px;
   color: #fff;
   text-align: center;
   border-radius: 50%;
   background-color: #01515b;
-  top: -3px;
-  right: 13px;
-  font-size: 13px;
+  top: -9px;
+  right: 14px;
+  font-size: 10px;
+`;
+const InsideNotification = styled.div`
+  margin-top: 4px;
 `;
 const NotificationWrapper = styled.div``;
 const NotificationText = styled.text`
@@ -163,9 +166,10 @@ function Navigation({
   setShowDropDown,
   loggedIn,
 }) {
-  const { authData, setAuthData } = useContext(AuthContext);
+  const { authData } = useAuth();
   const [notificationData, setNotificationData] = useState(null);
   const [notificationLength, setNotificationLength] = useState(0);
+  const { logout } = useAuth();
   const navigation = useNavigate();
   const getTimeNotification = (time) => {
     if (
@@ -189,14 +193,15 @@ function Navigation({
     e.stopPropagation();
     setShowNotifications(!showNotifications);
     setShowDropDown(false);
-    const url = authData?.data?.isadmin
-      ? `${environmentVariables?.apiUrl}/admin/addidstonotification/${authData?.data?.id}`
-      : `${environmentVariables?.apiUrl}/vendor/addidstonotification/${authData?.data?.id}`;
+    console.log(authData)
+    const url = authData?.isAdmin
+      ? `http://localhost:4000/admin/addidstonotification/${authData?._id}`
+      : `http://localhost:4000/vendor/addidstonotification/${authData?._id}`;
     let config = {
       method: "post",
       url: url,
       headers: {
-        _token: authData?.data?.token,
+        _token: authData?.token,
       },
       data: "",
     };
@@ -219,7 +224,7 @@ function Navigation({
   //             Acccept:"application/json",
   //             "Content-Type":"application/json"
   //         },
-  //         loginTime:authData.data.time,
+  //         loginTime:authData.time,
   //         logoutTime:time,
   //         credentials:"include"
   //      })
@@ -236,19 +241,19 @@ function Navigation({
     // props.data()
   };
   const getNotificationData = () => {
-    const url = authData?.data?.isadmin
-      ? `${environmentVariables?.apiUrl}/admin/getregisterednotification`
-      : `${environmentVariables?.apiUrl}/vendor/getregisterednotification/${authData?.data?.vendorId}`;
+    const url = authData?.isAdmin
+      ? `http://localhost:4000/admin/getregisterednotification`
+      : `http://localhost:4000/vendor/getregisterednotification/${authData?.vendorId}`;
     axios
       .get(url, {
-        headers: { _token: authData?.data?.token },
+        headers: { _token: authData?.token },
       })
       .then((response) => {
         setNotificationData(
           response.data.data.sort((a, b) => b.createdAt - a.createdAt)
         );
         const openedData = response?.data?.data.filter((val) =>
-          val?.openedId.includes(authData?.data?.id)
+          val?.openedId.includes(authData?._id)
         );
         setNotificationLength(response.data.data.length - openedData.length);
       });
@@ -257,63 +262,64 @@ function Navigation({
     getNotificationData();
   }, []);
 
-
   useEffect(() => {
     Pusher.logToConsole = true;
-    const pusher = new Pusher('cbb68a6fad0862e7fd60', {
-      cluster: 'ap2'
+    const pusher = new Pusher("cbb68a6fad0862e7fd60", {
+      cluster: "ap2",
     });
-  
+
     // Subscribe to 'user_register' channel
-    const channelUserRegister = pusher.subscribe('user_register');
+    const channelUserRegister = pusher.subscribe("user_register");
     const handleUserRegisterEvent = (receivedData) => {
       getNotificationData();
     };
-    channelUserRegister.bind('create', handleUserRegisterEvent);
+    channelUserRegister.bind("create", handleUserRegisterEvent);
 
-    const channelUserBooking = pusher.subscribe('user_booking');
+    const channelUserBooking = pusher.subscribe("user_booking");
     const handleUserBookingEvent = (receivedData) => {
       getNotificationData();
     };
-    channelUserBooking.bind('create', handleUserBookingEvent);
-    
-    const channelUserCancelBooking = pusher.subscribe('user_cancel_booking');
+    channelUserBooking.bind("create", handleUserBookingEvent);
+
+    const channelUserCancelBooking = pusher.subscribe("user_cancel_booking");
     const handleUserCancelBookingEvent = (receivedData) => {
       getNotificationData();
     };
-    channelUserCancelBooking.bind('create', handleUserCancelBookingEvent);
+    channelUserCancelBooking.bind("create", handleUserCancelBookingEvent);
 
-    const channelUserConfirmedBooking = pusher.subscribe('user_confirm_booking');
+    const channelUserConfirmedBooking = pusher.subscribe(
+      "user_confirm_booking"
+    );
     const handleUserConfirmedBookingEvent = (receivedData) => {
       getNotificationData();
     };
-    channelUserConfirmedBooking.bind('create', handleUserConfirmedBookingEvent);
-  
+    channelUserConfirmedBooking.bind("create", handleUserConfirmedBookingEvent);
 
-    const channelforvendorrequest = pusher.subscribe('vendor_payout_request');
+    const channelforvendorrequest = pusher.subscribe("vendor_payout_request");
     const handleVendorRequestEvent = (receivedData) => {
       getNotificationData();
     };
-    channelforvendorrequest.bind('create', handleVendorRequestEvent);
-  
+    channelforvendorrequest.bind("create", handleVendorRequestEvent);
 
     return () => {
-      channelUserRegister.unbind('create', handleUserRegisterEvent);
-      channelUserBooking.unbind('create', handleUserBookingEvent);
-      channelUserCancelBooking.unbind('create', handleUserCancelBookingEvent);
-      channelUserConfirmedBooking.unbind('create', handleUserConfirmedBookingEvent);
-      channelforvendorrequest.unbind('create', handleVendorRequestEvent);
-      pusher.unsubscribe('user_register');
-      pusher.unsubscribe('user_booking');
-      pusher.unsubscribe('user_cancel_booking');
-      pusher.unsubscribe('user_confirm_booking');
-      pusher.unsubscribe('vendor_payout_request');
+      channelUserRegister.unbind("create", handleUserRegisterEvent);
+      channelUserBooking.unbind("create", handleUserBookingEvent);
+      channelUserCancelBooking.unbind("create", handleUserCancelBookingEvent);
+      channelUserConfirmedBooking.unbind(
+        "create",
+        handleUserConfirmedBookingEvent
+      );
+      channelforvendorrequest.unbind("create", handleVendorRequestEvent);
+      pusher.unsubscribe("user_register");
+      pusher.unsubscribe("user_booking");
+      pusher.unsubscribe("user_cancel_booking");
+      pusher.unsubscribe("user_confirm_booking");
+      pusher.unsubscribe("vendor_payout_request");
     };
   }, []);
 
   const Logout = async () => {
-    localStorage.removeItem("authdata");
-    setAuthData(null);
+    logout();
   };
   return (
     <Root>
@@ -326,19 +332,29 @@ function Navigation({
             onClick={(e) => handleNotificationBell(e)}
             src={bell}
           ></NotificationBell>
-          <NotificationNumber>{notificationLength || 0}</NotificationNumber>
+          <NotificationNumber>
+            <InsideNotification>
+              {notificationLength > 99 ? "99+" : notificationLength || 0}
+            </InsideNotification>
+          </NotificationNumber>
           {showNotifications && (
             <>
               <Notifications>
                 <NotificationWrapper>
                   <NotificationText>Notifications</NotificationText>
                 </NotificationWrapper>
+                {console.log(
+                  "notificationData",
+                  notificationData,
+                  authData?._id,
+                  notificationLength
+                )}
                 {notificationData &&
                   notificationData?.map((val, key) => (
                     <NotificationDiv
                       key={key}
                       isLatest={key === 0}
-                      opened={val?.openedId.includes(authData?.data?.id)}
+                      opened={val?.openedId.includes(authData?._id)}
                     >
                       <NotificationNameTime>
                         <Notification>{`${val?.status} by ${val?.username} `}</Notification>
@@ -353,9 +369,9 @@ function Navigation({
           )}
         </NotificationsWrapper>
         <UserInfo>
-          {/* {authData?.data?.profile?<Image src={`http://http://139.59.82.13:4000/:1999/uploads/${authData?.data?.profile}`} style={{height:"50px",width:"50px"}} roundedCircle alt='image'/>:<UserImg src={Avtar} alt="hello" />} */}
+          {/* {authData?.profile?<Image src={`http://http://139.59.82.13:4000/:1999/uploads/${authData?.profile}`} style={{height:"50px",width:"50px"}} roundedCircle alt='image'/>:<UserImg src={Avtar} alt="hello" />} */}
           <DropDown onClick={(e) => setShow(e)}>
-            {authData?.data?.name}{" "}
+            {authData?.vendorId ? authData?.name : authData?.username}{" "}
             <i className="fa-sharp fa-solid fa-caret-down"></i>
           </DropDown>
           {loggedIn && showDropDown && (

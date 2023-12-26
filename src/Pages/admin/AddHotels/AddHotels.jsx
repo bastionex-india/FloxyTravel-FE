@@ -4,7 +4,7 @@ import React, { useContext, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect } from "react";
 import axios from "axios";
-import { AuthContext } from "../../../ContextApi/ContextApi";
+import { AuthContext, useAuth } from "../../../ContextApi/ContextApi";
 import MultiSelect from "react-multiple-select-dropdown-lite";
 import "react-multiple-select-dropdown-lite/dist/index.css";
 import { environmentVariables } from "../../../config/config";
@@ -201,7 +201,7 @@ const RemoveButton = styled.button`
 
 const AddHotels = () => {
   const navigation = useNavigate();
-  const { authData } = useContext(AuthContext);
+  const { authData } = useAuth();
   const { id } = useParams();
   const fileInputRef = useRef(null);
   const [hotelData, setHotelData] = useState("");
@@ -255,7 +255,7 @@ const AddHotels = () => {
   const getVendorList = async () => {
     await axios
       .get(`${environmentVariables.apiUrl}/admin/getallvendor`, {
-        headers: { _token: authData.data.token },
+        headers: { _token: authData.token },
       })
       .then((response) => {
         // console.log("sddfsdsf",response.data.data)
@@ -270,7 +270,7 @@ const AddHotels = () => {
     try {
       const url = `${environmentVariables.apiUrl}/admin/gethoteldetailbyid/${id}`;
       const response = await axios.get(url, {
-        headers: { _token: authData.data.token },
+        headers: { _token: authData.token },
       });
       // console.log("noOfRooms", response.data.data.payoutInterval);
       setHotelData(response.data.data);
@@ -298,7 +298,7 @@ const AddHotels = () => {
     let config = {
       method: "get",
       url: `${environmentVariables.apiUrl}/admin/getallcountries`,
-      headers: { _token: authData?.data?.token },
+      headers: { _token: authData?.token },
     };
     axios
       .request(config)
@@ -317,7 +317,7 @@ const AddHotels = () => {
     let config = {
       method: "post",
       url: `${environmentVariables.apiUrl}/admin/getstatesofcountry`,
-      headers: { _token: authData?.data?.token },
+      headers: { _token: authData?.token },
       data: { countryCode: countryCode },
     };
     axios
@@ -334,7 +334,7 @@ const AddHotels = () => {
     let config = {
       method: "post",
       url: `${environmentVariables.apiUrl}/admin/getcitiesofcountry`,
-      headers: { _token: authData?.data?.token },
+      headers: { _token: authData?.token },
       data: {
         countryCode: countryCode,
         stateCode: stateCode,
@@ -408,7 +408,7 @@ const AddHotels = () => {
       method: "post",
       url: `${environmentVariables.apiUrl}/admin/addhotel`,
       data: formdata,
-      headers: { _token: authData.data.token },
+      headers: { _token: authData.token },
     })
       .then((response) => {
         setName("");
@@ -459,7 +459,7 @@ const AddHotels = () => {
         internet: internet,
         parking: parking,
       },
-      headers: { _token: authData.data.token },
+      headers: { _token: authData.token },
     })
       .then((response) => {
         console.log(response.data.message);
@@ -520,7 +520,7 @@ const AddHotels = () => {
       // Send the DELETE request using Axios
       await axios.delete(
         `${environmentVariables.apiUrl}/admin/deletehotelimages/${hotelData._id}/${imageName}`,
-        { headers: { _token: authData.data.token } }
+        { headers: { _token: authData.token } }
       );
       getHotelDetailById();
     } catch (error) {
@@ -536,7 +536,7 @@ const AddHotels = () => {
       method: "post",
       url: `${environmentVariables.apiUrl}/admin/addhotelimages/${hotelData._id}`,
       headers: {
-        _token: authData.data.token,
+        _token: authData.token,
       },
       data: formdata,
     })

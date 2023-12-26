@@ -21,7 +21,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import { ListItem, ListItemText, ListItemButton } from "@mui/material";
-import { AuthContext } from "../../ContextApi/ContextApi";
+import { AuthContext, useAuth } from "../../ContextApi/ContextApi";
 import axios from "axios";
 // const ChatAPI = require("twilio-chat");
 import { Client } from "twilio-chat";
@@ -108,7 +108,7 @@ const ChatSupport = () => {
   ];
 
   const [open, setOpen] = useState(true);
-  const { authData, setAuthData } = useContext(AuthContext);
+  const { authData } = useAuth();
   const [activeChannel, setActiveChannel] = useState(null);
   const [allChannel, setAllChannel] = useState([]);
   const [isChannelLoading, setIsChannelLoading] = useState(false);
@@ -164,7 +164,7 @@ const ChatSupport = () => {
       method: "POST",
       url: `${baseUrl}/auth/generateToken`,
       data: {
-        email: authData.data.email,
+        email: authData.email,
       },
     });
   };
@@ -391,12 +391,12 @@ const ChatSupport = () => {
                   margin: "25px 0 5px 0",
                 }}
               >
-                {authData.data.name.charAt(0).toUpperCase()}
+                {authData.username.charAt(0).toUpperCase()}
               </div>
             </Toolbar>
             <div className="col-md-12 text-center">
               <p>
-                <b>{authData.data.name}</b>
+                <b>{authData.username}</b>
               </p>
             </div>
           </div>
@@ -581,16 +581,16 @@ const ChatSupport = () => {
                           );
                         }
                         let messageAlignment =
-                          message.author == authData.data.email
+                          message.author === authData.email
                             ? "-webkit-right"
                             : "-webkit-left";
                         let textColor =
-                          message.author == authData.data.email
+                          message.author === authData.email
                             ? "skyblue"
                             : "#e9e9e9";
                         let isDeleted =
                           message.attributes != null &&
-                          message.attributes.deleted != undefined
+                          message.attributes.deleted !== undefined
                             ? message.attributes.deleted
                             : false;
 

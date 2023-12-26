@@ -7,7 +7,7 @@ import Check from "../Check";
 import { environmentVariables } from "../../../config/config";
 import { useEffect } from "react";
 import { useContext } from "react";
-import { AuthContext } from "../../../ContextApi/ContextApi";
+import { AuthContext, useAuth } from "../../../ContextApi/ContextApi";
 import Table from "@mui/material/Table";
 import { Button, ButtonGroup, Modal } from "@mui/material";
 import TableBody from "@mui/material/TableBody";
@@ -311,7 +311,7 @@ const TextMainWrapper = styled.div`
 const ManageAdmin = () => {
   const classes = useStyles();
   const [isLoading, setIsLoading] = useState(false);
-  const { authData, setAuthData } = useContext(AuthContext);
+  const { authData } = useAuth();
   const [addVendorPopUp, setAddVendorPopUp] = useState(false);
   const [editVendorPopUp, setEditVendorPopUp] = useState(false);
   const [data, setData] = useState("");
@@ -353,7 +353,7 @@ const ManageAdmin = () => {
       .get(
         `${environmentVariables.apiUrl}/admin/getvendorlist?page=${page+1}&limit=${rowsPerPage}`,
         {
-          headers: { _token: authData.data.token },
+          headers: { _token: authData.token },
         }
       )
       .then((response) => {
@@ -371,7 +371,7 @@ const ManageAdmin = () => {
       .delete(
         `${environmentVariables.apiUrl}/admin/deletevendor/${vendorId._id}`,
         {
-          headers: { _token: authData.data.token },
+          headers: { _token: authData.token },
         }
       )
       .then((response) => {

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useContext, useEffect } from "react";
-import { AuthContext } from "../../ContextApi/ContextApi";
+import { AuthContext, useAuth } from "../../ContextApi/ContextApi";
 import { environmentVariables } from "../../config/config";
 import {
   Box,
@@ -198,7 +198,7 @@ const GetHotelById = () => {
   const { state } = useLocation();
   const navigate = useNavigate();
   const [data, setData] = useState();
-  const { authData } = useContext(AuthContext);
+  const { authData } = useAuth();
   const [hotelname, setHotelname] = useState("");
   const [overview, setOverview] = useState("");
   const [hotelCategory, setHotelCategory] = useState("");
@@ -264,7 +264,7 @@ const GetHotelById = () => {
         state: stateValue,
         area: area,
       },
-      headers: { _token: authData.data.token },
+      headers: { _token: authData.token },
     })
       .then((response) => {
         setUpdatedHotelData(response.data.message);
@@ -296,7 +296,7 @@ const GetHotelById = () => {
       data: {
         citiByState: x,
       },
-      headers: { _token: authData.data.token },
+      headers: { _token: authData.token },
     })
       .then((response) => {
         setCitiesData(response.data.message);
@@ -319,7 +319,7 @@ const GetHotelById = () => {
         hotelId: state._id,
         price: price,
       },
-      headers: { _token: authData.data.token },
+      headers: { _token: authData.token },
     })
       .then((response) => {
         // console.log(response.data.data.room,"00000000000001111111111")
@@ -357,7 +357,7 @@ const GetHotelById = () => {
         roomId: itemVal._id,
         priceEdit: priceEdit,
       },
-      headers: { _token: authData.data.token },
+      headers: { _token: authData.token },
     })
       .then((response) => {
         console.log("dsffsdssd", response.data);
@@ -379,7 +379,7 @@ const GetHotelById = () => {
       .get(
         `${environmentVariables.apiUrl}/admin/gethoteldetailbyid1/${state._id}`,
         {
-          headers: { _token: authData.data.token },
+          headers: { _token: authData.token },
         }
       )
       .then((response) => {
@@ -442,7 +442,7 @@ const GetHotelById = () => {
         "Content-Type": "application/json",
       },
       data: isCheck,
-      headers: { _token: authData.data.token },
+      headers: { _token: authData.token },
     })
       .then((response) => {
         console.log(response.data, "00000000000001111111111");
@@ -470,7 +470,7 @@ const GetHotelById = () => {
       method: "post",
       url: `${environmentVariables.apiUrl}/admin/addhotelimages/${state._id}`,
       data: formdata,
-      headers: { _token: authData.data.token },
+      headers: { _token: authData.token },
     })
       .then((response) => {
         console.log(response.data, "00000000000001111111111");

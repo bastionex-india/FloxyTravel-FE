@@ -75,8 +75,6 @@ const LeaveCard = ({ headText, color, data, data1, value }) => {
 };
 
 function InfoSection(props) {
-  const { authData, setAuthData } = useContext(AuthContext);
-  // console.log("hjhj",authData.data.casualLeave)
   return (
     <Root>
       <ActivityStatus/>

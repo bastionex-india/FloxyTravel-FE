@@ -17,7 +17,7 @@ import {
   TextField,
 } from "@material-ui/core";
 import axios from "axios";
-import { AuthContext } from "../ContextApi/ContextApi";
+import { AuthContext, useAuth } from "../ContextApi/ContextApi";
 import { useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -188,7 +188,7 @@ const TextWrapper1 = styled.text`
 const HotelDetails = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
-  const { authData } = useContext(AuthContext);
+  const { authData } = useAuth();
 
   const [hotelname, setHotelname] = useState("");
   const [overview, setOverview] = useState("");
@@ -240,7 +240,7 @@ const HotelDetails = () => {
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
-        _token: authData.data.token,
+        _token: authData.token,
       },
       data: {
         hotelName: hotelname,
@@ -282,7 +282,7 @@ const HotelDetails = () => {
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
-        _token: authData.data.token,
+        _token: authData.token,
       },
       data: {
         roomCategory: roomCategory,
@@ -319,7 +319,7 @@ const HotelDetails = () => {
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
-        _token: authData.data.token,
+        _token: authData.token,
       },
       data: {
         citiByState: x,
@@ -342,7 +342,7 @@ const HotelDetails = () => {
       .get(
         `${environmentVariables.apiUrl}/vendor/gethoteldetailbyid/${state._id}`,
         {
-          headers: { _token: authData.data.token },
+          headers: { _token: authData.token },
         }
       )
       .then((response) => {
@@ -364,7 +364,7 @@ const HotelDetails = () => {
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
-        _token: authData.data.token,
+        _token: authData.token,
       },
       data: {
         roomCategoryEdit: roomCategoryEdit,
@@ -397,7 +397,7 @@ const HotelDetails = () => {
       method: "post",
       url: `${environmentVariables.apiUrl}/vendor/addhotelimagesvendor/${state._id}`,
       headers: {
-        _token: authData.data.token,
+        _token: authData.token,
       },
       data: formdata,
     })
@@ -421,7 +421,7 @@ const HotelDetails = () => {
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
-        _token: authData.data.token,
+        _token: authData.token,
       },
       data: isCheck,
     })

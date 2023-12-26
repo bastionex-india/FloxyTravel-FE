@@ -5,6 +5,7 @@ import { AuthContext } from "../../ContextApi/ContextApi";
 import CircularLoader from "../../Component/CircularLoader/CircularLoader";
 import Swal from "sweetalert2";
 import { environmentVariables } from "../../config/config";
+import { useAuth } from "../ContextApi/ContextApi";
 const VendorBookingHistory = () => {
   const [isPriorityChanged, setIsPriority] = useState(false);
   const [addThemePopUp, setAddThemePopUp] = useState(false);
@@ -13,7 +14,7 @@ const VendorBookingHistory = () => {
   const [theme, setTheme] = useState(null);
   const [title, setTitle] = useState(null);
   const [allData, setAllData] = useState();
-  const { authData } = useContext(AuthContext);
+  const { authData } = useAuth();
   const [priority, setPriority] = useState();
   const [dragId, setDragId] = useState();
   const [deletePopUp, setDeletePopUp] = useState(false);
@@ -32,7 +33,7 @@ const VendorBookingHistory = () => {
       method: "put",
       url: `${environmentVariables.apiUrl}/admin/updateprioritycitybyid`,
       data: allData,
-      headers: { _token: authData.data.token },
+      headers: { _token: authData.token },
     })
       .then((response) => {
         console.log(response);
@@ -51,7 +52,7 @@ const VendorBookingHistory = () => {
   const getAllData = () => {
     axios
       .get(`${environmentVariables.apiUrl}/admin/prioritydata`, {
-        headers: { _token: authData.data.token },
+        headers: { _token: authData.token },
       })
       .then((response) => {
         // console.log("response.data", response.data.data);
@@ -82,7 +83,7 @@ const VendorBookingHistory = () => {
       method: "delete",
       url: `${environmentVariables.apiUrl}/admin/deleteprioritybyid/${themeId}`,
       headers: {
-        _token: authData?.data?.token,
+        _token: authData?.token,
       },
     })
       .then((response) => {
@@ -121,7 +122,7 @@ const VendorBookingHistory = () => {
           "Content-Type": "application/json",
         },
         data: cityData,
-        headers: { _token: authData.data.token },
+        headers: { _token: authData.token },
       })
         .then((response) => {
           if (response?.data?.success) {

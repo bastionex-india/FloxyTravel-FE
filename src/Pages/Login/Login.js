@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import BgImage from "../../Images/bg.jpg";
 import axios from "axios";
 import { useContext } from "react";
-import { AuthContext } from "../../ContextApi/ContextApi";
+import { AuthContext, useAuth } from "../../ContextApi/ContextApi";
 import { useNavigate } from "react-router-dom";
 import { environmentVariables } from "../../config/config";
 import Box from "@mui/material/Box";
@@ -160,8 +160,7 @@ function ChildModal({ open, setOpen, email, setParentClose }) {
           .then((response) => {
             setTimer(10);
           })
-          .catch((error) => {
-          });
+          .catch((error) => {});
       });
   };
   const initialValues = {
@@ -316,12 +315,12 @@ function ChildModal({ open, setOpen, email, setParentClose }) {
 
 const Login = ({ loggedIn }) => {
   const navigate = useNavigate();
-
+  const { updateAuthData } = useAuth();
   const [userName, setUserName] = useState();
   const [Password, setPassword] = useState();
   const [vendorId, setVendorId] = useState();
   const [error, setError] = useState("");
-  const { setAuthData } = useContext(AuthContext);
+  // const { setAuthData } = useContext(AuthContext);
   const [ipv4, setIpv4] = useState();
   const [latitude, setLatitude] = useState();
   const [longitude, setLongitude] = useState();
@@ -346,7 +345,7 @@ const Login = ({ loggedIn }) => {
     setIsLoading(true);
     axios({
       method: "post",
-      url: `${environmentVariables.apiUrl}/admin/admin/login`,
+      url: `http://localhost:4000/admin/admin/login`,
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
@@ -358,15 +357,17 @@ const Login = ({ loggedIn }) => {
       },
     })
       .then((response) => {
-        localStorage.setItem("authdata", JSON.stringify(response.data));
-        setAuthData(JSON.parse(localStorage.getItem("authdata")));
+        console.log("response", response.data.data);
+        // localStorage.setItem("authdata", JSON.stringify(response.data));
+        updateAuthData(response.data.data);
         navigate("/");
         // setIsLoading(false)
       })
       .catch((error) => {
+        console.log("error", error);
         axios({
           method: "post",
-          url: `${environmentVariables.apiUrl}/vendor/vendor/login`,
+          url: `http://localhost:4000/vendor/vendor/login`,
           headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
@@ -377,12 +378,13 @@ const Login = ({ loggedIn }) => {
           },
         })
           .then((res) => {
-            localStorage.setItem("authdata", JSON.stringify(res.data));
-            setAuthData(JSON.parse(localStorage.getItem("authdata")));
+            console.log("response", res.data.data);
+            // localStorage.setItem("authdata", JSON.stringify(res.data));
+            updateAuthData(res.data.data);
             navigate("/");
-            // setIsLoading(false)
           })
           .catch((error) => {
+            console.log("error", error);
             setIsLoading(false);
             setError("Details are not valid");
           });

@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import styled from "styled-components";
-import { AuthContext } from "../../ContextApi/ContextApi";
+import { AuthContext, useAuth } from "../../ContextApi/ContextApi";
 
 const Root = styled.div``;
 const P = styled.div`
@@ -11,14 +11,14 @@ const P = styled.div`
 const Div = styled.div`
   font-size: 18px;
   font-weight: bold;
-  margin-bottom:20px;
+  margin-bottom: 20px;
 `;
 export default function ActivityStatus() {
-  const { authData, setAuthData } = useContext(AuthContext);
+  const { authData } = useAuth();
 
   return (
     <Root>
-      <P>Welcome {authData?.data?.name}!</P>
+      <P>Welcome {authData?.username}!</P>
       <Div>
         Have a nice {new Date().toLocaleString("en-us", { weekday: "long" })}!
       </Div>

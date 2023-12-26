@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
 import { useContext } from "react";
-import { AuthContext } from "../ContextApi/ContextApi";
+import { AuthContext, useAuth } from "../ContextApi/ContextApi";
 import { environmentVariables } from "../config/config";
 // import { Carousel } from 'react-carousel-minimal';
 import styled from "styled-components";
@@ -146,7 +146,7 @@ const RecentlyUploadedDate = styled.div`
 
 const BookingHotelById = () => {
   const { state } = useLocation();
-  const { authData } = useContext(AuthContext);
+  const { authData } = useAuth();
 
   const [data, setData] = useState("");
   const [alertMessage, setAlertMessage] = useState("");
@@ -174,8 +174,8 @@ const BookingHotelById = () => {
   const getAllUsers = async () => {
     await axios
       .get(
-        `${environmentVariables.apiUrl}/vendor/getallbookingbyorderid/${authData.data.vendorId}/${state._id}`,
-        { headers: { _token: authData.data.token } }
+        `${environmentVariables.apiUrl}/vendor/getallbookingbyorderid/${authData.vendorId}/${state._id}`,
+        { headers: { _token: authData.token } }
       )
       .then((response) => {
         setIsLoading(false);
@@ -198,7 +198,7 @@ const BookingHotelById = () => {
       axios({
         method: "post",
         url: `${environmentVariables.apiUrl}/vendor/checkinpermissionbyvendor/${state._id}`,
-        headers: { _token: authData.data.token },
+        headers: { _token: authData.token },
       })
         .then((response) => {
           setIsLoadingCheckIn(false);
@@ -222,7 +222,7 @@ const BookingHotelById = () => {
       axios({
         method: "post",
         url: `${environmentVariables.apiUrl}/vendor/checkoutpermissionbyvendor/${state._id}`,
-        headers: { _token: authData.data.token },
+        headers: { _token: authData.token },
       })
         .then((response) => {
           setIsLoadingCheckOut(false);
@@ -255,7 +255,7 @@ const BookingHotelById = () => {
     axios({
       method: "get",
       url: `${environmentVariables.apiUrl}/vendor/getActivitiesAndPaymentDetail/${bookingId}`,
-      headers: { _token: authData.data.token },
+      headers: { _token: authData.token },
     })
       .then((response) => {
         setActivities(response.data.data.activitiesData);

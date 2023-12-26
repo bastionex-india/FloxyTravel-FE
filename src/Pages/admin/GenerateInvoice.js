@@ -3,7 +3,7 @@ import React from "react";
 import styled from "styled-components";
 import { useLocation } from "react-router-dom";
 import { useContext } from "react";
-import { AuthContext } from "../../ContextApi/ContextApi";
+import { AuthContext, useAuth } from "../../ContextApi/ContextApi";
 import { useState } from "react";
 import axios from "axios";
 import { useEffect } from "react";
@@ -303,7 +303,7 @@ const TableContainerCustomUpdate = styled(TableContainer)`
 
 const GenerateInvoice = () => {
   const { state } = useLocation();
-  const { authData } = useContext(AuthContext);
+  const { authData } = useAuth();
   const [data, setData] = useState("");
   const navigate = useNavigate();
   const [discountAmount, setDiscountAmount] = useState(0);
@@ -388,7 +388,7 @@ const GenerateInvoice = () => {
         method: "post",
         url: `${environmentVariables.apiUrl}/admin/sendInvoice`,
         headers: {
-          _token: authData.data.token,
+          _token: authData.token,
           "Content-Type": "application/json",
         },
         data: data,
@@ -446,7 +446,7 @@ const GenerateInvoice = () => {
       _id,
     }));
     let url =
-      authData.data.isadmin === "true"
+      authData.isAdmin
         ? `${environmentVariables.apiUrl}/admin/getPaymentdetail`
         : `${environmentVariables.apiUrl}/vendor/getPaymentdetail`;
     let requestBody = {
@@ -459,7 +459,7 @@ const GenerateInvoice = () => {
       method: "post",
       url: url,
       headers: {
-        _token: authData.data.token,
+        _token: authData.token,
         "Content-Type": "application/json",
       },
       data: requestBody,

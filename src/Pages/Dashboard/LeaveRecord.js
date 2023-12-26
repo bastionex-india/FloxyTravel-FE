@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
-import { AuthContext } from "../../ContextApi/ContextApi";
+import { AuthContext, useAuth } from "../../ContextApi/ContextApi";
 import Cardbg1 from "../../Images/bg.jpg";
 import { useNavigate } from "react-router-dom";
 import { environmentVariables } from "../../config/config";
@@ -83,7 +83,7 @@ const CardText = styled.div`
 `;
 
 export default function LeaveRecord({ vendorId }) {
-  const { authData } = useContext(AuthContext);
+  const { authData } = useAuth();
   const navigate = useNavigate();
   const [data, setData] = useState([]);
   const [summaryData, setSummaryData] = useState(null);
@@ -92,7 +92,7 @@ export default function LeaveRecord({ vendorId }) {
     navigate("/hoteldetails", { state: item });
   };
   const getSummaryData = () => {
-    const vendorid = authData !== null && (authData.data.vendorId || vendorId);
+    const vendorid = authData !== null && (authData.vendorId || vendorId);
 
     axios
       .get(`${environmentVariables.apiUrl}/admin/getVendorSummary/${vendorid}`)

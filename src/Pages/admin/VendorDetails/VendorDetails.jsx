@@ -2,7 +2,7 @@ import React from "react";
 import LeaveRecord from "../../Dashboard/LeaveRecord";
 import { useEffect,useState, useContext } from "react";
 import styled from "styled-components";
-import { AuthContext } from "../../../ContextApi/ContextApi";
+import { AuthContext, useAuth } from "../../../ContextApi/ContextApi";
 import axios from "axios";
 import { environmentVariables } from "../../../config/config";
 import CardDetails from "../../Dashboard/Card";
@@ -32,14 +32,14 @@ const Heading = styled.div`
 const VendorDetails = () => {
   const [vendorId, setVendorId] = useState(null);
   const [vendorData,setVendorData]  = useState(null)
-  const { authData } = useContext(AuthContext);
+  const { authData } = useAuth();
   const navigation = useNavigate();
   const getVendorData = async () => {
     const vendorid = window.location.href.split("/").pop();
     
     await axios
       .get(`${environmentVariables.apiUrl}/admin/getvendorById/${vendorid}`, {
-        headers: { _token: authData.data.token },
+        headers: { _token: authData.token },
       })
       .then((response) => {
         setVendorData(response.data.data);

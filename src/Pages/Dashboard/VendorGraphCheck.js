@@ -14,7 +14,7 @@ import CircularLoader from "../../Component/CircularLoader/CircularLoader";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useContext } from "react";
-import { AuthContext } from "../../ContextApi/ContextApi";
+import { AuthContext, useAuth } from "../../ContextApi/ContextApi";
 import { environmentVariables } from "../../config/config";
 import { MDBCard, MDBCardBody } from "mdb-react-ui-kit";
 import { BsCalendarDay } from "react-icons/bs";
@@ -41,7 +41,7 @@ const CustomBar = (props) => {
 export default function VendorGraphCheck() {
   const [graphdata, setGraphData] = useState();
 
-  const { authData, setAuthData } = useContext(AuthContext);
+  const { authData } = useAuth();
   const [monthdata, setMonthdata] = useState();
   const [yeardata, setYeardata] = useState();
   const [fromDate, setFromDate] = useState(null);
@@ -52,7 +52,7 @@ export default function VendorGraphCheck() {
   const [vendorId, setVendorId] = useState(null);
   const [isLoadingGraph, setIsLoadingGraph] = useState(false);
   const url = authData !== null &&
-  (authData.data.vendorId ? `${environmentVariables.apiUrl}/vendor/getgraphhotels/${vendorId}` : `${environmentVariables.apiUrl}/admin/getgraphhotels/${vendorId}`);
+  (authData.vendorId ? `${environmentVariables.apiUrl}/vendor/getgraphhotels/${vendorId}` : `${environmentVariables.apiUrl}/admin/getgraphhotels/${vendorId}`);
   const ButtonGroup = styled.div`
     display: flex;
   `;
@@ -101,7 +101,7 @@ export default function VendorGraphCheck() {
       method: "post",
       url: url,
       data: allData,
-      headers: { _token: authData !== null && authData.data.token },
+      headers: { _token: authData !== null && authData.token },
     })
       .then((response) => {
         const data = response.data.data;
@@ -135,7 +135,7 @@ export default function VendorGraphCheck() {
       method: "post",
       url: url,
       data: allData,
-      headers: { _token: authData !== null && authData.data.token },
+      headers: { _token: authData !== null && authData.token },
     })
       .then((response) => {
         const data = response.data.data;
@@ -157,7 +157,7 @@ export default function VendorGraphCheck() {
       method: "post",
       url: url,
       data: allData,
-      headers: { _token: authData !== null && authData.data.token },
+      headers: { _token: authData !== null && authData.token },
     })
       .then((response) => {
         const responseData = response.data.data[0];
@@ -202,13 +202,12 @@ export default function VendorGraphCheck() {
     }
   }, [fromDate, toDate, tab]);
   useEffect(() => {
-    console.log(authData,"authData")
     setIsLoadingGraph(true);
     if (window !== undefined) {
       const param = window.location.href.split("/").pop();
       const vendorid =
         authData !== null &&
-        (authData.data.vendorId ? authData.data.vendorId : param);
+        (authData.vendorId ? authData.vendorId : param);
         console.log(param)
       setVendorId(vendorid);
     }

@@ -12,7 +12,7 @@ import styled from "styled-components";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useContext } from "react";
-import { AuthContext } from "../../ContextApi/ContextApi";
+import { AuthContext, useAuth } from "../../ContextApi/ContextApi";
 import { environmentVariables } from "../../config/config";
 import { MDBCard, MDBCardBody } from "mdb-react-ui-kit";
 import { BsCalendarDay } from "react-icons/bs";
@@ -40,7 +40,7 @@ const CustomBar = (props) => {
 export default function GraphCheck() {
   const [graphdata, setGraphData] = useState();
   const [isLoading, setIsLoading] = useState(false);
-  const { authData, setAuthData } = useContext(AuthContext);
+  const { authData } = useAuth();
   const [alldata, setAlldata] = useState();
   const [yeardata, setYeardata] = useState();
   const [tab, setTab] = useState("Hotels");
@@ -124,7 +124,7 @@ export default function GraphCheck() {
       method: "post",
       url: `${environmentVariables.apiUrl}/admin/getgraphhotels`,
       data: allData,
-      headers: { _token: authData.data.token },
+      headers: { _token: authData.token },
     })
       .then((response) => {
         setCustomData(response.data.data[0]);
@@ -182,7 +182,7 @@ export default function GraphCheck() {
       method: "post",
       url: `${environmentVariables.apiUrl}/admin/getgraphhotels`,
       data: allData,
-      headers: { _token: authData.data.token },
+      headers: { _token: authData.token },
     })
       .then((response) => {
         const data = response.data.data;
@@ -232,7 +232,7 @@ export default function GraphCheck() {
       method: "post",
       url: `${environmentVariables.apiUrl}/admin/getgraphhotels`,
       data: allData,
-      headers: { _token: authData.data.token },
+      headers: { _token: authData.token },
     })
       .then((response) => {
         const mergedata = [

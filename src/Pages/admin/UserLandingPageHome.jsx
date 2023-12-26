@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useState, useContext, useEffect } from "react";
 import styled from "styled-components";
-import { AuthContext } from "../../ContextApi/ContextApi";
+import { AuthContext, useAuth } from "../../ContextApi/ContextApi";
 import CircularLoader from "../../Component/CircularLoader/CircularLoader";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
@@ -66,7 +66,7 @@ const UserLandingPageHome = () => {
   const [theme, setTheme] = useState(null);
   const [title, setTitle] = useState(null);
   const [allData, setAllData] = useState();
-  const { authData } = useContext(AuthContext);
+  const { authData } = useAuth();
   const [priority, setPriority] = useState();
   const [dragId, setDragId] = useState();
   const [deletePopUp, setDeletePopUp] = useState(false);
@@ -89,7 +89,7 @@ const UserLandingPageHome = () => {
   const getPopularCities = () => {
     axios
       .get(`${environmentVariables.apiUrl}/admin/getnameofcity`, {
-        headers: { _token: authData.data.token },
+        headers: { _token: authData.token },
       })
       .then((res) => {
         setCityData(res.data.data);
@@ -101,7 +101,7 @@ const UserLandingPageHome = () => {
       method: "put",
       url: `${environmentVariables.apiUrl}/admin/updateprioritycitybyid`,
       data: allData,
-      headers: { _token: authData.data.token },
+      headers: { _token: authData.token },
     })
       .then((response) => {
         console.log(response);
@@ -120,7 +120,7 @@ const UserLandingPageHome = () => {
   const getAllData = () => {
     axios
       .get(`${environmentVariables.apiUrl}/admin/prioritydata`, {
-        headers: { _token: authData.data.token },
+        headers: { _token: authData.token },
       })
       .then((response) => {
         console.log("response.data", response.data.data);
@@ -151,7 +151,7 @@ const UserLandingPageHome = () => {
       method: "delete",
       url: `${environmentVariables.apiUrl}/admin/deleteprioritybyid/${themeId}`,
       headers: {
-        _token: authData?.data?.token,
+        _token: authData?.token,
       },
     })
       .then((response) => {
@@ -191,7 +191,7 @@ const UserLandingPageHome = () => {
           "Content-Type": "application/json",
         },
         data: cityData,
-        headers: { _token: authData.data.token },
+        headers: { _token: authData.token },
       })
         .then((response) => {
           if (response?.data?.success) {

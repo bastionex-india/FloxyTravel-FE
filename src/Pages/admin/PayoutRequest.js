@@ -5,7 +5,7 @@ import axios from "axios";
 import { environmentVariables } from "../../config/config";
 import { useEffect } from "react";
 import { useContext } from "react";
-import { AuthContext } from "../../ContextApi/ContextApi";
+import { AuthContext, useAuth } from "../../ContextApi/ContextApi";
 import { Button } from "@mui/material";
 import CircularLoader from "../../Component/CircularLoader/CircularLoader";
 import TablePagination from "@mui/material/TablePagination";
@@ -155,7 +155,7 @@ const TextMainWrapper = styled.div`
 `;
 const PayoutRequest = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const { authData, setAuthData } = useContext(AuthContext);
+ const { authData } = useAuth();
   const [data, setData] = useState(null);
   const [vendorlist, setVendorList] = useState([]);
   const [mainResponse, setResponse] = useState("");
@@ -200,7 +200,7 @@ const PayoutRequest = () => {
       method: "post",
       url: `${environmentVariables.apiUrl}/vendor/savePayout`,
       headers: {
-        _token: authData.data.token,
+        _token: authData.token,
         "Content-Type": "application/json",
       },
       data: data,
@@ -242,7 +242,7 @@ const PayoutRequest = () => {
   const getAllListData = async () => {
     await axios
       .get(`${environmentVariables.apiUrl}/admin/getPayoutRequestList`, {
-        headers: { _token: authData.data.token },
+        headers: { _token: authData.token },
         params: {
           hotelid: selectHotel,
           cityname: selectCity,
@@ -272,7 +272,7 @@ const PayoutRequest = () => {
       method: "post",
       url: `${environmentVariables.apiUrl}/admin/updatePayoutRequest`,
       headers: {
-        _token: authData.data.token,
+        _token: authData.token,
         "Content-Type": "application/json",
       },
       data: data,
@@ -447,7 +447,7 @@ const PayoutRequest = () => {
   const getAllCities = async () => {
     await axios
       .get(`${environmentVariables.apiUrl}/admin/getPayoutReqCities`, {
-        headers: { _token: authData.data.token },
+        headers: { _token: authData.token },
       })
       .then((response) => {
         setCityList(response.data.data);
@@ -461,7 +461,7 @@ const PayoutRequest = () => {
       .get(
         `${environmentVariables.apiUrl}/admin/getallvendor`,
         {
-          headers: { _token: authData.data.token },
+          headers: { _token: authData.token },
         }
       )
       .then((response) => {
@@ -474,7 +474,7 @@ const PayoutRequest = () => {
   const getHotelListData = async () => {
     await axios
       .get(`${environmentVariables.apiUrl}/admin/getallhotels`, {
-        headers: { _token: authData.data.token },
+        headers: { _token: authData.token },
         params: {
           page: 1,
           limit: 10000,
@@ -491,7 +491,7 @@ const PayoutRequest = () => {
   const getActivitiesListData = async () => {
     await axios
       .get(`${environmentVariables.apiUrl}/admin/getallhotels`, {
-        headers: { _token: authData.data.token },
+        headers: { _token: authData.token },
         params: {
           page: 1,
           limit: 10000,

@@ -8,7 +8,7 @@ import { environmentVariables } from "../../../config/config";
 import axios from "axios";
 import { useContext } from "react";
 import Swal from "sweetalert2";
-import { AuthContext } from "../../../ContextApi/ContextApi";
+import { AuthContext, useAuth } from "../../../ContextApi/ContextApi";
 import { Button } from "@mui/material";
 
 const ErrorText = styled.div`
@@ -103,17 +103,11 @@ const AddThemePopUpInput = styled.input`
   border: 1px solid #cccc;
 `;
 const CreateAdminVendor = ({ open, setOpen }) => {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [number, setNumber] = useState("");
-  const [password, setPassword] = useState("");
-  const [cpassword, setCPassword] = useState("");
-  const [vendorValue, setVendorValue] = useState("");
   const [adminValue, setAdminValue] = useState("vendor");
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const { authData, setAuthData } = useContext(AuthContext);
+  const { authData } = useAuth();
   const handleClose = () => {
     setOpen(false);
   };
@@ -152,7 +146,7 @@ const CreateAdminVendor = ({ open, setOpen }) => {
                 accountHolderName: values.accountHolderName,
                 ifsc: values.ifsc,
               },
-              headers: { _token: authData.data.token },
+              headers: { _token: authData.token },
             })
               .then((response) => {
                 // console.log(response.data.data,"00000000000001111111111")
@@ -194,7 +188,7 @@ const CreateAdminVendor = ({ open, setOpen }) => {
                 cpassword: values.confirmPassword,
                 adminType: adminValue,
               },
-              headers: { _token: authData.data.token },
+              headers: { _token: authData.token },
             })
               .then((response) => {
                 // console.log(response.data.data,"00000000000001111111111")

@@ -28,7 +28,7 @@ import { useNavigate } from "react-router-dom";
 import { environmentVariables } from "../../config/config";
 import axios from "axios";
 import { useContext } from "react";
-import { AuthContext } from "../../ContextApi/ContextApi";
+import { AuthContext, useAuth } from "../../ContextApi/ContextApi";
 
 const Root = styled.div`
   width: 90%;
@@ -52,7 +52,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 const Check = ({ open, setOpen }) => {
   const [responseData, setResponseData] = useState([]);
   const [adminResponseData, setAdminResponseData] = useState([]);
-  const { authData, setAuthData } = useContext(AuthContext);
+  const { authData } = useAuth();
   const navigate = useNavigate();
 
   const [name, setName] = useState("");
@@ -110,7 +110,7 @@ const Check = ({ open, setOpen }) => {
           cpassword: cpassword,
           adminType: adminValue,
         },
-        headers: { _token: authData.data.token },
+        headers: { _token: authData.token },
       })
         .then((response) => {
           // console.log(response.data.data,"00000000000001111111111")
@@ -147,7 +147,7 @@ const Check = ({ open, setOpen }) => {
           cpassword: cpassword,
           adminType: adminValue,
         },
-        headers: { _token: authData.data.token },
+        headers: { _token: authData.token },
       })
         .then((response) => {
           // console.log(response.data.data,"00000000000001111111111")
@@ -208,7 +208,7 @@ const Check = ({ open, setOpen }) => {
                 cpassword: values.confirmPassword,
                 adminType: adminValue,
               },
-              headers: { _token: authData.data.token },
+              headers: { _token: authData.token },
             })
               .then((response) => {
                 // console.log(response.data.data,"00000000000001111111111")
@@ -239,7 +239,7 @@ const Check = ({ open, setOpen }) => {
                 cpassword: values.confirmPassword,
                 adminType: adminValue,
               },
-              headers: { _token: authData.data.token },
+              headers: { _token: authData.token },
             })
               .then((response) => {
                 // console.log(response.data.data,"00000000000001111111111")

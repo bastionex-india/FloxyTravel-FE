@@ -8,7 +8,7 @@ import { environmentVariables } from "../../../config/config";
 import axios from "axios";
 import { useContext } from "react";
 import Swal from "sweetalert2";
-import { AuthContext } from "../../../ContextApi/ContextApi";
+import { AuthContext, useAuth } from "../../../ContextApi/ContextApi";
 import { Button } from "@mui/material";
 import { VendorEditSchema } from "../schemas/vendorEditSchema";
 
@@ -125,7 +125,7 @@ const EditVendor = ({ open, setOpen, vendorDetails }) => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const { authData, setAuthData } = useContext(AuthContext);
+  const { authData } = useAuth();
   const handleClose = () => {
     setOpen(false);
   };
@@ -151,10 +151,9 @@ const EditVendor = ({ open, setOpen, vendorDetails }) => {
             email: values.email,
             mobile: values.contact,
           },
-          headers: { _token: authData.data.token },
+          headers: { _token: authData.token },
         })
           .then((response) => {
-            console.log(response.data, "00000000000001111111111")
             // setUpdatedHotelData(response.data.message)
             // setResponseData(response.data.data);
             Swal.fire({
@@ -193,7 +192,7 @@ const EditVendor = ({ open, setOpen, vendorDetails }) => {
         //         cpassword: values.confirmPassword,
         //         adminType: adminValue,
         //       },
-        //       headers: { _token: authData.data.token },
+        //       headers: { _token: authData.token },
         //     })
         //       .then((response) => {
         //         // console.log(response.data.data,"00000000000001111111111")

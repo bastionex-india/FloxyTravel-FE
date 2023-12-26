@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { AuthContext } from "../ContextApi/ContextApi";
+import { AuthContext, useAuth } from "../ContextApi/ContextApi";
 import Dashboard from "./../Pages/Dashboard/Dashboard";
 
 const Root = styled.div`
@@ -44,7 +44,7 @@ const Link = styled.div``;
 function SideBar(props) {
   const [selected, setselected] = useState("Dashboard");
   const navigate = useNavigate();
-  const { authData, setAuthData } = useContext(AuthContext);
+  const { authData } = useAuth();
   useEffect(() => {
     if (window !== "undefined") {
       if (window.location.href.split("/").pop() === "userhomepage") {
@@ -105,7 +105,7 @@ function SideBar(props) {
   }, [selected]);
   return (
     <Root>
-      {authData!==null && authData.data.isadmin === "true" ? (
+      {authData!==null && authData.isAdmin ? (
         <>
           <LinkWrapper
             select={selected === "Dashboard"}

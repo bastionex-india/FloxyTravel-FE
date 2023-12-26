@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useState, useContext, useEffect } from "react";
 import styled from "styled-components";
-import { AuthContext } from "../../ContextApi/ContextApi";
+import { AuthContext, useAuth } from "../../ContextApi/ContextApi";
 import { environmentVariables } from "../../config/config";
 import CircularLoader from "../../Component/CircularLoader/CircularLoader";
 import Swal from "sweetalert2";
@@ -120,7 +120,7 @@ const UserLandingPage = () => {
   const [allStates, setAllStates] = useState([]);
   const [stateSelected, setStateSelected] = useState();
   const [stateId, setStateId] = useState();
-  const { authData } = useContext(AuthContext);
+  const { authData } = useAuth();
   const [isPriorityChanged, setIsPriority] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [chosenState, setChosenState] = useState("");
@@ -199,7 +199,7 @@ const UserLandingPage = () => {
       let config = {
         method: "post",
         url: `${environmentVariables.apiUrl}/admin/getstatesofcountry`,
-        headers: { _token: authData?.data?.token },
+        headers: { _token: authData?.token },
         data: { countryCode: countryCode },
       };
       axios
@@ -218,7 +218,7 @@ const UserLandingPage = () => {
       let config = {
         method: "post",
         url: `${environmentVariables.apiUrl}/admin/getcitiesofcountry`,
-        headers: { _token: authData?.data?.token },
+        headers: { _token: authData?.token },
         data: {
           countryCode: countryCode,
           stateCode: stateCode,
@@ -239,7 +239,7 @@ const UserLandingPage = () => {
       .delete(
         `${environmentVariables.apiUrl}/admin/deletevendor/${vendorId._id}`,
         {
-          headers: { _token: authData.data.token },
+          headers: { _token: authData.token },
         }
       )
       .then((response) => {
@@ -422,7 +422,7 @@ const UserLandingPage = () => {
         method: "put",
         url: `${environmentVariables.apiUrl}/admin/updatepriority/${stateId}`,
         data: themeData,
-        headers: { _token: authData.data.token },
+        headers: { _token: authData.token },
       })
         .then((response) => {
           // console.log(response);
@@ -466,7 +466,7 @@ const UserLandingPage = () => {
             "Content-Type": "application/json",
           },
           data: formData,
-          headers: { _token: authData.data.token },
+          headers: { _token: authData.token },
         })
           .then((response) => {
             if (response?.data?.success) {
@@ -510,7 +510,7 @@ const UserLandingPage = () => {
       method: "get",
       url: `${environmentVariables.apiUrl}/admin/getstatedata`,
       headers: {
-        _token: authData?.data?.token,
+        _token: authData?.token,
       },
     })
       .then((response) => {
@@ -541,7 +541,7 @@ const UserLandingPage = () => {
       method: "get",
       url: `${environmentVariables.apiUrl}/auth/getimagesacctocities/${stateSelected}`,
       headers: {
-        _token: authData?.data?.token,
+        _token: authData?.token,
       },
     })
       .then((response) => {
@@ -563,7 +563,7 @@ const UserLandingPage = () => {
       method: "get",
       url: `${environmentVariables.apiUrl}/admin/getthemebystate/${stateId}`,
       headers: {
-        _token: authData?.data?.token,
+        _token: authData?.token,
       },
     })
       .then((response) => {
@@ -582,7 +582,7 @@ const UserLandingPage = () => {
       method: "get",
       url: `${environmentVariables.apiUrl}/admin/getthemebystate/${stateId}`,
       headers: {
-        _token: authData?.data?.token,
+        _token: authData?.token,
       },
     })
       .then((response) => {
@@ -605,7 +605,7 @@ const UserLandingPage = () => {
           description: description,
         },
         headers: {
-          _token: authData?.data?.token,
+          _token: authData?.token,
         },
       })
         .then((response) => {
@@ -656,7 +656,7 @@ const UserLandingPage = () => {
           description: description,
         },
         headers: {
-          _token: authData?.data?.token,
+          _token: authData?.token,
         },
       })
         .then((response) => {
@@ -705,7 +705,7 @@ const UserLandingPage = () => {
       method: "delete",
       url: `${environmentVariables.apiUrl}/admin/deletetheme/${themeId}/${stateSelected}`,
       headers: {
-        _token: authData?.data?.token,
+        _token: authData?.token,
       },
     })
       .then((response) => {
@@ -763,7 +763,7 @@ const UserLandingPage = () => {
           "Content-Type": "application/json",
         },
         data: formData,
-        headers: { _token: authData.data.token },
+        headers: { _token: authData.token },
       })
         .then((response) => {
           if (response?.data?.success) {
@@ -804,7 +804,7 @@ const UserLandingPage = () => {
     let config = {
       method: "get",
       url: `${environmentVariables.apiUrl}/admin/getallcountries`,
-      headers: { _token: authData?.data?.token },
+      headers: { _token: authData?.token },
     };
     axios
       .request(config)
@@ -826,7 +826,7 @@ const UserLandingPage = () => {
     const config = {
       method: "post",
       url: `${environmentVariables.apiUrl}/admin/uploadsactivitybanner`,
-      headers: { _token: authData?.data?.token },
+      headers: { _token: authData?.token },
       data: formData,
     };
 
