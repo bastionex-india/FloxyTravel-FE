@@ -314,13 +314,13 @@ const ChatSupport = () => {
       handleChangedChannel(activeChannel);
     }
     // scrollToBottom();
-    if (activeChannel) {
+    // if (activeChannel) {
       activeChannel.on("messageAdded", handleNewMessage);
-    }
+    // }
     return () => {
-      if (activeChannel) {
+      // if (activeChannel) {
         activeChannel.off("messageAdded", handleNewMessage);
-      }
+      // }
     };
   }, [activeChannel]);
 
@@ -358,7 +358,7 @@ const ChatSupport = () => {
     if (authData) {
       initializeChatClient();
     }
-  }, [messages]);
+  }, []);
 
   console.log("messages", allChannel);
 
