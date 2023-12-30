@@ -322,7 +322,7 @@ const ChatSupport = () => {
         activeChannel.off("messageAdded", handleNewMessage);
       }
     };
-  }, [activeChannel,messages]);
+  }, [activeChannel]);
 
   useEffect(() => {
     console.log("Client changed...");
@@ -358,7 +358,7 @@ const ChatSupport = () => {
     if (authData) {
       initializeChatClient();
     }
-  }, []);
+  }, [messages]);
 
   console.log("messages", allChannel);
 
