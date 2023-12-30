@@ -229,10 +229,10 @@ const ChatSupport = () => {
   };
   const getAllChannels = async (client) => {
     try {
-      setIsChannelLoading(true);
+      // setIsChannelLoading(true);
       const channels = await client.getSubscribedChannels();
       setAllChannel(channels.items);
-      setIsChannelLoading(false);
+      // setIsChannelLoading(false);
     } catch (error) {
       console.error("Error retrieving channels:", error);
     }
