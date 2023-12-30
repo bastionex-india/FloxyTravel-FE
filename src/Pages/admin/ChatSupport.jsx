@@ -358,7 +358,7 @@ const ChatSupport = () => {
     if (authData) {
       initializeChatClient();
     }
-  }, [messages]);
+  }, []);
 
   console.log("messages", allChannel);
 
