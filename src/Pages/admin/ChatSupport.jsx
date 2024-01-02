@@ -145,7 +145,7 @@ const ChatSupport = () => {
     return shortString;
   }
   const scrollToBottom = () => {
-    console.log("scroll bottom called ....");
+    // console.log("scroll bottom called ....");
     setTimeout(() => {
       // console. log('Will be called after 2 seconds');
       const scrollHeight = scrollDiv.current.scrollHeight;
@@ -175,6 +175,25 @@ const ChatSupport = () => {
       const token = response.data.token;
       const client = new Client(token);
       console.log("Token created.....", client);
+      client.on("stateChanged", (state) => {
+        console.log("stateChanged--", state, "--");
+      });
+      client.on("messageUpdated", (messageUpdated) => {
+        console.log(
+          "============  messageUpdated ========================",
+          messageUpdated
+        );
+      });
+      client.on("userUpdated", (userUpdated) => {
+        console.log(
+          "============  userUpdated ========================",
+          userUpdated
+        );
+      });
+      client.on("MessageType", (state) => {
+        console.log("============  MessageType ========================");
+      });
+
       setChatClient(client);
     } catch (error) {
       console.error("Error initializing Chat client:", error);
@@ -229,9 +248,11 @@ const ChatSupport = () => {
   };
   const getAllChannels = async (client) => {
     try {
+      console.warn("getAllChannels start ");
       // setIsChannelLoading(true);
       const channels = await client.getSubscribedChannels();
       setAllChannel(channels.items);
+      console.warn("getAllChannels end ", channels.items);
       // setIsChannelLoading(false);
     } catch (error) {
       console.error("Error retrieving channels:", error);
@@ -276,6 +297,12 @@ const ChatSupport = () => {
   const handleNewMessage = async (message) => {
     await markAllMessagesAsConsumed(activeChannel);
     console.log("New message received:", message);
+
+    // if (message.author !== activeChannel.channelState.createdBy) {
+    //   console.log("New message from another user:", message.author,activeChannel);
+    //   getAllChannels(chatClient);
+    // }
+
     setMessages((messages) => [...messages, message]);
     messages.push(message);
 
@@ -289,6 +316,9 @@ const ChatSupport = () => {
   };
 
   const handleChannelAdded = (channel) => {
+    console.log("====================================");
+    console.log("=========memberUpdated====");
+    console.log("====================================");
     getAllChannels(chatClient);
   };
   const handleChannelDeleted = (channel) => {
@@ -304,7 +334,7 @@ const ChatSupport = () => {
     await getAllMessages(activeChannel);
     setIsMessageLoading(false);
     scrollToBottom();
-    console.log({ activeChannel });
+    // console.log({ activeChannel });
   };
 
   useEffect(() => {
@@ -312,14 +342,21 @@ const ChatSupport = () => {
     if (activeChannel) {
       handleChangedChannel(activeChannel);
     }
-    // scrollToBottom();
-    if (activeChannel) {
-      activeChannel.on("messageAdded", handleNewMessage);
-    }
-    return () => {
+    const setupChannelEventListeners = () => {
+      if (activeChannel) {
+        activeChannel.on("messageAdded", handleNewMessage);
+      }
+    };
+
+    const cleanupChannelEventListeners = () => {
       if (activeChannel) {
         activeChannel.off("messageAdded", handleNewMessage);
       }
+    };
+    setupChannelEventListeners();
+
+    return () => {
+      cleanupChannelEventListeners();
     };
   }, [activeChannel]);
 
@@ -329,14 +366,14 @@ const ChatSupport = () => {
       getAllChannels(chatClient);
     }
     if (chatClient) {
-      chatClient.on("channelAdded", handleChannelAdded);
+      chatClient.on("memberUpdated", handleChannelAdded);
     }
-    if (chatClient) {
-      chatClient.on("channelDeleted", handleChannelDeleted);
-    }
-    if (chatClient) {
-      chatClient.on("channelRemoved", handleChannelRemoved);
-    }
+    // if (chatClient) {
+    //   chatClient.on("channelDeleted", handleChannelDeleted);
+    // }
+    // if (chatClient) {
+    //   chatClient.on("channelRemoved", handleChannelRemoved);
+    // }
   }, [chatClient]);
 
   useEffect(() => {
@@ -359,7 +396,7 @@ const ChatSupport = () => {
     }
   }, []);
 
-  console.log("messages", allChannel);
+  // console.log("messages", allChannel);
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -426,7 +463,7 @@ const ChatSupport = () => {
                   unreadMessageCount =
                     channel.lastMessage.index -
                     channel.lastConsumedMessageIndex;
-                  console.log("underr", unreadMessageCount, "/.", channel);
+                  // console.log("underr", unreadMessageCount, "/.", channel);
                 }
                 let userName = channel.channelState.friendlyName;
                 let number = index % (colorList.length - 1);
@@ -451,11 +488,11 @@ const ChatSupport = () => {
                   }
                 }
 
-                console.log(
-                  "channel",
-                  channel?.lastMessage?.index,
-                  channel?.lastConsumedMessageIndex
-                );
+                // console.log(
+                //   "channel",
+                //   channel?.lastMessage?.index,
+                //   channel?.lastConsumedMessageIndex
+                // );
 
                 return (
                   <>
