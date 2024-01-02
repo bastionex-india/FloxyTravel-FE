@@ -193,7 +193,7 @@ const ChatSupport = () => {
         setInputText("");
         setIsSendButtonDisable(false);
       } catch (error) {
-        isSendButtonDisable(false);
+        setIsSendButtonDisable(false);
         console.error("Error sending message:", error);
       }
     } else {
