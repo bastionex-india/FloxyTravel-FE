@@ -129,7 +129,7 @@ const ChatSupport = () => {
   let scrollDiv = useRef(null);
 
   const handleContextMenu = (e, message) => {
-    e.preventDefault(); 
+    e.preventDefault();
     setSelectedMessages([...selectedMessages, message]);
     setMenuOpen(true);
     setMenuPosition({ x: e.clientX, y: e.clientY });
@@ -247,7 +247,6 @@ const ChatSupport = () => {
           deleted: true,
         };
         await message.updateAttributes(updatedAttributes);
-
       } catch (error) {
         console.error("Error deleting message:", error);
       }
@@ -314,13 +313,13 @@ const ChatSupport = () => {
       handleChangedChannel(activeChannel);
     }
     // scrollToBottom();
-    // if (activeChannel) {
+    if (activeChannel) {
       activeChannel.on("messageAdded", handleNewMessage);
-    // }
+    }
     return () => {
-      // if (activeChannel) {
+      if (activeChannel) {
         activeChannel.off("messageAdded", handleNewMessage);
-      // }
+      }
     };
   }, [activeChannel]);
 
@@ -427,7 +426,7 @@ const ChatSupport = () => {
                   unreadMessageCount =
                     channel.lastMessage.index -
                     channel.lastConsumedMessageIndex;
-                  console.log("underr",unreadMessageCount,"/.",channel)
+                  console.log("underr", unreadMessageCount, "/.", channel);
                 }
                 let userName = channel.channelState.friendlyName;
                 let number = index % (colorList.length - 1);
@@ -454,8 +453,8 @@ const ChatSupport = () => {
 
                 console.log(
                   "channel",
-                  channel?.lastMessage?.index ,
-                    channel?.lastConsumedMessageIndex
+                  channel?.lastMessage?.index,
+                  channel?.lastConsumedMessageIndex
                 );
 
                 return (
@@ -659,11 +658,9 @@ const ChatSupport = () => {
                     padding: "0px 20px 0px 20px",
                     "@media (max-width: 1440px)": {
                       width: "100%",
-                    
                     },
                     "@media (max-width: 1200px)": {
                       width: "80%",
-                  
                     },
                   }}
                 >

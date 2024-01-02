@@ -476,6 +476,7 @@ const UserLandingPage = () => {
                 "success"
               );
               setChosenState(null);
+              setAllStates([...allStates, response?.data?.data]);
               setFile(null);
             } else {
               Swal.fire(
@@ -496,7 +497,7 @@ const UserLandingPage = () => {
             setChosenState(null);
             setFile(null);
           });
-        setAllStates([...allStates, chosenState]);
+       
         setAddStatePopUp(false);
       } else {
         Swal.fire("Error", "Please add background image to continue", "error");
@@ -505,6 +506,7 @@ const UserLandingPage = () => {
     }
   };
 
+  console.log("allStates",allStates)
   const getStatesData = () => {
     axios({
       method: "get",
