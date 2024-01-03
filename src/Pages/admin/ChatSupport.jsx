@@ -175,16 +175,16 @@ const ChatSupport = () => {
       const token = response.data.token;
       const client = new Client(token);
       console.log("Token created.....", client);
-      client.on("stateChanged", (state) => {
-        console.log("stateChanged--", state, "--");
-      });
-      client.on("messageUpdated", (messageUpdated) => {
-        console.log(
-          "============  messageUpdated ========================",
-          messageUpdated
-        );
-      });
-      
+      // client.on("stateChanged", (state) => {
+      //   console.log("stateChanged--", state, "--");
+      // });
+      // client.on("messageUpdated", (messageUpdated) => {
+      //   console.log(
+      //     "============  messageUpdated ========================",
+      //     messageUpdated
+      //   );
+      // });
+
       setChatClient(client);
     } catch (error) {
       console.error("Error initializing Chat client:", error);
@@ -374,18 +374,11 @@ const ChatSupport = () => {
   }, []);
 
   useEffect(() => {
-    // const intervalId = setInterval(() => {
-      if (authData) {
-        initializeChatClient();
-      }
-    // }, 1000);
-
-    // return () => {
-    //   clearInterval(intervalId);
-    // };
+    if (authData) {
+      initializeChatClient();
+    } 
   }, [authData]);
 
-  // console.log("messages", allChannel);
 
   return (
     <ThemeProvider theme={defaultTheme}>
