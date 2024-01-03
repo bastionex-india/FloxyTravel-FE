@@ -184,19 +184,7 @@ const ChatSupport = () => {
           messageUpdated
         );
       });
-      client.on("userUpdated", (userUpdated) => {
-        console.log(
-          "============  userUpdated ========================",
-          userUpdated
-        );
-      });
-      client.on("MessageType", (state) => {
-        console.log("============  MessageType ========================");
-      });
-      client.on("channelJoined", (state) => {
-        console.log("============  channelJoined ========================");
-      });
-
+      
       setChatClient(client);
     } catch (error) {
       console.error("Error initializing Chat client:", error);
@@ -301,11 +289,6 @@ const ChatSupport = () => {
     await markAllMessagesAsConsumed(activeChannel);
     console.log("New message received:", message);
 
-    // if (message.author !== activeChannel.channelState.createdBy) {
-    //   console.log("New message from another user:", message.author,activeChannel);
-    //   getAllChannels(chatClient);
-    // }
-
     setMessages((messages) => [...messages, message]);
     messages.push(message);
 
@@ -319,9 +302,6 @@ const ChatSupport = () => {
   };
 
   const handleChannelAdded = (channel) => {
-    console.log("====================================");
-    console.log("=========memberUpdated====");
-    console.log("====================================");
     getAllChannels(chatClient);
   };
   const handleChannelDeleted = (channel) => {
@@ -369,14 +349,14 @@ const ChatSupport = () => {
       getAllChannels(chatClient);
     }
     if (chatClient) {
-      chatClient.on("memberUpdated", handleChannelAdded);
+      chatClient.on("channelAdded", handleChannelAdded);
     }
-    // if (chatClient) {
-    //   chatClient.on("channelDeleted", handleChannelDeleted);
-    // }
-    // if (chatClient) {
-    //   chatClient.on("channelRemoved", handleChannelRemoved);
-    // }
+    if (chatClient) {
+      chatClient.on("channelDeleted", handleChannelDeleted);
+    }
+    if (chatClient) {
+      chatClient.on("channelRemoved", handleChannelRemoved);
+    }
   }, [chatClient]);
 
   useEffect(() => {
@@ -394,10 +374,16 @@ const ChatSupport = () => {
   }, []);
 
   useEffect(() => {
-    if (authData) {
-      initializeChatClient();
-    }
-  }, []);
+    // const intervalId = setInterval(() => {
+      if (authData) {
+        initializeChatClient();
+      }
+    // }, 1000);
+
+    // return () => {
+    //   clearInterval(intervalId);
+    // };
+  }, [authData]);
 
   // console.log("messages", allChannel);
 
