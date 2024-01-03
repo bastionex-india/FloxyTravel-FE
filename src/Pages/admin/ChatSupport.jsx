@@ -193,6 +193,9 @@ const ChatSupport = () => {
       client.on("MessageType", (state) => {
         console.log("============  MessageType ========================");
       });
+      client.on("channelJoined", (state) => {
+        console.log("============  channelJoined ========================");
+      });
 
       setChatClient(client);
     } catch (error) {
