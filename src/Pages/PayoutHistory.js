@@ -183,6 +183,18 @@ const TextMainWrapper = styled.div`
 const NewRow = styled.div`
   width: 100%;
 `;
+
+const CustomTablePagination = styled(TablePagination)`
+  display: flex !important;
+  justify-content: flex-end !important;
+  align-items: baseline !important;
+  p {
+    margin: 0px !important;
+  }
+
+`;
+
+
 const PayoutHistory = () => {
   const [select, setSelect] = useState("");
   const [select1, setSelect1] = useState("");
@@ -665,7 +677,7 @@ const PayoutHistory = () => {
         mainResponse.totalrecords == 0 ? (
           <></>
         ) : (
-          <TablePagination
+          <CustomTablePagination
             component="div"
             count={mainResponse.totalrecords}
             page={page}

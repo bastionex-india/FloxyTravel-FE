@@ -291,6 +291,15 @@ const RecentlyUploadedButtonWrapper = styled.div``;
 const DocImage = styled.img`
   /* width:50px;  */
 `;
+const CustomTablePagination = styled(TablePagination)`
+  display: flex !important;
+  justify-content: flex-end !important;
+  align-items: baseline !important;
+  p {
+    margin: 0px !important;
+  }
+
+`;
 
 const SideBar = styled.div`
   background-color: black;
@@ -520,7 +529,7 @@ const ManageAdmin = () => {
                     })}
                 </TableBody>
               </Table>
-              <TablePagination
+              <CustomTablePagination
               className={classes.Pagination}
                 component="div"
                 count={response?.totalrecords}

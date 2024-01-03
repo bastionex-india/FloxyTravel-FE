@@ -154,6 +154,15 @@ const HeadingWrapper = styled.div`
   // justify-content: center;
   // align-items: center;
 `;
+const CustomTablePagination = styled(TablePagination)`
+  display: flex !important;
+  justify-content: flex-end !important;
+  align-items: baseline !important;
+  p {
+    margin: 0px !important;
+  }
+
+`;
 
 const BookingHistory = () => {
   const { authData } = useAuth();
@@ -630,7 +639,7 @@ const BookingHistory = () => {
                   )}
                 </TableBody>
               </Table>
-              <TablePagination
+              <CustomTablePagination
                 rowsPerPageOptions={[1, 3, 10]}
                 component="div"
                 count={totalItems}

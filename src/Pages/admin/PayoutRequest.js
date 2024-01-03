@@ -34,6 +34,16 @@ import FormControl from "@mui/material/FormControl";
 import ArrowBackIosNewOutlinedIcon from "@mui/icons-material/ArrowBackIosNewOutlined";
 
 
+
+const CustomTablePagination = styled(TablePagination)`
+  display: flex !important;
+  justify-content: flex-end !important;
+  align-items: baseline !important;
+  p {
+    margin: 0px !important;
+  }
+
+`;
 const BootstrapDialog = newStyle(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
     padding: theme.spacing(2),
@@ -707,7 +717,7 @@ const PayoutRequest = () => {
         mainResponse.totalrecords === 0 ? (
           <></>
         ) : (
-          <TablePagination
+          <CustomTablePagination
             component="div"
             count={mainResponse.totalrecords}
             page={page}

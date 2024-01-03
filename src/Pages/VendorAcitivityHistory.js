@@ -212,6 +212,15 @@ display: flex;
   margin:0;
 }
 `;
+const CustomTablePagination = styled(TablePagination)`
+  display: flex !important;
+  justify-content: flex-end !important;
+  align-items: baseline !important;
+  p {
+    margin: 0px !important;
+  }
+
+`;
 
 const DatePickerStyled1 = styled(DatePicker)`
 height: 50px;
@@ -585,7 +594,7 @@ const VendorActivityHistory = () => {
                   )}
                 </TableBody>
               </Table>
-              <TablePagination
+              <CustomTablePagination
                 rowsPerPageOptions={[1, 3, 10]}
                 component="div"
                 count={totalItems}
