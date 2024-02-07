@@ -64,48 +64,34 @@ function SideBar(props) {
         window.location.href.split("/").pop() === "vendormanagehotels"
       ) {
         setselected("vendormanagehotels");
-      } else if (
-        window.location.href.split("/").pop() === "payouts"
-      ) {
+      } else if (window.location.href.split("/").pop() === "payouts") {
         setselected("payouts");
-      } 
-      else if (
-        window.location.href.split("/").pop() === "payoutRequests"
-      ) {
+      } else if (window.location.href.split("/").pop() === "payoutRequests") {
         setselected("payoutRequests");
-      }
-      else if (
-        window.location.href.split("/").pop() === "manageActivities"
-      ) {
+      } else if (window.location.href.split("/").pop() === "manageActivities") {
         setselected("manageActivities");
-      }
-      else if (
-        window.location.href.split("/").pop() === "activityBookings"
-      ) {
+      } else if (window.location.href.split("/").pop() === "activityBookings") {
         setselected("activityBookings");
-      }
-      else if (
+      } else if (
         window.location.href.split("/").pop() === "vendoractivityBookings"
       ) {
         setselected("vendoractivityBookings");
-      }
-      else if (
+      } else if (
         window.location.href.split("/").pop() === "vendorManageActivities"
       ) {
         setselected("vendorManageActivities");
-      }
-      else if (
-        window.location.href.split("/").pop() === "chatSupport"
-      ) {
+      } else if (window.location.href.split("/").pop() === "chatSupport") {
         setselected("chatSupport");
+      } else if (window.location.href.split("/").pop() === "giftcard") {
+        setselected("giftcard");
       } else {
         setselected("Dashboard");
       }
-    } 
+    }
   }, [selected]);
   return (
     <Root>
-      {authData!==null && authData.isAdmin ? (
+      {authData !== null && authData.isAdmin ? (
         <>
           <LinkWrapper
             select={selected === "Dashboard"}
@@ -206,7 +192,15 @@ function SideBar(props) {
           >
             <Link>Chat Support</Link>
           </LinkWrapper>
-
+          <LinkWrapper
+            select={selected === "giftcard"}
+            onClick={() => {
+              setselected("giftcard");
+              navigate("/giftcard");
+            }}
+          >
+            <Link>GiftCard</Link>
+          </LinkWrapper>
         </>
       ) : (
         <>
