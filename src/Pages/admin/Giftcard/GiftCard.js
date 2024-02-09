@@ -52,11 +52,14 @@ const GiftCard = () => {
   const { values, errors, touched, handleBlur, handleChange, handleSubmit } =
     formik;
 
-
   const getHeading = () => {
     let config = {
       method: "get",
       url: `${environmentVariables.apiUrl}/admin/getgiftcardheading`,
+      headers: {
+        _token: authData?.token,
+        "Content-Type": "application/json",
+      },
     };
 
     axios
