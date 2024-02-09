@@ -3,6 +3,7 @@ import { useAuth } from "../../../ContextApi/ContextApi";
 import axios from "axios";
 import { useFormik } from "formik";
 import { AddHeadingSchema } from "../schemas/HeadingAddSchema";
+import { environmentVariables } from "../../../config/config";
 
 const GiftCard = () => {
   const [resHeadingData, setResHeadingData] = useState([]);
@@ -27,7 +28,7 @@ const GiftCard = () => {
 
       let config = {
         method: "post",
-        url: "http://localhost:4000/admin/addgiftcard_topupheading",
+        url: `${environmentVariables.apiUrl}/admin/addgiftcard_topupheading`,
         headers: {
           _token: authData?.token,
           "Content-Type": "application/json",
@@ -51,36 +52,11 @@ const GiftCard = () => {
   const { values, errors, touched, handleBlur, handleChange, handleSubmit } =
     formik;
 
-  const addHeading = () => {
-    let data = {
-      heading: "Gift",
-      type: "gift11s",
-    };
-
-    let config = {
-      method: "post",
-      url: "http://localhost:4000/admin/addgiftcard_topupheading",
-      headers: {
-        _token: authData?.token,
-        "Content-Type": "application/json",
-      },
-      data: data,
-    };
-
-    axios
-      .request(config)
-      .then((response) => {
-        console.log(JSON.stringify(response.data));
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
 
   const getHeading = () => {
     let config = {
       method: "get",
-      url: "http://localhost:4000/admin/getgiftcardheading",
+      url: `${environmentVariables.apiUrl}/admin/getgiftcardheading`,
     };
 
     axios
