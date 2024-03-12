@@ -40,6 +40,7 @@ import VendorActivityHistory from "./Pages/VendorAcitivityHistory";
 import { isExpired } from "react-jwt";
 import VendorEditActivities from "./Pages/VendorEditActivities";
 import GiftCard from "./Pages/admin/Giftcard/GiftCard";
+import FloxySpecial from "./Pages/admin/FloxySpecial/FloxySpecial";
 
 const Root = styled.div``;
 const LeftWrapper = styled.div`
@@ -178,6 +179,7 @@ function App() {
                     <Route path="/payoutRequests" element={<PayoutRequest />} />
                     <Route path="chatSupport" element={<ChatSupport />} />
                     <Route path="giftcard" element={<GiftCard />} />
+                    <Route path="floxyspecial" element={<FloxySpecial />} />
                   </>
                 ) : (
                   <>
