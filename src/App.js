@@ -41,6 +41,7 @@ import { isExpired } from "react-jwt";
 import VendorEditActivities from "./Pages/VendorEditActivities";
 import GiftCard from "./Pages/admin/Giftcard/GiftCard";
 import FloxySpecial from "./Pages/admin/FloxySpecial/FloxySpecial";
+import PriceRange from "./Pages/admin/Pricerange/PriceRange";
 
 const Root = styled.div``;
 const LeftWrapper = styled.div`
@@ -180,6 +181,7 @@ function App() {
                     <Route path="chatSupport" element={<ChatSupport />} />
                     <Route path="giftcard" element={<GiftCard />} />
                     <Route path="floxyspecial" element={<FloxySpecial />} />
+                    <Route path="pricerange" element={<PriceRange />} />
                   </>
                 ) : (
                   <>
