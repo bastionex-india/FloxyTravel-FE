@@ -88,6 +88,8 @@ function SideBar(props) {
         setselected("floxyspecial");
       } else if (window.location.href.split("/").pop() === "pricerange") {
         setselected("pricerange");
+      }else if (window.location.href.split("/").pop() === "gifts") {
+        setselected("gifts");
       } else {
         setselected("Dashboard");
       }
@@ -213,6 +215,15 @@ function SideBar(props) {
             }}
           >
             <Link>Floxy Special</Link>
+          </LinkWrapper>
+          <LinkWrapper
+            select={selected === "gifts"}
+            onClick={() => {
+              setselected("gifts");
+              navigate("/gifts");
+            }}
+          >
+            <Link>Gifts</Link>
           </LinkWrapper>
           <LinkWrapper
             select={selected === "pricerange"}
