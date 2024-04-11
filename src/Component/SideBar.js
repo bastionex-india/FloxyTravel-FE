@@ -90,6 +90,8 @@ function SideBar(props) {
         setselected("pricerange");
       }else if (window.location.href.split("/").pop() === "gifts") {
         setselected("gifts");
+      }else if (window.location.href.split("/").pop() === "topups") {
+        setselected("topups");
       } else {
         setselected("Dashboard");
       }
@@ -223,7 +225,16 @@ function SideBar(props) {
               navigate("/gifts");
             }}
           >
-            <Link>Gifts</Link>
+            <Link>Gift History</Link>
+          </LinkWrapper>
+          <LinkWrapper
+            select={selected === "topups"}
+            onClick={() => {
+              setselected("topups");
+              navigate("/topups");
+            }}
+          >
+            <Link>Topup History</Link>
           </LinkWrapper>
           <LinkWrapper
             select={selected === "pricerange"}

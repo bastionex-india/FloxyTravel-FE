@@ -130,8 +130,8 @@ const Select = styled.select`
   }
 `;
 
-const AllGifts = () => {
-    const [allGiftsData, setAllGiftsData] = useState([])
+const Topup = () => {
+    const [allTopupData, setAllTopupData] = useState([])
     const [page, setPage] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
     const navigate = useNavigate();
@@ -139,7 +139,8 @@ const AllGifts = () => {
     const [totalItems, setTotalItems] = useState();
     const [search, setSearch] = useState("");
     const [select, setSelect] = useState("");
-    const [selectGiftCard, setSelectGiftCard] = useState("");
+    const [selectTopup, setSelectTopup] = useState("");
+    const [countryCode, setCountryCode] = useState("");
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -164,7 +165,7 @@ const AllGifts = () => {
 
         let config = {
           method: 'get',
-          url: `http://localhost:4000/admin/getallgiftsdata?page=${page+1}&size=${rowsPerPage}&productName=${search}&status=${select}&giftcardstatus=${selectGiftCard}`,
+          url: `http://localhost:4000/admin/getalltopupdata?page=${page+1}&size=${rowsPerPage}&operatorName=${search}&status=${select}&topupstatus=${selectTopup}&recieverCountryCode=${countryCode}`,
           headers: { }
         };
 
@@ -173,7 +174,7 @@ const AllGifts = () => {
             const { totalItems, totalPages, currentPage, data } = response.data;
             // setTotalPages(totalPages);
             setPage(currentPage - 1);
-            setAllGiftsData(data)
+            setAllTopupData(data)
             setTotalItems(totalItems);
             setIsLoading(false);
 
@@ -187,8 +188,8 @@ const AllGifts = () => {
     }
     useEffect(()=>{
         getAllGiftsData()
-    },[page, rowsPerPage, search, select, selectGiftCard])
-    console.log("allGiftsData",allGiftsData)
+    },[page, rowsPerPage, search, select, selectTopup, countryCode])
+    console.log("allTopupData",allTopupData)
   return (
     <TextMainWrapper>
       <TextRoot>
@@ -197,13 +198,13 @@ const AllGifts = () => {
         <IconButton title="Back" onClick={() => navigate(-1)} size="small" sx={{ backgroundColor: "#e1e1e1", color: "#01575c", marginTop: "4px" }}>
             <ArrowBackIosNewOutlinedIcon />
             </IconButton>
-        <Heading>Gift Card History</Heading>
+        <Heading>Topup History</Heading>
       </HeadingWrapper>
       <SearchContainerWrapper>
         <SearchFilterContainer>
           <SearchFilterInput
             type='text'
-            placeholder={"Search by Product Name"}
+            placeholder={"Search by Operator Name"}
             value={search}
             onChange={handleChange}
           />
@@ -213,28 +214,6 @@ const AllGifts = () => {
           </Span>
         </SearchFilterContainer>
         <TextWrapper>
-          {/* <TextSelectField>
-            <Select
-              onChange={(e) => {
-                setSelect1(e.target.value);
-                setSearch("");
-              }}
-              value={select1}
-              required
-            >
-              <option value="" hidden>
-                Select Vendor
-              </option>
-              <option value="">All</option>
-              {allVendors.map((item, index) => {
-                return (
-                  <option key={index} value={item._id}>
-                    {item.name}
-                  </option>
-                );
-              })}
-            </Select>
-          </TextSelectField> */}
         
           <TextSelectField>
             <Select
@@ -256,17 +235,34 @@ const AllGifts = () => {
           <TextSelectField>
             <Select
               onChange={(e) => {
-                setSelectGiftCard(e.target.value);
+                setSelectTopup(e.target.value);
               }}
-              value={selectGiftCard}
+              value={selectTopup}
               required
             >
               <option value="" hidden>
-                Select Giftcard Status
+                Select Topup Status
               </option>
               <option value="">All</option>
               <option value="success">Success</option>
               <option value="failed">Failed</option>
+            </Select>
+          </TextSelectField>
+          <TextSelectField>
+            <Select
+              onChange={(e) => {
+                setCountryCode(e.target.value);
+              }}
+              value={countryCode}
+              required
+            >
+              <option value="" hidden>
+                Select Country
+              </option>
+              <option value="">All</option>
+              <option value="IN">India</option>
+              <option value="AE">United Arab Emirates</option>
+              <option value="US">United States</option>
             </Select>
           </TextSelectField>
         </TextWrapper>
@@ -288,27 +284,26 @@ const AllGifts = () => {
                 <Table sx={{ minWidth: 650 }} aria-label="simple table">
                   <TableHead>
                     <TableRow>
-                      <TableCell style={boldTextCss}>Product Name</TableCell>
                       <TableCell style={boldTextCss} align="center">
-                        Email
+                        Mobile No
                       </TableCell>
                       <TableCell style={boldTextCss} align="center">
-                        Receiver email
+                        Operator Name
                       </TableCell>
                       <TableCell style={boldTextCss} align="center">
-                        Sender Name
+                        Country
                       </TableCell>
                       <TableCell style={boldTextCss} align="center">
                         Status
                       </TableCell>
                       <TableCell style={boldTextCss} align="center">
-                        Gift Status
+                        Topup Status
                       </TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {allGiftsData && allGiftsData.length !== 0 ? (
-                      allGiftsData.map((item, index) => {
+                    {allTopupData && allTopupData.length !== 0 ? (
+                      allTopupData.map((item, index) => {
                         const bookingDate = new Date(item.createdAt);
                         return (
                           <TableRow
@@ -317,26 +312,22 @@ const AllGifts = () => {
                               "&:last-child td, &:last-child th": { border: 0 },
                             }}
                           >
-                            <TableCell component="th" scope="row">
-                              {item.productName} 
-                            </TableCell>
-                            {/* <TableCell align="center">{formatDate(item.checkIn)}</TableCell> */}
-                            {/* <TableCell align="center">{formatDate(item.checkOut)}</TableCell> */}
-                            <TableCell align="center">
-                              {item?.email}
+                            <TableCell component="th" scope="row" align="center">
+                              {item.recieverMobile} 
                             </TableCell>
                             <TableCell align="center">
-                              {item.recieverEmail}
+                              {item?.operatorName}
                             </TableCell>
                             <TableCell align="center">
-                              {item.senderName}
+                              {item.recieverCountryCode}
                             </TableCell>
                             <TableCell align="center">
                               {item.status}
                             </TableCell>
                             <TableCell align="center">
-                              {item.giftcardstatus}
+                              {item.topupstatus}
                             </TableCell>
+                            
                             <TableCell align="center">
                               {/* <Button
                                 size="small"
@@ -370,7 +361,7 @@ const AllGifts = () => {
                   onPageChange={handleChangePage}
                   onRowsPerPageChange={handleChangeRowsPerPage}
                   style={{  display:"flex", justifyContent:"flex-end",alignItems:"baseline"}}
-              />
+                />
               </TableContainer>
             )}
       
@@ -381,4 +372,4 @@ const AllGifts = () => {
   )
 }
 
-export default AllGifts
+export default Topup

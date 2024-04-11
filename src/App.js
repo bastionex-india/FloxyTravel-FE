@@ -43,6 +43,7 @@ import GiftCard from "./Pages/admin/Giftcard/GiftCard";
 import FloxySpecial from "./Pages/admin/FloxySpecial/FloxySpecial";
 import PriceRange from "./Pages/admin/Pricerange/PriceRange";
 import AllGifts from "./Pages/admin/Giftcard/AllGifts";
+import Topup from "./Pages/admin/Topup/Topup";
 
 const Root = styled.div``;
 const LeftWrapper = styled.div`
@@ -183,6 +184,7 @@ function App() {
                     <Route path="giftcard" element={<GiftCard />} />
                     <Route path="floxyspecial" element={<FloxySpecial />} />
                     <Route path="gifts" element={<AllGifts />} />
+                    <Route path="topups" element={<Topup />} />
                     <Route path="pricerange" element={<PriceRange />} />
                   </>
                 ) : (
