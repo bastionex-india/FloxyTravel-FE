@@ -21,6 +21,7 @@ import {
     Paper,
 } from "@mui/material";
 import { environmentVariables } from '../../../config/config';
+import { useAuth } from '../../../ContextApi/ContextApi';
 
 const boldTextCss = {
 fontWeight: 700,
@@ -143,6 +144,7 @@ const Topup = () => {
     const [select, setSelect] = useState("");
     const [selectTopup, setSelectTopup] = useState("");
     const [countryCode, setCountryCode] = useState("");
+    const { authData } = useAuth();
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -180,7 +182,7 @@ const Topup = () => {
         let config = {
           method: 'get',
           url: `${environmentVariables.apiUrl}/admin/getalltopupdata?page=${page+1}&size=${rowsPerPage}&operatorName=${search}&status=${select}&topupstatus=${selectTopup}&recieverCountryCode=${countryCode}&recieverMobile=${searchMobile}`,
-          headers: { }
+          headers: { _token: authData.token },
         };
 
         axios.request(config)

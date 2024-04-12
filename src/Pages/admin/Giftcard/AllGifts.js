@@ -21,6 +21,7 @@ import {
     Paper,
 } from "@mui/material";
 import { environmentVariables } from '../../../config/config';
+import { useAuth } from '../../../ContextApi/ContextApi';
 
 const boldTextCss = {
 fontWeight: 700,
@@ -141,6 +142,7 @@ const AllGifts = () => {
     const [search, setSearch] = useState("");
     const [select, setSelect] = useState("");
     const [selectGiftCard, setSelectGiftCard] = useState("");
+    const { authData } = useAuth();
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -165,8 +167,8 @@ const AllGifts = () => {
 
         let config = {
           method: 'get',
-          url: `h${environmentVariables.apiUrl}/admin/getallgiftsdata?page=${page+1}&size=${rowsPerPage}&productName=${search}&status=${select}&giftcardstatus=${selectGiftCard}`,
-          headers: { }
+          url: `${environmentVariables.apiUrl}/admin/getallgiftsdata?page=${page+1}&size=${rowsPerPage}&productName=${search}&status=${select}&giftcardstatus=${selectGiftCard}`,
+          headers: { _token: authData.token },
         };
 
         axios.request(config)
