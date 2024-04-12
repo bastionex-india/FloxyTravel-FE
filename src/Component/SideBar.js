@@ -11,6 +11,7 @@ const Root = styled.div`
   box-shadow: 0 0 49px 0 rgba(0, 0, 0, 0.11);
   position: sticky;
   top: 80px;
+  overflow-y: scroll;
 `;
 const LinkWrapper = styled.div`
   // padding: 15px 0px 15px 60px;

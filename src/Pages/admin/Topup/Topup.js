@@ -107,7 +107,7 @@ const TextWrapper = styled.div`
   }
 `;
 const TextSelectField = styled.div`
-  // margin: 10px 0px 0px 10px;
+  margin: 10px 0px 0px 10px;
   @media (max-width: 768px) {
     margin: 0;
   }
@@ -141,6 +141,7 @@ const Topup = () => {
     const [totalItems, setTotalItems] = useState();
     const [search, setSearch] = useState("");
     const [searchMobile, setSearchMobile] = useState("");
+    const [searchbyorderid, setSearchOrderId] = useState("");
     const [select, setSelect] = useState("");
     const [selectTopup, setSelectTopup] = useState("");
     const [countryCode, setCountryCode] = useState("");
@@ -177,11 +178,23 @@ const Topup = () => {
         // setSearch("");
       // }
     };
+    const handleChangeorderid = (event) => {
+      const data = event.target.value;
+      // setSelect("");
+      // setSelect1("");
+      // setFromDate(null);
+      // setToDate(null);
+      // if (data.length >= 2) {
+        setSearchOrderId(data);
+      // } else {
+        // setSearch("");
+      // }
+    };
     const getAllGiftsData = ()=>{
 
         let config = {
           method: 'get',
-          url: `${environmentVariables.apiUrl}/admin/getalltopupdata?page=${page+1}&size=${rowsPerPage}&operatorName=${search}&status=${select}&topupstatus=${selectTopup}&recieverCountryCode=${countryCode}&recieverMobile=${searchMobile}`,
+          url: `${environmentVariables.apiUrl}/admin/getalltopupdata?page=${page+1}&size=${rowsPerPage}&operatorName=${search}&status=${select}&topupstatus=${selectTopup}&recieverCountryCode=${countryCode}&recieverMobile=${searchMobile}&_id=${searchbyorderid}`,
           headers: { _token: authData.token },
         };
 
@@ -204,7 +217,7 @@ const Topup = () => {
     }
     useEffect(()=>{
         getAllGiftsData()
-    },[page, rowsPerPage, search, select, selectTopup, countryCode, searchMobile])
+    },[page, rowsPerPage, search, select, selectTopup, countryCode, searchMobile, searchbyorderid])
     console.log("allTopupData",allTopupData)
   return (
     <TextMainWrapper>
@@ -223,6 +236,18 @@ const Topup = () => {
             placeholder={"Search by Operator Name"}
             value={search}
             onChange={handleChange}
+          />
+          <Span>
+            {" "}
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </Span>
+        </SearchFilterContainer>
+        <SearchFilterContainer>
+          <SearchFilterInput
+            type='text'
+            placeholder={"Search by Order Id"}
+            value={searchbyorderid}
+            onChange={handleChangeorderid}
           />
           <Span>
             {" "}
@@ -312,6 +337,7 @@ const Topup = () => {
                 <Table sx={{ minWidth: 650 }} aria-label="simple table">
                   <TableHead>
                     <TableRow>
+                      <TableCell style={boldTextCss} align="center">OrderId</TableCell>
                       <TableCell style={boldTextCss} align="center">
                         Mobile No
                       </TableCell>
@@ -340,6 +366,9 @@ const Topup = () => {
                               "&:last-child td, &:last-child th": { border: 0 },
                             }}
                           >
+                            <TableCell component="th" scope="row" align="center">
+                              {item?._id?.toString()} 
+                            </TableCell>
                             <TableCell component="th" scope="row" align="center">
                               {item.recieverMobile} 
                             </TableCell>

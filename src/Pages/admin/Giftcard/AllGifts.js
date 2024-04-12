@@ -107,7 +107,7 @@ const TextWrapper = styled.div`
   }
 `;
 const TextSelectField = styled.div`
-  // margin: 10px 0px 0px 10px;
+  margin: 10px 0px 0px 10px;
   @media (max-width: 768px) {
     margin: 0;
   }
@@ -142,6 +142,8 @@ const AllGifts = () => {
     const [search, setSearch] = useState("");
     const [select, setSelect] = useState("");
     const [selectGiftCard, setSelectGiftCard] = useState("");
+    const [searchbyorderid, setSearchOrderId] = useState("");
+
     const { authData } = useAuth();
 
     const handleChangePage = (event, newPage) => {
@@ -163,11 +165,23 @@ const AllGifts = () => {
         // setSearch("");
       // }
     };
+    const handleChangeorderid = (event) => {
+      const data = event.target.value;
+      // setSelect("");
+      // setSelect1("");
+      // setFromDate(null);
+      // setToDate(null);
+      // if (data.length >= 2) {
+        setSearchOrderId(data);
+      // } else {
+        // setSearch("");
+      // }
+    };
     const getAllGiftsData = ()=>{
 
         let config = {
           method: 'get',
-          url: `${environmentVariables.apiUrl}/admin/getallgiftsdata?page=${page+1}&size=${rowsPerPage}&productName=${search}&status=${select}&giftcardstatus=${selectGiftCard}`,
+          url: `${environmentVariables.apiUrl}/admin/getallgiftsdata?page=${page+1}&size=${rowsPerPage}&productName=${search}&status=${select}&giftcardstatus=${selectGiftCard}&_id=${searchbyorderid}`,
           headers: { _token: authData.token },
         };
 
@@ -190,7 +204,7 @@ const AllGifts = () => {
     }
     useEffect(()=>{
         getAllGiftsData()
-    },[page, rowsPerPage, search, select, selectGiftCard])
+    },[page, rowsPerPage, search, select, selectGiftCard,searchbyorderid])
     console.log("allGiftsData",allGiftsData)
   return (
     <TextMainWrapper>
@@ -209,6 +223,18 @@ const AllGifts = () => {
             placeholder={"Search by Product Name"}
             value={search}
             onChange={handleChange}
+          />
+          <Span>
+            {" "}
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </Span>
+        </SearchFilterContainer>
+        <SearchFilterContainer>
+          <SearchFilterInput
+            type='text'
+            placeholder={"Search by Order Id"}
+            value={searchbyorderid}
+            onChange={handleChangeorderid}
           />
           <Span>
             {" "}
@@ -291,6 +317,7 @@ const AllGifts = () => {
                 <Table sx={{ minWidth: 650 }} aria-label="simple table">
                   <TableHead>
                     <TableRow>
+                      <TableCell style={boldTextCss}>OrderId</TableCell>
                       <TableCell style={boldTextCss}>Product Name</TableCell>
                       <TableCell style={boldTextCss} align="center">
                         Email
@@ -320,6 +347,9 @@ const AllGifts = () => {
                               "&:last-child td, &:last-child th": { border: 0 },
                             }}
                           >
+                            <TableCell component="th" scope="row">
+                              {item?._id?.toString()} 
+                            </TableCell>
                             <TableCell component="th" scope="row">
                               {item.productName} 
                             </TableCell>
