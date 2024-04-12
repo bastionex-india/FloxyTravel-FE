@@ -5,6 +5,7 @@ import axios from "axios";
 import { useFormik } from "formik";
 import { AddFloxySpecialSchema } from "../schemas/AddFloxySpecialSchema";
 import { toast } from "react-toastify";
+import { environmentVariables } from "../../../config/config";
 
 const FloxySpecial = () => {
   let fileInputRef = useRef(null);
@@ -17,7 +18,7 @@ const FloxySpecial = () => {
   const getFloxySpecialData = () => {
     let config = {
       method: "get",
-      url: `http://localhost:4000/admin/getfloxyspecialdata`,
+      url: `${environmentVariables.apiUrl}/admin/getfloxyspecialdata`,
       headers: {
         _token: authData?.token,
       },
@@ -57,7 +58,7 @@ const FloxySpecial = () => {
 
       let config = {
         method: "post",
-        url: `http://localhost:4000/admin/addfloxyspecialcontent`,
+        url: `${environmentVariables.apiUrl}/admin/addfloxyspecialcontent`,
         headers: { _token: authData.token },
         data: formdata,
       };

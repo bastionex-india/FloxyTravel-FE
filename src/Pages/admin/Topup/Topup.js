@@ -20,6 +20,7 @@ import {
     TableRow,
     Paper,
 } from "@mui/material";
+import { environmentVariables } from '../../../config/config';
 
 const boldTextCss = {
 fontWeight: 700,
@@ -138,6 +139,7 @@ const Topup = () => {
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [totalItems, setTotalItems] = useState();
     const [search, setSearch] = useState("");
+    const [searchMobile, setSearchMobile] = useState("");
     const [select, setSelect] = useState("");
     const [selectTopup, setSelectTopup] = useState("");
     const [countryCode, setCountryCode] = useState("");
@@ -161,11 +163,23 @@ const Topup = () => {
         // setSearch("");
       // }
     };
+    const handleChangeMobileNumber = (event) => {
+      const data = event.target.value;
+      // setSelect("");
+      // setSelect1("");
+      // setFromDate(null);
+      // setToDate(null);
+      // if (data.length >= 2) {
+        setSearchMobile(data);
+      // } else {
+        // setSearch("");
+      // }
+    };
     const getAllGiftsData = ()=>{
 
         let config = {
           method: 'get',
-          url: `http://localhost:4000/admin/getalltopupdata?page=${page+1}&size=${rowsPerPage}&operatorName=${search}&status=${select}&topupstatus=${selectTopup}&recieverCountryCode=${countryCode}`,
+          url: `${environmentVariables.apiUrl}/admin/getalltopupdata?page=${page+1}&size=${rowsPerPage}&operatorName=${search}&status=${select}&topupstatus=${selectTopup}&recieverCountryCode=${countryCode}&recieverMobile=${searchMobile}`,
           headers: { }
         };
 
@@ -188,7 +202,7 @@ const Topup = () => {
     }
     useEffect(()=>{
         getAllGiftsData()
-    },[page, rowsPerPage, search, select, selectTopup, countryCode])
+    },[page, rowsPerPage, search, select, selectTopup, countryCode, searchMobile])
     console.log("allTopupData",allTopupData)
   return (
     <TextMainWrapper>
@@ -207,6 +221,18 @@ const Topup = () => {
             placeholder={"Search by Operator Name"}
             value={search}
             onChange={handleChange}
+          />
+          <Span>
+            {" "}
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </Span>
+        </SearchFilterContainer>
+        <SearchFilterContainer>
+          <SearchFilterInput
+            type='number'
+            placeholder={"Search by Mobile Number"}
+            value={searchMobile}
+            onChange={handleChangeMobileNumber}
           />
           <Span>
             {" "}

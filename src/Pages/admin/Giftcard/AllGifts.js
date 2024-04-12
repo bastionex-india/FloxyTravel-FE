@@ -20,6 +20,7 @@ import {
     TableRow,
     Paper,
 } from "@mui/material";
+import { environmentVariables } from '../../../config/config';
 
 const boldTextCss = {
 fontWeight: 700,
@@ -164,7 +165,7 @@ const AllGifts = () => {
 
         let config = {
           method: 'get',
-          url: `http://localhost:4000/admin/getallgiftsdata?page=${page+1}&size=${rowsPerPage}&productName=${search}&status=${select}&giftcardstatus=${selectGiftCard}`,
+          url: `h${environmentVariables.apiUrl}/admin/getallgiftsdata?page=${page+1}&size=${rowsPerPage}&productName=${search}&status=${select}&giftcardstatus=${selectGiftCard}`,
           headers: { }
         };
 

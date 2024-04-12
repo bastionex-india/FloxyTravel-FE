@@ -209,7 +209,7 @@ function SideBar(props) {
           >
             <Link>GiftCard</Link>
           </LinkWrapper>
-          <LinkWrapper
+          {/* <LinkWrapper
             select={selected === "floxyspecial"}
             onClick={() => {
               setselected("floxyspecial");
@@ -217,7 +217,7 @@ function SideBar(props) {
             }}
           >
             <Link>Floxy Special</Link>
-          </LinkWrapper>
+          </LinkWrapper> */}
           <LinkWrapper
             select={selected === "gifts"}
             onClick={() => {
