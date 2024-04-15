@@ -311,9 +311,9 @@ const AddHotels = () => {
       });
   }, []);
 
-  console.log("allCountries", allCountries);
+  // console.log("allCountries", allCountries);
   useEffect(() => {
-    console.log("countryCode", countryCode, allCountries);
+    // console.log("countryCode", countryCode, allCountries);
     let config = {
       method: "post",
       url: `${environmentVariables.apiUrl}/admin/getstatesofcountry`,
