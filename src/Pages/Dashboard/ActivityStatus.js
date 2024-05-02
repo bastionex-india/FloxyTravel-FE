@@ -59,7 +59,6 @@ export default function ActivityStatus() {
     axios.request(config)
     .then((response) => {
       setResData(response?.data?.data)
-      console.log("resData 333",response?.data)
     })
     .catch((error) => {
       setResData()
