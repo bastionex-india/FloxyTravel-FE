@@ -351,59 +351,65 @@ const AddActivity = () => {
   const handleClose = async (e) => {
     setButtonLoading(true);
     e.preventDefault();
-    // console.log("aaaaaa",name,general,services,internet,parking,overview)
-    const formdata = new FormData();
-    for (let i = 0; i < multipleFiles.length; i++) {
-      // console.log("aaaaaaaaaaaaaaaaaaaaaaaa",multipleFiles[i])
-      formdata.append("myFiles", multipleFiles[i]);
-    }
-    formdata.append("hotelName", name);
-    formdata.append("area", area);
-    formdata.append("address", address);
-    formdata.append("country", countryName);
-    formdata.append("state", stateName);
-    formdata.append("city", cityName);
-    formdata.append("general", general);
-    formdata.append("services", services);
-    formdata.append("internet", internet);
-    formdata.append("parking", parking);
-    formdata.append("overview", overview);
-    formdata.append("type", type);
-    formdata.append(`adminFee`, hotelFee);
-    formdata.append(`payoutInterval`, payoutInterval);
-    formdata.append("lat", lat);
-    formdata.append("long", long);
-    formdata.append("hotelVendorId", vendorId);
-    axios({
-      method: "post",
-      url: `${environmentVariables.apiUrl}/admin/addhotel`,
-      data: formdata,
-      headers: { _token: authData.token },
-    })
-      .then((response) => {
-        setName("");
-        setArea("");
-        setAddress("");
-        setStateName("");
-        setCityName("");
-        setGeneral("");
-        setServices("");
-        setInternet("");
-        setParking("");
-        setOverview("");
-        setLat("");
-        setLong("");
-        setHotelFee("");
-        setPayoutInterval("");
-        setMultipleFiles("");
-        Swal.fire("Added", "New activity added successfully", "success");
-        setButtonLoading(false);
-        navigation("/manageActivities");
+    if(multipleFiles.length < 5 ){
+      setButtonLoading(false);
+      Swal.fire("Error","You should select atleast 5 images" , "error");
+    }else{
+      // console.log("aaaaaa",name,general,services,internet,parking,overview)
+      const formdata = new FormData();
+      for (let i = 0; i < multipleFiles.length; i++) {
+        // console.log("aaaaaaaaaaaaaaaaaaaaaaaa",multipleFiles[i])
+        formdata.append("myFiles", multipleFiles[i]);
+      }
+      formdata.append("hotelName", name);
+      formdata.append("area", area);
+      formdata.append("address", address);
+      formdata.append("country", countryName);
+      formdata.append("state", stateName);
+      formdata.append("city", cityName);
+      formdata.append("general", general);
+      formdata.append("services", services);
+      formdata.append("internet", internet);
+      formdata.append("parking", parking);
+      formdata.append("overview", overview);
+      formdata.append("type", type);
+      formdata.append(`adminFee`, hotelFee);
+      formdata.append(`payoutInterval`, payoutInterval);
+      formdata.append("lat", lat);
+      formdata.append("long", long);
+      formdata.append("hotelVendorId", vendorId);
+      axios({
+        method: "post",
+        url: `${environmentVariables.apiUrl}/admin/addhotel`,
+        data: formdata,
+        headers: { _token: authData.token },
       })
-      .catch((error) => {
-        setButtonLoading(false);
-        Swal.fire("Error", "Something went wrong", "error");
-      });
+        .then((response) => {
+          setName("");
+          setArea("");
+          setAddress("");
+          setStateName("");
+          setCityName("");
+          setGeneral("");
+          setServices("");
+          setInternet("");
+          setParking("");
+          setOverview("");
+          setLat("");
+          setLong("");
+          setHotelFee("");
+          setPayoutInterval("");
+          setMultipleFiles("");
+          Swal.fire("Added", "New activity added successfully", "success");
+          setButtonLoading(false);
+          navigation("/manageActivities");
+        })
+        .catch((error) => {
+          setButtonLoading(false);
+          Swal.fire("Error", error?.response?.data?.message , "error");
+        });
+    }
+    
   };
 
   const handleUpdate = async (e) => {

@@ -376,68 +376,74 @@ const AddHotels = () => {
   const handleClose = async (e) => {
     setButtonLoading(true);
     e.preventDefault();
-    // console.log("aaaaaa",name,theme,category,totalRooms,general,services,internet,parking,overview)
-    const formdata = new FormData();
-    for (let i = 0; i < multipleFiles.length; i++) {
-      // console.log("aaaaaaaaaaaaaaaaaaaaaaaa",multipleFiles[i])
-      formdata.append("myFiles", multipleFiles[i]);
+    console.log("aaaaaa",multipleFiles)
+    if(multipleFiles.length < 5 ){
+        setButtonLoading(false);
+        Swal.fire("Error","You should select atleast 5 images" , "error");
+    }else{
+        const formdata = new FormData();
+        for (let i = 0; i < multipleFiles.length; i++) {
+          // console.log("aaaaaaaaaaaaaaaaaaaaaaaa",multipleFiles[i])
+          formdata.append("myFiles", multipleFiles[i]);
+        }
+        formdata.append("hotelName", name);
+        formdata.append("area", area);
+        formdata.append("address", address);
+        formdata.append("country", countryName);
+        formdata.append("state", stateName);
+        formdata.append("city", cityName);
+        formdata.append("hotelCategory", category);
+        formdata.append("noOfRooms", totalRooms);
+        formdata.append("general", general);
+        formdata.append("services", services);
+        formdata.append("internet", internet);
+        formdata.append("parking", parking);
+        formdata.append("overview", overview);
+        // for (let i = 0; i < theme.length; i++) {
+        //   formdata.append(`theme[${i}]`, theme[i]);
+        // }
+        formdata.append(`adminFee`, hotelFee);
+        formdata.append(`payoutInterval`, payoutInterval);
+        formdata.append(`theme`, theme);
+        formdata.append("lat", lat);
+        formdata.append("long", long);
+        formdata.append("hotelVendorId", vendorId);
+        axios({
+          method: "post",
+          url: `${environmentVariables.apiUrl}/admin/addhotel`,
+          data: formdata,
+          headers: { _token: authData.token },
+        })
+          .then((response) => {
+            setName("");
+            setArea("");
+            setAddress("");
+            setStateName("");
+            setCityName("");
+            setCategory("");
+            setTotalRooms("");
+            setGeneral("");
+            setServices("");
+            setInternet("");
+            setParking("");
+            setOverview("");
+            setTheme([]);
+            setLat("");
+            setLong("");
+            setHotelFee("");
+            setPayoutInterval("");
+            setMultipleFiles("");
+            Swal.fire("Added", "New Hotel added successfully", "success");
+            setButtonLoading(false);
+            navigation("/managehotels");
+          })
+          .catch((error) => {
+            setButtonLoading(false);
+            console.log("Error", error);
+            Swal.fire("Error", error?.response?.data?.message, "error");
+          });
     }
-    formdata.append("hotelName", name);
-    formdata.append("area", area);
-    formdata.append("address", address);
-    formdata.append("country", countryName);
-    formdata.append("state", stateName);
-    formdata.append("city", cityName);
-    formdata.append("hotelCategory", category);
-    formdata.append("noOfRooms", totalRooms);
-    formdata.append("general", general);
-    formdata.append("services", services);
-    formdata.append("internet", internet);
-    formdata.append("parking", parking);
-    formdata.append("overview", overview);
-    // for (let i = 0; i < theme.length; i++) {
-    //   formdata.append(`theme[${i}]`, theme[i]);
-    // }
-    formdata.append(`adminFee`, hotelFee);
-    formdata.append(`payoutInterval`, payoutInterval);
-    formdata.append(`theme`, theme);
-    formdata.append("lat", lat);
-    formdata.append("long", long);
-    formdata.append("hotelVendorId", vendorId);
-    axios({
-      method: "post",
-      url: `${environmentVariables.apiUrl}/admin/addhotel`,
-      data: formdata,
-      headers: { _token: authData.token },
-    })
-      .then((response) => {
-        setName("");
-        setArea("");
-        setAddress("");
-        setStateName("");
-        setCityName("");
-        setCategory("");
-        setTotalRooms("");
-        setGeneral("");
-        setServices("");
-        setInternet("");
-        setParking("");
-        setOverview("");
-        setTheme([]);
-        setLat("");
-        setLong("");
-        setHotelFee("");
-        setPayoutInterval("");
-        setMultipleFiles("");
-        Swal.fire("Added", "New Hotel added successfully", "success");
-        setButtonLoading(false);
-        navigation("/managehotels");
-      })
-      .catch((error) => {
-        setButtonLoading(false);
-        console.log("Error", error);
-        Swal.fire("Error", "Something went wrong", "error");
-      });
+    
   };
 
   const handleUpdate = async (e) => {
