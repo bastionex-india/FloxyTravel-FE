@@ -128,11 +128,11 @@ const ThemeWrapper = styled.div`
 
 const GetLocationText = styled.div`
   position: absolute;
-  top: 511px;
+  top: 750px;
   // left: 54rem;
-  left: 50%;
+  left: 85%;
   margin: 30px 0;
-  font-size: 20px;
+  font-size: 15px;
   color: #01565c;
   :hover {
     text-decoration: underline;
@@ -501,7 +501,7 @@ const AddHotels = () => {
       url: "https://geolocation-db.com/json/",
     })
       .then((response) => {
-        // console.log(response.data)
+        console.log(response.data)
         setLat(response.data.latitude);
         setLong(response.data.longitude);
       })
@@ -878,8 +878,8 @@ const AddHotels = () => {
           ))}
         </div> */}
         <ImageSection>
-          {images.map((image) => (
-            <ImageWrapper key={image}>
+          {images.map((image,index) => (
+            <ImageWrapper key={index}>
               <CirleCross></CirleCross>
               <Image1
                 src={`https://bastionex-travels.b-cdn.net/uploads/${image}`}
