@@ -834,7 +834,7 @@ const AddHotels = () => {
               </div>
             </div>
 
-            {general && (
+            {/* {general && (
               <>
                 {" "}
                 <FormLabel>Local Attractions*</FormLabel>
@@ -844,7 +844,7 @@ const AddHotels = () => {
                   editorLoaded={editorLoadedGeneral}
                 />
               </>
-            )}
+            )} */}
 
             <FormLabel>Services*</FormLabel>
             <Editor
@@ -876,7 +876,7 @@ const AddHotels = () => {
                   />
                 </>
               )}
-            {overview && (
+            {/* {overview && (
               <>
                 {" "}
                 <FormLabel>Overview*</FormLabel>
@@ -886,7 +886,7 @@ const AddHotels = () => {
                   editorLoaded={editorLoadedOverview}
                 />
               </>
-            )}
+            )} */}
 
             {id === undefined && (
               <>
