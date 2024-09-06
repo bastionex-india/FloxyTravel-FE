@@ -220,6 +220,14 @@ const AddActivity = () => {
     useState(false);
   const [editorLoadedHighlights, setEditorLoadedHighlights] = useState(false);
   const [editorLoadedOverview, setEditorLoadedOverview] = useState(false);
+  const [pricingSections, setPricingSections] = useState([
+    {
+      room_type_excursion_option: "",
+      board_basis_ticket_option: "",
+      status: "",
+      price: "",
+    },
+  ]);
 
   const options = [
     { label: "Beach", value: "beach" },
@@ -264,6 +272,7 @@ const AddActivity = () => {
         setParking(response.data.data.facilities[0].parking);
         setOverview(response.data.data.overview);
         setImages(response.data.data.image);
+        setPricingSections(response?.data?.data?.pricingData);
       } catch (error) {
         console.log(error);
       }
@@ -373,11 +382,30 @@ const AddActivity = () => {
       formdata.append("parking", parking);
       formdata.append("overview", overview);
       formdata.append("type", type);
-      formdata.append(`adminFee`, hotelFee);
+      formdata.append(`adminFee`, Number(hotelFee));
       formdata.append(`payoutInterval`, payoutInterval);
       formdata.append("lat", lat);
       formdata.append("long", long);
       formdata.append("hotelVendorId", vendorId);
+      const filteredPricing = pricingSections.filter(
+        ({
+          room_type_excursion_option,
+          board_basis_ticket_option,
+          status,
+          price,
+        }) =>
+          room_type_excursion_option ||
+          board_basis_ticket_option ||
+          status ||
+          price
+      );
+
+      // Append the pricing array correctly
+      formdata.append(
+        "pricing",
+        JSON.stringify(filteredPricing.length ? filteredPricing : [])
+      );
+
       axios({
         method: "post",
         url: `${environmentVariables.apiUrl}/admin/addhotel`,
@@ -427,7 +455,8 @@ const AddActivity = () => {
         services: services,
         internet: internet,
         parking: parking,
-        address:address
+        address:address,
+        pricing: pricingSections,
       },
       headers: { _token: authData.token },
     })
@@ -521,6 +550,33 @@ const AddActivity = () => {
     setEditorLoadedHighlights(true);
     setEditorLoadedOverview(true);
   }, []);
+
+  const handleInputChange = (index, e) => {
+    const { name, value } = e.target;
+    const updatedPricingSections = [...pricingSections];
+    updatedPricingSections[index][name] = value;
+    setPricingSections(updatedPricingSections);
+  };
+
+  const handleStatusChange = (index, e) => {
+    const { value } = e.target;
+    const updatedPricingSections = [...pricingSections];
+    updatedPricingSections[index].status = value;
+    setPricingSections(updatedPricingSections);
+  };
+
+  const handleAddPricingSection = () => {
+    setPricingSections([
+      ...pricingSections,
+      {
+        room_type_excursion_option: "",
+        board_basis_ticket_option: "",
+        status: "",
+        price: "",
+      },
+    ]);
+  };
+
   return (
     <Root>
       <HeadingWrapper>
@@ -739,6 +795,61 @@ const AddActivity = () => {
               </>
             )}
           </FormWrapper>
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            <FormLabel>Pricing*</FormLabel>
+            <div style={{ display: "flex", marginTop: "10px" }}>
+              <div>
+                {pricingSections.map((pricingSection, index) => (
+                  <div
+                    key={index}
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      gap: "10px",
+                    }}
+                  >
+                    <input
+                      type="text"
+                      name="room_type_excursion_option"
+                      value={pricingSection.room_type_excursion_option}
+                      onChange={(e) => handleInputChange(index, e)}
+                      placeholder="Excursion Option"
+                      style={{width:"350px"}}
+                    />
+                    <input
+                      type="text"
+                      name="board_basis_ticket_option"
+                      value={pricingSection.board_basis_ticket_option}
+                      onChange={(e) => handleInputChange(index, e)}
+                      placeholder="Ticket Option"
+                    />
+                    <select
+                      name="status"
+                      value={pricingSection.status}
+                      onChange={(e) => handleStatusChange(index, e)}
+                    >
+                      <option value="" disabled>Select Status</option>
+                      <option value="AVL">AVAILABLE</option>
+                      <option value="OnRequest">OnRequest</option>
+                    </select>
+                    <input
+                      type="number"
+                      name="price"
+                      value={pricingSection.price}
+                      onChange={(e) => handleInputChange(index, e)}
+                      placeholder="Price"
+                    />
+                  </div>
+                ))}
+              </div>
+
+              <div>
+                <button onClick={handleAddPricingSection}>
+                  <i className="fa fa-plus" aria-hidden="true"></i>
+                </button>
+              </div>
+            </div>
+          </div>
           {buttonLoading === true ? (
             <div
               style={{

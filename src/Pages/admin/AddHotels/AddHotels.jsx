@@ -224,11 +224,11 @@ const AddHotels = () => {
   const [theme, setTheme] = useState([]);
   const [lat, setLat] = useState("");
   const [long, setLong] = useState("");
-  const [general, setGeneral] = useState("");
-  const [services, setServices] = useState("");
+  const [general, setGeneral] = useState();
+  const [services, setServices] = useState();
   const [internet, setInternet] = useState("");
   const [parking, setParking] = useState("");
-  const [overview, setOverview] = useState("");
+  const [overview, setOverview] = useState();
   const [multipleFiles, setMultipleFiles] = useState("");
   const [totalRooms, setTotalRooms] = useState("");
   const [payoutInterval, setPayoutInterval] = useState("");
@@ -240,7 +240,16 @@ const AddHotels = () => {
   const [editorLoadedGeneral, setEditorLoadedGeneral] = useState(false);
   const [editorLoadedServices, setEditorLoadedServices] = useState(false);
   const [editorLoadedOverview, setEditorLoadedOverview] = useState(false);
+  const [pricingSections, setPricingSections] = useState([
+    {
+      room_type_excursion_option: "",
+      board_basis_ticket_option: "",
+      status: "",
+      price: "",
+    },
+  ]);
 
+  console.log("editorLoadedOverview", "services", services);
   const navigate = useNavigate();
   const options = [
     { label: "Beach", value: "beach" },
@@ -272,12 +281,13 @@ const AddHotels = () => {
       const response = await axios.get(url, {
         headers: { _token: authData.token },
       });
-      // console.log("noOfRooms", response.data.data.payoutInterval);
+      console.log("noOfRooms", response.data.data?.hotelVendorId);
       setHotelData(response.data.data);
       setName(response.data.data.hotelname);
 
       setTotalRooms(response.data.data.noOfRooms);
       setPayoutInterval(response.data.data.payoutInterval);
+      setVendorId(response?.data?.data?.hotelVendorId);
 
       setHotelFee(response.data.data.adminFee);
       setGeneral(response.data.data.facilities[0].general);
@@ -288,6 +298,7 @@ const AddHotels = () => {
       setTheme(response.data.data.hotelTheme);
       setCategory(response.data.data.hotelCategory);
       setImages(response.data.data.image);
+      setPricingSections(response?.data?.data?.pricingData);
     } catch (error) {
       console.log(error);
     }
@@ -368,7 +379,6 @@ const AddHotels = () => {
   };
   const handleOnchangeTheme = (val) => {
     setTheme(val);
-    console.log(val);
   };
   const MultipleFileChange = (e) => {
     setMultipleFiles(e.target.files);
@@ -376,74 +386,104 @@ const AddHotels = () => {
   const handleClose = async (e) => {
     setButtonLoading(true);
     e.preventDefault();
-    console.log("aaaaaa",multipleFiles)
-    if(multipleFiles.length < 5 ){
-        setButtonLoading(false);
-        Swal.fire("Error","You should select atleast 5 images" , "error");
-    }else{
-        const formdata = new FormData();
-        for (let i = 0; i < multipleFiles.length; i++) {
-          // console.log("aaaaaaaaaaaaaaaaaaaaaaaa",multipleFiles[i])
-          formdata.append("myFiles", multipleFiles[i]);
-        }
-        formdata.append("hotelName", name);
-        formdata.append("area", area);
-        formdata.append("address", address);
-        formdata.append("country", countryName);
-        formdata.append("state", stateName);
-        formdata.append("city", cityName);
-        formdata.append("hotelCategory", category);
-        formdata.append("noOfRooms", totalRooms);
+    if (multipleFiles.length < 5) {
+      setButtonLoading(false);
+      Swal.fire("Error", "You should select atleast 5 images", "error");
+    } else {
+      const formdata = new FormData();
+      for (let i = 0; i < multipleFiles.length; i++) {
+        // console.log("aaaaaaaaaaaaaaaaaaaaaaaa",multipleFiles[i])
+        formdata.append("myFiles", multipleFiles[i]);
+      }
+      formdata.append("hotelName", name);
+      formdata.append("area", area);
+      formdata.append("address", address);
+      formdata.append("country", countryName);
+      formdata.append("state", stateName);
+      formdata.append("city", cityName);
+      formdata.append("hotelCategory", category);
+      formdata.append("noOfRooms", totalRooms);
+      if (general) {
         formdata.append("general", general);
+      }
+      if (services) {
         formdata.append("services", services);
+      }
+      if (internet) {
         formdata.append("internet", internet);
+      }
+      if (parking) {
         formdata.append("parking", parking);
+      }
+      if (overview) {
         formdata.append("overview", overview);
-        // for (let i = 0; i < theme.length; i++) {
-        //   formdata.append(`theme[${i}]`, theme[i]);
-        // }
-        formdata.append(`adminFee`, hotelFee);
-        formdata.append(`payoutInterval`, payoutInterval);
-        formdata.append(`theme`, theme);
-        formdata.append("lat", lat);
-        formdata.append("long", long);
-        formdata.append("hotelVendorId", vendorId);
-        axios({
-          method: "post",
-          url: `${environmentVariables.apiUrl}/admin/addhotel`,
-          data: formdata,
-          headers: { _token: authData.token },
+      }
+      // for (let i = 0; i < theme.length; i++) {
+      //   formdata.append(`theme[${i}]`, theme[i]);
+      // }
+      formdata.append(`adminFee`, hotelFee);
+      formdata.append(`payoutInterval`, payoutInterval);
+      formdata.append(`theme`, theme);
+      formdata.append("lat", lat);
+      formdata.append("long", long);
+      formdata.append("hotelVendorId", vendorId);
+      const filteredPricing = pricingSections.filter(
+        ({
+          room_type_excursion_option,
+          board_basis_ticket_option,
+          status,
+          price,
+        }) =>
+          room_type_excursion_option ||
+          board_basis_ticket_option ||
+          status ||
+          price
+      );
+
+      // Append the pricing array correctly
+      formdata.append(
+        "pricing",
+        JSON.stringify(filteredPricing.length ? filteredPricing : [])
+      );
+
+      axios({
+        method: "post",
+        url: `${environmentVariables.apiUrl}/admin/addhotel`,
+        data: formdata,
+        headers: {
+          _token: authData.token,
+          "Content-Type": "multipart/form-data",
+        },
+      })
+        .then((response) => {
+          setName("");
+          setArea("");
+          setAddress("");
+          setStateName("");
+          setCityName("");
+          setCategory("");
+          setTotalRooms("");
+          setGeneral("");
+          setServices("");
+          setInternet("");
+          setParking("");
+          setOverview("");
+          setTheme([]);
+          setLat("");
+          setLong("");
+          setHotelFee("");
+          setPayoutInterval("");
+          setMultipleFiles("");
+          Swal.fire("Added", "New Hotel added successfully", "success");
+          setButtonLoading(false);
+          navigation("/managehotels");
         })
-          .then((response) => {
-            setName("");
-            setArea("");
-            setAddress("");
-            setStateName("");
-            setCityName("");
-            setCategory("");
-            setTotalRooms("");
-            setGeneral("");
-            setServices("");
-            setInternet("");
-            setParking("");
-            setOverview("");
-            setTheme([]);
-            setLat("");
-            setLong("");
-            setHotelFee("");
-            setPayoutInterval("");
-            setMultipleFiles("");
-            Swal.fire("Added", "New Hotel added successfully", "success");
-            setButtonLoading(false);
-            navigation("/managehotels");
-          })
-          .catch((error) => {
-            setButtonLoading(false);
-            console.log("Error", error);
-            Swal.fire("Error", error?.response?.data?.message, "error");
-          });
+        .catch((error) => {
+          setButtonLoading(false);
+          console.log("Error", error);
+          Swal.fire("Error", error?.response?.data?.message, "error");
+        });
     }
-    
   };
 
   const handleUpdate = async (e) => {
@@ -464,6 +504,7 @@ const AddHotels = () => {
         services: services,
         internet: internet,
         parking: parking,
+        pricing: pricingSections,
       },
       headers: { _token: authData.token },
     })
@@ -474,15 +515,6 @@ const AddHotels = () => {
 
         Swal.fire("Updated", "Hotel updated successfully", "success");
         navigate("/managehotels");
-        // setName("");
-        // setOverview("");
-        // setGeneral("");
-        // setCategory("");
-        // setServices("");
-        // setInternet("");
-        // setParking("");
-        // setTheme([])
-        // setTotalRooms("")
       })
       .catch((error) => {
         console.log("///////////////", error);
@@ -501,7 +533,7 @@ const AddHotels = () => {
       url: "https://geolocation-db.com/json/",
     })
       .then((response) => {
-        console.log(response.data)
+        console.log(response.data);
         setLat(response.data.latitude);
         setLong(response.data.longitude);
       })
@@ -547,9 +579,11 @@ const AddHotels = () => {
       data: formdata,
     })
       .then((response) => {
-        getHotelDetailById();
         fileInputRef.current.value = null;
         Swal.fire("Added", "Images inserted successfully", "success");
+        setTimeout(() => {
+          getHotelDetailById();
+        }, 2000);
       })
       .catch((error) => {
         console.log("///////////////", error);
@@ -561,6 +595,34 @@ const AddHotels = () => {
     setEditorLoadedGeneral(true);
     setEditorLoadedOverview(true);
   }, []);
+
+  const handleInputChange = (index, e) => {
+    const { name, value } = e.target;
+    const updatedPricingSections = [...pricingSections];
+    updatedPricingSections[index][name] = value;
+    setPricingSections(updatedPricingSections);
+  };
+
+  const handleStatusChange = (index, e) => {
+    const { value } = e.target;
+    const updatedPricingSections = [...pricingSections];
+    updatedPricingSections[index].status = value;
+    setPricingSections(updatedPricingSections);
+  };
+
+  const handleAddPricingSection = () => {
+    setPricingSections([
+      ...pricingSections,
+      {
+        room_type_excursion_option: "",
+        board_basis_ticket_option: "",
+        status: "",
+        price: "",
+      },
+    ]);
+  };
+
+
   return (
     <Root>
       <HeadingWrapper>
@@ -772,20 +834,22 @@ const AddHotels = () => {
               </div>
             </div>
 
-            <FormLabel>Local Attractions*</FormLabel>
-            <Editor
-              value={general}
-              onChange={(data) => {
-                setGeneral(data);
-              }}
-              editorLoaded={editorLoadedGeneral}
-            />
+            {general && (
+              <>
+                {" "}
+                <FormLabel>Local Attractions*</FormLabel>
+                <Editor
+                  value={general}
+                  onChange={(data) => setGeneral(data)}
+                  editorLoaded={editorLoadedGeneral}
+                />
+              </>
+            )}
+
             <FormLabel>Services*</FormLabel>
             <Editor
               value={services}
-              onChange={(data) => {
-                setServices(data);
-              }}
+              onChange={(data) => setServices(data)}
               editorLoaded={editorLoadedServices}
             />
             {id !== undefined &&
@@ -812,14 +876,18 @@ const AddHotels = () => {
                   />
                 </>
               )}
-            <FormLabel>Overview*</FormLabel>
-            <Editor
-              value={overview}
-              onChange={(data) => {
-                setOverview(data);
-              }}
-              editorLoaded={editorLoadedOverview}
-            />
+            {overview && (
+              <>
+                {" "}
+                <FormLabel>Overview*</FormLabel>
+                <Editor
+                  value={overview}
+                  onChange={(data) => setOverview(data)}
+                  editorLoaded={editorLoadedOverview}
+                />
+              </>
+            )}
+
             {id === undefined && (
               <>
                 <FormLabel>Images*</FormLabel>
@@ -832,6 +900,61 @@ const AddHotels = () => {
               </>
             )}
           </FormWrapper>
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            <FormLabel>Pricing*</FormLabel>
+            <div style={{ display: "flex", marginTop: "10px" }}>
+              <div>
+                {pricingSections.map((pricingSection, index) => (
+                  <div
+                    key={index}
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      gap: "10px",
+                    }}
+                  >
+                    <input
+                      type="text"
+                      name="room_type_excursion_option"
+                      value={pricingSection.room_type_excursion_option}
+                      onChange={(e) => handleInputChange(index, e)}
+                      placeholder="Room Type"
+                      style={{width:"350px"}}
+                    />
+                    <input
+                      type="text"
+                      name="board_basis_ticket_option"
+                      value={pricingSection.board_basis_ticket_option}
+                      onChange={(e) => handleInputChange(index, e)}
+                      placeholder="Board Basis"
+                    />
+                    <select
+                      name="status"
+                      value={pricingSection.status}
+                      onChange={(e) => handleStatusChange(index, e)}
+                    >
+                      <option value="" disabled>Select Status</option>
+                      <option value="AVAILABLE">AVAILABLE</option>
+                      <option value="OnRequest">OnRequest</option>
+                    </select>
+                    <input
+                      type="number"
+                      name="price"
+                      value={pricingSection.price}
+                      onChange={(e) => handleInputChange(index, e)}
+                      placeholder="Price"
+                    />
+                  </div>
+                ))}
+              </div>
+
+              <div>
+                <button onClick={handleAddPricingSection}>
+                  <i className="fa fa-plus" aria-hidden="true"></i>
+                </button>
+              </div>
+            </div>
+          </div>
           {buttonLoading === true ? (
             <div
               style={{
@@ -878,7 +1001,7 @@ const AddHotels = () => {
           ))}
         </div> */}
         <ImageSection>
-          {images.map((image,index) => (
+          {images.map((image, index) => (
             <ImageWrapper key={index}>
               <CirleCross></CirleCross>
               <Image1
