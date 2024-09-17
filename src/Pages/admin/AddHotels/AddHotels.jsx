@@ -129,8 +129,7 @@ const ThemeWrapper = styled.div`
 const GetLocationText = styled.div`
   position: absolute;
   top: 750px;
-  // left: 54rem;
-  left: 85%;
+  right: 435px;
   margin: 30px 0;
   font-size: 15px;
   color: #01565c;
@@ -749,7 +748,7 @@ const AddHotels = () => {
                   style={{ width: "100%" }}
                 />
               </div>
-              <div style={{ width: "30%" }}>
+              {/* <div style={{ width: "30%" }}>
                 <FormLabel>Category*</FormLabel>
                 <FormSelect
                   onChange={(e) => setCategory(e.target.value)}
@@ -760,7 +759,7 @@ const AddHotels = () => {
                   <FormOptions value={"midrange"}>Mid Range</FormOptions>
                   <FormOptions value={"luxury"}>Luxury</FormOptions>
                 </FormSelect>
-              </div>
+              </div> */}
               {id === undefined && (
                 <>
                   <div style={{ width: "10%" }}>
@@ -802,8 +801,8 @@ const AddHotels = () => {
               style={{
                 display: "flex",
                 width: "100%",
-                justifyContent: "center",
                 alignItems: "flex-end",
+                marginTop: "30px"
               }}
             >
               <SelectVendor
@@ -824,14 +823,14 @@ const AddHotels = () => {
                     );
                   })}
               </SelectVendor>
-              <div style={{ width: "50%", marginLeft: "10px" }}>
+              {/* <div style={{ width: "50%", marginLeft: "10px" }}>
                 <FormLabel>Total Rooms*</FormLabel>
                 <FormInput
                   type="number"
                   value={totalRooms}
                   onChange={(e) => setTotalRooms(e.target.value)}
                 />
-              </div>
+              </div> */}
             </div>
 
             {/* {general && (
